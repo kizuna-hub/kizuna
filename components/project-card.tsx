@@ -14,6 +14,7 @@ export interface ProjectData {
   upvotes: number
   comments: number
   tags: string[]
+  isBKSharkFinalist?: boolean
 }
 
 interface ProjectCardProps {
@@ -22,7 +23,16 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <div className="flex gap-4 p-4 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-zinc-700 hover:bg-zinc-800/50 transition-all group">
+    <div className="relative flex gap-4 p-4 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-zinc-700 hover:bg-zinc-800/50 transition-all group">
+      {/* BK SHARK Badge */}
+      {project.isBKSharkFinalist && (
+        <div className="absolute top-3 right-3 animate-pulse">
+          <div className="px-3 py-1.5 bg-gradient-to-r from-orange-500/20 to-orange-600/10 border border-orange-500/50 rounded-full text-xs font-semibold text-orange-300 shadow-[0_0_15px_rgba(255,107,53,0.4)]">
+            🌟 BK SHARK &apos;26
+          </div>
+        </div>
+      )}
+
       {/* Logo */}
       <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-lg text-white flex-shrink-0 ${project.logoBg}`}>
         {project.logoChar}

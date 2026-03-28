@@ -13,6 +13,7 @@ const mockProjects: ProjectData[] = [
     upvotes: 245,
     comments: 12,
     tags: ['MVP', 'AI', 'Marketing'],
+    isBKSharkFinalist: true,
   },
   {
     id: '2',
@@ -24,6 +25,7 @@ const mockProjects: ProjectData[] = [
     upvotes: 189,
     comments: 24,
     tags: ['EdTech', 'Social', 'MVP'],
+    isBKSharkFinalist: true,
   },
   {
     id: '3',
@@ -64,6 +66,27 @@ export function MainFeed() {
   return (
     <main className="flex-1 ml-56 mr-80 pt-6 pb-12">
       <div className="max-w-3xl mx-auto px-6">
+        {/* Hero Banner */}
+        <div className="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800 via-zinc-900 to-black border border-zinc-800 p-8">
+          {/* Glowing corner accent */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-3xl -mr-32 -mt-32"></div>
+          
+          <div className="relative z-10">
+            <h2 className="text-4xl font-bold text-white mb-3">
+              Discover Top 10 Finalists of BK SHARK 2026 🦈
+            </h2>
+            <p className="text-lg text-zinc-300 mb-6">
+              The brightest university startups ready for seed funding. Exclusive deal flow for verified investors.
+            </p>
+            <button className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors">
+              View Pitch Decks
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Startup Directory</h1>
