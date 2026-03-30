@@ -13,22 +13,16 @@ const facultyData: HeatmapCell[] = [
 ];
 
 function getColorIntensity(activity: number): string {
-    if (activity >= 90) return 'var(--admin-orange)';
-    if (activity >= 70) return '#ff8555';
-    if (activity >= 50) return '#ff9d75';
-    return '#3f3f46';
+    if (activity >= 90) return 'bg-primary';
+    if (activity >= 70) return 'bg-primary/80';
+    if (activity >= 50) return 'bg-primary/60';
+    return 'bg-muted-foreground';
 }
 
 export function AdminHeatmap() {
     return (
-        <div
-            className="rounded-lg p-6 border"
-            style={{
-                backgroundColor: 'var(--admin-card)',
-                borderColor: 'var(--admin-border)',
-            }}
-        >
-            <h3 className="text-lg font-semibold mb-6" style={{ color: 'var(--admin-text)' }}>
+        <div className="rounded-lg p-6 border bg-card border-border">
+            <h3 className="text-lg font-semibold mb-6 text-card-foreground">
                 Faculty Innovation Activity
             </h3>
 
@@ -36,31 +30,25 @@ export function AdminHeatmap() {
                 {facultyData.map((item) => (
                     <div key={item.faculty} className="space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium" style={{ color: 'var(--admin-text)' }}>
+                            <span className="text-sm font-medium text-foreground">
                                 {item.faculty}
                             </span>
-                            <span className="text-xs font-bold" style={{ color: 'var(--admin-orange)' }}>
+                            <span className="text-xs font-bold text-primary">
                                 {item.activity}%
                             </span>
                         </div>
-                        <div
-                            className="w-full h-8 rounded-lg overflow-hidden"
-                            style={{ backgroundColor: '#27272a' }}
-                        >
+                        <div className="w-full h-8 rounded-lg overflow-hidden bg-muted">
                             <div
-                                className="h-full transition-all duration-500"
-                                style={{
-                                    width: `${item.activity}%`,
-                                    backgroundColor: getColorIntensity(item.activity),
-                                }}
+                                className={`h-full transition-all duration-500 ${getColorIntensity(item.activity)}`}
+                                style={{ width: `${item.activity}%` }}
                             />
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--admin-border)' }}>
-                <p className="text-xs" style={{ color: '#a1a1a6' }}>
+            <div className="mt-8 pt-6 border-t border-border">
+                <p className="text-xs text-muted-foreground">
                     Activity levels based on submissions, engagement, and mentor participation
                 </p>
             </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import {
     TrendingUp,
+    TrendingDown,
     Bell,
     Settings,
     Download,
@@ -14,7 +15,10 @@ import {
     Target,
     CheckCircle2,
     ChevronDown,
-    Search
+    Search,
+    FileText,
+    Activity,
+    AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -29,14 +33,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import {
-    LineChart,
-    Line,
-    ResponsiveContainer,
     Area,
     AreaChart,
-    YAxis,
-    XAxis,
-    Tooltip,
 } from 'recharts';
 
 // Mock data for sparklines
@@ -61,6 +59,7 @@ const startups = [
         revenue: 12000,
         trend: generateSparklineData(),
         deckRequested: false,
+        matchScore: 94,
     },
     {
         id: 2,
@@ -74,6 +73,7 @@ const startups = [
         revenue: 45000,
         trend: generateSparklineData(),
         deckRequested: false,
+        matchScore: 78,
     },
     {
         id: 3,
@@ -87,6 +87,7 @@ const startups = [
         revenue: 8500,
         trend: generateSparklineData(),
         deckRequested: true,
+        matchScore: 89,
     },
     {
         id: 4,
@@ -100,6 +101,7 @@ const startups = [
         revenue: 125000,
         trend: generateSparklineData(),
         deckRequested: false,
+        matchScore: 72,
     },
     {
         id: 5,
@@ -113,15 +115,16 @@ const startups = [
         revenue: 32000,
         trend: generateSparklineData(),
         deckRequested: false,
+        matchScore: 92,
     },
 ];
 
 // Radar alerts
 const alerts = [
-    { id: 1, text: 'MarketOS just uploaded their Financial Plan', time: '2 mins ago' },
-    { id: 2, text: 'StudySync reached 1,000 users milestone', time: '15 mins ago' },
-    { id: 3, text: 'New deal matched: GrowthLabs + AI focus', time: '1 hour ago' },
-    { id: 4, text: 'AgriChain disclosed $2M ARR', time: '3 hours ago' },
+    { id: 1, text: 'MarketOS just uploaded their Financial Plan', time: '2 mins ago', type: 'deck' },
+    { id: 2, text: 'StudySync reached 1,000 users milestone', time: '15 mins ago', type: 'milestone' },
+    { id: 3, text: 'New deal matched: GrowthLabs + AI focus', time: '1 hour ago', type: 'match' },
+    { id: 4, text: 'AgriChain disclosed $2M ARR', time: '3 hours ago', type: 'update' },
 ];
 
 // Ecosystem health stats
@@ -131,18 +134,21 @@ const stats = [
         value: '342',
         icon: Target,
         color: 'from-orange-500/20 to-orange-600/20',
+        trend: { change: '+12%', direction: 'up', time: 'from last month' },
     },
     {
         label: 'Post-MVP Stage',
         value: '89',
         icon: CheckCircle2,
         color: 'from-green-500/20 to-green-600/20',
+        trend: { change: '+8%', direction: 'up', time: 'from last month' },
     },
     {
         label: 'Ecosystem Capital',
         value: '$4.2B',
         icon: Zap,
         color: 'from-blue-500/20 to-blue-600/20',
+        trend: { change: '-3%', direction: 'down', time: 'from last month' },
     },
     {
         label: 'Pending Deck Requests',
@@ -150,6 +156,7 @@ const stats = [
         icon: FileIcon,
         color: 'from-purple-500/20 to-purple-600/20',
         badge: true,
+        trend: { change: '+24%', direction: 'up', time: 'from last week' },
     },
 ];
 
@@ -173,29 +180,29 @@ function FileIcon(props: any) {
 
 function SparklineChart({ data }: { data: any[] }) {
     return (
-        <ResponsiveContainer width={60} height={30}>
-            <AreaChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                <defs>
-                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ff6b35" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#ff6b35" stopOpacity={0} />
-                    </linearGradient>
-                </defs>
-                <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#ff6b35"
-                    fillOpacity={1}
-                    fill="url(#colorValue)"
-                    isAnimationActive={false}
-                />
-            </AreaChart>
-        </ResponsiveContainer>
+        <AreaChart width={60} height={30} data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+            <defs>
+                <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                </linearGradient>
+            </defs>
+            <Area
+                type="monotone"
+                dataKey="value"
+                stroke="hsl(var(--primary))"
+                fillOpacity={1}
+                fill="url(#colorValue)"
+                isAnimationActive={false}
+            />
+        </AreaChart>
     );
 }
 
 export default function InvestorDashboard() {
     const [requestedDecks, setRequestedDecks] = useState<number[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [industryFilter, setIndustryFilter] = useState('All');
     const [filters, setFilters] = useState({
         revenueGenerating: false,
         b2bOnly: false,
@@ -209,25 +216,25 @@ export default function InvestorDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-zinc-50">
+        <div className="min-h-screen bg-background text-foreground">
             {/* Header */}
-            <header className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur sticky top-0 z-50">
+            <header className="border-b border-border bg-background/50 backdrop-blur sticky top-0 z-50">
                 <div className="px-8 py-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                            <Target className="w-6 h-6 text-white" />
+                        <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                            <Target className="w-6 h-6 text-primary" />
                         </div>
-                        <h1 className="text-2xl font-bold text-white">FUNDGO Investment Radar</h1>
+                        <h1 className="text-2xl font-bold text-foreground">FUNDGO Investment Radar</h1>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button className="relative p-2 hover:bg-zinc-800 rounded-lg transition-colors">
-                            <Bell className="w-5 h-5 text-zinc-400 hover:text-orange-500 transition-colors" />
-                            <div className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full" />
+                        <button className="relative p-2 hover:bg-muted rounded-lg transition-colors">
+                            <Bell className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
+                            <div className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
                         </button>
-                        <button className="p-2 hover:bg-zinc-800 rounded-lg transition-colors">
-                            <Settings className="w-5 h-5 text-zinc-400 hover:text-orange-500 transition-colors" />
+                        <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+                            <Settings className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
                         </button>
-                        <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2">
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2">
                             <Download className="w-4 h-4" />
                             Export Data
                         </Button>
@@ -240,23 +247,37 @@ export default function InvestorDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     {stats.map((stat) => {
                         const Icon = stat.icon;
+                        const isTrendPositive = stat.trend?.direction === 'up';
                         return (
                             <Card
                                 key={stat.label}
-                                className="bg-zinc-900 border-zinc-800 hover:border-orange-500/50 transition-all duration-300 p-6 group cursor-pointer"
+                                className="bg-card border-border hover:border-primary/50 transition-all duration-300 p-6 group cursor-pointer"
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className={`p-3 rounded-lg bg-gradient-to-br ${stat.color} group-hover:scale-110 transition-transform`}>
-                                        <Icon className="w-5 h-5 text-orange-400" />
+                                    <div className="p-3 rounded-lg bg-primary/10 group-hover:scale-110 transition-transform">
+                                        <Icon className="w-5 h-5 text-primary" />
                                     </div>
                                     {stat.badge && (
-                                        <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
+                                        <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />
                                     )}
                                 </div>
-                                <p className="text-zinc-400 text-sm font-medium mb-2">{stat.label}</p>
-                                <p className="text-3xl font-bold text-white group-hover:text-orange-400 transition-colors">
+                                <p className="text-muted-foreground text-sm font-medium mb-2">{stat.label}</p>
+                                <p className="text-3xl font-bold text-foreground group-hover:text-primary transition-colors">
                                     {stat.value}
                                 </p>
+                                {stat.trend && (
+                                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
+                                        {isTrendPositive ? (
+                                            <TrendingUp className="w-4 h-4 text-primary" />
+                                        ) : (
+                                            <TrendingDown className="w-4 h-4 text-destructive" />
+                                        )}
+                                        <span className={`text-sm font-medium ${isTrendPositive ? 'text-primary' : 'text-destructive'}`}>
+                                            {stat.trend.change}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">{stat.trend.time}</span>
+                                    </div>
+                                )}
                             </Card>
                         );
                     })}
@@ -266,43 +287,51 @@ export default function InvestorDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Deal Sourcing Table */}
                     <div className="lg:col-span-2">
-                        <Card className="bg-zinc-900 border-zinc-800 overflow-hidden">
-                            <div className="p-6 border-b border-zinc-800">
-                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                    <Zap className="w-5 h-5 text-orange-500" />
+                        <Card className="bg-card border-border overflow-hidden">
+                            <div className="p-6 border-b border-border">
+                                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                                    <Zap className="w-5 h-5 text-primary" />
                                     Curated Startups
                                 </h2>
-                                <p className="text-zinc-400 text-sm mt-1">High-potential deals matching your criteria</p>
+                                <p className="text-muted-foreground text-sm mt-1">High-potential deals matching your criteria</p>
                             </div>
 
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader>
-                                        <TableRow className="border-zinc-800 hover:bg-transparent">
-                                            <TableHead className="text-zinc-400 font-semibold">Project</TableHead>
-                                            <TableHead className="text-zinc-400 font-semibold">Stage</TableHead>
-                                            <TableHead className="text-zinc-400 font-semibold">Team</TableHead>
-                                            <TableHead className="text-zinc-400 font-semibold">Capital</TableHead>
-                                            <TableHead className="text-zinc-400 font-semibold">Growth Trend</TableHead>
-                                            <TableHead className="text-zinc-400 font-semibold text-right">Action</TableHead>
+                                        <TableRow className="border-border hover:bg-transparent">
+                                            <TableHead className="text-muted-foreground font-semibold">Project</TableHead>
+                                            <TableHead className="text-muted-foreground font-semibold">Match Score</TableHead>
+                                            <TableHead className="text-muted-foreground font-semibold">Stage</TableHead>
+                                            <TableHead className="text-muted-foreground font-semibold">Team</TableHead>
+                                            <TableHead className="text-muted-foreground font-semibold">Capital</TableHead>
+                                            <TableHead className="text-muted-foreground font-semibold">Growth Trend</TableHead>
+                                            <TableHead className="text-muted-foreground font-semibold text-right">Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {startups.map((startup) => (
                                             <TableRow
                                                 key={startup.id}
-                                                className="border-zinc-800 hover:bg-zinc-800/50 transition-all duration-200 group cursor-pointer"
+                                                className="border-border hover:bg-muted/50 transition-all duration-200 group cursor-pointer"
                                             >
                                                 {/* Project */}
                                                 <TableCell>
                                                     <div className="flex items-center gap-3">
                                                         <div className="text-2xl">{startup.logo}</div>
                                                         <div>
-                                                            <p className="font-semibold text-white">{startup.name}</p>
-                                                            <Badge variant="secondary" className="mt-1 bg-zinc-800 text-orange-400 border-orange-500/30">
+                                                            <p className="font-semibold text-foreground">{startup.name}</p>
+                                                            <Badge variant="secondary" className="mt-1 bg-muted text-primary border-primary/30">
                                                                 {startup.industry}
                                                             </Badge>
                                                         </div>
+                                                    </div>
+                                                </TableCell>
+
+                                                {/* Match Score */}
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-primary font-bold text-sm">{startup.matchScore}% Match</span>
                                                     </div>
                                                 </TableCell>
 
@@ -311,17 +340,14 @@ export default function InvestorDashboard() {
                                                     <div className="flex items-center gap-2">
                                                         <Badge
                                                             variant="outline"
-                                                            className={`border-zinc-700 ${startup.stage === 'MVP'
-                                                                    ? 'bg-blue-500/10 text-blue-400'
-                                                                    : 'bg-green-500/10 text-green-400'
-                                                                }`}
+                                                            className="border-border bg-primary/10 text-primary"
                                                         >
                                                             {startup.stage}
                                                         </Badge>
                                                         {startup.nq54 && (
                                                             <div className="group/tooltip relative">
-                                                                <Shield className="w-4 h-4 text-orange-500" />
-                                                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 bg-orange-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">
+                                                                <Shield className="w-4 h-4 text-primary" />
+                                                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none">
                                                                     NQ-54 Certified
                                                                 </span>
                                                             </div>
@@ -331,15 +357,15 @@ export default function InvestorDashboard() {
 
                                                 {/* Team Size */}
                                                 <TableCell>
-                                                    <div className="flex items-center gap-2 text-zinc-300">
-                                                        <Users className="w-4 h-4 text-orange-500" />
+                                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                                        <Users className="w-4 h-4 text-primary" />
                                                         {startup.teamSize}
                                                     </div>
                                                 </TableCell>
 
                                                 {/* Capital */}
                                                 <TableCell>
-                                                    <p className="text-zinc-300 text-sm font-mono">{startup.capital}</p>
+                                                    <p className="text-muted-foreground text-sm font-mono">{startup.capital}</p>
                                                 </TableCell>
 
                                                 {/* Growth Trend */}
@@ -353,7 +379,7 @@ export default function InvestorDashboard() {
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="border-orange-500 text-orange-400 hover:bg-orange-500/10"
+                                                            className="border-primary text-primary hover:bg-primary/10"
                                                         >
                                                             <Eye className="w-4 h-4 mr-1" />
                                                             View Deck
@@ -362,7 +388,7 @@ export default function InvestorDashboard() {
                                                         <Button
                                                             size="sm"
                                                             onClick={() => toggleDeckRequest(startup.id)}
-                                                            className="bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/30 group-hover:shadow-orange-500/50 transition-all duration-200"
+                                                            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-all duration-200"
                                                         >
                                                             Request Deck
                                                         </Button>
@@ -379,79 +405,138 @@ export default function InvestorDashboard() {
                     {/* Right Sidebar - Filters & Alerts */}
                     <div className="space-y-6">
                         {/* Quick Filters */}
-                        <Card className="bg-zinc-900 border-zinc-800 p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                <Search className="w-5 h-5 text-orange-500" />
+                        <Card className="bg-card border-border p-6">
+                            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                                <Search className="w-5 h-5 text-primary" />
                                 Filter Deals
                             </h3>
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-800 transition-colors group cursor-pointer">
-                                    <label className="text-sm font-medium text-zinc-300 cursor-pointer">
-                                        Revenue Generating
-                                    </label>
-                                    <Switch
-                                        checked={filters.revenueGenerating}
-                                        onCheckedChange={(checked) =>
-                                            setFilters({ ...filters, revenueGenerating: checked })
-                                        }
+                                {/* Search Input */}
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search startups or founders..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
                                     />
                                 </div>
-                                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-800 transition-colors group cursor-pointer">
-                                    <label className="text-sm font-medium text-zinc-300 cursor-pointer">
-                                        B2B Only
-                                    </label>
-                                    <Switch
-                                        checked={filters.b2bOnly}
-                                        onCheckedChange={(checked) =>
-                                            setFilters({ ...filters, b2bOnly: checked })
-                                        }
-                                    />
+
+                                {/* Industry Dropdown */}
+                                <div className="relative group">
+                                    <button className="w-full px-4 py-2 bg-muted border border-border rounded-lg text-foreground text-left flex items-center justify-between hover:border-primary focus:outline-none focus:border-primary transition-colors">
+                                        <span className="text-sm">{industryFilter}</span>
+                                        <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                                    </button>
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-muted border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                        {['All', 'AI', 'EdTech', 'SaaS', 'FinTech'].map((industry) => (
+                                            <button
+                                                key={industry}
+                                                onClick={() => setIndustryFilter(industry)}
+                                                className={`w-full px-4 py-2 text-left text-sm hover:bg-card transition-colors first:rounded-t-lg last:rounded-b-lg ${industryFilter === industry ? 'bg-primary/20 text-primary' : 'text-muted-foreground'
+                                                    }`}
+                                            >
+                                                {industry}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-800 transition-colors group cursor-pointer">
-                                    <label className="text-sm font-medium text-zinc-300 cursor-pointer">
-                                        Seeking {`>`} $50k
-                                    </label>
-                                    <Switch
-                                        checked={filters.seekingAbove50k}
-                                        onCheckedChange={(checked) =>
-                                            setFilters({ ...filters, seekingAbove50k: checked })
-                                        }
-                                    />
+
+                                {/* Toggle Filters */}
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors group cursor-pointer">
+                                        <label className="text-sm font-medium text-muted-foreground cursor-pointer group-hover:text-foreground">
+                                            Revenue Generating
+                                        </label>
+                                        <Switch
+                                            checked={filters.revenueGenerating}
+                                            onCheckedChange={(checked) =>
+                                                setFilters({ ...filters, revenueGenerating: checked })
+                                            }
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors group cursor-pointer">
+                                        <label className="text-sm font-medium text-muted-foreground cursor-pointer group-hover:text-foreground">
+                                            B2B Only
+                                        </label>
+                                        <Switch
+                                            checked={filters.b2bOnly}
+                                            onCheckedChange={(checked) =>
+                                                setFilters({ ...filters, b2bOnly: checked })
+                                            }
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors group cursor-pointer">
+                                        <label className="text-sm font-medium text-muted-foreground cursor-pointer group-hover:text-foreground">
+                                            Seeking {`>`} $50k
+                                        </label>
+                                        <Switch
+                                            checked={filters.seekingAbove50k}
+                                            onCheckedChange={(checked) =>
+                                                setFilters({ ...filters, seekingAbove50k: checked })
+                                            }
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </Card>
 
                         {/* Radar Alerts */}
-                        <Card className="bg-zinc-900 border-zinc-800 p-6">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                <Bell className="w-5 h-5 text-orange-500" />
+                        <Card className="bg-card border-border p-6">
+                            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                                <Bell className="w-5 h-5 text-primary" />
                                 Radar Alerts
                             </h3>
                             <div className="space-y-3 max-h-80 overflow-y-auto">
-                                {alerts.map((alert) => (
-                                    <div
-                                        key={alert.id}
-                                        className="p-3 rounded-lg bg-zinc-800/50 border border-zinc-700 hover:border-orange-500/30 transition-all group cursor-pointer"
-                                    >
-                                        <p className="text-sm text-zinc-300 group-hover:text-zinc-100 transition-colors">
-                                            {alert.text}
-                                        </p>
-                                        <p className="text-xs text-zinc-500 mt-2">{alert.time}</p>
-                                    </div>
-                                ))}
+                                {alerts.map((alert) => {
+                                    let AlertIcon = Activity;
+                                    let iconColor = 'text-primary';
+
+                                    if (alert.type === 'deck') {
+                                        AlertIcon = FileText;
+                                        iconColor = 'text-primary';
+                                    } else if (alert.type === 'milestone') {
+                                        AlertIcon = Activity;
+                                        iconColor = 'text-blue-500';
+                                    } else if (alert.type === 'match') {
+                                        AlertIcon = Target;
+                                        iconColor = 'text-green-500';
+                                    } else if (alert.type === 'update') {
+                                        AlertIcon = AlertCircle;
+                                        iconColor = 'text-purple-500';
+                                    }
+
+                                    return (
+                                        <div
+                                            key={alert.id}
+                                            className="p-3 rounded-lg bg-muted/50 border border-border hover:border-primary/30 transition-all group cursor-pointer"
+                                        >
+                                            <div className="flex gap-3">
+                                                <AlertIcon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${iconColor}`} />
+                                                <div className="flex-1">
+                                                    <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                                                        {alert.text}
+                                                    </p>
+                                                    <p className="text-xs text-muted-foreground mt-2">{alert.time}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </Card>
 
                         {/* Deck Requests Summary */}
-                        <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border-orange-500/30 p-6">
+                        <Card className="bg-primary/5 border-primary/30 p-6">
                             <div className="flex items-center gap-2 mb-4">
-                                <FileIcon className="w-5 h-5 text-orange-500" />
-                                <h3 className="text-lg font-bold text-white">Requested Decks</h3>
+                                <FileIcon className="w-5 h-5 text-primary" />
+                                <h3 className="text-lg font-bold text-foreground">Requested Decks</h3>
                             </div>
-                            <p className="text-3xl font-bold text-orange-400 mb-2">
+                            <p className="text-3xl font-bold text-primary mb-2">
                                 {requestedDecks.length}
                             </p>
-                            <p className="text-sm text-zinc-300">
+                            <p className="text-sm text-muted-foreground">
                                 {requestedDecks.length === 0
                                     ? 'Start requesting pitch decks'
                                     : `${requestedDecks.length} deck${requestedDecks.length !== 1 ? 's' : ''} pending`}

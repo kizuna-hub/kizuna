@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar, Toggle2, Check } from 'lucide-react';
+import { Calendar, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function MentorHeader() {
@@ -62,7 +62,7 @@ export function MentorHeader() {
                                 </>
                             ) : (
                                 <>
-                                    <Toggle2 className="h-4 w-4" />
+                                    <X className="h-4 w-4" />
                                     Unavailable
                                 </>
                             )}

@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function AdminPage() {
     return (
-        <div className="flex h-screen" style={{ backgroundColor: 'var(--admin-bg)' }}>
+        <div className="flex h-screen bg-background text-foreground">
             {/* Sidebar */}
             <AdminSidebar />
 

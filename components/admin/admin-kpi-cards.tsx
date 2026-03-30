@@ -11,32 +11,23 @@ interface KPICardProps {
 
 function KPICard({ label, value, subtitle, trend }: KPICardProps) {
     return (
-        <div
-            className="rounded-lg p-6 border flex flex-col justify-between"
-            style={{
-                backgroundColor: 'var(--admin-card)',
-                borderColor: 'var(--admin-border)',
-            }}
-        >
+        <div className="rounded-lg p-6 border bg-card border-border flex flex-col justify-between">
             <div>
-                <p className="text-sm font-medium" style={{ color: '#a1a1a6' }}>
+                <p className="text-sm font-medium text-muted-foreground">
                     {label}
                 </p>
-                <p
-                    className="text-3xl font-bold mt-2"
-                    style={{ color: 'var(--admin-text)' }}
-                >
+                <p className="text-3xl font-bold mt-2 text-foreground">
                     {value}
                 </p>
             </div>
             <div className="mt-4 flex items-center justify-between">
                 {subtitle && (
-                    <p className="text-xs" style={{ color: '#71717a' }}>
+                    <p className="text-xs text-muted-foreground">
                         {subtitle}
                     </p>
                 )}
                 {trend !== undefined && (
-                    <div className="flex items-center gap-1" style={{ color: 'var(--admin-orange)' }}>
+                    <div className="flex items-center gap-1 text-primary">
                         <TrendingUp size={16} />
                         <span className="text-sm font-medium">{trend}%</span>
                     </div>

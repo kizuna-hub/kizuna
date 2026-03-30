@@ -25,26 +25,26 @@ export default function Sidebar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     return (
-        <aside className="w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+        <aside className="w-64 bg-background border-r border-border flex flex-col">
             {/* Logo Section */}
-            <div className="p-6 border-b border-zinc-800">
-                <h1 className="text-2xl font-bold text-zinc-50 mb-4">
+            <div className="p-6 border-b border-border">
+                <h1 className="text-2xl font-bold text-foreground mb-4">
                     NovaHub
                 </h1>
                 <Button
                     variant="outline"
-                    className="w-full justify-between text-zinc-50 border-zinc-800 hover:bg-orange-500/10 hover:text-orange-500"
+                    className="w-full justify-between text-foreground border-border hover:bg-primary/10 hover:text-primary"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
                     <span className="text-sm">Select Workspace</span>
                     <ChevronDown className="w-4 h-4" />
                 </Button>
                 {isDropdownOpen && (
-                    <div className="mt-2 p-2 bg-orange-500/10 rounded-lg border border-zinc-800">
-                        <p className="text-xs text-zinc-400 px-2 py-1">
+                    <div className="mt-2 p-2 bg-primary/10 rounded-lg border border-border">
+                        <p className="text-xs text-muted-foreground px-2 py-1">
                             TechStarter Inc.
                         </p>
-                        <p className="text-xs text-zinc-400 px-2 py-1">
+                        <p className="text-xs text-muted-foreground px-2 py-1">
                             AI Solutions LLC
                         </p>
                     </div>
@@ -59,8 +59,8 @@ export default function Sidebar() {
                         <button
                             key={item.label}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${item.active
-                                    ? 'bg-orange-500 text-zinc-50'
-                                    : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-50'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 }`}
                         >
                             <Icon className="w-5 h-5" />
@@ -71,20 +71,20 @@ export default function Sidebar() {
             </nav>
 
             {/* User Profile Section */}
-            <div className="p-4 border-t border-zinc-800">
-                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-zinc-800 transition-colors">
-                    <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
-                        <User className="w-4 h-4 text-zinc-50" />
+            <div className="p-4 border-t border-border">
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors">
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                        <User className="w-4 h-4 text-primary-foreground" />
                     </div>
                     <div className="text-left flex-1">
-                        <p className="text-sm font-medium text-zinc-50">
+                        <p className="text-sm font-medium text-foreground">
                             Alex Chen
                         </p>
-                        <p className="text-xs text-zinc-400">
+                        <p className="text-xs text-muted-foreground">
                             Founder
                         </p>
                     </div>
-                    <Settings className="w-4 h-4 text-zinc-400" />
+                    <Settings className="w-4 h-4 text-muted-foreground" />
                 </button>
             </div>
         </aside>

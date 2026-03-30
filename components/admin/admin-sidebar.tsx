@@ -22,22 +22,13 @@ export function AdminSidebar() {
     const pathname = usePathname();
 
     return (
-        <aside
-            className="w-64 h-full flex flex-col border-r"
-            style={{
-                backgroundColor: 'var(--admin-bg)',
-                borderColor: 'var(--admin-border)',
-            }}
-        >
+        <aside className="w-64 h-full flex flex-col border-r bg-background border-border text-foreground">
             {/* Logo */}
-            <div className="p-6 border-b" style={{ borderColor: 'var(--admin-border)' }}>
-                <h1
-                    className="text-xl font-bold"
-                    style={{ color: 'var(--admin-orange)' }}
-                >
+            <div className="p-6 border-b border-border">
+                <h1 className="text-xl font-bold text-primary">
                     Innovation
                 </h1>
-                <p className="text-xs mt-1" style={{ color: 'var(--admin-text)' }}>
+                <p className="text-xs mt-1 text-muted-foreground">
                     Admin Dashboard
                 </p>
             </div>
@@ -55,11 +46,10 @@ export function AdminSidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors"
-                            style={{
-                                backgroundColor: isActive ? 'var(--admin-orange)' : 'transparent',
-                                color: isActive ? '#000' : 'var(--admin-text)',
-                            }}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                }`}
                         >
                             <Icon size={20} />
                             <span className="text-sm font-medium">{item.label}</span>
@@ -69,14 +59,8 @@ export function AdminSidebar() {
             </nav>
 
             {/* Logout */}
-            <div className="p-4 border-t" style={{ borderColor: 'var(--admin-border)' }}>
-                <button
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:opacity-80"
-                    style={{
-                        backgroundColor: 'transparent',
-                        color: 'var(--admin-text)',
-                    }}
-                >
+            <div className="p-4 border-t border-border">
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-muted-foreground hover:bg-muted hover:text-foreground">
                     <LogOut size={20} />
                     <span className="text-sm font-medium">Logout</span>
                 </button>
