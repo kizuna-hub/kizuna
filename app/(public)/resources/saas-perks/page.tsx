@@ -1,8 +1,18 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Lock, ArrowRight, Cloud, Zap, Code, TrendingUp } from 'lucide-react';
+import { Search, Lock, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import {
+    SiNotion,
+    SiLinear,
+    SiStripe,
+    SiFigma,
+    SiGithub,
+    SiDatadog,
+    SiSlack,
+} from 'react-icons/si';
+import { FaAws } from 'react-icons/fa';
 
 // Mock Data
 const PERKS = [
@@ -15,7 +25,8 @@ const PERKS = [
         description: 'Get credits for compute, storage, and database services to power your startup.',
         locked: false,
         brandColor: 'text-orange-500',
-        icon: Cloud,
+        icon: FaAws,
+        scarcityTag: '🔥 HOT',
     },
     {
         id: 2,
@@ -26,7 +37,8 @@ const PERKS = [
         description: 'All-in-one workspace for documentation, planning, and collaboration.',
         locked: false,
         brandColor: 'text-slate-300',
-        icon: Zap,
+        icon: SiNotion,
+        scarcityTag: null,
     },
     {
         id: 3,
@@ -36,8 +48,9 @@ const PERKS = [
         category: 'Dev Tools',
         description: 'Issue tracking and project management built for modern teams.',
         locked: false,
-        brandColor: 'text-blue-500',
-        icon: Code,
+        brandColor: 'text-blue-400',
+        icon: SiLinear,
+        scarcityTag: null,
     },
     {
         id: 4,
@@ -47,8 +60,9 @@ const PERKS = [
         category: 'Payments',
         description: 'Complete payment processing suite with startup-friendly pricing.',
         locked: true,
-        brandColor: 'text-purple-500',
-        icon: TrendingUp,
+        brandColor: 'text-blue-600',
+        icon: SiStripe,
+        scarcityTag: '💎 Kizuna Exclusive',
     },
     {
         id: 5,
@@ -59,7 +73,8 @@ const PERKS = [
         description: 'Collaborative design tool for prototyping and UI/UX creation.',
         locked: false,
         brandColor: 'text-pink-500',
-        icon: Zap,
+        icon: SiFigma,
+        scarcityTag: null,
     },
     {
         id: 6,
@@ -70,7 +85,8 @@ const PERKS = [
         description: 'Advanced version control, CI/CD, and team collaboration features.',
         locked: true,
         brandColor: 'text-white',
-        icon: Code,
+        icon: SiGithub,
+        scarcityTag: null,
     },
     {
         id: 7,
@@ -80,8 +96,9 @@ const PERKS = [
         category: 'Cloud',
         description: 'Application performance monitoring and observability platform.',
         locked: false,
-        brandColor: 'text-purple-600',
-        icon: Cloud,
+        brandColor: 'text-purple-500',
+        icon: SiDatadog,
+        scarcityTag: null,
     },
     {
         id: 8,
@@ -91,8 +108,9 @@ const PERKS = [
         category: 'Productivity',
         description: 'Team messaging and collaboration platform for remote teams.',
         locked: false,
-        brandColor: 'text-cyan-500',
-        icon: Zap,
+        brandColor: 'text-cyan-400',
+        icon: SiSlack,
+        scarcityTag: null,
     },
 ];
 
@@ -139,18 +157,36 @@ export default function SaaSPerksPage() {
         <div className="w-full flex flex-col gap-8">
             {/* Hero Section */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black border border-white/5 px-8 py-16 md:px-12 md:py-20">
-                {/* Glowing blob background */}
+                {/* Glowing radial gradient blob */}
                 <div className="absolute inset-0 -z-10">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl opacity-30 animate-pulse" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl opacity-40 animate-pulse" />
                 </div>
 
-                <div className="relative z-10 max-w-2xl">
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 text-balance">
+                <div className="relative z-10 max-w-3xl">
+                    <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 text-balance tracking-tight">
                         Startup SaaS Perks
                     </h1>
-                    <p className="text-lg text-zinc-300 text-balance">
+                    <p className="text-lg text-zinc-300 text-balance mb-6">
                         Unlock over $250,000 in credits and discounts to scale your startup. Access premium tools and services at discounted rates.
                     </p>
+
+                    {/* Social Proof Badge */}
+                    <div className="flex items-center gap-3">
+                        <div className="flex -space-x-3">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 border-2 border-zinc-900 flex items-center justify-center text-xs font-bold text-white">
+                                A
+                            </div>
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-zinc-900 flex items-center justify-center text-xs font-bold text-white">
+                                B
+                            </div>
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-zinc-900 flex items-center justify-center text-xs font-bold text-white">
+                                C
+                            </div>
+                        </div>
+                        <p className="text-sm text-zinc-300">
+                            Trusted by <span className="font-semibold text-white">50+ verified startups</span> building on Kizuna Hub.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -175,8 +211,8 @@ export default function SaaSPerksPage() {
                             key={category}
                             onClick={() => setSelectedCategory(category)}
                             className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 ${selectedCategory === category
-                                    ? 'bg-orange-500 text-white'
-                                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                                ? 'bg-orange-500 text-white'
+                                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                                 }`}
                         >
                             {category}
@@ -198,12 +234,19 @@ export default function SaaSPerksPage() {
                         <motion.div
                             key={perk.id}
                             variants={cardVariants}
-                            className="group bg-zinc-900/40 border border-white/5 backdrop-blur-sm rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:border-orange-500/20"
+                            className="group relative bg-zinc-900/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(255,107,0,0.15)] hover:border-orange-500/50"
                         >
+                            {/* Scarcity Tag */}
+                            {perk.scarcityTag && (
+                                <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-full text-xs font-bold text-orange-300">
+                                    {perk.scarcityTag}
+                                </div>
+                            )}
+
                             {/* Header */}
-                            <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-start justify-between mb-4 pr-16">
                                 <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-lg bg-zinc-800 ${perk.brandColor}`}>
+                                    <div className={`p-3 rounded-xl bg-zinc-800/60 ${perk.brandColor}`}>
                                         <IconComponent className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -216,10 +259,10 @@ export default function SaaSPerksPage() {
                             {/* Description */}
                             <p className="text-sm text-zinc-400 mb-4">{perk.description}</p>
 
-                            {/* Value Badge */}
+                            {/* Value Badge - EMERALD STYLING */}
                             <div className="mb-4">
-                                <div className="inline-block bg-zinc-800 px-3 py-1.5 rounded-lg">
-                                    <span className={`font-bold text-sm ${perk.brandColor}`}>
+                                <div className="inline-block bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                                    <span className="font-bold text-sm text-emerald-400">
                                         {perk.value}
                                     </span>
                                 </div>
@@ -228,12 +271,12 @@ export default function SaaSPerksPage() {
                             {/* Footer/CTA */}
                             <div>
                                 {!perk.locked ? (
-                                    <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 group/btn">
+                                    <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group/btn">
                                         Claim Offer
                                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                                     </button>
                                 ) : (
-                                    <button className="w-full bg-transparent border border-zinc-700 text-zinc-400 hover:border-zinc-600 font-medium py-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                                    <button className="w-full bg-transparent border border-zinc-700 text-zinc-400 hover:border-zinc-600 font-medium py-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
                                         <Lock className="w-4 h-4" />
                                         Requires Verification
                                     </button>

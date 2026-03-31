@@ -95,6 +95,22 @@ export function MainFeed() {
           </p>
         </div>
 
+        {/* Filter Tabs */}
+        <div className="flex gap-2 border-b border-zinc-800 pb-4 mb-4">
+          <button className="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20 text-sm font-medium">
+            Today
+          </button>
+          <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+            This Week
+          </button>
+          <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+            This Month
+          </button>
+          <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+            All Time
+          </button>
+        </div>
+
         {/* Projects List */}
         <div className="space-y-4">
           {mockProjects.map((project) => (

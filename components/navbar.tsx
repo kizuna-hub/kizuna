@@ -16,7 +16,7 @@ export function Navbar({ className }: { className?: string }) {
           <div className="bg-orange-500 p-2 rounded-lg">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-white">NovaHub</span>
+          <span className="text-xl font-bold text-white">Kizuna Hub</span>
         </div>
 
         {/* Search Bar */}
