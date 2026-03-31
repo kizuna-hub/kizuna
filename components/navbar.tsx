@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
-export function Navbar() {
+import { cn } from '@/lib/utils'
+
+export function Navbar({ className }: { className?: string }) {
   return (
-    <nav className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
+    <nav className={cn("sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800", className)}>
       <div className="flex items-center justify-between h-16 px-6 max-w-screen-2xl mx-auto">
         {/* Logo */}
         <div className="flex items-center gap-2">
