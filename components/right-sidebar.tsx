@@ -1,6 +1,6 @@
 'use client'
 
-import { Clock, Star, Award } from 'lucide-react'
+import { Calendar, Clock, MapPin, Star, Award } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 
@@ -38,34 +38,65 @@ const topMentors = [
 ]
 
 export function RightSidebar() {
+  const daysUntilSURF = Math.floor((new Date('2026-06-15').getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
   return (
     <aside className="w-80 fixed right-0 top-16 h-[calc(100vh-64px)] bg-zinc-900 border-l border-zinc-800 overflow-y-auto">
       <div className="p-6 space-y-6">
         {/* Upcoming Events */}
-        <div>
-          <h2 className="text-sm font-semibold text-zinc-50 mb-4 flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            Upcoming Events
-          </h2>
+        {/* Upcoming Events Widget */}
+        <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-xl p-5 space-y-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Calendar className="w-5 h-5 text-orange-400" />
+            <h3 className="font-semibold text-zinc-100">Upcoming Events</h3>
+          </div>
+
+          {/* Main Event */}
           <div className="space-y-3">
-            {upcomingEvents.map((event) => (
-              <div
-                key={event.id}
-                className="p-4 bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-lg hover:border-orange-500/40 transition"
-              >
-                <h3 className="font-semibold text-white text-sm mb-1">
-                  {event.name}
-                </h3>
-                <p className="text-xs text-zinc-400 mb-2">
-                  {event.description}
-                </p>
-                <div className="flex items-center gap-2 text-orange-400 text-xs font-semibold">
-                  <Clock className="w-3 h-3" />
-                  {event.daysUntil} days away
+            <div className="flex items-start gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0">
+                <span className="text-xs font-semibold">JUN</span>
+                <span className="text-lg font-bold leading-none">15</span>
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-zinc-100 mb-1">SURF Danang 2026</h4>
+                <p className="text-sm text-zinc-400 mb-2">Southeast Asia's Premier University Startup Festival</p>
+                <div className="flex items-center gap-2 text-xs text-zinc-500">
+                  <MapPin className="w-3 h-3" />
+                  <span>Da Nang, Vietnam</span>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Countdown */}
+            <div className="bg-zinc-900/50 rounded-lg p-3 border border-orange-500/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-orange-400" />
+                  <span className="text-sm font-medium text-zinc-300">Countdown</span>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-orange-400">{daysUntilSURF}</div>
+                  <div className="text-xs text-zinc-500">days left</div>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Other Events */}
+          <div className="pt-3 border-t border-orange-500/10 space-y-2">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-zinc-300">Pitch Night #12</span>
+              <span className="text-zinc-500">Apr 12</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-zinc-300">Mentor Meetup</span>
+              <span className="text-zinc-500">Apr 18</span>
+            </div>
+          </div>
+
+          <button className="w-full py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors">
+            View All Events
+          </button>
         </div>
 
         {/* Top Mentors */}
@@ -100,6 +131,29 @@ export function RightSidebar() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Community Stats */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+          <h3 className="font-semibold text-zinc-100 mb-4">Community Stats</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-400">247</div>
+              <div className="text-xs text-zinc-500">Active Projects</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-400">1.2K</div>
+              <div className="text-xs text-zinc-500">Students</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-400">89</div>
+              <div className="text-xs text-zinc-500">Mentors</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-400">34</div>
+              <div className="text-xs text-zinc-500">Universities</div>
+            </div>
           </div>
         </div>
 
