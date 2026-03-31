@@ -64,13 +64,13 @@ const mockProjects: ProjectData[] = [
 
 export function MainFeed() {
   return (
-    <main className="flex-1 ml-56 mr-80 pt-6 pb-12">
-      <div className="max-w-3xl mx-auto px-6">
+    <div className="pt-6 pb-12">
+      <div className="w-full">
         {/* Hero Banner */}
         <div className="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800 via-zinc-900 to-black border border-zinc-800 p-8">
           {/* Glowing corner accent */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-3xl -mr-32 -mt-32"></div>
-          
+
           <div className="relative z-10">
             <h2 className="text-4xl font-bold text-white mb-3">
               Discover Top 10 Finalists of BK SHARK 2026 🦈
@@ -102,6 +102,6 @@ export function MainFeed() {
           ))}
         </div>
       </div>
-    </main>
+    </div>
   )
 }
