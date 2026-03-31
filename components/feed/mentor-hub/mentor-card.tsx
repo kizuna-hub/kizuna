@@ -12,6 +12,7 @@ interface MentorCardProps {
     avatar: string;
     rating: number;
     sessions: number;
+    bio: string;
     expertise: string[];
 }
 
@@ -23,57 +24,60 @@ export function MentorCard({
     avatar,
     rating,
     sessions,
+    bio,
     expertise,
 }: MentorCardProps) {
     return (
-        <Card className="p-6 hover:border-primary/50 transition-colors">
-            <div className="flex items-start justify-between mb-4">
-                <div className="flex items-start gap-4">
-                    <Avatar className="h-12 w-12">
+        <Card className="flex flex-col w-full h-full aspect-[3/4] p-6 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,107,0,0.15)] hover:border-primary/50 relative bg-gradient-to-br from-zinc-900/50 to-zinc-950 border-zinc-800/80">
+            <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 h-8 w-8 text-muted-foreground hover:text-primary transition-colors duration-300"
+            >
+                <ExternalLink className="h-4 w-4" />
+            </Button>
+
+            <div className="flex items-start gap-4 mb-4">
+                <div className="relative">
+                    <Avatar className="h-14 w-14 ring-2 ring-zinc-800">
                         <AvatarImage src={avatar} alt={name} />
                         <AvatarFallback>{name.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                        <h3 className="font-semibold text-foreground">{name}</h3>
-                        <p className="text-sm text-muted-foreground">{role}</p>
-                    </div>
+                    <span className="absolute bottom-0.5 right-0.5 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-zinc-900" />
                 </div>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                >
-                    <ExternalLink className="h-4 w-4" />
-                </Button>
-            </div>
-
-            <div className="mb-4">
-                <Badge variant="secondary" className="text-xs">
-                    {company}
-                </Badge>
+                <div className="flex-1 pr-8">
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+                        {company}
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground leading-tight">{name}</h3>
+                    <p className="text-sm text-zinc-400 mt-0.5">{role}</p>
+                </div>
             </div>
 
             <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-primary text-primary" />
-                    <span className="text-sm font-medium text-foreground">{rating}</span>
-                </div>
-                <span className="text-sm text-muted-foreground">({sessions} sessions)</span>
+                <Star className="w-4 h-4 text-primary fill-primary" />
+                <span className="font-medium text-zinc-200">{rating}</span>
+                <span className="text-zinc-500 text-sm">• {sessions} sessions</span>
+            </div>
+
+            <div className="mb-6 flex-1">
+                <p className="text-sm text-zinc-400 line-clamp-4 leading-relaxed">
+                    {bio}
+                </p>
             </div>
 
             <div className="flex flex-wrap gap-2 mb-6">
                 {expertise.map((skill) => (
-                    <Badge
+                    <span
                         key={skill}
-                        variant="outline"
-                        className="text-xs text-muted-foreground border-muted-foreground/30"
+                        className="bg-orange-500/10 text-orange-400 border-none rounded-full px-3 py-1 text-xs"
                     >
-                        #{skill}
-                    </Badge>
+                        {skill}
+                    </span>
                 ))}
             </div>
 
-            <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button className="w-full mt-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_15px_rgba(255,107,0,0.3)] transition-all duration-300">
                 Book a Session
             </Button>
         </Card>

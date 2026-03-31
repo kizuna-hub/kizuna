@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { MentorCard } from "@/components/feed/mentor-hub/mentor-card";
 import { MentorFilters } from "@/components/feed/mentor-hub/mentor-filters";
+import { motion } from "framer-motion";
 
 // Mock mentor data
 const MENTORS = [
@@ -14,6 +15,7 @@ const MENTORS = [
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
         rating: 4.9,
         sessions: 120,
+        bio: "Passionate about helping early-stage startups navigate product-market fit, particularly in AI and SaaS. Let's talk about MVP development and your go-to-market strategy.",
         expertise: ["AI", "MVP", "Product"],
         industry: "ai",
         expertiseArea: "product",
@@ -27,6 +29,7 @@ const MENTORS = [
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
         rating: 4.8,
         sessions: 98,
+        bio: "Specializing in zero-to-one growth marketing. I help founders build scalable acquisition channels and craft compelling brand narratives to attract users.",
         expertise: ["Growth", "Marketing", "Strategy"],
         industry: "edtech",
         expertiseArea: "marketing",
@@ -40,6 +43,7 @@ const MENTORS = [
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus",
         rating: 4.7,
         sessions: 156,
+        bio: "Former VC turned founder. I can help you prepare your pitch deck, understand term sheets, and navigate the fundraising process from pre-seed to Series A.",
         expertise: ["Fundraising", "Business Dev", "Pitch"],
         industry: "fintech",
         expertiseArea: "fundraising",
@@ -53,6 +57,7 @@ const MENTORS = [
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
         rating: 4.9,
         sessions: 87,
+        bio: "Deep technical expertise in machine learning and data architecture. I advise founders on building scalable tech stacks and practical AI integration.",
         expertise: ["AI", "Machine Learning", "Tech"],
         industry: "ai",
         expertiseArea: "product",
@@ -65,6 +70,7 @@ const MENTORS = [
         company: "Education First",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
         rating: 4.6,
+        bio: "10+ years in EdTech. I help founders design engaging learning experiences and navigate the complex B2B education sales cycle.",
         sessions: 112,
         expertise: ["EdTech", "Product", "UX"],
         industry: "edtech",
@@ -78,6 +84,7 @@ const MENTORS = [
         company: "Payment Systems Inc",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
         rating: 4.8,
+        bio: "Product leader with expertise in fintech compliance and cross-border payments. Ready to help you streamline your core financial user experience.",
         sessions: 134,
         expertise: ["FinTech", "Payments", "Product"],
         industry: "fintech",
@@ -92,6 +99,7 @@ const MENTORS = [
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Thomas",
         rating: 4.7,
         sessions: 105,
+        bio: "Award-winning strategist. Let's refine your brand positioning, optimize your performance marketing spend, and define your core messaging.",
         expertise: ["Marketing", "Branding", "Strategy"],
         industry: "ai",
         expertiseArea: "marketing",
@@ -105,6 +113,7 @@ const MENTORS = [
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rachel",
         rating: 4.9,
         sessions: 178,
+        bio: "Active angel investor. I provide actionable feedback on your financial model, pitch delivery, and overall business strategy to secure investment.",
         expertise: ["Fundraising", "Strategy", "Pitch"],
         industry: "fintech",
         expertiseArea: "fundraising",
@@ -117,6 +126,7 @@ const MENTORS = [
         company: "Design Studios",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
         rating: 4.6,
+        bio: "Obsessed with pixel-perfect design and intuitive UX. I can review your product interface, wireframes, and guide your overall design system.",
         sessions: 92,
         expertise: ["UX/UI", "Product", "Design"],
         industry: "edtech",
@@ -159,9 +169,13 @@ export default function MentorHubPage() {
 
             {/* Filters */}
             <MentorFilters
+                searchQuery={searchQuery}
                 onSearch={setSearchQuery}
+                industry={selectedIndustry}
                 onIndustryChange={setSelectedIndustry}
+                expertise={selectedExpertise}
                 onExpertiseChange={setSelectedExpertise}
+                availability={selectedAvailability}
                 onAvailabilityChange={setSelectedAvailability}
             />
 
@@ -172,21 +186,42 @@ export default function MentorHubPage() {
                 </p>
 
                 {filteredMentors.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: { staggerChildren: 0.1 }
+                            }
+                        }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                    >
                         {filteredMentors.map((mentor) => (
-                            <MentorCard
+                            <motion.div
                                 key={mentor.id}
-                                id={mentor.id}
-                                name={mentor.name}
-                                role={mentor.role}
-                                company={mentor.company}
-                                avatar={mentor.avatar}
-                                rating={mentor.rating}
-                                sessions={mentor.sessions}
-                                expertise={mentor.expertise}
-                            />
+                                layout
+                                className="flex w-full h-full"
+                                variants={{
+                                    hidden: { opacity: 0, y: 20 },
+                                    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                                }}
+                            >
+                                <MentorCard
+                                    id={mentor.id}
+                                    name={mentor.name}
+                                    role={mentor.role}
+                                    company={mentor.company}
+                                    avatar={mentor.avatar}
+                                    rating={mentor.rating}
+                                    bio={mentor.bio}
+                                    sessions={mentor.sessions}
+                                    expertise={mentor.expertise}
+                                />
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 ) : (
                     <div className="text-center py-12">
                         <p className="text-muted-foreground mb-4">No mentors found matching your criteria.</p>
