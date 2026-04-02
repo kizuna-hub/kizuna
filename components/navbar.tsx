@@ -4,7 +4,7 @@ import { Sparkles, Search, Bell, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-
+import Link from 'next/link';
 import { cn } from '@/lib/utils'
 
 export function Navbar({ className }: { className?: string }) {
@@ -36,10 +36,13 @@ export function Navbar({ className }: { className?: string }) {
         {/* Right Actions */}
         <div className="flex items-center gap-4">
           <Button
-            className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg flex items-center gap-2"
+            asChild
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg"
           >
-            <Plus className="w-4 h-4" />
-            Submit Project
+            <Link href="/submit-project" className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Submit Project
+            </Link>
           </Button>
           <button className="relative p-2 hover:bg-zinc-800 rounded-lg transition">
             <Bell className="w-5 h-5 text-zinc-400" />
