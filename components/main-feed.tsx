@@ -1,6 +1,46 @@
 'use client'
 
+import { useState } from 'react'
 import { ProjectCard, ProjectData } from '@/components/project-card'
+import { TractionCard, TractionData } from '@/components/feed/traction-card'
+
+const mockTractionData: TractionData[] = [
+  {
+    id: 't1',
+    companyName: 'TrendEngine',
+    companyLogo: 'T',
+    companyInitials: 'TE',
+    milestoneTag: 'Traction Achieved',
+    achievement: 'TrendEngine secured massive metrics growth over the weekend.',
+    metricValue: '+5,000',
+    metricLabel: 'Scans recorded!',
+    type: 'traction',
+    timeAgo: '2h ago',
+    claps: 124,
+  },
+  {
+    id: 't2',
+    companyName: 'DUTCareers',
+    companyLogo: 'D',
+    companyInitials: 'DC',
+    milestoneTag: 'Partnership Milestone',
+    achievement: 'DUTCareers secured partnership',
+    type: 'partnership',
+    timeAgo: '5h ago',
+    claps: 89,
+  },
+  {
+    id: 't3',
+    companyName: 'Unburden',
+    companyLogo: 'U',
+    companyInitials: 'UB',
+    milestoneTag: 'Product Launch',
+    achievement: 'Unburden (Mental Health AI) launched their Beta MVP on Kizuna Hub. ✨',
+    type: 'launch',
+    timeAgo: '1d ago',
+    claps: 256,
+  },
+]
 
 const mockProjects: ProjectData[] = [
   {
@@ -63,6 +103,8 @@ const mockProjects: ProjectData[] = [
 ]
 
 export function MainFeed() {
+  const [activeTab, setActiveTab] = useState<'discover' | 'live'>('discover')
+
   return (
     <div className="pt-6 pb-12">
       <div className="w-full">
@@ -87,36 +129,76 @@ export function MainFeed() {
           </div>
         </div>
 
-        {/* Header */}
+        {/* Header & Main Tabs */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Startup Directory</h1>
-          <p className="text-lg text-zinc-400">
-            Discover the next big thing from university students.
+          <div className="flex items-center gap-6 border-b border-zinc-800">
+            <button
+              onClick={() => setActiveTab('discover')}
+              className={`pb-4 text-2xl font-bold transition-colors ${activeTab === 'discover'
+                ? 'text-white border-b-2 border-orange-500'
+                : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+            >
+              Discover
+            </button>
+            <button
+              onClick={() => setActiveTab('live')}
+              className={`pb-4 text-2xl font-bold transition-colors flex items-center gap-2 ${activeTab === 'live'
+                ? 'text-white border-b-2 border-orange-500'
+                : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+            >
+              Live Updates
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+            </button>
+          </div>
+          <p className="text-lg text-zinc-400 mt-4">
+            {activeTab === 'discover'
+              ? 'Discover the next big thing from university students.'
+              : 'Real-time traction, milestones, and funding updates from Kizuna startups.'}
           </p>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="flex gap-2 border-b border-zinc-800 pb-4 mb-4">
-          <button className="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20 text-sm font-medium">
-            Today
-          </button>
-          <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
-            This Week
-          </button>
-          <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
-            This Month
-          </button>
-          <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
-            All Time
-          </button>
-        </div>
+        {activeTab === 'discover' ? (
+          <div>
+            {/* Filter Tabs */}
+            <div className="flex gap-2 border-b border-zinc-800 pb-4 mb-4">
+              <button className="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20 text-sm font-medium">
+                Today
+              </button>
+              <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+                This Week
+              </button>
+              <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+                This Month
+              </button>
+              <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+                All Time
+              </button>
+            </div>
 
-        {/* Projects List */}
-        <div className="space-y-4">
-          {mockProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
+            {/* Projects List */}
+            <div className="space-y-4">
+              {mockProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="relative py-4">
+            {/* Central Glowing Line */}
+            <div className="absolute top-0 bottom-0 left-[27px] md:left-8 w-[2px] bg-gradient-to-b from-orange-500/0 via-orange-500/50 to-orange-500/0 shadow-[0_0_8px_rgba(249,115,22,0.5)]"></div>
+
+            <div className="space-y-6 relative">
+              {mockTractionData.map((traction, i) => (
+                <TractionCard key={traction.id} data={traction} index={i} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

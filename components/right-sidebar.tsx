@@ -62,6 +62,34 @@ export function RightSidebar({ onClose }: { onClose?: () => void }) {
         </div>
 
         <div className="flex flex-col gap-6">
+          {/* Project of the Month Widget */}
+          <div className="bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/50 rounded-xl p-5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-2xl -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+            <div className="flex items-center gap-2 mb-4 relative z-10">
+              <Star className="w-5 h-5 text-orange-400 fill-orange-400/20" />
+              <h3 className="font-semibold text-zinc-100">Project of the Month</h3>
+            </div>
+            <div className="relative z-10 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-orange-900/20">
+                  T
+                </div>
+                <div>
+                  <h4 className="font-bold text-white leading-tight">TrendEngine</h4>
+                  <Badge variant="outline" className="text-[10px] uppercase tracking-wider text-orange-400 border-orange-500/20 bg-orange-500/10 mt-1">
+                    #1 Trending
+                  </Badge>
+                </div>
+              </div>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Hyper-local events and deals platform that hit +5k scans this weekend.
+              </p>
+              <Button className="w-full bg-zinc-800 hover:bg-orange-500 text-white transition-colors border border-zinc-700 hover:border-orange-500">
+                View Profile
+              </Button>
+            </div>
+          </div>
+
           {/* Upcoming Events Widget */}
           <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-xl p-5 space-y-4">
             <div className="flex items-center gap-2 mb-3">
