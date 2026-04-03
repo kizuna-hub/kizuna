@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { MentorCard } from "@/components/feed/mentor-hub/mentor-card";
-import { MentorFilters } from "@/components/feed/mentor-hub/mentor-filters";
+import { MentorCard } from "@/components/mentor-hub/mentor-card";
+import { MentorFilters } from "@/components/mentor-hub/mentor-filters";
 import { motion } from "framer-motion";
 
 // Mock mentor data
