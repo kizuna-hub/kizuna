@@ -36,25 +36,25 @@ const team = [
 
 export function TeamSection({ slug }: TeamSectionProps) {
     return (
-        <div className="space-y-8 border-b border-zinc-800 pb-12">
-            <h2 className="text-2xl font-bold text-zinc-50">Team</h2>
+        <div className="space-y-8 border-b border-kizuna-border pb-12">
+            <h2 className="text-2xl font-semibold text-kizuna-text-main">Team</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {team.map((member, index) => (
                     <div
                         key={index}
-                        className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 hover:border-orange-600/50 hover:bg-zinc-900/80 transition-all duration-300"
+                        className="bg-white border border-kizuna-border rounded-lg p-6 shadow-sm"
                     >
                         <div className="flex items-start gap-4">
                             <Avatar className="h-12 w-12">
                                 <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`} />
-                                <AvatarFallback className="bg-orange-600 text-white text-sm">
+                                <AvatarFallback className="bg-kizuna-primary text-white text-sm">
                                     {member.initials}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="flex-1">
-                                <h4 className="font-bold text-zinc-50">{member.name}</h4>
-                                <p className="text-sm text-orange-500 font-semibold mt-1">{member.role}</p>
-                                <p className="text-sm text-zinc-400 mt-2">{member.background}</p>
+                                <h4 className="font-semibold text-kizuna-text-main">{member.name}</h4>
+                                <p className="text-sm text-kizuna-primary font-semibold mt-1">{member.role}</p>
+                                <p className="text-sm text-kizuna-text-muted mt-2">{member.background}</p>
                             </div>
                         </div>
                     </div>

@@ -136,14 +136,14 @@ export default function SubmitProjectPage() {
     const breakEvenUsers = formData.monthlyCost / formData.pricePerUser;
 
     return (
-        <div className="min-h-screen bg-zinc-950 flex flex-col">
+        <div className="min-h-screen bg-kizuna-surface flex flex-col">
             {/* Dedicated Wizard Header */}
-            <div className="sticky top-0 z-50 h-16 border-b border-white/10 bg-zinc-950/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
+            <div className="sticky top-0 z-50 h-16 border-b border-kizuna-border bg-white/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
                 {/* Left: Exit/Cancel */}
                 <div className="flex-1">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
+                        className="inline-flex items-center gap-2 text-sm text-kizuna-text-muted hover:text-kizuna-text-main transition-colors"
                     >
                         <X className="w-4 h-4" />
                         Exit
@@ -152,14 +152,14 @@ export default function SubmitProjectPage() {
 
                 {/* Center: Progress */}
                 <div className="flex-[2] flex flex-col items-center justify-center">
-                    <h1 className="text-sm font-medium text-white mb-1.5 text-center whitespace-nowrap">
+                    <h1 className="text-sm font-semibold text-kizuna-text-main mb-1.5 text-center whitespace-nowrap">
                         Step {currentStep + 1} of {steps.length}: {steps[currentStep].title}
                     </h1>
                     <div className="flex justify-between pt-2 gap-2 w-full max-w-[240px]">
                         {steps.map((_, idx) => (
                             <div
                                 key={idx}
-                                className={`flex-1 h-1.5 rounded-full transition-colors ${idx <= currentStep ? 'bg-orange-500' : 'bg-zinc-800'
+                                className={`flex-1 h-1.5 rounded-full transition-colors ${idx <= currentStep ? 'bg-kizuna-primary' : 'bg-zinc-200'
                                     }`}
                             />
                         ))}
@@ -173,13 +173,13 @@ export default function SubmitProjectPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="text-xs text-orange-400 flex items-center gap-1.5 shrink-0"
+                            className="text-xs text-zinc-500 flex items-center gap-1.5 shrink-0"
                         >
-                            <div className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-pulse" />
                             Auto-saving
                         </motion.div>
                     )}
-                    <Button variant="ghost" className="text-zinc-400 hover:text-white hover:bg-white/5 h-8 px-3 text-sm hidden sm:inline-flex">
+                    <Button variant="ghost" className="text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-zinc-100 h-8 px-3 text-sm hidden sm:inline-flex">
                         Save Draft
                     </Button>
                 </div>
@@ -187,9 +187,6 @@ export default function SubmitProjectPage() {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col py-8 px-4 relative overflow-hidden">
-                {/* Background Depth Gradient */}
-                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full pointer-events-none" />
-
                 <div className="w-full max-w-2xl mx-auto flex-1 relative z-10">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -198,44 +195,44 @@ export default function SubmitProjectPage() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.3 }}
-                            className="bg-zinc-900/60 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50 rounded-2xl p-8"
+                            className="bg-white border border-kizuna-border shadow-sm rounded-2xl p-8"
                         >
                             {/* Step 1: The Vision */}
                             {currentStep === 0 && (
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="flex items-center gap-2 text-sm font-medium text-white mb-1">
-                                            <Lightbulb className="w-4 h-4 text-orange-500" />
+                                        <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
+                                            <Lightbulb className="w-4 h-4 text-kizuna-primary" />
                                             Your Idea
                                         </label>
-                                        <p className="text-xs text-zinc-400 mb-2">Summarize your startup idea in a single sentence.</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Summarize your startup idea in a single sentence.</p>
                                         <Input
                                             name="idea"
                                             value={formData.idea}
                                             onChange={handleInputChange}
                                             placeholder="What is your startup idea?"
-                                            className="bg-zinc-950/50 border border-zinc-800 text-white placeholder:text-white/40 focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all duration-300 px-3 py-2"
+                                            className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 px-3 py-2"
                                         />
                                     </div>
 
                                     <div className="relative">
-                                        <label className="flex items-center gap-2 text-sm font-medium text-white mb-1">
-                                            <Target className="w-4 h-4 text-orange-500" />
+                                        <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
+                                            <Target className="w-4 h-4 text-kizuna-primary" />
                                             Problem Statement
                                         </label>
-                                        <p className="text-xs text-zinc-400 mb-2">Be specific about the pain point you are trying to solve.</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Be specific about the pain point you are trying to solve.</p>
                                         <Textarea
                                             name="problem"
                                             value={formData.problem}
                                             onChange={handleInputChange}
                                             placeholder="What problem are you solving?"
-                                            className="bg-zinc-950/50 border border-zinc-800 text-white placeholder:text-white/40 min-h-32 focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all duration-300 p-3"
+                                            className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
                                             <button
                                                 onClick={() => handleAIPolish('problem')}
                                                 disabled={showSparkle === 'problem'}
-                                                className="flex items-center justify-center text-orange-400 hover:text-orange-300 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/20 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
+                                                className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
                                             >
                                                 {showSparkle === 'problem' ? (
                                                     <motion.div
@@ -253,23 +250,23 @@ export default function SubmitProjectPage() {
                                     </div>
 
                                     <div className="relative">
-                                        <label className="flex items-center gap-2 text-sm font-medium text-white mb-1">
-                                            <Rocket className="w-4 h-4 text-orange-500" />
+                                        <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
+                                            <Rocket className="w-4 h-4 text-kizuna-primary" />
                                             Your Solution
                                         </label>
-                                        <p className="text-xs text-zinc-400 mb-2">How does your product solve the problem?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">How does your product solve the problem?</p>
                                         <Textarea
                                             name="solution"
                                             value={formData.solution}
                                             onChange={handleInputChange}
                                             placeholder="How will you solve this problem?"
-                                            className="bg-zinc-950/50 border border-zinc-800 text-white placeholder:text-white/40 min-h-32 focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all duration-300 p-3"
+                                            className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
                                             <button
                                                 onClick={() => handleAIPolish('solution')}
                                                 disabled={showSparkle === 'solution'}
-                                                className="flex items-center justify-center text-orange-400 hover:text-orange-300 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/20 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
+                                                className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
                                             >
                                                 {showSparkle === 'solution' ? (
                                                     <motion.div
@@ -292,22 +289,22 @@ export default function SubmitProjectPage() {
                             {currentStep === 1 && (
                                 <div className="space-y-6">
                                     <div className="relative">
-                                        <label className="block text-sm font-medium text-white mb-1">
+                                        <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
                                             Product Readiness
                                         </label>
-                                        <p className="text-xs text-zinc-400 mb-2">What is the current state of your product?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">What is the current state of your product?</p>
                                         <Textarea
                                             name="productReadiness"
                                             value={formData.productReadiness}
                                             onChange={handleInputChange}
                                             placeholder="e.g., Figma prototype completed, backend architecture designed, core features 50% coded..."
-                                            className="bg-zinc-950/50 border border-zinc-800 text-white placeholder:text-white/40 min-h-32 focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all duration-300 p-3"
+                                            className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
                                             <button
                                                 onClick={() => handleAIPolish('productReadiness')}
                                                 disabled={showSparkle === 'productReadiness'}
-                                                className="flex items-center justify-center text-orange-400 hover:text-orange-300 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/20 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
+                                                className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
                                             >
                                                 {showSparkle === 'productReadiness' ? (
                                                     <motion.div
@@ -325,22 +322,22 @@ export default function SubmitProjectPage() {
                                     </div>
 
                                     <div className="relative">
-                                        <label className="block text-sm font-medium text-white mb-1">
+                                        <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
                                             Development Roadmap
                                         </label>
-                                        <p className="text-xs text-zinc-400 mb-2">What are your key milestones for the next 12 months?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">What are your key milestones for the next 12 months?</p>
                                         <Textarea
                                             name="roadmap"
                                             value={formData.roadmap}
                                             onChange={handleInputChange}
                                             placeholder="e.g., Q1: Launch Beta, Q2: Integrate AI features, Q3: Expand to iOS..."
-                                            className="bg-zinc-950/50 border border-zinc-800 text-white placeholder:text-white/40 min-h-32 focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all duration-300 p-3"
+                                            className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
                                             <button
                                                 onClick={() => handleAIPolish('roadmap')}
                                                 disabled={showSparkle === 'roadmap'}
-                                                className="flex items-center justify-center text-orange-400 hover:text-orange-300 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/20 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
+                                                className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
                                             >
                                                 {showSparkle === 'roadmap' ? (
                                                     <motion.div
@@ -363,22 +360,22 @@ export default function SubmitProjectPage() {
                             {currentStep === 2 && (
                                 <div className="space-y-6">
                                     <div className="relative">
-                                        <label className="block text-sm font-medium text-white mb-1">
+                                        <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
                                             Target Audience
                                         </label>
-                                        <p className="text-xs text-zinc-400 mb-2">Who are your primary users, and what are their demographics?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Who are your primary users, and what are their demographics?</p>
                                         <Textarea
                                             name="targetAudience"
                                             value={formData.targetAudience}
                                             onChange={handleInputChange}
                                             placeholder="e.g., College students aged 18-24 struggling with time management..."
-                                            className="bg-zinc-950/50 border border-zinc-800 text-white placeholder:text-white/40 min-h-24 focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all duration-300 p-3"
+                                            className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-24 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
                                             <button
                                                 onClick={() => handleAIPolish('targetAudience')}
                                                 disabled={showSparkle === 'targetAudience'}
-                                                className="flex items-center justify-center text-orange-400 hover:text-orange-300 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/20 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
+                                                className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
                                             >
                                                 {showSparkle === 'targetAudience' ? (
                                                     <motion.div
@@ -396,22 +393,22 @@ export default function SubmitProjectPage() {
                                     </div>
 
                                     <div className="relative">
-                                        <label className="block text-sm font-medium text-white mb-1">
+                                        <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
                                             Revenue Model
                                         </label>
-                                        <p className="text-xs text-zinc-400 mb-2">How does or will your business make money?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">How does or will your business make money?</p>
                                         <Textarea
                                             name="revenueModel"
                                             value={formData.revenueModel}
                                             onChange={handleInputChange}
                                             placeholder="e.g., Freemium tier + $4.99/month Pro subscription plan..."
-                                            className="bg-zinc-950/50 border border-zinc-800 text-white placeholder:text-white/40 min-h-24 focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all duration-300 p-3"
+                                            className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-24 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
                                             <button
                                                 onClick={() => handleAIPolish('revenueModel')}
                                                 disabled={showSparkle === 'revenueModel'}
-                                                className="flex items-center justify-center text-orange-400 hover:text-orange-300 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/20 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
+                                                className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 transition-colors disabled:opacity-50"
                                             >
                                                 {showSparkle === 'revenueModel' ? (
                                                     <motion.div
@@ -429,13 +426,13 @@ export default function SubmitProjectPage() {
                                     </div>
 
                                     {/* Quick Break-Even Calculator */}
-                                    <div className="bg-zinc-950/50 border border-zinc-800 rounded-xl p-6 space-y-6">
-                                        <h3 className="text-sm font-semibold text-white">Quick Break-Even Calculator</h3>
+                                    <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-6 space-y-6">
+                                        <h3 className="text-sm font-semibold text-kizuna-text-main">Quick Break-Even Calculator</h3>
 
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
-                                                <label className="text-xs font-medium text-white/70">Monthly Operating Cost</label>
-                                                <span className="text-sm font-semibold text-orange-400">
+                                                <label className="text-xs font-medium text-kizuna-text-muted">Monthly Operating Cost</label>
+                                                <span className="text-sm font-semibold text-kizuna-primary">
                                                     ${formData.monthlyCost.toLocaleString()}
                                                 </span>
                                             </div>
@@ -446,9 +443,9 @@ export default function SubmitProjectPage() {
                                                 step="500"
                                                 value={formData.monthlyCost}
                                                 onChange={(e) => handleSliderChange('monthlyCost', parseInt(e.target.value))}
-                                                className="w-full h-2 bg-orange-500/20 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                                                className="w-full h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-kizuna-primary"
                                             />
-                                            <div className="text-xs text-white/50 mt-1 flex justify-between">
+                                            <div className="text-xs text-kizuna-text-muted mt-1 flex justify-between">
                                                 <span>$1,000</span>
                                                 <span>$50,000</span>
                                             </div>
@@ -456,8 +453,8 @@ export default function SubmitProjectPage() {
 
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
-                                                <label className="text-xs font-medium text-white/70">Price per User/Customer</label>
-                                                <span className="text-sm font-semibold text-orange-400">
+                                                <label className="text-xs font-medium text-kizuna-text-muted">Price per User/Customer</label>
+                                                <span className="text-sm font-semibold text-kizuna-primary">
                                                     ${formData.pricePerUser}
                                                 </span>
                                             </div>
@@ -468,24 +465,24 @@ export default function SubmitProjectPage() {
                                                 step="10"
                                                 value={formData.pricePerUser}
                                                 onChange={(e) => handleSliderChange('pricePerUser', parseInt(e.target.value))}
-                                                className="w-full h-2 bg-orange-500/20 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                                                className="w-full h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-kizuna-primary"
                                             />
-                                            <div className="text-xs text-white/50 mt-1 flex justify-between">
+                                            <div className="text-xs text-kizuna-text-muted mt-1 flex justify-between">
                                                 <span>$10</span>
                                                 <span>$500</span>
                                             </div>
                                         </div>
 
-                                        <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 mt-6 flex items-center justify-between">
+                                        <div className="bg-kizuna-primary/10 border border-kizuna-primary/20 rounded-lg p-4 mt-6 flex items-center justify-between">
                                             <div>
-                                                <p className="text-xs text-white/60 mb-1">Break-even point needed</p>
-                                                <p className="text-xs text-white/50">
+                                                <p className="text-xs text-kizuna-text-main font-semibold mb-1">Break-even point needed</p>
+                                                <p className="text-xs text-kizuna-text-muted">
                                                     To cover ${formData.monthlyCost.toLocaleString()} monthly costs
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-orange-400 font-extrabold text-2xl drop-shadow-[0_0_8px_rgba(255,107,0,0.4)]">
-                                                    {Math.ceil(breakEvenUsers).toLocaleString()} <span className="text-sm font-medium text-orange-400/80">users</span>
+                                                <p className="text-kizuna-primary font-extrabold text-2xl">
+                                                    {Math.ceil(breakEvenUsers).toLocaleString()} <span className="text-sm font-medium text-kizuna-primary/80">users</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -497,21 +494,21 @@ export default function SubmitProjectPage() {
                             {currentStep === 3 && (
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="flex items-center gap-2 text-sm font-medium text-white mb-1">
-                                            <Users className="w-4 h-4 text-orange-500" />
+                                        <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
+                                            <Users className="w-4 h-4 text-kizuna-primary" />
                                             Team Members
                                         </label>
-                                        <p className="text-xs text-zinc-500 mb-2">Tip: Include LinkedIn profile URLs to increase your project&apos;s credibility.</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Tip: Include LinkedIn profile URLs to increase your project&apos;s credibility.</p>
 
                                         <div className="space-y-3 mt-4">
                                             {team.map((member, index) => (
-                                                <div key={index} className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 relative group">
+                                                <div key={index} className="bg-zinc-50 border border-zinc-200 rounded-lg p-4 relative group">
                                                     <div className="flex justify-between items-center mb-4">
-                                                        <h4 className="text-sm font-semibold text-zinc-300">Team Member</h4>
+                                                        <h4 className="text-sm font-semibold text-kizuna-text-main">Team Member</h4>
                                                         {team.length > 1 && (
                                                             <button
                                                                 onClick={() => removeTeamMember(index)}
-                                                                className="text-zinc-500 hover:text-red-400 transition-colors"
+                                                                className="text-zinc-400 hover:text-red-500 transition-colors"
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
                                                             </button>
@@ -520,62 +517,62 @@ export default function SubmitProjectPage() {
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                         {/* Field 1: Full Name */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Full Name</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Full Name</label>
                                                             <input
                                                                 value={member.name}
                                                                 onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
                                                                 placeholder="e.g., Jane Doe"
-                                                                className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all"
+                                                                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 2: Role */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Role</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Role</label>
                                                             <input
                                                                 value={member.role}
                                                                 onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
                                                                 placeholder="e.g., CEO, Lead Dev"
-                                                                className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all"
+                                                                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 3: Email */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Email</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Email</label>
                                                             <input
                                                                 value={member.email}
                                                                 onChange={(e) => handleTeamChange(index, 'email', e.target.value)}
                                                                 placeholder="jane@example.com"
-                                                                className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all"
+                                                                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 4: Phone Number */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Phone Number</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Phone Number</label>
                                                             <input
                                                                 value={member.phone}
                                                                 onChange={(e) => handleTeamChange(index, 'phone', e.target.value)}
                                                                 placeholder="e.g., +84 123 456 789"
-                                                                className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all"
+                                                                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 5: School / Company */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-zinc-400 mb-1.5">School / Company</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">School / Company</label>
                                                             <input
                                                                 value={member.school_company}
                                                                 onChange={(e) => handleTeamChange(index, 'school_company', e.target.value)}
                                                                 placeholder="e.g., Danang University"
-                                                                className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all"
+                                                                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 6: Social Link */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Social Link</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Social Link</label>
                                                             <input
                                                                 value={member.social_link}
                                                                 onChange={(e) => handleTeamChange(index, 'social_link', e.target.value)}
                                                                 placeholder="LinkedIn or Portfolio URL"
-                                                                className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/50 transition-all"
+                                                                className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                     </div>
@@ -585,7 +582,7 @@ export default function SubmitProjectPage() {
                                         <Button
                                             variant="outline"
                                             onClick={addTeamMember}
-                                            className="w-full mt-3 border-dashed border-zinc-700 text-zinc-400 hover:text-orange-400 hover:border-orange-500 hover:bg-orange-500/10"
+                                            className="w-full mt-3 border-dashed border-zinc-300 text-zinc-600 hover:text-kizuna-primary hover:border-kizuna-primary hover:bg-zinc-50"
                                         >
                                             <Plus className="w-4 h-4 mr-2" /> Add Team Member
                                         </Button>
@@ -595,36 +592,36 @@ export default function SubmitProjectPage() {
                                     <motion.div
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="bg-emerald-500/5 border border-emerald-500/30 rounded-xl p-5 mt-8"
+                                        className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 mt-8"
                                     >
                                         <div className="flex items-start gap-3">
-                                            <ShieldCheck className="w-6 h-6 text-emerald-500 flex-shrink-0 mt-0.5" />
+                                            <ShieldCheck className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-0.5" />
                                             <div className="flex-1">
-                                                <h3 className="text-sm font-semibold text-white mb-1">
+                                                <h3 className="text-sm font-semibold text-emerald-900 mb-1">
                                                     IP Protection Guarantee
                                                 </h3>
-                                                <p className="text-xs text-white/70 mb-4">
-                                                    Your intellectual property is secured. By submitting, your idea is timestamped via our <strong className="text-emerald-400">IP Ledger</strong> and protected with <strong className="text-emerald-400">blockchain verification</strong>.
+                                                <p className="text-xs text-emerald-800 mb-4">
+                                                    Your intellectual property is secured. By submitting, your idea is timestamped via our <strong className="text-emerald-700">IP Ledger</strong> and protected with <strong className="text-emerald-700">blockchain verification</strong>.
                                                 </p>
-                                                <div className="flex items-center justify-between pt-3 border-t border-emerald-500/20">
-                                                    <label className="text-xs font-medium text-white/80">
+                                                <div className="flex items-center justify-between pt-3 border-t border-emerald-200">
+                                                    <label className="text-xs font-medium text-emerald-900">
                                                         Lock details (Only visible to verified investors)
                                                     </label>
                                                     <Switch
                                                         checked={formData.lockDetails}
                                                         onCheckedChange={handleToggle}
-                                                        className="data-[state=checked]:bg-emerald-500"
+                                                        className="data-[state=checked]:bg-emerald-600"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
                                     </motion.div>
 
-                                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex gap-3 items-start mt-6">
-                                        <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3 items-start mt-6">
+                                        <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                                         <div>
-                                            <h4 className="text-blue-100 font-semibold text-sm mb-1">What happens next</h4>
-                                            <p className="text-blue-200/70 text-sm">
+                                            <h4 className="text-blue-900 font-semibold text-sm mb-1">What happens next</h4>
+                                            <p className="text-blue-800 text-sm">
                                                 Your project will be reviewed by our team within 48 hours. You&apos;ll receive feedback and gain access to our investor network and mentorship program.
                                             </p>
                                         </div>
@@ -633,12 +630,12 @@ export default function SubmitProjectPage() {
                             )}
 
                             {/* Navigation Buttons */}
-                            <div className="flex items-center justify-between gap-4 mt-8 pt-6 border-t border-white/10">
+                            <div className="flex items-center justify-between gap-4 mt-8 pt-6 border-t border-zinc-200">
                                 <Button
                                     onClick={handleBack}
                                     disabled={currentStep === 0}
                                     variant="outline"
-                                    className="gap-2 border-white/20 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="gap-2 bg-zinc-100 text-zinc-500 border border-zinc-200 hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
                                     Back
@@ -648,7 +645,7 @@ export default function SubmitProjectPage() {
                                     <Button
                                         onClick={handleSubmit}
                                         disabled={isSaving}
-                                        className="bg-orange-600 hover:bg-orange-500 shadow-[0_0_15px_rgba(255,107,0,0.4)] text-white gap-2"
+                                        className="bg-kizuna-primary text-white gap-2"
                                     >
                                         {isSaving ? 'Submitting...' : 'Submit & Secure Project'}
                                         {!isSaving && <Rocket className="w-4 h-4 ml-1" />}
@@ -657,7 +654,7 @@ export default function SubmitProjectPage() {
                                     <Button
                                         onClick={handleNext}
                                         disabled={isSaving}
-                                        className="gap-2 bg-orange-600 hover:bg-orange-700 text-white"
+                                        className="gap-2 bg-kizuna-primary text-white"
                                     >
                                         Next
                                         <ChevronRight className="w-4 h-4" />

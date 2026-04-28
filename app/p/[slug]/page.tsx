@@ -9,7 +9,7 @@ import { GatedFinancials } from '@/components/project-profile/gated-financials';
 
 export default function ProjectPage({ params }: { params: { slug: string } }) {
     return (
-        <div className="min-h-screen bg-zinc-950 text-zinc-50">
+        <div className="min-h-screen bg-kizuna-canvas text-kizuna-text-main">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8 px-4 md:px-8 py-8 max-w-7xl mx-auto">
                 {/* Left Column - Main Content */}
                 <main className="space-y-12">
@@ -22,7 +22,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
                 </main>
 
                 {/* Right Column - Sticky Sidebar */}
-                <aside className="lg:sticky lg:top-8 lg:h-fit">
+                <aside className="sticky top-24 self-start space-y-6">
                     <FundingAskCard slug={params.slug} />
                     <GatedFinancials slug={params.slug} />
                 </aside>

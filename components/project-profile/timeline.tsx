@@ -29,26 +29,26 @@ const milestones = [
 
 export function Timeline({ slug }: TimelineProps) {
     return (
-        <div className="space-y-8 border-b border-zinc-800 pb-12">
-            <h2 className="text-2xl font-bold text-zinc-50">Milestones</h2>
+        <div className="space-y-8 border-b border-kizuna-border pb-12">
+            <h2 className="text-2xl font-semibold text-kizuna-text-main">Milestones</h2>
             <div className="space-y-0">
                 {milestones.map((milestone, index) => (
                     <div key={index} className="flex gap-6 pb-8 relative">
                         {/* Timeline line */}
                         {index !== milestones.length - 1 && (
-                            <div className="absolute left-[11px] top-12 bottom-0 w-0.5 bg-gradient-to-b from-orange-600 to-orange-600/20" />
+                            <div className="absolute left-[11px] top-12 bottom-0 w-0.5 bg-zinc-300" />
                         )}
 
                         {/* Timeline dot */}
                         <div className="relative z-10 mt-2">
-                            <div className="w-6 h-6 rounded-full bg-orange-600 border-4 border-zinc-950 shadow-lg shadow-orange-600/50" />
+                            <div className="w-6 h-6 rounded-full bg-kizuna-primary border-4 border-kizuna-canvas" />
                         </div>
 
                         {/* Content */}
                         <div className="flex-1 pt-1">
-                            <p className="text-sm font-semibold text-orange-500">{milestone.date}</p>
-                            <h4 className="text-lg font-bold text-zinc-50 mt-1">{milestone.title}</h4>
-                            <p className="text-zinc-400 mt-2">{milestone.description}</p>
+                            <p className="text-sm font-semibold text-kizuna-primary">{milestone.date}</p>
+                            <h4 className="text-lg font-semibold text-kizuna-text-main mt-1">{milestone.title}</h4>
+                            <p className="text-kizuna-text-muted mt-2">{milestone.description}</p>
                         </div>
                     </div>
                 ))}

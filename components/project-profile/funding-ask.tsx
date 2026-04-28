@@ -14,48 +14,48 @@ export function FundingAskCard({ slug }: FundingAskCardProps) {
     const progress = (raised / target) * 100;
 
     return (
-        <Card className="border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-900/40 backdrop-blur-sm mb-6 sticky top-8">
+        <Card className="bg-kizuna-surface border border-kizuna-border rounded-2xl shadow-sm mb-6">
             <CardHeader className="pb-4">
-                <CardTitle className="text-lg text-zinc-50">Funding Goal</CardTitle>
+                <CardTitle className="text-lg font-semibold text-kizuna-text-main">Funding Goal</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div>
                     <div className="flex justify-between items-baseline mb-2">
-                        <span className="text-sm text-zinc-400">Raised</span>
-                        <span className="text-2xl font-bold text-orange-500">$6M</span>
+                        <span className="text-sm text-kizuna-text-muted">Raised</span>
+                        <span className="text-2xl font-semibold text-kizuna-text-main">$6M</span>
                     </div>
                     <div className="flex justify-between items-baseline mb-3">
-                        <span className="text-xs text-zinc-500">Target</span>
-                        <span className="text-sm text-zinc-400">$15M Series A</span>
+                        <span className="text-xs text-kizuna-text-muted">Target</span>
+                        <span className="text-sm text-kizuna-text-main">$15M Series A</span>
                     </div>
                     <div className="relative">
-                        <Progress value={progress} className="h-2 bg-zinc-800" />
+                        <Progress value={progress} className="h-2 bg-zinc-200 [&>div]:bg-kizuna-primary" />
                         <div
                             className="absolute top-1/2 -translate-y-1/2 transition-all duration-300"
                             style={{ left: `${progress}%` }}
                         >
-                            <div className="w-3 h-3 bg-orange-600 rounded-full shadow-lg shadow-orange-600/50 relative -left-1.5" />
+                            <div className="w-3 h-3 bg-kizuna-primary rounded-full relative -left-1.5" />
                         </div>
                     </div>
-                    <p className="text-xs text-zinc-500 mt-2">{Math.round(progress)}% funded</p>
+                    <p className="text-xs text-kizuna-text-muted mt-2">{Math.round(progress)}% funded</p>
                 </div>
 
                 <div className="space-y-2">
-                    <Button className="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold shadow-lg shadow-orange-600/30">
+                    <Button className="w-full bg-kizuna-primary text-white font-semibold">
                         Contact Investors
                     </Button>
                     <Button
                         variant="outline"
-                        className="w-full border-zinc-700 text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-50"
+                        className="w-full border-kizuna-border text-kizuna-text-muted"
                     >
                         View Deal Terms
                     </Button>
                 </div>
 
-                <div className="space-y-3 pt-4 border-t border-zinc-800">
+                <div className="space-y-3 pt-4 border-t border-kizuna-border">
                     <div>
-                        <p className="text-xs text-zinc-500 mb-1">Use of Funds</p>
-                        <ul className="text-xs text-zinc-400 space-y-1">
+                        <p className="text-xs text-kizuna-text-muted mb-1">Use of Funds</p>
+                        <ul className="text-xs text-kizuna-text-muted space-y-1">
                             <li>• Product Development: 40%</li>
                             <li>• Sales & Marketing: 35%</li>
                             <li>• Operations: 25%</li>
