@@ -21,35 +21,40 @@ const mentors = [
 
 export default function SuggestedMentorsCard() {
     return (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <div className="bg-white border border-kizuna-border rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-orange-500/20 rounded-lg">
-                    <Users className="w-5 h-5 text-orange-500" />
+                <div className="p-2 bg-emerald-50 rounded-lg">
+                    <Users className="w-5 h-5 text-kizuna-primary" />
                 </div>
-                <h3 className="text-lg font-bold text-zinc-50">Suggested Mentors</h3>
+                <h3 className="text-lg font-bold text-kizuna-text-main">Suggested Mentors</h3>
             </div>
 
             <div className="space-y-4">
                 {mentors.map((mentor) => (
-                    <div key={mentor.id} className="p-4 bg-zinc-800/40 border border-zinc-800/50 rounded-lg">
+                    <div key={mentor.id} className="p-4 bg-kizuna-surface border border-kizuna-border rounded-xl">
                         <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
-                                <span className="font-bold text-zinc-50 text-sm">
+                            <div className="w-12 h-12 rounded-full bg-kizuna-primary flex items-center justify-center flex-shrink-0">
+                                <span className="font-bold text-white text-sm">
                                     {mentor.initials}
                                 </span>
                             </div>
                             <div className="flex-1">
-                                <p className="font-medium text-zinc-50 text-sm">
-                                    {mentor.name}
-                                </p>
-                                <p className="text-xs text-zinc-400 mt-1">
+                                <div className="flex flex-col items-start gap-1 mb-1">
+                                    <span className="bg-emerald-50 text-kizuna-primary text-[10px] uppercase font-bold px-2 py-0.5 rounded-md">
+                                        95% Match
+                                    </span>
+                                    <p className="font-medium text-kizuna-text-main text-sm leading-none">
+                                        {mentor.name}
+                                    </p>
+                                </div>
+                                <p className="text-xs text-kizuna-text-muted mt-1">
                                     {mentor.role}
                                 </p>
                             </div>
                         </div>
                         <Button
                             size="sm"
-                            className="w-full mt-3 gap-2 bg-orange-500 hover:bg-orange-600 text-zinc-50"
+                            className="w-full mt-3 gap-2 bg-kizuna-primary text-white hover:bg-kizuna-primary"
                         >
                             <Calendar className="w-4 h-4" />
                             Book Session
