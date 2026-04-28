@@ -13,8 +13,8 @@ const stages = [
 
 export default function IncubationRoadmap() {
     return (
-        <section className="bg-card border border-border rounded-xl p-8 mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-8">
+        <section className="bg-white border border-kizuna-border rounded-2xl p-6 shadow-sm mb-8">
+            <h2 className="text-2xl font-bold text-kizuna-text-main mb-8">
                 Virtual Incubation Roadmap
             </h2>
 
@@ -26,10 +26,10 @@ export default function IncubationRoadmap() {
                         <div className="flex items-center gap-4 w-full">
                             <div
                                 className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all flex-shrink-0 ${stage.completed
-                                    ? 'bg-primary text-primary-foreground'
+                                    ? 'bg-kizuna-primary text-white'
                                     : stage.current
-                                        ? 'bg-primary text-primary-foreground ring-2 ring-primary ring-offset-2 ring-offset-background'
-                                        : 'bg-muted text-muted-foreground border-2 border-border'
+                                        ? 'bg-kizuna-primary text-white ring-2 ring-kizuna-primary ring-offset-2 ring-offset-white'
+                                        : 'bg-zinc-200 text-zinc-400 border-2 border-zinc-200'
                                     }`}
                             >
                                 {stage.completed ? (
@@ -43,8 +43,8 @@ export default function IncubationRoadmap() {
                             {index < stages.length - 1 && (
                                 <div
                                     className={`flex-1 h-1 mx-2 rounded-full transition-colors ${stage.completed
-                                        ? 'bg-primary'
-                                        : 'bg-muted'
+                                        ? 'bg-kizuna-primary'
+                                        : 'bg-zinc-200'
                                         }`}
                                 />
                             )}
@@ -53,10 +53,10 @@ export default function IncubationRoadmap() {
                         {/* Stage Label */}
                         <p
                             className={`text-sm font-medium mt-3 text-center ${stage.current
-                                ? 'text-primary font-bold'
+                                ? 'text-kizuna-primary font-bold'
                                 : stage.completed
-                                    ? 'text-foreground'
-                                    : 'text-muted-foreground'
+                                    ? 'text-kizuna-text-main'
+                                    : 'text-zinc-400'
                                 }`}
                         >
                             {stage.label}
@@ -66,8 +66,8 @@ export default function IncubationRoadmap() {
             </div>
 
             {/* Current Stage Info */}
-            <div className="mt-8 p-4 bg-primary/10 border border-primary/30 rounded-lg">
-                <p className="text-sm text-primary">
+            <div className="mt-8 p-4 bg-emerald-50 border border-emerald-100 rounded-lg text-kizuna-primary">
+                <p className="text-sm">
                     <span className="font-bold">Current Stage:</span> You&apos;re building your MVP. Focus on core features and user validation.
                 </p>
             </div>

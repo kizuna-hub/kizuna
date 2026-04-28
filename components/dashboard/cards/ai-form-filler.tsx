@@ -13,33 +13,33 @@ const tasks = [
 
 export default function AIFormFillerCard() {
     return (
-        <div className="bg-card border border-border rounded-xl p-6">
+        <div className="bg-white border border-kizuna-border rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-primary/20 rounded-lg">
-                    <FileText className="w-5 h-5 text-primary" />
+                <div className="p-2 bg-emerald-50 rounded-lg">
+                    <FileText className="w-5 h-5 text-kizuna-primary" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">AI Form Filler Tasks</h3>
+                <h3 className="text-lg font-bold text-kizuna-text-main">AI Form Filler Tasks</h3>
             </div>
 
             <div className="space-y-4">
                 {tasks.map((task) => (
-                    <div key={task.id} className="pb-4 border-b border-border last:border-b-0">
+                    <div key={task.id} className="pb-4 border-b border-kizuna-border last:border-b-0">
                         <div className="flex justify-between items-start mb-2">
                             <div>
-                                <p className="font-medium text-foreground text-sm">
+                                <p className="font-semibold text-kizuna-text-main text-sm">
                                     {task.title}
                                 </p>
-                                <p className="text-xs text-muted-foreground">({task.code})</p>
+                                <p className="text-xs text-kizuna-text-muted">({task.code})</p>
                             </div>
-                            <span className="text-xs font-semibold text-primary bg-primary/20 px-2 py-1 rounded">
+                            <span className="text-xs font-semibold text-kizuna-primary bg-emerald-50 px-2 py-1 rounded">
                                 {task.progress}%
                             </span>
                         </div>
-                        <Progress value={task.progress} className="h-2 mb-3" />
+                        <Progress value={task.progress} className="h-2 mb-3 [&>div]:bg-kizuna-primary bg-zinc-100" />
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="text-primary hover:bg-primary/20 hover:text-primary text-xs gap-1 h-7 px-2"
+                            className="text-kizuna-primary font-medium hover:bg-zinc-50 hover:underline text-xs gap-1 h-7 px-2"
                         >
                             Continue with AI <ArrowRight className="w-3 h-3" />
                         </Button>
