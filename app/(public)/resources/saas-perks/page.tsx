@@ -156,10 +156,10 @@ export default function SaaSPerksPage() {
     return (
         <div className="w-full flex flex-col gap-8">
             {/* Hero Section */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black border border-white/5 px-8 py-16 md:px-12 md:py-20">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-kizuna-primary to-[#06110a] shadow-[0_20px_40px_-15px_rgba(16,44,30,0.4)] px-8 py-16 md:px-12 md:py-20">
                 {/* Glowing radial gradient blob */}
                 <div className="absolute inset-0 -z-10">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl opacity-40 animate-pulse" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-3xl opacity-40 animate-pulse" />
                 </div>
 
                 <div className="relative z-10 max-w-3xl">
@@ -173,13 +173,13 @@ export default function SaaSPerksPage() {
                     {/* Social Proof Badge */}
                     <div className="flex items-center gap-3">
                         <div className="flex -space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 border-2 border-zinc-900 flex items-center justify-center text-xs font-bold text-white">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-zinc-200 to-zinc-400 border-2 border-kizuna-primary flex items-center justify-center text-xs font-bold text-white">
                                 A
                             </div>
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-zinc-900 flex items-center justify-center text-xs font-bold text-white">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-zinc-300 to-zinc-500 border-2 border-kizuna-primary flex items-center justify-center text-xs font-bold text-white">
                                 B
                             </div>
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-zinc-900 flex items-center justify-center text-xs font-bold text-white">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-zinc-400 to-zinc-600 border-2 border-kizuna-primary flex items-center justify-center text-xs font-bold text-white">
                                 C
                             </div>
                         </div>
@@ -191,16 +191,16 @@ export default function SaaSPerksPage() {
             </div>
 
             {/* Filters & Search */}
-            <div className="sticky top-0 z-20 flex flex-col gap-4 bg-black/40 backdrop-blur-md border-b border-white/5 -mx-4 px-4 py-4 md:-mx-6 md:px-6">
+            <div className="sticky top-0 z-20 flex flex-col gap-4 bg-white/90 backdrop-blur-md border-b border-zinc-200 -mx-4 px-4 py-4 md:-mx-6 md:px-6">
                 {/* Search Input */}
-                <div className="flex items-center gap-2 bg-zinc-900/60 border border-white/10 rounded-lg px-4 py-2.5 transition-all duration-300 focus-within:border-orange-500/50">
+                <div className="flex items-center gap-2 bg-kizuna-surface border border-kizuna-border rounded-lg px-4 py-2.5 transition-all duration-300 focus-within:border-kizuna-primary/50">
                     <Search className="w-5 h-5 text-zinc-500" />
                     <input
                         type="text"
                         placeholder="Search perks, providers..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="flex-1 bg-transparent text-white placeholder-zinc-500 outline-none"
+                        className="flex-1 bg-transparent text-kizuna-text-main placeholder-zinc-500 outline-none"
                     />
                 </div>
 
@@ -211,8 +211,8 @@ export default function SaaSPerksPage() {
                             key={category}
                             onClick={() => setSelectedCategory(category)}
                             className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 ${selectedCategory === category
-                                ? 'bg-orange-500 text-white'
-                                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                                ? 'bg-kizuna-primary text-white'
+                                : 'bg-kizuna-surface text-kizuna-text-muted hover:bg-zinc-100'
                                 }`}
                         >
                             {category}
@@ -234,11 +234,11 @@ export default function SaaSPerksPage() {
                         <motion.div
                             key={perk.id}
                             variants={cardVariants}
-                            className="group relative bg-zinc-900/40 backdrop-blur-md border border-white/5 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(255,107,0,0.15)] hover:border-orange-500/50"
+                            className="group relative bg-white border border-kizuna-border rounded-2xl p-6 shadow-sm"
                         >
                             {/* Scarcity Tag */}
                             {perk.scarcityTag && (
-                                <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-full text-xs font-bold text-orange-300">
+                                <div className="absolute top-4 right-4 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-xs font-bold text-kizuna-primary">
                                     {perk.scarcityTag}
                                 </div>
                             )}
@@ -246,23 +246,23 @@ export default function SaaSPerksPage() {
                             {/* Header */}
                             <div className="flex items-start justify-between mb-4 pr-16">
                                 <div className="flex items-center gap-3">
-                                    <div className={`p-3 rounded-xl bg-zinc-800/60 ${perk.brandColor}`}>
+                                    <div className={`p-3 rounded-xl bg-kizuna-surface ${perk.brandColor}`}>
                                         <IconComponent className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h3 className="text-white font-semibold">{perk.name}</h3>
-                                        <p className="text-xs text-zinc-500">{perk.provider}</p>
+                                        <h3 className="text-kizuna-text-main font-semibold">{perk.name}</h3>
+                                        <p className="text-xs text-kizuna-text-muted">{perk.provider}</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Description */}
-                            <p className="text-sm text-zinc-400 mb-4">{perk.description}</p>
+                            <p className="text-sm text-kizuna-text-muted mb-4">{perk.description}</p>
 
                             {/* Value Badge - EMERALD STYLING */}
                             <div className="mb-4">
-                                <div className="inline-block bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-                                    <span className="font-bold text-sm text-emerald-400">
+                                <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full">
+                                    <span className="font-bold text-sm text-kizuna-primary">
                                         {perk.value}
                                     </span>
                                 </div>
@@ -271,12 +271,12 @@ export default function SaaSPerksPage() {
                             {/* Footer/CTA */}
                             <div>
                                 {!perk.locked ? (
-                                    <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group/btn">
+                                    <button className="w-full bg-kizuna-primary text-white font-medium py-2.5 rounded-lg flex items-center justify-center gap-2">
                                         Claim Offer
-                                        <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                                        <ArrowRight className="w-4 h-4" />
                                     </button>
                                 ) : (
-                                    <button className="w-full bg-transparent border border-zinc-700 text-zinc-400 hover:border-zinc-600 font-medium py-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
+                                    <button className="w-full bg-kizuna-surface border border-kizuna-border text-kizuna-text-muted font-medium py-2.5 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
                                         <Lock className="w-4 h-4" />
                                         Requires Verification
                                     </button>
@@ -290,13 +290,13 @@ export default function SaaSPerksPage() {
             {/* Empty State */}
             {filteredPerks.length === 0 && (
                 <div className="text-center py-12">
-                    <p className="text-zinc-400 text-lg">No perks found matching your search.</p>
+                    <p className="text-kizuna-text-muted text-lg">No perks found matching your search.</p>
                     <button
                         onClick={() => {
                             setSearchQuery('');
                             setSelectedCategory('All');
                         }}
-                        className="mt-4 text-orange-500 hover:text-orange-400 font-medium transition-colors"
+                        className="mt-4 text-kizuna-primary hover:text-green-800 font-medium transition-colors"
                     >
                         Clear filters
                     </button>
@@ -304,9 +304,9 @@ export default function SaaSPerksPage() {
             )}
 
             {/* Info Footer */}
-            <div className="rounded-lg bg-zinc-900/40 border border-white/5 p-6 text-center">
-                <p className="text-sm text-zinc-400">
-                    💡 <span className="text-white font-medium">Pro Tip:</span> Combine multiple perks to maximize your startup's runway. Verify your project status to unlock exclusive offers.
+            <div className="rounded-lg bg-kizuna-surface border border-kizuna-border p-6 text-center">
+                <p className="text-sm text-kizuna-text-muted">
+                    💡 <span className="text-kizuna-text-main font-medium">Pro Tip:</span> Combine multiple perks to maximize your startup's runway. Verify your project status to unlock exclusive offers.
                 </p>
             </div>
         </div>
