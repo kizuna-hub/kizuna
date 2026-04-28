@@ -20,7 +20,7 @@ const menuItems = [
     { icon: FileText, label: 'AI Pitch Deck & Forms', href: '/founder-workspace/ai-pitch-deck' },
     { icon: Users, label: 'Venture Connect', href: '/founder-workspace/venture-connect' },
     { icon: Lock, label: 'IP Protection Ledger', href: '/founder-workspace/ip-ledger' },
-    { icon: Zap, label: 'SaaS Perks & Offers', href: '/founder-workspace/perks' },
+    { icon: Zap, label: 'SaaS Perks & Offers', href: '/founder-workspace/saas-perks' },
 ];
 
 export default function Sidebar() {
@@ -31,9 +31,14 @@ export default function Sidebar() {
         <aside className="w-64 bg-kizuna-surface border-r border-kizuna-border flex flex-col">
             {/* Logo Section */}
             <div className="p-6 border-b border-kizuna-border">
-                <h1 className="text-2xl font-bold text-kizuna-text-main mb-4">
-                    NovaHub
-                </h1>
+                <Link href="/" className="block mb-2">
+                    <h1 className="text-2xl font-bold text-kizuna-text-main hover:text-kizuna-primary transition-colors">
+                        Kizuna Hub
+                    </h1>
+                </Link>
+                <Link href="/" className="flex items-center text-xs font-medium text-kizuna-text-muted hover:text-kizuna-text-main mb-6 transition-colors">
+                    &larr; Back to Discover
+                </Link>
                 <Button
                     variant="outline"
                     className="w-full justify-between text-kizuna-text-main border-kizuna-border hover:bg-zinc-50 hover:text-kizuna-primary"
@@ -64,8 +69,8 @@ export default function Sidebar() {
                             key={item.label}
                             href={item.href}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
-                                ? 'bg-zinc-100 text-kizuna-primary font-medium'
-                                : 'text-kizuna-text-muted hover:bg-zinc-50'
+                                ? 'bg-kizuna-primary text-white font-medium'
+                                : 'text-kizuna-text-muted hover:bg-zinc-100 hover:text-kizuna-text-main'
                                 }`}
                         >
                             <Icon className="w-5 h-5" />

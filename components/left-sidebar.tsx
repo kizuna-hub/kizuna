@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Zap, TrendingUp, Star, Code2, Leaf, BarChart3, Sparkles, BookOpen, Gift, Info, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -34,6 +35,7 @@ const navSections = [
 ]
 
 export function LeftSidebar() {
+  const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [stage, setStage] = useState<string>('all')
   const [nq54Eligible, setNq54Eligible] = useState(false)
@@ -82,9 +84,13 @@ export function LeftSidebar() {
                       </div>
                     )
 
+                    const isActive = pathname === item.href
+
                     const className = cn(
                       'w-full flex items-center p-2.5 rounded-lg text-sm transition-colors overflow-hidden',
-                      'hover:bg-kizuna-border/50 text-kizuna-text-main'
+                      isActive 
+                        ? 'bg-kizuna-primary text-white font-medium' 
+                        : 'text-kizuna-text-muted hover:bg-zinc-100 hover:text-kizuna-text-main'
                     )
 
                     return (
