@@ -109,21 +109,26 @@ export function MainFeed() {
     <div className="pt-6 pb-12">
       <div className="w-full">
         {/* Hero Banner */}
-        <div className="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-800 via-zinc-900 to-black border border-zinc-800 p-8">
-          {/* Glowing corner accent */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-3xl -mr-32 -mt-32"></div>
+        <div className="mb-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-kizuna-primary to-[#06110a] border border-white/10 p-10 shadow-[0_20px_40px_-15px_rgba(16,44,30,0.4)]">
+          {/* 1. Main Glow: Ánh sáng trắng mờ hắt từ góc trên phải */}
+          <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-white/5 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none"></div>
+
+          {/* 2. Sub Glow: Ánh sáng xanh ngọc nhẹ hắt từ dưới lên tạo chiều sâu */}
+          <div className="absolute bottom-0 left-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -mb-20 pointer-events-none"></div>
 
           <div className="relative z-10">
-            <h2 className="text-4xl font-bold text-white mb-3">
+            <h2 className="text-4xl font-serif font-medium text-white mb-4 tracking-tight">
               Discover Top 10 Finalists of BK SHARK 2026 🦈
             </h2>
-            <p className="text-lg text-zinc-300 mb-6">
+            <p className="text-lg text-zinc-300 mb-8 font-light max-w-2xl leading-relaxed">
               The brightest university startups ready for seed funding. Exclusive deal flow for verified investors.
             </p>
-            <button className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors">
+
+            {/* Nút bấm (Inverted CTA): Nền trắng, chữ xanh, không hover theo rule, chỉ có hiệu ứng click nhẹ */}
+            <button className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-kizuna-primary font-semibold rounded-xl border-none shadow-sm active:scale-95 transition-transform duration-200">
               View Pitch Decks
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </button>
           </div>
@@ -131,31 +136,31 @@ export function MainFeed() {
 
         {/* Header & Main Tabs */}
         <div className="mb-8">
-          <div className="flex items-center gap-6 border-b border-zinc-800">
+          <div className="flex items-center gap-6 border-b border-kizuna-border">
             <button
               onClick={() => setActiveTab('discover')}
-              className={`pb-4 text-2xl font-bold transition-colors ${activeTab === 'discover'
-                ? 'text-white border-b-2 border-orange-500'
-                : 'text-zinc-500 hover:text-zinc-300'
+              className={`pb-4 text-2xl font-bold ${activeTab === 'discover'
+                ? 'text-kizuna-text-main border-b-2 border-kizuna-primary'
+                : 'text-kizuna-text-muted hover:text-kizuna-text-main'
                 }`}
             >
               Discover
             </button>
             <button
               onClick={() => setActiveTab('live')}
-              className={`pb-4 text-2xl font-bold transition-colors flex items-center gap-2 ${activeTab === 'live'
-                ? 'text-white border-b-2 border-orange-500'
-                : 'text-zinc-500 hover:text-zinc-300'
+              className={`pb-4 text-2xl font-bold flex items-center gap-2 ${activeTab === 'live'
+                ? 'text-kizuna-text-main border-b-2 border-kizuna-primary'
+                : 'text-kizuna-text-muted hover:text-kizuna-text-main'
                 }`}
             >
               Live Updates
               <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-kizuna-primary/50"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-kizuna-primary"></span>
               </span>
             </button>
           </div>
-          <p className="text-lg text-zinc-400 mt-4">
+          <p className="text-lg text-kizuna-text-muted mt-4">
             {activeTab === 'discover'
               ? 'Discover the next big thing from university students.'
               : 'Real-time traction, milestones, and funding updates from Kizuna startups.'}
@@ -165,17 +170,17 @@ export function MainFeed() {
         {activeTab === 'discover' ? (
           <div>
             {/* Filter Tabs */}
-            <div className="flex gap-2 border-b border-zinc-800 pb-4 mb-4">
-              <button className="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20 text-sm font-medium">
+            <div className="flex gap-2 border-b border-kizuna-border pb-4 mb-4">
+              <button className="px-4 py-2 rounded-lg bg-kizuna-primary/10 text-kizuna-primary border border-kizuna-primary/20 text-sm font-medium">
                 Today
               </button>
-              <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium">
                 This Week
               </button>
-              <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium">
                 This Month
               </button>
-              <button className="px-4 py-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 text-sm font-medium transition-colors">
+              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium">
                 All Time
               </button>
             </div>
@@ -190,7 +195,7 @@ export function MainFeed() {
         ) : (
           <div className="relative py-4">
             {/* Central Glowing Line */}
-            <div className="absolute top-0 bottom-0 left-[27px] md:left-8 w-[2px] bg-gradient-to-b from-orange-500/0 via-orange-500/50 to-orange-500/0 shadow-[0_0_8px_rgba(249,115,22,0.5)]"></div>
+            <div className="absolute top-0 bottom-0 left-[27px] md:left-8 w-[2px] bg-gradient-to-b from-kizuna-primary/0 via-kizuna-primary/50 to-kizuna-primary/0 shadow-[0_0_8px_rgba(16,44,30,0.2)]"></div>
 
             <div className="space-y-6 relative">
               {mockTractionData.map((traction, i) => (

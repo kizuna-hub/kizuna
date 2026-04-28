@@ -46,21 +46,21 @@ export function MentorFilters({
     };
 
     return (
-        <div className="backdrop-blur-md bg-zinc-900/60 sticky top-16 z-30 border border-white/5 p-4 sm:p-5 mb-8 rounded-lg shadow-sm">
+        <div className="bg-zinc-50 sticky top-16 z-30 border border-zinc-200 p-4 sm:p-5 mb-8 rounded-lg shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
                 <div className="flex-1 w-full relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                     <Input
                         placeholder="Search mentors..."
                         value={searchQuery}
                         onChange={(e) => onSearch(e.target.value)}
-                        className="pl-10 bg-background border-border w-full transition-all duration-300"
+                        className="pl-10 bg-white border-zinc-200 w-full text-zinc-900 placeholder:text-zinc-400"
                     />
                 </div>
 
                 <div className="flex flex-wrap gap-2 w-full lg:w-auto">
                     <Select value={industry} onValueChange={onIndustryChange}>
-                        <SelectTrigger className="bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800 transition-colors shrink-0 w-[140px]">
+                        <SelectTrigger className="bg-white border-zinc-200 text-zinc-900 shrink-0 w-[140px]">
                             <SelectValue placeholder="Industry" />
                         </SelectTrigger>
                         <SelectContent>
@@ -72,7 +72,7 @@ export function MentorFilters({
                     </Select>
 
                     <Select value={expertise} onValueChange={onExpertiseChange}>
-                        <SelectTrigger className="bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800 transition-colors shrink-0 w-[140px]">
+                        <SelectTrigger className="bg-white border-zinc-200 text-zinc-900 shrink-0 w-[140px]">
                             <SelectValue placeholder="Expertise" />
                         </SelectTrigger>
                         <SelectContent>
@@ -84,7 +84,7 @@ export function MentorFilters({
                     </Select>
 
                     <Select value={availability} onValueChange={onAvailabilityChange}>
-                        <SelectTrigger className="bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800 transition-colors shrink-0 w-[140px]">
+                        <SelectTrigger className="bg-white border-zinc-200 text-zinc-900 shrink-0 w-[140px]">
                             <SelectValue placeholder="Availability" />
                         </SelectTrigger>
                         <SelectContent>
