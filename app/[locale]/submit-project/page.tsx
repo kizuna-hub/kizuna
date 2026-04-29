@@ -36,10 +36,10 @@ export default function SubmitProjectPage() {
     });
 
     const steps = [
-        { title: 'The Vision', description: 'Share your idea and solution' },
-        { title: 'Tech & MVP', description: 'Product readiness and roadmap' },
-        { title: 'Market & Finance', description: 'Target audience and revenue' },
-        { title: 'IP & Team', description: 'Team and IP protection' },
+        { title: 'Tầm nhìn', description: 'Chia sẻ ý tưởng và giải pháp của bạn' },
+        { title: 'Công nghệ & MVP', description: 'Độ hoàn thiện sản phẩm và lộ trình' },
+        { title: 'Thị trường & Tài chính', description: 'Khách hàng mục tiêu và doanh thu' },
+        { title: 'Nhóm & IP', description: 'Đội ngũ và Bảo vệ SHTT' },
     ];
 
     const progress = ((currentStep + 1) / steps.length) * 100;
@@ -88,12 +88,12 @@ export default function SubmitProjectPage() {
         // Simulate AI processing
         setTimeout(() => {
             const improvements: { [key: string]: string } = {
-                problem: 'Students lack access to mentorship and funding resources, creating a gap between ideas and execution.',
-                solution: 'An integrated platform connecting student entrepreneurs with industry experts, investors, and peer support networks.',
-                productReadiness: 'MVP prototype with basic marketplace functionality and user authentication.',
-                roadmap: 'Q2: Core features. Q3: Community engagement. Q4: Investor matching system.',
-                targetAudience: 'University students and faculty members interested in entrepreneurship.',
-                revenueModel: 'Freemium model with premium investor tools and premium support packages.',
+                problem: 'Sinh viên thiếu khả năng tiếp cận các nguồn lực cố vấn và nguồn vốn, tạo ra khoảng cách lớn giữa ý tưởng và thực thi.',
+                solution: 'Giải pháp là một nền tảng tích hợp kết nối các nhà sáng lập sinh viên với các Mentor trong ngành, nhà đầu tư (investors) và mạng lưới hỗ trợ đồng cấp.',
+                productReadiness: 'Bản nguyên mẫu MVP tích hợp các tính năng sàn giao dịch (marketplace) cốt lõi và hệ thống xác thực người dùng an toàn.',
+                roadmap: 'Q2: Hoàn thiện các tính năng cốt lõi. Q3: Mở rộng tương tác cộng đồng. Q4: Ra mắt hệ thống ghép nối năng lực với nhà đầu tư.',
+                targetAudience: 'Sinh viên đại học và giảng viên có đam mê mạnh mẽ với lĩnh vực khởi nghiệp sáng tạo.',
+                revenueModel: 'Mô hình Freemium kết hợp các công cụ chuyên sâu dành cho nhà đầu tư (investors) và các gói hỗ trợ đặc quyền.',
             };
 
             if (improvements[fieldName]) {
@@ -127,7 +127,7 @@ export default function SubmitProjectPage() {
         // Simulate submission
         setTimeout(() => {
             console.log('Project submitted:', formData);
-            alert('Project submitted successfully! IP timestamped via our Ledger.');
+            alert('Khởi tạo dự án thành công! Thông tin tài sản trí tuệ (IP) đã được xác thực qua IP Ledger của chúng tôi.');
             setIsSaving(false);
         }, 1000);
     };
@@ -146,14 +146,14 @@ export default function SubmitProjectPage() {
                         className="inline-flex items-center gap-2 text-sm text-kizuna-text-muted hover:text-kizuna-text-main transition-colors"
                     >
                         <X className="w-4 h-4" />
-                        Exit
+                        Thoát
                     </Link>
                 </div>
 
                 {/* Center: Progress */}
                 <div className="flex-[2] flex flex-col items-center justify-center">
                     <h1 className="text-sm font-semibold text-kizuna-text-main mb-1.5 text-center whitespace-nowrap">
-                        Step {currentStep + 1} of {steps.length}: {steps[currentStep].title}
+                        Bước {currentStep + 1} trên {steps.length}: {steps[currentStep].title}
                     </h1>
                     <div className="flex justify-between pt-2 gap-2 w-full max-w-[240px]">
                         {steps.map((_, idx) => (
@@ -176,11 +176,11 @@ export default function SubmitProjectPage() {
                             className="text-xs text-zinc-500 flex items-center gap-1.5 shrink-0"
                         >
                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-pulse" />
-                            Auto-saving
+                            Đang lưu tự động
                         </motion.div>
                     )}
                     <Button variant="ghost" className="text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-zinc-100 h-8 px-3 text-sm hidden sm:inline-flex">
-                        Save Draft
+                        Lưu nháp
                     </Button>
                 </div>
             </div>
@@ -203,14 +203,14 @@ export default function SubmitProjectPage() {
                                     <div>
                                         <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
                                             <Lightbulb className="w-4 h-4 text-kizuna-primary" />
-                                            Your Idea
+                                            Ý tưởng & Sáng kiến
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">Summarize your startup idea in a single sentence.</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Tóm tắt ngắn gọn ý tưởng startup của bạn vào một câu (one-liner).</p>
                                         <Input
                                             name="idea"
                                             value={formData.idea}
                                             onChange={handleInputChange}
-                                            placeholder="What is your startup idea?"
+                                            placeholder="Ý tưởng dự án của bạn là gì?"
                                             className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 px-3 py-2"
                                         />
                                     </div>
@@ -218,14 +218,14 @@ export default function SubmitProjectPage() {
                                     <div className="relative">
                                         <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
                                             <Target className="w-4 h-4 text-kizuna-primary" />
-                                            Problem Statement
+                                            Tuyên bố vấn đề (Problem)
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">Be specific about the pain point you are trying to solve.</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Nêu rõ ràng "nỗi đau" (pain points) trên thị trường mà startup đang giải quyết.</p>
                                         <Textarea
                                             name="problem"
                                             value={formData.problem}
                                             onChange={handleInputChange}
-                                            placeholder="What problem are you solving?"
+                                            placeholder="Vấn đề thị trường hiện tại là gì?"
                                             className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
@@ -252,14 +252,14 @@ export default function SubmitProjectPage() {
                                     <div className="relative">
                                         <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
                                             <Rocket className="w-4 h-4 text-kizuna-primary" />
-                                            Your Solution
+                                            Giải pháp (Solution)
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">How does your product solve the problem?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Cách thức sản phẩm của bạn giải quyết triệt để vấn đề trên thế nào?</p>
                                         <Textarea
                                             name="solution"
                                             value={formData.solution}
                                             onChange={handleInputChange}
-                                            placeholder="How will you solve this problem?"
+                                            placeholder="Làm sao sản phẩm của bạn tháo gỡ điểm nghẽn ấy?"
                                             className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
@@ -290,14 +290,14 @@ export default function SubmitProjectPage() {
                                 <div className="space-y-6">
                                     <div className="relative">
                                         <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
-                                            Product Readiness
+                                            Mức độ sẵn sàng của sản phẩm & MVP
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">What is the current state of your product?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Trạng thái phát triển hiện tại của giải pháp (Code, Design, Hardware...)</p>
                                         <Textarea
                                             name="productReadiness"
                                             value={formData.productReadiness}
                                             onChange={handleInputChange}
-                                            placeholder="e.g., Figma prototype completed, backend architecture designed, core features 50% coded..."
+                                            placeholder="ví dụ: Đã thiết kế xong prototype Figma, hoàn thiện kiến trúc database, 50% tính năng cốt lõi..."
                                             className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
@@ -323,14 +323,14 @@ export default function SubmitProjectPage() {
 
                                     <div className="relative">
                                         <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
-                                            Development Roadmap
+                                            Lộ trình phát triển (Roadmap)
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">What are your key milestones for the next 12 months?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Mục tiêu cụ thể của startup trong 12 tháng tới?</p>
                                         <Textarea
                                             name="roadmap"
                                             value={formData.roadmap}
                                             onChange={handleInputChange}
-                                            placeholder="e.g., Q1: Launch Beta, Q2: Integrate AI features, Q3: Expand to iOS..."
+                                            placeholder="ví dụ: Q1: Ra mắt bản Beta, Q2: Tích hợp mô hình AI, Q3: Mở rộng tệp người dùng quốc tế..."
                                             className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-32 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
@@ -361,14 +361,14 @@ export default function SubmitProjectPage() {
                                 <div className="space-y-6">
                                     <div className="relative">
                                         <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
-                                            Target Audience
+                                            Khách hàng mục tiêu (Target Audience)
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">Who are your primary users, and what are their demographics?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Chân dung người dùng trả tiền cho sản phẩm của bạn là ai?</p>
                                         <Textarea
                                             name="targetAudience"
                                             value={formData.targetAudience}
                                             onChange={handleInputChange}
-                                            placeholder="e.g., College students aged 18-24 struggling with time management..."
+                                            placeholder="ví dụ: Sinh viên đại học từ 18-24 tuổi gặp khó khăn trong việc quản lý thời gian..."
                                             className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-24 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
@@ -394,14 +394,14 @@ export default function SubmitProjectPage() {
 
                                     <div className="relative">
                                         <label className="block text-sm font-semibold text-kizuna-text-main mb-1">
-                                            Revenue Model
+                                            Mô hình doanh thu (Revenue Model)
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">How does or will your business make money?</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Startup của bạn kiếm tiền bằng cách nào?</p>
                                         <Textarea
                                             name="revenueModel"
                                             value={formData.revenueModel}
                                             onChange={handleInputChange}
-                                            placeholder="e.g., Freemium tier + $4.99/month Pro subscription plan..."
+                                            placeholder="ví dụ: Mô hình Freemium + 4.99$/tháng cho gói đăng ký Pro..."
                                             className="bg-white border border-zinc-300 text-kizuna-text-main placeholder:text-zinc-400 min-h-24 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all duration-300 p-3"
                                         />
                                         <div className="absolute bottom-3 right-3 group">
@@ -427,11 +427,11 @@ export default function SubmitProjectPage() {
 
                                     {/* Quick Break-Even Calculator */}
                                     <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-6 space-y-6">
-                                        <h3 className="text-sm font-semibold text-kizuna-text-main">Quick Break-Even Calculator</h3>
+                                        <h3 className="text-sm font-semibold text-kizuna-text-main">Công cụ tính Break-Even (Điểm hòa vốn) nhanh</h3>
 
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
-                                                <label className="text-xs font-medium text-kizuna-text-muted">Monthly Operating Cost</label>
+                                                <label className="text-xs font-medium text-kizuna-text-muted">Chi phí vận hành hàng tháng</label>
                                                 <span className="text-sm font-semibold text-kizuna-primary">
                                                     ${formData.monthlyCost.toLocaleString()}
                                                 </span>
@@ -453,7 +453,7 @@ export default function SubmitProjectPage() {
 
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
-                                                <label className="text-xs font-medium text-kizuna-text-muted">Price per User/Customer</label>
+                                                <label className="text-xs font-medium text-kizuna-text-muted">Giá trên mỗi Người dùng/Khách hàng</label>
                                                 <span className="text-sm font-semibold text-kizuna-primary">
                                                     ${formData.pricePerUser}
                                                 </span>
@@ -475,14 +475,14 @@ export default function SubmitProjectPage() {
 
                                         <div className="bg-kizuna-primary/10 border border-kizuna-primary/20 rounded-lg p-4 mt-6 flex items-center justify-between">
                                             <div>
-                                                <p className="text-xs text-kizuna-text-main font-semibold mb-1">Break-even point needed</p>
+                                                <p className="text-xs text-kizuna-text-main font-semibold mb-1">Điểm hòa vốn (Break-even point) cần đạt</p>
                                                 <p className="text-xs text-kizuna-text-muted">
-                                                    To cover ${formData.monthlyCost.toLocaleString()} monthly costs
+                                                    Để bù đắp được khoản chi phí ${formData.monthlyCost.toLocaleString()} một tháng
                                                 </p>
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-kizuna-primary font-extrabold text-2xl">
-                                                    {Math.ceil(breakEvenUsers).toLocaleString()} <span className="text-sm font-medium text-kizuna-primary/80">users</span>
+                                                    {Math.ceil(breakEvenUsers).toLocaleString()} <span className="text-sm font-medium text-kizuna-primary/80">người dùng</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -496,15 +496,15 @@ export default function SubmitProjectPage() {
                                     <div>
                                         <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
                                             <Users className="w-4 h-4 text-kizuna-primary" />
-                                            Team Members
+                                            Thành viên Đội ngũ
                                         </label>
-                                        <p className="text-xs text-kizuna-text-muted mb-2">Tip: Include LinkedIn profile URLs to increase your project&apos;s credibility.</p>
+                                        <p className="text-xs text-kizuna-text-muted mb-2">Mẹo: Việc cung cấp liên kết hồ sơ LinkedIn sẽ nâng cao độ tin cậy cho dự án.</p>
 
                                         <div className="space-y-3 mt-4">
                                             {team.map((member, index) => (
                                                 <div key={index} className="bg-zinc-50 border border-zinc-200 rounded-lg p-4 relative group">
                                                     <div className="flex justify-between items-center mb-4">
-                                                        <h4 className="text-sm font-semibold text-kizuna-text-main">Team Member</h4>
+                                                        <h4 className="text-sm font-semibold text-kizuna-text-main">Thành viên Đội ngũ</h4>
                                                         {team.length > 1 && (
                                                             <button
                                                                 onClick={() => removeTeamMember(index)}
@@ -517,21 +517,21 @@ export default function SubmitProjectPage() {
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                         {/* Field 1: Full Name */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Full Name</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Họ và Tên</label>
                                                             <input
                                                                 value={member.name}
                                                                 onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
-                                                                placeholder="e.g., Jane Doe"
+                                                                placeholder="ví dụ: Nguyễn Văn A"
                                                                 className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 2: Role */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Role</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Vai trò (Role)</label>
                                                             <input
                                                                 value={member.role}
                                                                 onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
-                                                                placeholder="e.g., CEO, Lead Dev"
+                                                                placeholder="ví dụ: CEO, Dev Chính"
                                                                 className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
@@ -541,37 +541,37 @@ export default function SubmitProjectPage() {
                                                             <input
                                                                 value={member.email}
                                                                 onChange={(e) => handleTeamChange(index, 'email', e.target.value)}
-                                                                placeholder="jane@example.com"
+                                                                placeholder="nguyenvana@example.com"
                                                                 className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 4: Phone Number */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Phone Number</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Số điện thoại</label>
                                                             <input
                                                                 value={member.phone}
                                                                 onChange={(e) => handleTeamChange(index, 'phone', e.target.value)}
-                                                                placeholder="e.g., +84 123 456 789"
+                                                                placeholder="ví dụ: +84 123 456 789"
                                                                 className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 5: School / Company */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">School / Company</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Trường học / Công ty</label>
                                                             <input
                                                                 value={member.school_company}
                                                                 onChange={(e) => handleTeamChange(index, 'school_company', e.target.value)}
-                                                                placeholder="e.g., Danang University"
+                                                                placeholder="ví dụ: Đại học FPT"
                                                                 className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
                                                         {/* Field 6: Social Link */}
                                                         <div>
-                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Social Link</label>
+                                                            <label className="block text-xs font-medium text-kizuna-text-muted mb-1.5">Liên kết Mạng xã hội</label>
                                                             <input
                                                                 value={member.social_link}
                                                                 onChange={(e) => handleTeamChange(index, 'social_link', e.target.value)}
-                                                                placeholder="LinkedIn or Portfolio URL"
+                                                                placeholder="URL LinkedIn hoặc Portfolio"
                                                                 className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2 text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
                                                             />
                                                         </div>
@@ -584,7 +584,7 @@ export default function SubmitProjectPage() {
                                             onClick={addTeamMember}
                                             className="w-full mt-3 border-dashed border-zinc-300 text-zinc-600 hover:text-kizuna-primary hover:border-kizuna-primary hover:bg-zinc-50"
                                         >
-                                            <Plus className="w-4 h-4 mr-2" /> Add Team Member
+                                            <Plus className="w-4 h-4 mr-2" /> Thêm thành viên
                                         </Button>
                                     </div>
 
@@ -598,14 +598,14 @@ export default function SubmitProjectPage() {
                                             <ShieldCheck className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-0.5" />
                                             <div className="flex-1">
                                                 <h3 className="text-sm font-semibold text-emerald-900 mb-1">
-                                                    IP Protection Guarantee
+                                                    Đảm bảo Bảo vệ Sở hữu trí tuệ
                                                 </h3>
                                                 <p className="text-xs text-emerald-800 mb-4">
-                                                    Your intellectual property is secured. By submitting, your idea is timestamped via our <strong className="text-emerald-700">IP Ledger</strong> and protected with <strong className="text-emerald-700">blockchain verification</strong>.
+                                                    Sản phẩm trí tuệ của bạn được bảo mật an toàn. Khi gửi đi, ý tưởng của bạn sẽ được đánh dấu thời gian (timestamped) thông qua <strong className="text-emerald-700">IP Ledger</strong> của chúng tôi và được bảo vệ bằng <strong className="text-emerald-700">xác thực blockchain</strong>.
                                                 </p>
                                                 <div className="flex items-center justify-between pt-3 border-t border-emerald-200">
                                                     <label className="text-xs font-medium text-emerald-900">
-                                                        Lock details (Only visible to verified investors)
+                                                        Khóa thông tin chi tiết (Chỉ hiển thị với nhà đầu tư đã xác thực)
                                                     </label>
                                                     <Switch
                                                         checked={formData.lockDetails}
@@ -620,9 +620,9 @@ export default function SubmitProjectPage() {
                                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3 items-start mt-6">
                                         <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                                         <div>
-                                            <h4 className="text-blue-900 font-semibold text-sm mb-1">What happens next</h4>
+                                            <h4 className="text-blue-900 font-semibold text-sm mb-1">Bước tiếp theo</h4>
                                             <p className="text-blue-800 text-sm">
-                                                Your project will be reviewed by our team within 48 hours. You&apos;ll receive feedback and gain access to our investor network and mentorship program.
+                                                Dự án của bạn sẽ được đội ngũ của chúng tôi xem xét trong vòng 48 giờ. Bạn sẽ nhận được phản hồi và có quyền truy cập vào mạng lưới nhà đầu tư cũng như chương trình Mentorship của chúng tôi.
                                             </p>
                                         </div>
                                     </div>
@@ -638,7 +638,7 @@ export default function SubmitProjectPage() {
                                     className="gap-2 bg-zinc-100 text-zinc-500 border border-zinc-200 hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
-                                    Back
+                                    Quay lại
                                 </Button>
 
                                 {currentStep === steps.length - 1 ? (
@@ -647,7 +647,7 @@ export default function SubmitProjectPage() {
                                         disabled={isSaving}
                                         className="bg-kizuna-primary text-white gap-2"
                                     >
-                                        {isSaving ? 'Submitting...' : 'Submit & Secure Project'}
+                                        {isSaving ? 'Đang gửi...' : 'Gửi dự án an toàn'}
                                         {!isSaving && <Rocket className="w-4 h-4 ml-1" />}
                                     </Button>
                                 ) : (
@@ -656,7 +656,7 @@ export default function SubmitProjectPage() {
                                         disabled={isSaving}
                                         className="gap-2 bg-kizuna-primary text-white"
                                     >
-                                        Next
+                                        Tiếp tục
                                         <ChevronRight className="w-4 h-4" />
                                     </Button>
                                 )}

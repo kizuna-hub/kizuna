@@ -4,18 +4,18 @@ import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
 const stages = [
-    { id: 1, label: 'Ideation', completed: true },
-    { id: 2, label: 'Team Building', completed: true },
+    { id: 1, label: 'Lên ý tưởng', completed: true },
+    { id: 2, label: 'Xây dựng Đội ngũ', completed: true },
     { id: 3, label: 'MVP', current: true, completed: false },
-    { id: 4, label: 'Pitch Readiness', completed: false },
-    { id: 5, label: 'Funding', completed: false },
+    { id: 4, label: 'Chuẩn bị Gọi vốn', completed: false },
+    { id: 5, label: 'Gọi vốn', completed: false },
 ];
 
 export default function IncubationRoadmap() {
     return (
         <section className="bg-white border border-kizuna-border rounded-2xl p-6 shadow-sm mb-8">
             <h2 className="text-2xl font-bold text-kizuna-text-main mb-8">
-                Virtual Incubation Roadmap
+                Lộ trình Cố vấn Trực tuyến
             </h2>
 
             {/* Progress Stepper */}
@@ -68,7 +68,7 @@ export default function IncubationRoadmap() {
             {/* Current Stage Info */}
             <div className="mt-8 p-4 bg-emerald-50 border border-emerald-100 rounded-lg text-kizuna-primary">
                 <p className="text-sm">
-                    <span className="font-bold">Current Stage:</span> You&apos;re building your MVP. Focus on core features and user validation.
+                    <span className="font-bold">Giai đoạn Hiện tại:</span> Bạn đang xây dựng MVP. Hãy tập trung vào các tính năng cốt lõi và kiểm chứng người dùng.
                 </p>
             </div>
         </section>

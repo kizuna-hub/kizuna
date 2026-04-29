@@ -8,23 +8,23 @@ export default function AIPolicyNavigatorPage() {
 
   const tasks = [
     {
-      title: "Executive Summary",
-      description: "Standardize raw ideas",
+      title: "Tóm tắt Dự án",
+      description: "Chuẩn hóa ý tưởng sơ khai",
       progress: 100,
     },
     {
-      title: "Problem & Solution Definition",
-      description: "Market-fit alignment",
+      title: "Định nghĩa Vấn đề & Giải pháp",
+      description: "Khớp với nhu cầu thị trường",
       progress: 100,
     },
     {
-      title: "Financial Plan & Budgeting (NQ-54)",
-      description: "Specific to local grant laws",
+      title: "Kế hoạch Tài chính & Ngân sách (NQ-54)",
+      description: "Theo luật hỗ trợ địa phương",
       progress: 60,
     },
     {
-      title: "Technical Roadmap & IP Status",
-      description: "Technology defensibility",
+      title: "Lộ trình Kỹ thuật & Hiện trạng IP",
+      description: "Tính năng bảo vệ công nghệ",
       progress: 0,
     },
   ];
@@ -43,16 +43,16 @@ export default function AIPolicyNavigatorPage() {
               onClick={() => setActiveTaskIndex(null)}
               className="text-sm text-kizuna-text-muted hover:text-[#102c1e] mb-2 flex items-center transition-colors font-medium"
             >
-              <ChevronRight className="w-4 h-4 rotate-180 mr-1" /> Back to Sections
+              <ChevronRight className="w-4 h-4 rotate-180 mr-1" /> Quay lại các Phần
             </button>
             <h1 className="text-2xl font-bold text-[#102c1e] flex items-center gap-2">
-              Drafting: {task.title}
+              Soạn thảo: {task.title}
             </h1>
             <p className="text-kizuna-text-muted text-sm mt-1">{task.description}</p>
           </div>
           <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-kizuna-border shadow-sm">
             <div className="text-right">
-              <p className="text-[10px] text-kizuna-text-muted font-bold uppercase tracking-wider">Completion</p>
+              <p className="text-[10px] text-kizuna-text-muted font-bold uppercase tracking-wider">Tiến độ</p>
               <p className="text-lg font-bold text-[#102c1e] leading-none mt-0.5">{task.progress}%</p>
             </div>
             <div className="w-10 h-10 rounded-full border-[3px] border-kizuna-surface flex items-center justify-center relative">
@@ -81,29 +81,29 @@ export default function AIPolicyNavigatorPage() {
           <div className="xl:col-span-2 flex flex-col gap-5">
             <div className="bg-white border border-kizuna-border rounded-xl p-6 flex-1 flex flex-col shadow-sm">
               <label className="block text-sm font-semibold text-[#102c1e] mb-3 flex items-center justify-between">
-                <span>Content Draft</span>
+                <span>Bản nháp Nội dung</span>
                 {task.progress === 100 && (
                   <span className="bg-[#102c1e]/10 text-[#102c1e] text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-md flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> Standardized
+                    <CheckCircle2 className="w-3 h-3" /> Đã chuẩn hóa
                   </span>
                 )}
               </label>
               <textarea
                 className="w-full flex-1 min-h-[400px] p-5 rounded-lg border border-kizuna-border bg-kizuna-surface focus:outline-none focus:ring-2 focus:ring-[#102c1e]/20 focus:border-[#102c1e] transition-all resize-none text-kizuna-text-main leading-relaxed shadow-inner"
-                placeholder="Start typing or use the AI Auto-Fill..."
-                defaultValue={task.progress === 100 ? "This section has been fully standardized and complies with all local regulations. The startup demonstrates a clear understanding of the market dynamics and has formulated a scalable solution that aligns with the sustainable development goals outlined in Resolution 54.\n\nKey Highlights:\n- Clear problem definition addressing urban mobility.\n- Innovative approach leveraging AI and IoT.\n- Strong alignment with Da Nang's smart city initiatives." : ""}
+                placeholder="Bắt đầu nhập nội dung hoặc sử dụng Tự động điền bằng AI..."
+                defaultValue={task.progress === 100 ? "Phần này đã được chuẩn hóa hoàn toàn và tuân thủ các quy định của địa phương. Startup thể hiện sự hiểu biết rõ ràng về động lực thị trường và đã xây dựng một giải pháp có khả năng mở rộng phù hợp với các mục tiêu phát triển bền vững được nêu trong Nghị quyết 54.\n\nNhững điểm nổi bật chính:\n- Định nghĩa rõ ràng về vấn đề giải quyết tình trạng di chuyển đô thị.\n- Phương pháp tiếp cận đổi mới tận dụng AI và IoT.\n- Sự phù hợp chặt chẽ với các sáng kiến Thành phố thông minh (Smart City)." : ""}
               ></textarea>
 
               <div className="mt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <p className="text-xs font-medium text-kizuna-text-muted flex items-center gap-1.5 bg-kizuna-surface px-3 py-1.5 rounded-md w-fit">
-                  <FileCheck className="w-3.5 h-3.5 text-[#102c1e]" /> Auto-saving draft...
+                  <FileCheck className="w-3.5 h-3.5 text-[#102c1e]" /> Đang tự động lưu nháp...
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <button className="px-5 py-2.5 text-sm font-semibold text-[#102c1e] border border-kizuna-border bg-white rounded-lg hover:bg-kizuna-surface transition-all shadow-sm">
-                    Save Draft
+                    Lưu Bản nháp
                   </button>
                   <button className="px-5 py-2.5 text-sm font-semibold text-white bg-[#102c1e] hover:bg-[#16452a] rounded-lg shadow-sm transition-all flex items-center gap-2">
-                    <Lock className="w-4 h-4" /> Lock & Sync to Ledger
+                    <Lock className="w-4 h-4" /> Khóa & Đồng bộ vào IP Ledger
                   </button>
                 </div>
               </div>
@@ -118,33 +118,33 @@ export default function AIPolicyNavigatorPage() {
               </div>
               <div>
                 <h3 className="font-bold text-[#102c1e] text-base">AI Navigator</h3>
-                <p className="text-xs font-medium text-kizuna-text-muted">Smart Drafting Assistant</p>
+                <p className="text-xs font-medium text-kizuna-text-muted">Trợ lý Soạn thảo Thông minh</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-5">
               <button className="w-full py-3 bg-[#102c1e] hover:bg-[#16452a] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center gap-2 active:scale-[0.98]">
-                <Sparkles className="w-4 h-4" /> Auto-Fill Section
+                <Sparkles className="w-4 h-4" /> Tự động Điền cho Phần này
               </button>
 
               <div className="bg-kizuna-surface/50 border border-[#102c1e]/10 rounded-xl p-4">
                 <h4 className="text-xs font-bold text-[#102c1e] flex items-center gap-1.5 mb-2.5 uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5" /> Contextual Suggestion
+                  <Sparkles className="w-3.5 h-3.5" /> Gợi ý theo Ngữ cảnh
                 </h4>
                 <p className="text-sm text-kizuna-text-main leading-relaxed">
-                  Based on <strong className="text-[#102c1e]">Resolution 54</strong>, you should emphasize your social impact in this section. Local grants prioritize solutions addressing urban environmental challenges.
+                  Dựa trên <strong className="text-[#102c1e]">Nghị quyết 54 (NQ-54)</strong>, bạn nên nhấn mạnh tác động xã hội trong phần này. Các quỹ hỗ trợ tại địa phương ưu tiên đánh giá cao những giải pháp giải quyết được các thách thức về môi trường đô thị.
                 </p>
               </div>
 
               <div className="bg-white border border-kizuna-border rounded-xl overflow-hidden flex flex-col max-h-[300px]">
                 <div className="bg-kizuna-surface border-b border-kizuna-border p-3">
                   <h4 className="text-xs font-bold text-[#102c1e] flex items-center gap-1.5 uppercase tracking-wider">
-                    <Gavel className="w-3.5 h-3.5" /> Policy Reference
+                    <Gavel className="w-3.5 h-3.5" /> Tham khảo Chính sách
                   </h4>
                 </div>
                 <div className="p-4 overflow-y-auto text-sm text-kizuna-text-muted scrollbar-thin bg-white leading-relaxed">
-                  <p className="mb-2 text-[#102c1e] font-semibold text-xs uppercase tracking-wide">Article 4.2 - Resolution 54/2021/NQ-HĐND</p>
-                  <p>Startups applying for non-refundable grants must clearly demonstrate alignment with the city's socio-economic development goals. The business model should address explicit local challenges, particularly in smart city development or green economy initiatives.</p>
+                  <p className="mb-2 text-[#102c1e] font-semibold text-xs uppercase tracking-wide">Điều 4.2 - Nghị quyết 54/2021/NQ-HĐND</p>
+                  <p>Các Startup đăng ký nhận tài trợ không hoàn lại phải chứng minh rõ sự phù hợp với các định hướng phát triển kinh tế - xã hội của thành phố. Mô hình kinh doanh cần đi sâu giải quyết các vấn đề địa phương cụ thể, đặc biệt là trong quy hoạch Phát triển thành phố thông minh hay các dự án nền kinh tế xanh.</p>
                 </div>
               </div>
             </div>
@@ -166,13 +166,13 @@ export default function AIPolicyNavigatorPage() {
               AI Policy Navigator
             </h1>
             <p className="text-kizuna-text-muted mt-3 text-lg leading-relaxed">
-              Standardizing your startup profile for investors and government grants (NQ-54 & QĐ-3344 compliant).
+              Chuẩn hóa hồ sơ startup của bạn cho nhà đầu tư và các khoản hỗ trợ từ chính quyền (tuân thủ NQ-54 & QĐ-3344).
             </p>
           </div>
 
           <div className="bg-kizuna-surface border border-kizuna-border rounded-xl p-5 shadow-inner min-w-[280px]">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-bold text-[#102c1e] uppercase tracking-wider">Overall Pitch Readiness</span>
+              <span className="text-sm font-bold text-[#102c1e] uppercase tracking-wider">Mức độ Hoàn thiện Hồ sơ</span>
               <span className="text-xl font-black text-[#102c1e]">{overallProgress}%</span>
             </div>
             <div className="h-3 w-full bg-white border border-kizuna-border rounded-full overflow-hidden shadow-inner">
@@ -183,7 +183,7 @@ export default function AIPolicyNavigatorPage() {
             </div>
             <p className="text-sm font-medium text-kizuna-text-muted mt-3 flex items-center gap-2">
               <FileCheck className="w-4 h-4 text-[#102c1e]" />
-              2 of 4 Sections Completed
+              Hoàn thành 2 trên 4 Phần
             </p>
           </div>
         </div>
@@ -194,10 +194,10 @@ export default function AIPolicyNavigatorPage() {
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl font-bold text-[#102c1e] flex items-center gap-2">
             <BookOpen className="w-5 h-5" />
-            Funding Profile Sections
+            Các phần của Hồ sơ Gọi vốn
           </h2>
           <span className="text-sm font-medium text-kizuna-text-muted bg-white border border-kizuna-border px-3 py-1 rounded-full shadow-sm">
-            Step-by-step drafting
+            Soạn thảo từng bước
           </span>
         </div>
 
@@ -234,7 +234,7 @@ export default function AIPolicyNavigatorPage() {
 
                 <div className="flex items-center md:pl-6 md:border-l border-kizuna-border self-start md:self-stretch w-full md:w-auto pt-4 md:pt-0 border-t md:border-t-0 mt-2 md:mt-0">
                   <button className={`w-full md:w-auto px-5 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap ${isCompleted ? 'bg-kizuna-surface text-[#102c1e] hover:bg-gray-100 border border-kizuna-border/50' : 'bg-[#102c1e] text-white hover:bg-[#16452a] shadow-sm group-hover:shadow-md'}`}>
-                    {isCompleted ? 'Review Content' : 'Continue with AI Assistant'}
+                    {isCompleted ? 'Xem lại Nội dung' : 'Tiếp tục với Trợ lý AI'}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -253,12 +253,12 @@ export default function AIPolicyNavigatorPage() {
         <div className="w-20 h-20 bg-kizuna-surface rounded-full border border-kizuna-border flex items-center justify-center mb-5 shadow-inner relative z-10">
           <Fingerprint className="w-10 h-10 text-[#102c1e]" />
         </div>
-        <h2 className="text-2xl font-bold text-[#102c1e] mb-3 relative z-10">Secure & Sync to Ledger</h2>
+        <h2 className="text-2xl font-bold text-[#102c1e] mb-3 relative z-10">Bảo mật & Đồng bộ vào Ledger</h2>
         <p className="text-kizuna-text-muted font-medium max-w-lg mb-8 relative z-10 leading-relaxed">
-          Once your funding profile sections are fully standardized and approved, sync them to the IP Protection Ledger to generate immutable ownership hashes.
+          Sau khi các phần của hồ sơ gọi vốn được chuẩn hóa và phê duyệt đầy đủ, hãy đồng bộ chúng vào IP Ledger để tạo các mã băm sở hữu dữ liệu bất biến.
         </p>
         <button className="px-8 py-3.5 bg-[#102c1e] hover:bg-[#16452a] text-white text-base font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2.5 active:scale-[0.98] relative z-10">
-          <Lock className="w-5 h-5" /> Secure & Sync to IP Ledger
+          <Lock className="w-5 h-5" /> Bảo mật & Đồng bộ vào IP Ledger
         </button>
       </div>
     </div>

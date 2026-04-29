@@ -8,25 +8,25 @@ const topMatches = [
     {
         id: 1,
         name: 'Elena Rodriguez',
-        role: 'SaaS Founder & Angel Investor',
+        role: 'Nhà sáng lập SaaS & Nhà đầu tư thiên thần',
         matchScore: '98%',
-        reason: 'Strong background in B2B SaaS scaling and pricing strategy.',
+        reason: 'Nền tảng vững chắc về chiến lược định giá và mở rộng SaaS B2B.',
         initials: 'ER'
     },
     {
         id: 2,
         name: 'Marcus Chen',
-        role: 'Ex-Stripe Product Lead',
+        role: 'Cựu Giám đốc Sản phẩm Stripe',
         matchScore: '95%',
-        reason: 'Deep expertise in fintech infrastructure and go-to-market.',
+        reason: 'Chuyên môn sâu rộng về hạ tầng fintech và GTM.',
         initials: 'MC'
     },
     {
         id: 3,
         name: 'Sarah Williams',
-        role: 'Venture Partner at XYZ Capital',
+        role: 'Đối tác Venture tại XYZ Capital',
         matchScore: '92%',
-        reason: 'Actively looking for seed-stage AI productivity tools.',
+        reason: 'Đang tích cực tìm kiếm công cụ tối ưu năng suất ứng dụng AI giai đoạn seed.',
         initials: 'SW'
     }
 ];
@@ -35,24 +35,24 @@ const activeRequests = [
     {
         id: 1,
         name: 'David Kim',
-        role: 'Growth Marketing Expert',
-        dateSent: 'Oct 12, 2026',
+        role: 'Chuyên gia Tăng trưởng Marketing',
+        dateSent: '12 Tháng 10, 2026',
         status: 'Pending',
         initials: 'DK'
     },
     {
         id: 2,
         name: 'Priya Patel',
-        role: 'Technical Co-founder',
-        dateSent: 'Oct 10, 2026',
+        role: 'Co-founder Công nghệ',
+        dateSent: '10 Tháng 10, 2026',
         status: 'Connected',
         initials: 'PP'
     },
     {
         id: 3,
         name: 'James Wilson',
-        role: 'Enterprise Sales',
-        dateSent: 'Oct 08, 2026',
+        role: 'Chuyên viên Sale Doanh nghiệp',
+        dateSent: '08 Tháng 10, 2026',
         status: 'Pending',
         initials: 'JW'
     }
@@ -61,16 +61,16 @@ const activeRequests = [
 const upcomingMeetings = [
     {
         id: 1,
-        date: 'Tomorrow, 10:00 AM',
+        date: 'Ngày mai, 10:00 Sáng',
         name: 'Elena Rodriguez',
-        topic: 'Pricing Strategy Review',
+        topic: 'Đánh giá Chiến lược Định giá',
         initials: 'ER'
     },
     {
         id: 2,
-        date: 'Oct 18, 2:30 PM',
+        date: '18 Tháng 10, 2:30 Chiều',
         name: 'Priya Patel',
-        topic: 'Architecture Feedback',
+        topic: 'Phản hồi Cấu trúc Hệ thống',
         initials: 'PP'
     }
 ];
@@ -81,17 +81,17 @@ export default function VentureConnectPage() {
             {/* Page Header */}
             <div>
                 <h1 className="text-2xl font-bold text-kizuna-text-main">
-                    My Connections & Mentorship
+                    Kết nối & Mentorship của tôi
                 </h1>
                 <p className="text-sm text-kizuna-text-muted mt-1">
-                    Manage your AI-suggested matches, active requests, and upcoming sessions.
+                    Quản lý danh sách phù hợp do AI đề xuất, các yêu cầu kết nối đang chờ xử lý và các lịch họp sắp tới.
                 </p>
             </div>
 
             {/* Top Section: AI Match Radar */}
             <section>
                 <h2 className="text-lg font-semibold text-kizuna-text-main mb-4">
-                    Top AI Matches
+                    Gợi ý AI Phù hợp nhất
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {topMatches.map((match) => (
@@ -113,17 +113,17 @@ export default function VentureConnectPage() {
                                     </div>
                                 </div>
                                 <span className="bg-emerald-50 text-kizuna-primary font-medium text-xs px-2 py-1 rounded">
-                                    {match.matchScore} Match
+                                    Độ phù hợp {match.matchScore}
                                 </span>
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm text-kizuna-text-main bg-zinc-50 p-3 rounded-lg border border-kizuna-border/50">
-                                    <span className="font-medium block mb-1">Why they match:</span>
+                                    <span className="font-medium block mb-1">Tại sao phù hợp:</span>
                                     {match.reason}
                                 </p>
                             </div>
                             <button className="w-full mt-4 border border-kizuna-border text-kizuna-text-main hover:bg-zinc-50 bg-white rounded-lg py-2 font-medium text-sm transition-colors">
-                                Request Intro
+                                Yêu cầu Giới thiệu
                             </button>
                         </div>
                     ))}
@@ -134,14 +134,14 @@ export default function VentureConnectPage() {
                 {/* Middle Section: Connection Pipeline */}
                 <section className="lg:col-span-2">
                     <h2 className="text-lg font-semibold text-kizuna-text-main mb-4">
-                        Active Requests
+                        Kết nối Đang theo dõi
                     </h2>
                     <div className="bg-white border border-kizuna-border rounded-2xl shadow-sm overflow-hidden">
                         <div className="min-w-full divide-y divide-kizuna-border">
                             <div className="bg-zinc-50 px-6 py-3 flex items-center text-xs font-medium text-kizuna-text-muted uppercase tracking-wider">
                                 <div className="flex-1">Mentor</div>
-                                <div className="w-32">Date Sent</div>
-                                <div className="w-32">Status</div>
+                                <div className="w-32">Ngày Gửi</div>
+                                <div className="w-32">Trạng thái</div>
                                 <div className="w-12"></div>
                             </div>
                             <div className="divide-y divide-kizuna-border">
@@ -169,12 +169,12 @@ export default function VentureConnectPage() {
                                             {req.status === 'Pending' ? (
                                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-600 border border-amber-100">
                                                     <Clock className="w-3 h-3" />
-                                                    Pending
+                                                    Đang chờ
                                                 </span>
                                             ) : (
                                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-kizuna-primary border border-emerald-100">
                                                     <CheckCircle2 className="w-3 h-3" />
-                                                    Connected
+                                                    Đã kết nối
                                                 </span>
                                             )}
                                         </div>
@@ -193,7 +193,7 @@ export default function VentureConnectPage() {
                 {/* Right Section: Upcoming Sessions */}
                 <section>
                     <h2 className="text-lg font-semibold text-kizuna-text-main mb-4">
-                        Upcoming Meetings
+                        Sự kiện Sắp tới
                     </h2>
                     <div className="space-y-4">
                         {upcomingMeetings.map((meeting) => (
@@ -207,7 +207,7 @@ export default function VentureConnectPage() {
                                             {meeting.topic}
                                         </p>
                                         <p className="text-sm text-kizuna-text-muted mt-1">
-                                            with <span className="font-medium text-kizuna-text-main">{meeting.name}</span>
+                                            với <span className="font-medium text-kizuna-text-main">{meeting.name}</span>
                                         </p>
                                         <div className="flex items-center gap-1.5 mt-2 text-xs font-medium text-kizuna-primary bg-zinc-50 w-fit px-2 py-1 rounded-md border border-kizuna-border/50">
                                             <Clock className="w-3.5 h-3.5" />
@@ -217,7 +217,7 @@ export default function VentureConnectPage() {
                                 </div>
                                 <button className="w-full flex items-center justify-center gap-2 bg-kizuna-primary text-white rounded-lg px-4 py-2 font-medium text-sm">
                                     <Video className="w-4 h-4" />
-                                    Join Call
+                                    Tham gia cuộc gọi
                                 </button>
                             </div>
                         ))}

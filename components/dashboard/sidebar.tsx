@@ -17,10 +17,10 @@ import { Button } from '@/components/ui/button';
 
 const menuItems = [
     { icon: BarChart3, label: 'Dashboard', href: '/founder-workspace' },
-    { icon: FileText, label: 'AI Pitch Deck & Forms', href: '/founder-workspace/ai-pitch-deck' },
+    { icon: FileText, label: 'AI Pitch Deck', href: '/founder-workspace/ai-pitch-deck' },
     { icon: Users, label: 'Venture Connect', href: '/founder-workspace/venture-connect' },
     { icon: Lock, label: 'IP Protection Ledger', href: '/founder-workspace/ip-ledger' },
-    { icon: Zap, label: 'SaaS Perks & Offers', href: '/founder-workspace/saas-perks' },
+    { icon: Zap, label: 'SaaS Perks & Ưu đãi', href: '/founder-workspace/saas-perks' },
 ];
 
 export default function Sidebar() {
@@ -37,7 +37,7 @@ export default function Sidebar() {
                     </h1>
                 </Link>
                 <Link href="/" className="flex items-center text-xs font-medium text-kizuna-text-muted hover:text-kizuna-text-main mb-6 transition-colors">
-                    &larr; Back to Discover
+                    &larr; Quay lại Khám phá
                 </Link>
                 <Button
                     variant="outline"
@@ -63,13 +63,20 @@ export default function Sidebar() {
             <nav className="flex-1 p-4 space-y-2">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    // Xử lý pathname để lấy route thực tế, bỏ qua locale (ví dụ: /vi/founder...)
+                    const normalizedPath = pathname.replace(/^\/[a-zA-Z-]{2,5}(\/|$)/, '/');
+
+                    // Xử lý riêng cho nút Dashboard (vì nó là prefix của tất cả các route khác)
+                    const isActive = item.href === '/founder-workspace'
+                        ? normalizedPath === '/founder-workspace' || normalizedPath === '/founder-workspace/'
+                        : normalizedPath === item.href || normalizedPath.startsWith(item.href + '/');
+
                     return (
                         <Link
                             key={item.label}
                             href={item.href}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
-                                ? 'bg-kizuna-primary text-white font-medium'
+                                ? 'bg-kizuna-primary text-white font-medium shadow-sm'
                                 : 'text-kizuna-text-muted hover:bg-zinc-100 hover:text-kizuna-text-main'
                                 }`}
                         >
@@ -91,7 +98,7 @@ export default function Sidebar() {
                             Alex Chen
                         </p>
                         <p className="text-xs text-kizuna-text-muted">
-                            Founder
+                            Nhà sáng lập
                         </p>
                     </div>
                     <Settings className="w-4 h-4 text-kizuna-text-muted" />

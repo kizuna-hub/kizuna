@@ -1,6 +1,6 @@
 import * as React from "react"
 import { RoleCard } from "@/components/ui/role-card"
-import { Briefcase, Lightbulb, Building2 } from "lucide-react"
+import { Briefcase, Lightbulb, Building2, Rocket } from "lucide-react"
 
 interface RoleStepProps {
   data: {
@@ -42,6 +42,14 @@ export function RoleStep({ data, updateData }: RoleStepProps) {
           selected={data.roles.includes("corporate")}
           onClick={() => toggleRole("corporate")}
           icon={<Building2 className="w-6 h-6" />}
+        />
+
+        <RoleCard
+          title="Pioneer Founder"
+          description="Vừa gọi vốn thành công, sẵn sàng chia sẻ kinh nghiệm sinh tồn & tìm kiếm Co-founder"
+          selected={data.roles.includes("pioneer")}
+          onClick={() => toggleRole("pioneer")}
+          icon={<Rocket className="w-6 h-6" />}
         />
       </div>
     </div>

@@ -8,15 +8,15 @@ import { cn } from '@/lib/utils'
 
 const navSections = [
   {
-    title: 'Discover',
+    title: 'Khám phá',
     items: [
-      { label: 'Newest', icon: Sparkles, href: '/', count: 24 },
-      { label: 'Trending', icon: TrendingUp, href: '/trending', count: 12 },
-      { label: 'Top Voted', icon: Star, href: '/top-voted', count: 8 },
+      { label: 'Mới nhất', icon: Sparkles, href: '/', count: 24 },
+      { label: 'Thịnh hành', icon: TrendingUp, href: '/trending', count: 12 },
+      { label: 'Bình chọn cao', icon: Star, href: '/top-voted', count: 8 },
     ],
   },
   {
-    title: 'Categories',
+    title: 'Danh mục',
     items: [
       { label: 'AI & Tech', icon: Code2, href: '/categories/ai-tech', count: 45 },
       { label: 'EdTech', icon: BookOpen, href: '/categories/edtech', count: 23 },
@@ -25,11 +25,11 @@ const navSections = [
     ],
   },
   {
-    title: 'Resources',
+    title: 'Tài nguyên',
     items: [
       { label: 'Mentor Hub', icon: Sparkles, href: '/resources/mentor-hub' },
       { label: 'SaaS Perks', icon: Gift, href: '/resources/saas-perks' },
-      { label: 'IP Templates', icon: BookOpen, href: '/resources/ip-templates' },
+      { label: 'Biểu mẫu IP', icon: BookOpen, href: '/resources/ip-templates' },
     ],
   },
 ]
@@ -84,12 +84,14 @@ export function LeftSidebar() {
                       </div>
                     )
 
-                    const isActive = pathname === item.href
+                    // Bỏ qua prefix locale khi kiểm tra route
+                    const normalizedPath = pathname.replace(/^\/[a-zA-Z-]{2,5}(\/|$)/, '/');
+                    const isActive = normalizedPath === item.href || (item.href !== '/' && normalizedPath.startsWith(item.href));
 
                     const className = cn(
                       'w-full flex items-center p-2.5 rounded-lg text-sm transition-colors overflow-hidden',
-                      isActive 
-                        ? 'bg-kizuna-primary text-white font-medium' 
+                      isActive
+                        ? 'bg-kizuna-primary text-white font-medium shadow-sm'
                         : 'text-kizuna-text-muted hover:bg-zinc-100 hover:text-kizuna-text-main'
                     )
 
@@ -114,14 +116,14 @@ export function LeftSidebar() {
             {/* Advanced Filters */}
             <div className={cn("border-t border-kizuna-border pt-8", isCollapsed && "hidden")}>
               <h3 className="text-xs font-semibold text-kizuna-text-muted uppercase tracking-wider mb-4 px-2">
-                Advanced Filters
+                Bộ lọc nâng cao
               </h3>
 
               {/* Stage Filter */}
               <div className="mb-6 px-2">
-                <label className="text-xs font-semibold text-kizuna-text-main mb-2 block">Stage</label>
+                <label className="text-xs font-semibold text-kizuna-text-main mb-2 block">Giai đoạn</label>
                 <div className="space-y-2">
-                  {['Idea', 'MVP', 'Traction/Scaling'].map((stageOption) => (
+                  {['Ý tưởng', 'MVP', 'Traction/Scaling'].map((stageOption) => (
                     <label key={stageOption} className="flex items-center gap-2 cursor-pointer hover:bg-kizuna-border/50 p-2 rounded transition">
                       <input
                         type="radio"
@@ -140,7 +142,7 @@ export function LeftSidebar() {
               {/* NQ-54 Eligible Toggle */}
               <div className="mb-6 px-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <label className="text-xs font-semibold text-kizuna-text-main">NQ-54 Eligible</label>
+                  <label className="text-xs font-semibold text-kizuna-text-main">Tiêu chuẩn NQ-54</label>
                   <button
                     onMouseEnter={() => setShowNq54Tooltip(true)}
                     onMouseLeave={() => setShowNq54Tooltip(false)}
@@ -149,7 +151,7 @@ export function LeftSidebar() {
                     <Info className="w-3.5 h-3.5 text-kizuna-text-muted hover:text-kizuna-text-main transition" />
                     {showNq54Tooltip && (
                       <div className="absolute left-0 top-6 bg-kizuna-surface border border-kizuna-border rounded text-xs text-kizuna-text-main p-2 w-40 z-50 pointer-events-none shadow-sm">
-                        NQ-54 is a regulatory qualification for high-tech startups
+                        NQ-54 là tiêu chuẩn pháp lý dành cho startup công nghệ cao
                       </div>
                     )}
                   </button>
@@ -172,7 +174,7 @@ export function LeftSidebar() {
 
               {/* Generating Revenue Toggle */}
               <div className="px-2 flex items-center justify-between pb-4">
-                <label className="text-xs font-semibold text-kizuna-text-main">Generating Revenue</label>
+                <label className="text-xs font-semibold text-kizuna-text-main">Có doanh thu</label>
                 <button
                   onClick={() => setGeneratingRevenue(!generatingRevenue)}
                   className={cn(

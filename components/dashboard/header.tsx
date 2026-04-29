@@ -9,10 +9,10 @@ export default function Header() {
     const pathname = usePathname();
 
     let currentSection = 'Dashboard';
-    if (pathname?.includes('/ai-pitch-deck')) currentSection = 'AI Pitch Deck & Forms';
+    if (pathname?.includes('/ai-pitch-deck')) currentSection = 'AI Pitch Deck & Biểu mẫu';
     else if (pathname?.includes('/venture-connect')) currentSection = 'Venture Connect';
     else if (pathname?.includes('/ip-ledger')) currentSection = 'IP Protection Ledger';
-    else if (pathname?.includes('/perks')) currentSection = 'SaaS Perks & Offers';
+    else if (pathname?.includes('/perks')) currentSection = 'SaaS Perks & Ưu đãi';
 
     return (
         <header className="h-16 bg-white border-b border-kizuna-border flex items-center justify-between px-8 sticky top-0 z-10">
@@ -31,7 +31,7 @@ export default function Header() {
                     className="gap-2 border border-kizuna-border text-kizuna-text-main hover:bg-zinc-50"
                 >
                     <Share2 className="w-4 h-4" />
-                    Share Project
+                    Chia sẻ Dự án
                 </Button>
                 <button className="p-2 rounded-lg hover:bg-zinc-50 transition-colors relative">
                     <Bell className="w-5 h-5 text-kizuna-text-muted" />
