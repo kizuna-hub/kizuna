@@ -1,0 +1,14 @@
+{
+    "Navigation": {
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "projects": "Projects",
+        "mentors": "Mentors",
+        "events": "Events",
+        "admin": "Admin"
+    },
+    "LocaleSwitcher": {
+        "en": "EN",
+        "vi": "VI"
+    }
+}

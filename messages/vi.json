@@ -1,0 +1,14 @@
+{
+    "Navigation": {
+        "home": "Trang chủ",
+        "dashboard": "Bảng điều khiển",
+        "projects": "Dự án",
+        "mentors": "Cố vấn",
+        "events": "Sự kiện",
+        "admin": "Quản trị"
+    },
+    "LocaleSwitcher": {
+        "en": "EN",
+        "vi": "VI"
+    }
+}
