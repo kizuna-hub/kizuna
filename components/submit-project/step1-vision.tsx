@@ -11,52 +11,32 @@ interface Step1Props {
 }
 
 export function Step1Vision({ formData, handleInputChange, handleAIPolish, showSparkle }: Step1Props) {
-    return (
-        <div className="space-y-6">
-            {/* Hàng 1: Tên dự án & Lĩnh vực */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Tên dự án */}
-                <div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
-                        <Users className="w-4 h-4 text-kizuna-primary" /> Tên dự án
-                    </label>
-                    <p className="text-xs text-kizuna-text-muted mb-2">Đặt tên startup của bạn.</p>
-                    <Input
-                        name="projectName"
-                        value={formData.projectName}
-                        onChange={handleInputChange}
-                        placeholder="Ví dụ: Kizuna Hub"
-                        className="bg-white border border-zinc-300 text-kizuna-text-main focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary px-3 py-2"
-                    />
-                </div>
 
-                {/* Lĩnh vực trọng điểm (Category) */}
-                <div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
-                        <Layers className="w-4 h-4 text-kizuna-primary" /> Lĩnh vực trọng điểm
-                    </label>
-                    <p className="text-xs text-kizuna-text-muted mb-2">Giúp AI phân loại Mentor phù hợp.</p>
-                    <div className="relative">
-                        <select
-                            name="category"
-                            value={formData.category}
-                            onChange={handleInputChange}
-                            className="w-full bg-white border border-zinc-300 rounded-md text-sm text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary px-3 py-2 appearance-none h-10"
-                        >
-                            <option value="" disabled>Chọn lĩnh vực...</option>
-                            <option value="AI & DeepTech">AI & DeepTech</option>
-                            <option value="EdTech">Giáo dục (EdTech)</option>
-                            <option value="AgriTech">Nông nghiệp (AgriTech)</option>
-                            <option value="FinTech">Tài chính (FinTech)</option>
-                            <option value="Social Impact">Tác động Xã hội</option>
-                            <option value="E-commerce">Thương mại điện tử</option>
-                            <option value="Other">Khác</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-500">
-                            <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
-                        </div>
-                    </div>
-                </div>
+    // Danh sách các lĩnh vực kèm Icon
+    const categories = [
+        { id: 'AI & DeepTech', icon: '🤖', label: 'AI & DeepTech' },
+        { id: 'EdTech', icon: '📚', label: 'EdTech' },
+        { id: 'AgriTech', icon: '🌿', label: 'AgriTech' },
+        { id: 'FinTech', icon: '💳', label: 'FinTech' },
+        { id: 'Social Impact', icon: '🌍', label: 'Social Impact' },
+        { id: 'E-commerce', icon: '🛒', label: 'E-commerce' },
+    ];
+
+    return (
+        <div className="space-y-8">
+            {/* Tên dự án */}
+            <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
+                    <Users className="w-4 h-4 text-kizuna-primary" /> Tên dự án
+                </label>
+                <p className="text-xs text-kizuna-text-muted mb-3">Đặt tên startup của bạn.</p>
+                <Input
+                    name="projectName"
+                    value={formData.projectName}
+                    onChange={handleInputChange}
+                    placeholder="Ví dụ: Kizuna Hub"
+                    className="bg-white border border-zinc-300 text-kizuna-text-main focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary px-4 py-6 text-lg font-medium transition-all shadow-sm"
+                />
             </div>
 
             {/* Slogan / Elevator Pitch */}
@@ -64,19 +44,48 @@ export function Step1Vision({ formData, handleInputChange, handleAIPolish, showS
                 <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
                     <Mic className="w-4 h-4 text-kizuna-primary" /> Slogan (Elevator Pitch)
                 </label>
-                <p className="text-xs text-kizuna-text-muted mb-2">Tóm tắt dự án của bạn trong 1 câu duy nhất (Dưới 80 ký tự).</p>
+                <p className="text-xs text-kizuna-text-muted mb-3">Tóm tắt dự án của bạn trong 1 câu duy nhất (Dưới 80 ký tự).</p>
                 <Input
                     name="slogan"
                     value={formData.slogan}
                     onChange={handleInputChange}
                     maxLength={80}
                     placeholder="Ví dụ: Nền tảng ươm tạo số và bảo vệ bản quyền ý tưởng cho sinh viên."
-                    className="bg-white border border-zinc-300 text-kizuna-text-main focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary px-3 py-2"
+                    className="bg-white border border-zinc-300 text-kizuna-text-main focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary px-3 py-3 shadow-sm transition-all"
                 />
             </div>
 
+            {/* Lĩnh vực trọng điểm (Category) - VISUAL CARDS UPGRADE */}
+            <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
+                    <Layers className="w-4 h-4 text-kizuna-primary" /> Lĩnh vực trọng điểm
+                </label>
+                <p className="text-xs text-kizuna-text-muted mb-4">Giúp AI phân loại Mentor phù hợp.</p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {categories.map((cat) => {
+                        const isSelected = formData.category === cat.id;
+                        return (
+                            <div
+                                key={cat.id}
+                                onClick={() => handleInputChange({ target: { name: 'category', value: cat.id } })}
+                                className={`cursor-pointer rounded-xl border p-4 flex flex-col items-center justify-center text-center transition-all duration-200 ${isSelected
+                                        ? 'border-kizuna-primary bg-kizuna-primary/5 ring-1 ring-kizuna-primary shadow-sm'
+                                        : 'border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50'
+                                    }`}
+                            >
+                                <span className="text-2xl mb-2">{cat.icon}</span>
+                                <span className={`text-xs font-semibold ${isSelected ? 'text-kizuna-primary' : 'text-zinc-600'}`}>
+                                    {cat.label}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
             {/* Vấn đề (Có AI Polish) */}
-            <div className="relative">
+            <div className="relative pt-4 border-t border-zinc-100">
                 <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
                     <Target className="w-4 h-4 text-kizuna-primary" /> Đặt ra vấn đề
                 </label>
@@ -85,13 +94,13 @@ export function Step1Vision({ formData, handleInputChange, handleAIPolish, showS
                     value={formData.problem}
                     onChange={handleInputChange}
                     placeholder="Nêu rõ 'nỗi đau' của thị trường mà bạn đang muốn giải quyết..."
-                    className="bg-white border border-zinc-300 text-kizuna-text-main min-h-24 p-3"
+                    className="bg-white border border-zinc-300 text-kizuna-text-main min-h-24 p-4 shadow-sm"
                 />
-                <div className="absolute bottom-3 right-3 group">
+                <div className="absolute bottom-4 right-4 group">
                     <button
                         onClick={() => handleAIPolish('problem')}
                         disabled={showSparkle === 'problem'}
-                        className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 disabled:opacity-50 transition-colors"
+                        className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 disabled:opacity-50 transition-colors shadow-sm hover:bg-white"
                     >
                         {showSparkle === 'problem' ? (
                             <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity }}>
@@ -101,7 +110,7 @@ export function Step1Vision({ formData, handleInputChange, handleAIPolish, showS
                             <Sparkles className="w-4 h-4" />
                         )}
                     </button>
-                    <span className="absolute bottom-full right-0 mb-2 hidden group-hover:block rounded bg-zinc-800 px-2 py-1 text-[10px] text-zinc-300">AI Polish</span>
+                    <span className="absolute bottom-full right-0 mb-2 hidden group-hover:block rounded bg-zinc-800 px-2 py-1 text-[10px] text-zinc-300 shadow-lg">AI Polish</span>
                 </div>
             </div>
 
@@ -115,13 +124,13 @@ export function Step1Vision({ formData, handleInputChange, handleAIPolish, showS
                     value={formData.solution}
                     onChange={handleInputChange}
                     placeholder="Sản phẩm của bạn tháo gỡ điểm nghẽn ấy như thế nào?"
-                    className="bg-white border border-zinc-300 text-kizuna-text-main min-h-24 p-3"
+                    className="bg-white border border-zinc-300 text-kizuna-text-main min-h-24 p-4 shadow-sm"
                 />
-                <div className="absolute bottom-3 right-3 group">
+                <div className="absolute bottom-4 right-4 group">
                     <button
                         onClick={() => handleAIPolish('solution')}
                         disabled={showSparkle === 'solution'}
-                        className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 disabled:opacity-50 transition-colors"
+                        className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 disabled:opacity-50 transition-colors shadow-sm hover:bg-white"
                     >
                         {showSparkle === 'solution' ? (
                             <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity }}>
@@ -131,7 +140,7 @@ export function Step1Vision({ formData, handleInputChange, handleAIPolish, showS
                             <Sparkles className="w-4 h-4" />
                         )}
                     </button>
-                    <span className="absolute bottom-full right-0 mb-2 hidden group-hover:block rounded bg-zinc-800 px-2 py-1 text-[10px] text-zinc-300">AI Polish</span>
+                    <span className="absolute bottom-full right-0 mb-2 hidden group-hover:block rounded bg-zinc-800 px-2 py-1 text-[10px] text-zinc-300 shadow-lg">AI Polish</span>
                 </div>
             </div>
 
@@ -140,19 +149,19 @@ export function Step1Vision({ formData, handleInputChange, handleAIPolish, showS
                 <label className="flex items-center gap-2 text-sm font-semibold text-kizuna-text-main mb-1">
                     <Award className="w-4 h-4 text-kizuna-primary" /> Lợi thế cạnh tranh (UVP)
                 </label>
-                <p className="text-xs text-kizuna-text-muted mb-2">Điểm khác biệt / Công nghệ lõi giúp bạn vượt qua đối thủ là gì?</p>
+                <p className="text-xs text-kizuna-text-muted mb-3">Điểm khác biệt / Công nghệ lõi giúp bạn vượt qua đối thủ là gì?</p>
                 <Textarea
                     name="uvp"
                     value={formData.uvp}
                     onChange={handleInputChange}
                     placeholder="Ví dụ: Sử dụng thuật toán AI bản quyền, hoặc đã ký kết được với 30 đối tác B2B..."
-                    className="bg-white border border-zinc-300 text-kizuna-text-main min-h-24 p-3"
+                    className="bg-white border border-zinc-300 text-kizuna-text-main min-h-24 p-4 shadow-sm"
                 />
-                <div className="absolute bottom-3 right-3 group">
+                <div className="absolute bottom-4 right-4 group">
                     <button
                         onClick={() => handleAIPolish('uvp')}
                         disabled={showSparkle === 'uvp'}
-                        className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 disabled:opacity-50 transition-colors"
+                        className="flex items-center justify-center bg-zinc-100 text-kizuna-primary border border-zinc-200 rounded-md w-8 h-8 disabled:opacity-50 transition-colors shadow-sm hover:bg-white"
                     >
                         {showSparkle === 'uvp' ? (
                             <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity }}>
@@ -162,7 +171,7 @@ export function Step1Vision({ formData, handleInputChange, handleAIPolish, showS
                             <Sparkles className="w-4 h-4" />
                         )}
                     </button>
-                    <span className="absolute bottom-full right-0 mb-2 hidden group-hover:block rounded bg-zinc-800 px-2 py-1 text-[10px] text-zinc-300">AI Polish</span>
+                    <span className="absolute bottom-full right-0 mb-2 hidden group-hover:block rounded bg-zinc-800 px-2 py-1 text-[10px] text-zinc-300 shadow-lg">AI Polish</span>
                 </div>
             </div>
         </div>
