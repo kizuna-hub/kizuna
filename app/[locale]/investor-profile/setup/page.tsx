@@ -10,7 +10,7 @@ import { ValueAddStep } from "@/components/investor-profile/steps/value-add-step
 export default function InvestorProfileSetupPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = React.useState(1)
-  
+
   const [formData, setFormData] = React.useState({
     // Step 1
     investorType: "",
@@ -63,20 +63,20 @@ export default function InvestorProfileSetupPage() {
     switch (currentStep) {
       case 1:
         return {
-          title: "Verify Your Identity",
-          subtitle: "Tell us a bit about who you are as an investor.",
+          title: "Xác minh danh tính",
+          subtitle: "Hãy chia sẻ một chút về tư cách nhà đầu tư của bạn.",
           component: <VerificationStep data={formData} updateData={updateFormData} />
         }
       case 2:
         return {
-          title: "Your Investment Thesis",
-          subtitle: "What kind of startups get you excited?",
+          title: "Luận điểm đầu tư",
+          subtitle: "Những loại hình startup nào khiến bạn quan tâm?",
           component: <ThesisStep data={formData} updateData={updateFormData} />
         }
       case 3:
         return {
-          title: "Value & Involvement",
-          subtitle: "How hands-on are you after signing the term sheet?",
+          title: "Giá trị & Mức độ hỗ trợ",
+          subtitle: "Mức độ hỗ trợ thực tế của bạn sau khi ký kết Term Sheet?",
           component: <ValueAddStep data={formData} updateData={updateFormData} />
         }
       default:

@@ -27,7 +27,7 @@ export function WizardLayout({
   return (
     <div className="min-h-screen bg-kizuna-surface flex pt-16">
       <div className="max-w-6xl w-full mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 pb-24">
-        
+
         {/* Left Side: Motivational Counter & Progress */}
         <div className="lg:col-span-4 flex flex-col space-y-8 pt-8">
           <div>
@@ -35,7 +35,7 @@ export function WizardLayout({
               Kizuna Hub
             </h1>
             <p className="text-kizuna-text-muted text-base">
-              Set up your investment thesis to find the perfect startup matches.
+              Thiết lập Luận điểm đầu tư (Investment Thesis) để kết nối với những dự án startup phù hợp nhất.
             </p>
           </div>
 
@@ -45,32 +45,31 @@ export function WizardLayout({
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-sm font-medium text-kizuna-text-muted">Live Ecosystem</p>
+                <p className="text-sm font-medium text-kizuna-text-muted">Hệ sinh thái thực tế</p>
                 <p className="text-xl font-semibold text-kizuna-text-main">
-                  15 matching startups
+                  15 startup phù hợp
                 </p>
               </div>
             </div>
             <p className="text-sm text-kizuna-text-muted">
-              Found based on early indications. Complete your profile to see your tailored deal flow.
+              Được tìm thấy dựa trên các tiêu chí ban đầu. Hoàn thiện hồ sơ để xem Deal Flow dành riêng cho bạn.
             </p>
           </div>
-          
+
           {/* Progress Bar Elements */}
           <div className="space-y-3 pt-6">
             <div className="flex items-center justify-between text-sm font-medium">
-              <span className="text-kizuna-text-main">Step {currentStep} of {totalSteps}</span>
+              <span className="text-kizuna-text-main">Bước {currentStep} trên {totalSteps}</span>
               <span className="text-kizuna-text-muted">
-                {Math.round((currentStep / totalSteps) * 100)}% Complete
+                Hoàn thành {Math.round((currentStep / totalSteps) * 100)}%
               </span>
             </div>
             <div className="flex space-x-2">
               {Array.from({ length: totalSteps }).map((_, i) => (
                 <div
                   key={i}
-                  className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
-                    i + 1 <= currentStep ? "bg-kizuna-primary" : "bg-zinc-200"
-                  }`}
+                  className={`h-2 flex-1 rounded-full transition-colors duration-300 ${i + 1 <= currentStep ? "bg-kizuna-primary" : "bg-zinc-200"
+                    }`}
                 />
               ))}
             </div>
@@ -85,7 +84,7 @@ export function WizardLayout({
               <h2 className="text-2xl font-semibold text-kizuna-text-main">{title}</h2>
               <p className="text-kizuna-text-muted mt-2">{subtitle}</p>
             </div>
-            
+
             {/* Content Body */}
             <div className="flex-1 p-10">
               {children}
@@ -99,19 +98,18 @@ export function WizardLayout({
                   onClick={onBack}
                   className="text-zinc-500 hover:text-zinc-900 font-medium transition-colors px-4 py-2"
                 >
-                  Back
+                  Quay lại
                 </button>
               ) : <div />}
-              
+
               <button
                 type="button"
                 onClick={onNext}
                 disabled={isNextDisabled}
-                className={`bg-kizuna-primary text-white rounded-lg px-6 py-3 font-medium transition-opacity ${
-                  isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
-                }`}
+                className={`bg-kizuna-primary text-white rounded-lg px-6 py-3 font-medium transition-opacity ${isNextDisabled ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+                  }`}
               >
-                {isLastStep ? "Complete Profile" : "Next Step"}
+                {isLastStep ? "Hoàn thiện hồ sơ" : "Bước kế tiếp"}
               </button>
             </div>
           </div>

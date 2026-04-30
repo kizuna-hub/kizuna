@@ -15,7 +15,7 @@ export function VerificationStep({ data, updateData }: VerificationStepProps) {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="space-y-4">
         <label className="block text-sm font-medium text-kizuna-text-main">
-          Investor Type
+          Loại hình nhà đầu tư
         </label>
         <div className="relative">
           <select
@@ -23,7 +23,7 @@ export function VerificationStep({ data, updateData }: VerificationStepProps) {
             onChange={(e) => updateData({ investorType: e.target.value })}
             className="w-full appearance-none bg-white border border-kizuna-border rounded-xl px-4 py-3.5 text-kizuna-text-main focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
           >
-            <option value="" disabled>Select your investor type</option>
+            <option value="" disabled>Chọn loại hình nhà đầu tư của bạn</option>
             {investorTypes.map(type => (
               <option key={type} value={type}>{type}</option>
             ))}
@@ -38,7 +38,7 @@ export function VerificationStep({ data, updateData }: VerificationStepProps) {
 
       <div className="space-y-4">
         <label className="block text-sm font-medium text-kizuna-text-main">
-          LinkedIn URL or Portfolio Link
+          LinkedIn URL hoặc liên kết Portfolio
         </label>
         <input
           type="url"
@@ -48,7 +48,7 @@ export function VerificationStep({ data, updateData }: VerificationStepProps) {
           className="w-full bg-white border border-kizuna-border rounded-xl px-4 py-3.5 text-kizuna-text-main placeholder:text-zinc-400 focus:outline-none focus:border-kizuna-primary focus:ring-1 focus:ring-kizuna-primary transition-all"
         />
         <p className="text-sm text-kizuna-text-muted">
-          Required for verification to maintain ecosystem quality.
+          Yêu cầu xác minh để đảm bảo chất lượng hệ sinh thái.
         </p>
       </div>
     </div>
