@@ -1,0 +1,1 @@
+const fs = require("fs"); const f="app/[locale]/founder-workspace/venture-connect/page.tsx"; let d=fs.readFileSync(f,"utf8"); d=d.replace(/<Link href=\{[^}]*\}>Xem/g, "<Link href={`/mentor-profile/${match.id}`}>Xem"); fs.writeFileSync(f,d);

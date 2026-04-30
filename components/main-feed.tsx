@@ -10,12 +10,12 @@ const mockTractionData: TractionData[] = [
     companyName: 'TrendEngine',
     companyLogo: 'T',
     companyInitials: 'TE',
-    milestoneTag: 'Traction Achieved',
-    achievement: 'TrendEngine secured massive metrics growth over the weekend.',
+    milestoneTag: 'Đạt được Traction',
+    achievement: 'TrendEngine ghi nhận mức tăng trưởng chỉ số khổng lồ trong cuối tuần qua.',
     metricValue: '+5,000',
-    metricLabel: 'Scans recorded!',
+    metricLabel: 'Lượt quét (scans)!',
     type: 'traction',
-    timeAgo: '2h ago',
+    timeAgo: '2h trước',
     claps: 124,
   },
   {
@@ -23,10 +23,10 @@ const mockTractionData: TractionData[] = [
     companyName: 'DUTCareers',
     companyLogo: 'D',
     companyInitials: 'DC',
-    milestoneTag: 'Partnership Milestone',
-    achievement: 'DUTCareers secured partnership',
+    milestoneTag: 'Cột mốc hợp tác',
+    achievement: 'DUTCareers đã ký kết thành công thỏa thuận đối tác',
     type: 'partnership',
-    timeAgo: '5h ago',
+    timeAgo: '5h trước',
     claps: 89,
   },
   {
@@ -34,10 +34,10 @@ const mockTractionData: TractionData[] = [
     companyName: 'Unburden',
     companyLogo: 'U',
     companyInitials: 'UB',
-    milestoneTag: 'Product Launch',
-    achievement: 'Unburden (Mental Health AI) launched their Beta MVP on Kizuna Hub. ✨',
+    milestoneTag: 'Ra mắt sản phẩm',
+    achievement: 'Unburden (Mental Health AI) vừa chính thức ra mắt phiên bản Beta MVP trên Kizuna Hub. ✨',
     type: 'launch',
-    timeAgo: '1d ago',
+    timeAgo: '1 ngày trước',
     claps: 256,
   },
 ]
@@ -46,7 +46,7 @@ const mockProjects: ProjectData[] = [
   {
     id: '1',
     name: 'MarketOS',
-    description: 'AI-powered Marketing automation tool for university startups. Personalized campaigns, analytics, and customer insights all in one place.',
+    description: 'Công cụ tự động hóa Marketing tích hợp AI dành cho startup sinh viên. Tùy chỉnh chiến dịch, phân tích dữ liệu và cung cấp customer insights trên cùng một nền tảng duy nhất.',
     logo: 'M',
     logoChar: 'M',
     logoBg: 'bg-blue-600',
@@ -58,7 +58,7 @@ const mockProjects: ProjectData[] = [
   {
     id: '2',
     name: 'StudySync',
-    description: 'Collaborative learning platform connecting students worldwide. Real-time note-sharing, study groups, and peer mentorship integrated.',
+    description: 'Nền tảng học tập cộng tác kết nối sinh viên toàn cầu. Tích hợp tính năng chia sẻ tài liệu theo thời gian thực (real-time), nhóm học tập và peer-mentorship.',
     logo: 'S',
     logoChar: 'S',
     logoBg: 'bg-purple-600',
@@ -70,7 +70,7 @@ const mockProjects: ProjectData[] = [
   {
     id: '3',
     name: 'CropGuard',
-    description: 'IoT + AI solution for smart agriculture. Real-time crop monitoring, disease detection, and yield prediction for farmers.',
+    description: 'Giải pháp ứng dụng IoT + AI trong nông nghiệp thông minh. Giám sát cây trồng theo thời gian thực, phát hiện mầm bệnh và dự báo sản lượng mùa màng.',
     logo: 'C',
     logoChar: 'C',
     logoBg: 'bg-green-600',
@@ -81,7 +81,7 @@ const mockProjects: ProjectData[] = [
   {
     id: '4',
     name: 'ImpactMap',
-    description: 'Platform connecting social enterprises with impact investors. Track metrics, manage funding rounds, and scale social businesses.',
+    description: 'Nền tảng kết nối doanh nghiệp cung cấp giải pháp xã hội với các nhà đầu tư impact investors. Theo dõi chỉ số, quản lý vòng gọi vốn và nhân rộng mô hình.',
     logo: 'I',
     logoChar: 'I',
     logoBg: 'bg-red-600',
@@ -92,7 +92,7 @@ const mockProjects: ProjectData[] = [
   {
     id: '5',
     name: 'VoiceCode',
-    description: 'Voice-to-code IDE for developers. Write entire applications by speaking. Perfect for accessibility and hands-free development.',
+    description: 'IDE lập trình bằng giọng nói (Voice-to-code) dành cho lập trình viên. Hỗ trợ tạo toàn bộ ứng dụng chỉ bằng câu lệnh thoại. Hoàn hảo cho trợ năng (accessibility).',
     logo: 'V',
     logoChar: 'V',
     logoBg: 'bg-indigo-600',
@@ -118,15 +118,15 @@ export function MainFeed() {
 
           <div className="relative z-10">
             <h2 className="text-4xl font-serif font-medium text-white mb-4 tracking-tight">
-              Discover Top 10 Finalists of BK SHARK 2026 🦈
+              Khám phá Top 10 Dự án Chung kết BK SHARK 2026 🦈
             </h2>
             <p className="text-lg text-zinc-300 mb-8 font-light max-w-2xl leading-relaxed">
-              The brightest university startups ready for seed funding. Exclusive deal flow for verified investors.
+              Những startup sinh viên sáng giá nhất đã sẵn sàng gọi vốn vòng hạt giống. Deal flow độc quyền dành cho các nhà đầu tư đã xác thực.
             </p>
 
             {/* Nút bấm (Inverted CTA): Nền trắng, chữ xanh, không hover theo rule, chỉ có hiệu ứng click nhẹ */}
             <button className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-kizuna-primary font-semibold rounded-xl border-none shadow-sm active:scale-95 transition-transform duration-200">
-              View Pitch Decks
+              Xem Pitch Deck
               <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -144,7 +144,7 @@ export function MainFeed() {
                 : 'text-kizuna-text-muted hover:text-kizuna-text-main'
                 }`}
             >
-              Discover
+              Khám phá
             </button>
             <button
               onClick={() => setActiveTab('live')}
@@ -153,17 +153,17 @@ export function MainFeed() {
                 : 'text-kizuna-text-muted hover:text-kizuna-text-main'
                 }`}
             >
-              Live Updates
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-kizuna-primary/50"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-kizuna-primary"></span>
+              Cập nhật trực tiếp
+              <span className="relative flex h-3 w-3 ml-1">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.8)]"></span>
               </span>
             </button>
           </div>
           <p className="text-lg text-kizuna-text-muted mt-4">
             {activeTab === 'discover'
-              ? 'Discover the next big thing from university students.'
-              : 'Real-time traction, milestones, and funding updates from Kizuna startups.'}
+              ? 'Khám phá những dự án đột phá tiếp theo từ sinh viên đại học.'
+              : 'Dòng thời gian cập nhật liên tục về traction, cột mốc và gọi vốn từ các startup trên mạng lưới.'}
           </p>
         </div>
 
@@ -171,17 +171,17 @@ export function MainFeed() {
           <div>
             {/* Filter Tabs */}
             <div className="flex gap-2 border-b border-kizuna-border pb-4 mb-4">
-              <button className="px-4 py-2 rounded-lg bg-kizuna-primary/10 text-kizuna-primary border border-kizuna-primary/20 text-sm font-medium">
-                Today
+              <button className="px-4 py-2 rounded-lg bg-kizuna-primary/10 text-kizuna-primary border border-kizuna-primary/20 text-sm font-medium hover:bg-kizuna-primary/20 transition-colors">
+                Hôm nay
               </button>
-              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium">
-                This Week
+              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium transition-colors">
+                Tuần này
               </button>
-              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium">
-                This Month
+              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium transition-colors">
+                Tháng này
               </button>
-              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium">
-                All Time
+              <button className="px-4 py-2 rounded-lg text-kizuna-text-muted hover:text-kizuna-text-main hover:bg-kizuna-surface border border-transparent text-sm font-medium transition-colors">
+                Mọi thời điểm
               </button>
             </div>
 

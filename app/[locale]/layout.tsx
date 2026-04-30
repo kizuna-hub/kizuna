@@ -11,7 +11,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'NovaHub - University Startup Ecosystem',
+  title: 'Kizuna Hub - University Startup Ecosystem',
   description: 'Discover the next big thing from university students. A premium hub for startups, mentorship, and innovation.',
   generator: 'v0.app',
   icons: {
