@@ -34,29 +34,29 @@ const endorsements = [
 export function MentorEndorsements({ slug }: MentorEndorsementsProps) {
     return (
         <div className="space-y-8">
-            <h2 className="text-2xl font-bold text-zinc-50">Mentor & Investor Endorsements</h2>
+            <h2 className="text-2xl font-semibold text-kizuna-text-main">Mentor & Investor Endorsements</h2>
             <div className="grid grid-cols-1 gap-6">
                 {endorsements.map((endorsement, index) => (
                     <Card
                         key={index}
-                        className="border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/60 transition-colors"
+                        className="bg-white border-kizuna-border shadow-sm"
                     >
                         <CardHeader className="pb-3">
                             <div className="flex items-center gap-3">
                                 <Avatar className="h-10 w-10">
                                     <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${endorsement.name}`} />
-                                    <AvatarFallback className="bg-orange-600 text-white">
+                                    <AvatarFallback className="bg-kizuna-primary text-white">
                                         {endorsement.initials}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <p className="text-sm font-semibold text-zinc-50">{endorsement.name}</p>
-                                    <p className="text-xs text-zinc-400">{endorsement.title}</p>
+                                    <p className="text-sm font-semibold text-kizuna-text-main">{endorsement.name}</p>
+                                    <p className="text-xs text-kizuna-text-muted">{endorsement.title}</p>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-zinc-300 italic">"{endorsement.quote}"</p>
+                            <p className="text-kizuna-text-muted italic">"{endorsement.quote}"</p>
                         </CardContent>
                     </Card>
                 ))}
