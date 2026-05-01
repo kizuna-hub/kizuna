@@ -21,13 +21,40 @@ export const valuationData = [
     { month: 'T6', valuation: 85 },
 ];
 
-export const skillData = [
-    { subject: 'SpacetimeDB', A: 95, fullMark: 100 },
-    { subject: 'RAG / AI', A: 85, fullMark: 100 },
-    { subject: 'Next.js', A: 90, fullMark: 100 },
-    { subject: 'Flutter', A: 60, fullMark: 100 },
-    { subject: 'Web3', A: 80, fullMark: 100 },
-    { subject: 'System Design', A: 99, fullMark: 100 },
+// Data Nhu cầu kỹ năng thực tế (Dựa trên số lượng dự án)
+export const skillDemandData = [
+    {
+        id: 1,
+        skill: 'SpacetimeDB',
+        projectCount: 18,
+        maxScale: 20, // Để tính % thanh bar
+        insight: 'Top 1% Mentor phù hợp nhất',
+        isHot: true
+    },
+    {
+        id: 2,
+        skill: 'Next.js & NestJS',
+        projectCount: 14,
+        maxScale: 20,
+        insight: 'Top 5% Mentor phù hợp',
+        isHot: false
+    },
+    {
+        id: 3,
+        skill: 'RAG / AI Models',
+        projectCount: 9,
+        maxScale: 20,
+        insight: 'Nhu cầu đang tăng mạnh (+30%)',
+        isHot: true
+    },
+    {
+        id: 4,
+        skill: 'Web3 Contract',
+        projectCount: 5,
+        maxScale: 20,
+        insight: 'Thị trường ngách tiềm năng',
+        isHot: false
+    },
 ];
 
 // Leaderboard gọi vốn sinh viên (Max 100 Triệu)

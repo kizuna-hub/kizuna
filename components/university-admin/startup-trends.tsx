@@ -2,8 +2,7 @@
 import React from "react";
 import { Activity, Layers, Lightbulb, Info } from "lucide-react";
 import {
-    AreaChart,
-    Area,
+    LineChart, // Đã đổi từ AreaChart sang LineChart
     Line,
     XAxis,
     YAxis,
@@ -28,7 +27,6 @@ export function StartupTrends() {
     // Custom Tooltip cho biểu đồ an toàn 100%
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
-            // Tìm đúng dataKey thay vì dùng index [0] hay [1] dễ gây crash
             const currentData = payload.find((item: any) => item.dataKey === 'current');
             const previousData = payload.find((item: any) => item.dataKey === 'previous');
 
@@ -36,10 +34,9 @@ export function StartupTrends() {
                 <div className="bg-white p-3 border border-zinc-200 rounded-lg shadow-lg">
                     <p className="font-bold text-zinc-900 mb-2">{label}</p>
                     <div className="space-y-1">
-                        {/* Render an toàn khi tìm thấy data */}
                         {currentData && (
                             <p className="text-sm flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-kizuna-primary"></span>
+                                <span className="w-2 h-2 rounded-full bg-[#102c1e]"></span>
                                 <span className="text-zinc-600">Thực tế:</span>
                                 <span className="font-bold text-zinc-900">{currentData.value}</span>
                             </p>
@@ -61,7 +58,7 @@ export function StartupTrends() {
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 mb-8">
-            {/* Left: Trend Area Chart (60%) */}
+            {/* Left: Trend Line Chart (60%) */}
             <div className="lg:col-span-6 bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm flex flex-col">
                 <div className="flex items-center justify-between mb-6">
                     <div>
@@ -73,45 +70,51 @@ export function StartupTrends() {
                             <div className="w-2 h-2 rounded-full bg-zinc-400 mr-2"></div> Kỳ vọng
                         </span>
                         <span className="flex items-center text-xs font-medium text-zinc-900">
-                            <div className="w-2 h-2 rounded-full bg-kizuna-primary mr-2"></div> Thực tế
+                            <div className="w-2 h-2 rounded-full bg-[#102c1e] mr-2"></div> Thực tế
                         </span>
                     </div>
                 </div>
 
                 {/* Recharts Implementation */}
-                <div className="flex-1 w-full min-h-[250px]">
+                <div className="flex-1 w-full min-h-[260px]">
                     <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart
+                        <LineChart
                             data={data}
-                            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                            margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
                         >
-                            <defs>
-                                <linearGradient id="colorCurrent" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#102c1e" stopOpacity={0.2} />
-                                    <stop offset="95%" stopColor="#102c1e" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
+                            {/* Lưới 1:1 chuẩn xác, nét đứt nhẹ để không làm rối mắt */}
+                            <CartesianGrid
+                                strokeDasharray="4 4"
+                                vertical={true}
+                                horizontal={true}
+                                stroke="#e4e4e7"
+                            />
 
-                            <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="#f4f4f5" />
-
+                            {/* Trục hoành hiện rành rành */}
                             <XAxis
                                 dataKey="month"
-                                axisLine={false}
+                                axisLine={{ stroke: '#d4d4d8', strokeWidth: 1.5 }}
                                 tickLine={false}
-                                tick={{ fill: '#a1a1aa', fontSize: 12 }}
+                                tick={{ fill: '#71717a', fontSize: 12, fontWeight: 500 }}
                                 dy={10}
                             />
+
+                            {/* Trục tung hiện rành rành */}
                             <YAxis
-                                axisLine={false}
+                                axisLine={{ stroke: '#d4d4d8', strokeWidth: 1.5 }}
                                 tickLine={false}
-                                tick={{ fill: '#a1a1aa', fontSize: 12 }}
+                                tick={{ fill: '#71717a', fontSize: 12, fontWeight: 500 }}
+                                dx={-10}
                             />
 
-                            <Tooltip content={<CustomTooltip />} />
+                            <Tooltip
+                                content={<CustomTooltip />}
+                                cursor={{ stroke: '#102c1e', strokeWidth: 1.5, strokeDasharray: '4 4' }}
+                            />
 
-                            {/* Đường nét đứt (Kỳ vọng / Năm ngoái) */}
+                            {/* Đường nét đứt (Kỳ vọng / Năm ngoái) - Ép thẳng tưng với type="linear" */}
                             <Line
-                                type="monotone"
+                                type="linear"
                                 dataKey="previous"
                                 stroke="#a1a1aa"
                                 strokeWidth={2}
@@ -120,30 +123,29 @@ export function StartupTrends() {
                                 activeDot={false}
                             />
 
-                            {/* Đường Area chính (Thực tế) */}
-                            <Area
-                                type="monotone"
+                            {/* Đường Line chính (Thực tế) - Ép thẳng tưng với type="linear", thêm node */}
+                            <Line
+                                type="linear"
                                 dataKey="current"
                                 stroke="#102c1e"
                                 strokeWidth={3}
-                                fillOpacity={1}
-                                fill="url(#colorCurrent)"
-                                activeDot={{ r: 6, fill: "#ffffff", stroke: "#102c1e", strokeWidth: 2 }}
+                                dot={{ r: 4, fill: '#ffffff', stroke: '#102c1e', strokeWidth: 2.5 }}
+                                activeDot={{ r: 6, fill: '#102c1e', stroke: '#ffffff', strokeWidth: 2 }}
                             />
-                        </AreaChart>
+                        </LineChart>
                     </ResponsiveContainer>
                 </div>
 
                 {/* Actionable Insight */}
-                <div className="mt-6 p-4 bg-kizuna-primary/5 border border-kizuna-primary/10 rounded-xl flex items-start gap-3">
-                    <Lightbulb className="w-5 h-5 text-kizuna-primary shrink-0 mt-0.5" />
+                <div className="mt-6 p-4 bg-[#102c1e]/5 border border-[#102c1e]/10 rounded-xl flex items-start gap-3">
+                    <Lightbulb className="w-5 h-5 text-[#102c1e] shrink-0 mt-0.5" />
                     <p className="text-sm text-zinc-700 leading-relaxed">
-                        <span className="font-semibold text-kizuna-primary">Phân tích:</span> Đỉnh điểm Tháng 4 chứng tỏ sức hút cực lớn của sự kiện offline. Đề xuất tung ngay gói "Ươm mầm Server" vào đầu Tháng 5 để giữ nhiệt cho các team bị loại.
+                        <span className="font-semibold text-[#102c1e]">Phân tích:</span> Đỉnh điểm Tháng 4 chứng tỏ sức hút cực lớn của sự kiện offline. Đề xuất tung ngay gói "Ươm mầm Server" vào đầu Tháng 5 để giữ nhiệt cho các team bị loại.
                     </p>
                 </div>
             </div>
 
-            {/* Right: The TRUE Funnel (40%) */}
+            {/* Right: The TRUE Funnel (40%) - GIỮ NGUYÊN */}
             <div className="lg:col-span-4 bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm flex flex-col">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-bold text-zinc-900">Phễu Chuyển Đổi Startup</h3>
