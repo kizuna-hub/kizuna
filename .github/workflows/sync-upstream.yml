@@ -1,0 +1,24 @@
+name: Sync Upstream
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Chạy mỗi 30 phút một lần
+  workflow_dispatch: # Cho phép mày bấm nút chạy ngay lập tức nếu muốn
+
+jobs:
+  sync_latest_from_upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+        with:
+          ref: main # Nhánh mày muốn sync
+          persist-credentials: false
+
+      - name: Sync Upstream
+        uses: a2u/github-upstream-sync-action@v0.1.3
+        with:
+          upstream_repository: kizuna-startup/kizuna
+          upstream_branch: main
+          target_branch: main
+          force: true # Ép sync nếu có conflict nhẹ
+          tags: true
