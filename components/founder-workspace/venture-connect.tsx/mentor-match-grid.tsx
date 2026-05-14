@@ -26,7 +26,7 @@ export const MentorMatchGrid = ({ matches }: { matches: any[] }) => (
                                 </div>
                             </div>
                             <div className="flex flex-col items-end shrink-0">
-                                <span className="text-xl font-light text-kizuna-primary">{match.matchScore}</span>
+                                <span className="text-xl text-kizuna-primary font-bold">{match.matchScore}</span>
                                 <span className="text-[10px] uppercase tracking-wider text-kizuna-text-muted font-semibold">Phù hợp</span>
                             </div>
                         </div>

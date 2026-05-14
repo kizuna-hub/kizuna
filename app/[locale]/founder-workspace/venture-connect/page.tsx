@@ -9,9 +9,9 @@ import { UpcomingEvents } from '@/components/founder-workspace/venture-connect.t
 import { PioneerSpotlight } from '@/components/founder-workspace/venture-connect.tsx/pioneer-spotlight';
 
 const topMatches = [
-    { id: 1, name: 'Elena Rodriguez', role: 'Nhà sáng lập SaaS & Nhà đầu tư', matchScore: '98%', tier: 'Chuyên gia/CEO', tags: ['#SaaS', '#Định_giá'], socialProof: 'Hỗ trợ 5 dự án sinh viên', initials: 'ER' },
-    { id: 2, name: 'TS. Trần Minh', role: 'Trưởng khoa CNTT', matchScore: '95%', tier: 'Giảng viên', tags: ['#Fintech', '#NQ54'], socialProof: 'Mentor 2 dự án giải Nhất', initials: 'TM' },
-    { id: 3, name: 'Lê Hoàng', role: 'Co-founder X-Tech', matchScore: '92%', tier: 'Pioneer Founder', tags: ['#B2B', '#AI_Agent'], socialProof: 'Đã xác thực IP Ledger', initials: 'LH' }
+    { id: 1, name: 'Dr. Alex Chen', role: 'Nhà sáng lập SaaS & Nhà đầu tư', matchScore: '98%', tier: 'Chuyên gia/CEO', tags: ['#SaaS', '#AI'], socialProof: 'Hỗ trợ 15 dự án sinh viên', initials: 'ER' },
+    { id: 2, name: 'TS. Trần Minh', role: 'Trưởng khoa CNTT', matchScore: '95%', tier: 'Giảng viên Khoa CNTT - DUT', tags: ['#Fintech', '#Social Impact'], socialProof: 'Mentor 2 dự án giải Nhất', initials: 'TM' },
+    { id: 3, name: 'An Thuyên', role: 'Co-founder X-Tech-Fashion', matchScore: '92%', tier: 'Chuyên gia Marketing, Fashion', tags: ['#B2B', '#Fashion'], socialProof: 'Đã xác thực IP Ledger', initials: 'LH' }
 ];
 
 export default function VentureConnectDashboard() {

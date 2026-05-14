@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 const menuItems = [
-    { icon: BarChart3, label: 'Dashboard', href: '/founder-workspace' },
+    // { icon: BarChart3, label: 'Dashboard', href: '/founder-workspace' },
     { icon: FileText, label: 'AI Pitch Deck', href: '/founder-workspace/ai-pitch-deck' },
     { icon: Users, label: 'Venture Connect', href: '/founder-workspace/venture-connect' },
     { icon: Lock, label: 'IP Protection Ledger', href: '/founder-workspace/ip-ledger' },

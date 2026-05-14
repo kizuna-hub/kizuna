@@ -51,7 +51,7 @@ export function StrategicMetrics() {
                 <div className="flex items-start justify-between relative z-10">
                     <div>
                         <p className="text-sm font-medium text-zinc-300">Tổng Vốn Gọi Thành Công</p>
-                        <h3 className="text-3xl font-bold text-white mt-2">12.5 <span className="text-lg font-medium text-emerald-400">Tỷ VNĐ</span></h3>
+                        <h3 className="text-3xl font-bold text-white mt-2">125 <span className="text-lg font-medium text-emerald-400">Triệu VNĐ</span></h3>
                     </div>
                     <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center text-emerald-400 border border-white/20">
                         <Wallet className="w-6 h-6" />
@@ -59,7 +59,7 @@ export function StrategicMetrics() {
                 </div>
                 <div className="mt-4 flex items-center text-sm relative z-10">
                     <span className="flex items-center text-kizuna-primary font-bold bg-emerald-400 px-2 py-0.5 rounded-full">
-                        <TrendingUp className="w-3 h-3 mr-1" /> +2.4 Tỷ
+                        <TrendingUp className="w-3 h-3 mr-1" /> +38 Triệu
                     </span>
                     <span className="text-zinc-300 ml-2">trong quý này</span>
                 </div>

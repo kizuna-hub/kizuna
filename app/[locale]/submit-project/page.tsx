@@ -111,7 +111,7 @@ export default function SubmitProjectPage() {
         setShowSparkle(fieldName);
         setTimeout(() => {
             const improvements: { [key: string]: string } = {
-                problem: 'Sinh viên thiếu khả năng tiếp cận các nguồn lực cố vấn và nguồn vốn, tạo ra khoảng cách lớn giữa ý tưởng và thực thi.',
+                problem: 'Trong bối cảnh thị trường thời trang đang dần trở nên bão hòa, các thương hiệu không chỉ đơn thuần tìm kiếm ý tưởng mới, mà họ đang khát khao những cú hích mang tính bản lề. Đó là sự giao thoa giữa tư duy đột phá và khả năng nắm bắt nhịp đập thị trường để trình làng những bộ sưu tập không chỉ mới về mẫu mã, mà còn đủ sức tái định nghĩa lại tiêu chuẩn tiêu dùng và thiết lập một vị thế độc tôn.',
                 solution: 'Giải pháp là một nền tảng tích hợp kết nối các nhà sáng lập sinh viên với các Mentor trong ngành, nhà đầu tư (investors) và mạng lưới hỗ trợ đồng cấp.',
                 uvp: 'Hệ thống tích hợp công nghệ AI Policy Navigator và sổ cái IP Ledger độc quyền, tạo rào cản thâm nhập an toàn và tự động hóa quy trình thẩm định dự án.',
                 productReadiness: 'Bản nguyên mẫu MVP tích hợp các tính năng sàn giao dịch (marketplace) cốt lõi và hệ thống xác thực người dùng an toàn.',
