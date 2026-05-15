@@ -16,7 +16,7 @@ export const MentorMetrics = ({ fundingData, successData }: { fundingData: any[]
 
         <Card className="border-kizuna-border shadow-sm bg-kizuna-canvas relative overflow-hidden">
             <CardContent className="p-6 flex flex-col items-center justify-center text-center pb-2">
-                <h3 className="text-3xl font-black text-kizuna-text-main">$500K+</h3>
+                <h3 className="text-3xl font-black text-kizuna-text-main">100M+</h3>
                 <p className="text-xs font-bold text-kizuna-text-muted mt-1 mb-2 uppercase tracking-wider">Tổng vốn gọi được</p>
                 <div className="h-[60px] w-full mt-auto opacity-80">
                     <ResponsiveContainer width="100%" height="100%">

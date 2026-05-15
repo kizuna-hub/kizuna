@@ -11,6 +11,7 @@ import { Step1Vision } from '@/components/submit-project/step1-vision';
 import { Step2Tech } from '@/components/submit-project/step2-tech';
 import { Step3Market } from '@/components/submit-project/step3-market';
 import { Step4TeamIP } from '@/components/submit-project/step4-team-ip';
+import { useProject } from '@/lib/context/ProjectContext';
 
 export default function SubmitProjectPage() {
     const [currentStep, setCurrentStep] = useState(0);
@@ -129,8 +130,11 @@ export default function SubmitProjectPage() {
     };
 
     // --- Các hàm Điều hướng ---
+    const { updateFromWizardStep, project } = useProject();
+
     const handleNext = () => {
         setIsSaving(true);
+        updateFromWizardStep(currentStep, formData);
         setTimeout(() => {
             setIsSaving(false);
             if (currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
@@ -147,6 +151,7 @@ export default function SubmitProjectPage() {
             return;
         }
 
+        updateFromWizardStep(currentStep, formData);
         setIsSaving(true);
         setTimeout(() => {
             console.log('Project submitted:', { ...formData, team });

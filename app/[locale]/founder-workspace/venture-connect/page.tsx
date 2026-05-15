@@ -1,17 +1,17 @@
 'use client';
 
 import React from 'react';
-import { VentureHeader } from '@/components/founder-workspace/venture-connect.tsx/venture-header';
-import { ReadinessWidget } from '@/components/founder-workspace/venture-connect.tsx/readiness-widget';
-import { MentorMatchGrid } from '@/components/founder-workspace/venture-connect.tsx/mentor-match-grid';
-import { ConnectionPipeline } from '@/components/founder-workspace/venture-connect.tsx/connection-pipeline';
-import { UpcomingEvents } from '@/components/founder-workspace/venture-connect.tsx/upcoming-events';
-import { PioneerSpotlight } from '@/components/founder-workspace/venture-connect.tsx/pioneer-spotlight';
+import { VentureHeader } from '@/components/founder-workspace/venture-connect/venture-header';
+import { ReadinessWidget } from '@/components/founder-workspace/venture-connect/readiness-widget';
+import { MentorMatchGrid } from '@/components/founder-workspace/venture-connect/mentor-match-grid';
+import { ConnectionPipeline } from '@/components/founder-workspace/venture-connect/connection-pipeline';
+import { UpcomingEvents } from '@/components/founder-workspace/venture-connect/upcoming-events';
+import { PioneerSpotlight } from '@/components/founder-workspace/venture-connect/pioneer-spotlight';
 
 const topMatches = [
-    { id: 1, name: 'Dr. Alex Chen', role: 'Nhà sáng lập SaaS & Nhà đầu tư', matchScore: '98%', tier: 'Chuyên gia/CEO', tags: ['#SaaS', '#AI'], socialProof: 'Hỗ trợ 15 dự án sinh viên', initials: 'ER' },
-    { id: 2, name: 'TS. Trần Minh', role: 'Trưởng khoa CNTT', matchScore: '95%', tier: 'Giảng viên Khoa CNTT - DUT', tags: ['#Fintech', '#Social Impact'], socialProof: 'Mentor 2 dự án giải Nhất', initials: 'TM' },
-    { id: 3, name: 'An Thuyên', role: 'Co-founder X-Tech-Fashion', matchScore: '92%', tier: 'Chuyên gia Marketing, Fashion', tags: ['#B2B', '#Fashion'], socialProof: 'Đã xác thực IP Ledger', initials: 'LH' }
+    { id: 1, name: 'Dr. Alex Chen', role: 'Nhà sáng lập SaaS', matchScore: '92%', tier: 'Chuyên gia/CEO', tags: ['#SaaS', '#AI'], socialProof: 'Hỗ trợ 15 dự án sinh viên', initials: 'ER' },
+    { id: 2, name: 'TS. Trần Minh', role: 'Trưởng khoa CNTT', matchScore: '90%', tier: 'Giảng viên Khoa CNTT - DUT', tags: ['#Fintech', '#Social Impact'], socialProof: 'Mentor 2 dự án giải Nhất', initials: 'TM' },
+    { id: 3, name: 'An Thuyên', role: 'Co-founder X-Tech-Fashion', matchScore: '89%', tier: 'Chuyên gia Marketing, Fashion', tags: ['#B2B', '#Fashion'], socialProof: 'Đã xác thực IP Ledger', initials: 'LH' }
 ];
 
 export default function VentureConnectDashboard() {

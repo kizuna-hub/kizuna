@@ -4,6 +4,8 @@ import React from 'react';
 import { FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useProject } from '@/lib/context/ProjectContext';
+import { useRouter } from 'next/navigation';
 
 const tasks = [
     { id: 1, title: 'Financial Plan', code: 'NQ-54', progress: 60 },
@@ -12,6 +14,9 @@ const tasks = [
 ];
 
 export default function AIFormFillerCard() {
+    const { project } = useProject();
+    const router = useRouter();
+
     return (
         <div className="bg-white border border-kizuna-border rounded-2xl p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
@@ -39,6 +44,7 @@ export default function AIFormFillerCard() {
                         <Button
                             size="sm"
                             variant="ghost"
+                            onClick={() => router.push(`/submit-project?step=${project.currentStep}`)}
                             className="text-kizuna-primary font-medium hover:bg-zinc-50 hover:underline text-xs gap-1 h-7 px-2"
                         >
                             Continue with AI <ArrowRight className="w-3 h-3" />

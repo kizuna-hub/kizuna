@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 export default function Header() {
     const pathname = usePathname();
 
-    let currentSection = 'Ai Pitch Deck';
+    let currentSection = 'Dashboard';
     if (pathname?.includes('/ai-pitch-deck')) currentSection = 'AI Pitch Deck & Biểu mẫu';
     else if (pathname?.includes('/venture-connect')) currentSection = 'Venture Connect';
     else if (pathname?.includes('/ip-ledger')) currentSection = 'IP Protection Ledger';

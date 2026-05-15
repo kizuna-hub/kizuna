@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { ProjectProvider } from '@/lib/context/ProjectContext';
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -54,7 +55,9 @@ export default async function RootLayout({
     <html lang={locale} className="light">
       <body className="font-sans antialiased bg-kizuna-canvas text-kizuna-text-main">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <ProjectProvider>
+            {children}
+          </ProjectProvider>
         </NextIntlClientProvider>
         <Analytics />
       </body>
