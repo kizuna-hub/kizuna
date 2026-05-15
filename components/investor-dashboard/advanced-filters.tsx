@@ -1,11 +1,15 @@
-import { Filter, ShieldCheck } from 'lucide-react';
+import { Filter, ShieldCheck, Target, TrendingUp, Cpu } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export interface FiltersState {
     industries: string[];
     stage: string;
     ipVerifiedOnly: boolean;
-    need: 'all' | 'funding' | 'mentor';
-    fundingLimit: number; // Mức gọi vốn tối đa (Triệu VNĐ)
+    valMin: number;
+    valMax: number;
+    capitalMin: number;
+    capitalMax: number;
+    aiScoreMin: number;
 }
 
 interface AdvancedFiltersProps {
@@ -24,96 +28,118 @@ export const AdvancedFilters = ({ filters, setFilters }: AdvancedFiltersProps) =
         }));
     };
 
+    const INDUSTRIES = ['AI / ML', 'Web3 / Crypto', 'EdTech', 'FinTech', 'SaaS', 'HealthTech', 'FashionTech'];
+
     return (
         <div className="w-64 flex-shrink-0 space-y-6">
-            <div className="bg-white border border-kizuna-border rounded-xl p-5 shadow-sm">
-                <h3 className="text-sm font-bold text-kizuna-text-main mb-5 flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-[#16452a]" /> Bộ lọc nâng cao
+            <div className="bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl p-5 shadow-sm">
+                <h3 className="text-sm font-bold text-kizuna-text-main mb-6 flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-[#102c1e]" /> Bộ lọc nâng cao
                 </h3>
 
-                <div className="space-y-6">
-                    {/* Nhu cầu hỗ trợ - Đã cắm State */}
+                <div className="space-y-7">
+                    {/* Industries Pill UI */}
                     <div className="space-y-3">
-                        <label className="text-[10px] font-black text-kizuna-text-muted uppercase tracking-widest">Nhu cầu hỗ trợ</label>
-                        <div className="flex gap-2">
-                            <label className="flex-1 text-center cursor-pointer">
-                                <input type="radio" name="need" className="peer sr-only" checked={filters.need === 'all'} onChange={() => setFilters(prev => ({ ...prev, need: 'all' }))} />
-                                <div className={`py-2 px-3 rounded-lg border border-kizuna-border text-xs font-bold transition-all ${filters.need === 'all' ? 'bg-[#16452a] text-white' : 'text-kizuna-text-muted hover:bg-zinc-50'}`}>Tất cả</div>
-                            </label>
-                            <label className="flex-1 text-center cursor-pointer">
-                                <input type="radio" name="need" className="peer sr-only" checked={filters.need === 'funding'} onChange={() => setFilters(prev => ({ ...prev, need: 'funding' }))} />
-                                <div className={`py-2 px-3 rounded-lg border border-kizuna-border text-xs font-bold transition-all ${filters.need === 'funding' ? 'bg-[#16452a] text-white' : 'text-kizuna-text-muted hover:bg-zinc-50'}`}>Gọi vốn</div>
-                            </label>
-                            <label className="flex-1 text-center cursor-pointer">
-                                <input type="radio" name="need" className="peer sr-only" checked={filters.need === 'mentor'} onChange={() => setFilters(prev => ({ ...prev, need: 'mentor' }))} />
-                                <div className={`py-2 px-3 rounded-lg border border-kizuna-border text-xs font-bold transition-all ${filters.need === 'mentor' ? 'bg-[#16452a] text-white' : 'text-kizuna-text-muted hover:bg-zinc-50'}`}>Mentor</div>
-                            </label>
+                        <label className="text-[10px] font-black text-kizuna-text-muted tracking-widest flex items-center gap-1.5"><Target className="w-3 h-3" /> Lĩnh vực</label>
+                        <div className="flex flex-wrap gap-2">
+                            {INDUSTRIES.map(i => {
+                                const isSelected = filters.industries.includes(i);
+                                return (
+                                    <button
+                                        key={i}
+                                        onClick={() => toggleIndustry(i)}
+                                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${isSelected ? 'bg-[#102c1e] text-white border-[#102c1e] shadow-md' : 'bg-white/50 text-kizuna-text-muted border-white/20 hover:bg-white hover:border-[#102c1e]/20'} backdrop-blur-sm`}
+                                    >
+                                        {i}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    {/* Lĩnh vực */}
+                    {/* Capital Seeking (Slider) */}
                     <div className="space-y-3">
-                        <label className="text-[10px] font-black text-kizuna-text-muted uppercase tracking-widest">Lĩnh vực</label>
-                        <div className="space-y-2">
-                            {['AI / ML', 'Web3 / Crypto', 'EdTech', 'FinTech', 'SaaS', 'HealthTech'].map(i => (
-                                <label key={i} className="flex items-center gap-3 cursor-pointer group">
-                                    <input
-                                        type="checkbox"
-                                        checked={filters.industries.includes(i)}
-                                        onChange={() => toggleIndustry(i)}
-                                        className="w-4 h-4 rounded border-kizuna-border text-[#16452a] focus:ring-[#16452a] transition-colors cursor-pointer"
-                                    />
-                                    <span className="text-sm text-kizuna-text-main group-hover:text-[#16452a] transition-colors font-medium">{i}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Mức gọi vốn (Slider) - Đổi đơn vị sang Tiền Việt & Cắm State */}
-                    <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                            <label className="text-[10px] font-black text-kizuna-text-muted uppercase tracking-widest">Mức gọi vốn</label>
-                            <span className="text-xs font-bold text-[#16452a]">
-                                &lt; {filters.fundingLimit >= 1000 ? `${filters.fundingLimit / 1000} Tỷ` : `${filters.fundingLimit} Tr`}
+                        <div className="flex justify-between items-end">
+                            <label className="text-[10px] font-black text-kizuna-text-muted tracking-widest flex items-center gap-1.5"><TrendingUp className="w-3 h-3" /> Mức gọi vốn (Min)</label>
+                            <span className="text-xs font-bold text-[#102c1e]">
+                                &gt; {filters.capitalMin}M
                             </span>
                         </div>
                         <input
                             type="range"
-                            min="100"
+                            min="0"
                             max="5000"
                             step="100"
-                            value={filters.fundingLimit}
-                            onChange={(e) => setFilters(prev => ({ ...prev, fundingLimit: Number(e.target.value) }))}
-                            className="w-full accent-[#16452a] cursor-pointer"
+                            value={filters.capitalMin}
+                            onChange={(e) => setFilters(prev => ({ ...prev, capitalMin: Number(e.target.value) }))}
+                            className="w-full h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-[#102c1e]"
                         />
                     </div>
 
-                    {/* Giai đoạn - Đã Việt Hóa */}
+                    {/* Valuation Limit (Slider) */}
                     <div className="space-y-3">
-                        <label className="text-[10px] font-black text-kizuna-text-muted uppercase tracking-widest">Trạng thái dự án</label>
+                        <div className="flex justify-between items-end">
+                            <label className="text-[10px] font-black text-kizuna-text-muted tracking-widest">Định giá tối đa</label>
+                            <span className="text-xs font-bold text-[#102c1e]">
+                                &lt; {filters.valMax >= 1000 ? `${filters.valMax / 1000}B` : `${filters.valMax}M`}
+                            </span>
+                        </div>
+                        <input
+                            type="range"
+                            min="1000"
+                            max="50000"
+                            step="1000"
+                            value={filters.valMax}
+                            onChange={(e) => setFilters(prev => ({ ...prev, valMax: Number(e.target.value) }))}
+                            className="w-full h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-[#102c1e]"
+                        />
+                    </div>
+
+                    {/* AI Trust Score (Slider) */}
+                    <div className="space-y-3">
+                        <div className="flex justify-between items-end">
+                            <label className="text-[10px] font-black text-kizuna-text-muted tracking-widest flex items-center gap-1.5"><Cpu className="w-3 h-3" /> Điểm AI Trust (Min)</label>
+                            <span className="text-xs font-bold text-[#102c1e]">
+                                {(filters.aiScoreMin / 20).toFixed(1)} / 5.0
+                            </span>
+                        </div>
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            step="10"
+                            value={filters.aiScoreMin}
+                            onChange={(e) => setFilters(prev => ({ ...prev, aiScoreMin: Number(e.target.value) }))}
+                            className="w-full h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-[#102c1e]"
+                        />
+                    </div>
+
+                    {/* Stage Dropdown */}
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black text-kizuna-text-muted tracking-widest">Giai đoạn</label>
                         <select
                             value={filters.stage}
                             onChange={(e) => setFilters(prev => ({ ...prev, stage: e.target.value }))}
-                            className="w-full bg-white border border-kizuna-border rounded-lg px-3 py-2 text-sm font-bold shadow-sm cursor-pointer"
+                            className="w-full bg-white/50 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-2.5 text-sm font-bold shadow-sm cursor-pointer outline-none focus:border-[#102c1e]/50"
                         >
-                            <option>Tất cả trạng thái</option>
-                            <option>Ý tưởng (Idea)</option>
-                            <option>Bản mẫu (MVP)</option>
-                            <option>Có doanh thu (Traction)</option>
+                            <option value="all">Tất cả giai đoạn</option>
+                            <option value="Ý tưởng (Idea)">Ý tưởng (Idea)</option>
+                            <option value="Bản mẫu (MVP)">Bản mẫu (MVP)</option>
+                            <option value="Có doanh thu (Traction)">Có doanh thu (Traction)</option>
                         </select>
                     </div>
 
                     {/* IP Verified */}
-                    <div className="pt-4 border-t border-kizuna-border">
-                        <label className="flex items-center gap-3 cursor-pointer group p-2 -ml-2 rounded-lg hover:bg-emerald-50 border border-transparent hover:border-emerald-100 transition-colors">
+                    <div className="pt-4 border-t border-black/5">
+                        <label className="flex items-center gap-3 cursor-pointer group p-2 -ml-2 rounded-xl hover:bg-black/5 border border-transparent transition-colors">
                             <input
                                 type="checkbox"
                                 checked={filters.ipVerifiedOnly}
                                 onChange={(e) => setFilters(prev => ({ ...prev, ipVerifiedOnly: e.target.checked }))}
-                                className="w-4 h-4 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-600"
+                                className="w-4 h-4 rounded border-zinc-300 text-[#102c1e] focus:ring-[#102c1e] bg-transparent"
                             />
-                            <ShieldCheck className={`w-4 h-4 ${filters.ipVerifiedOnly ? 'text-emerald-600' : 'text-zinc-400'}`} />
-                            <span className={`text-sm font-bold ${filters.ipVerifiedOnly ? 'text-emerald-800' : 'text-zinc-500'}`}>Chỉ hiển thị IP Verified</span>
+                            <ShieldCheck className={`w-4 h-4 ${filters.ipVerifiedOnly ? 'text-[#102c1e]' : 'text-zinc-400'}`} />
+                            <span className={`text-sm font-bold ${filters.ipVerifiedOnly ? 'text-[#102c1e]' : 'text-zinc-500'}`}>Chỉ Ledger Verified</span>
                         </label>
                     </div>
                 </div>
