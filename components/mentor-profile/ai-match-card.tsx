@@ -14,7 +14,7 @@ export const AIMatchCard = ({ matchText }: { matchText: string }) => (
             </div>
             <CardHeader className="pb-2">
                 <CardTitle className="text-base text-emerald-800 flex items-center gap-2 uppercase tracking-wider font-bold">
-                    <Sparkles className="h-5 w-5" /> AI Đề xuất (Độ phù hợp: 92%)
+                    <Sparkles className="h-5 w-5" /> Độ phù hợp: 92%
                 </CardTitle>
             </CardHeader>
             <CardContent>

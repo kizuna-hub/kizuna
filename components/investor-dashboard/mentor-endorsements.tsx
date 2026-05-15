@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 const endorsements = [
     {
         id: 1,
-        mentorName: 'TS. Lê Minh Trí',
+        mentorName: 'Dr. Alex Chen',
         mentorRole: 'Chuyên gia Kiến trúc Hệ thống',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TriLe',
         quote: 'Kiến trúc SpacetimeDB của team DUTCareers xử lý realtime cực kỳ ấn tượng. Rất đáng để đầu tư vòng Seed ngay lúc này.',

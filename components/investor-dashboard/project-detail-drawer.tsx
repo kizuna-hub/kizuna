@@ -94,7 +94,7 @@ export const ProjectDetailDrawer = ({ project, onClose }: DrawerProps) => {
                     {/* THÊM MỚI 2: Đánh giá AI */}
                     <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-5 shadow-sm">
                         <h4 className="text-emerald-800 text-[10px] font-black uppercase tracking-widest mb-3 flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-emerald-600" /> AI Đánh giá ({project.aiMatchScore}%)
+                            <Sparkles className="w-4 h-4 text-emerald-600" /> Độ khớp ({project.aiMatchScore}%)
                         </h4>
                         <div className="flex items-start gap-2.5 text-sm font-medium text-kizuna-text-main">
                             <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
