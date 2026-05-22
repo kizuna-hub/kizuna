@@ -1,6 +1,6 @@
 'use client'
 
-import { MainFeed } from "@/components/public/main-feed"
+import { MainFeed } from "@/components/public/feed"
 
 export default function Home() {
   return (
