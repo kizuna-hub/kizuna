@@ -55,3 +55,65 @@ export const timelineProjects = [
         comments: 31
     }
 ];
+
+// --- Dữ liệu cho Top Mentors ---
+export const topMentors = [
+    {
+        id: "m1",
+        name: "Takeru Hishinuma",
+        expertise: "AI Architect & System Design",
+        company: "TechNova Japan",
+        sessions: 124,
+        rating: "4.9",
+        avatar: "T"
+    },
+    {
+        id: "m2",
+        name: "Alex Nguyen",
+        expertise: "Go-to-Market & Growth",
+        company: "ScaleUp Ventures",
+        sessions: 89,
+        rating: "5.0",
+        avatar: "A"
+    },
+    {
+        id: "m3",
+        name: "Sarah Jenkins",
+        expertise: "Product UI/UX",
+        company: "Creative Studio",
+        sessions: 210,
+        rating: "4.8",
+        avatar: "S"
+    }
+];
+
+// --- Dữ liệu cho Top Investors ---
+export const topInvestors = [
+    {
+        id: "i1",
+        name: "NextGen Ventures",
+        type: "VC Fund",
+        stage: "Pre-Seed, Seed",
+        ticket: "$50K - $200K",
+        logo: "N",
+        color: "bg-[#0a1c13]"
+    },
+    {
+        id: "i2",
+        name: "Alpha Angels",
+        type: "Angel Syndicate",
+        stage: "Seed",
+        ticket: "$10K - $50K",
+        logo: "A",
+        color: "bg-[#16452a]"
+    },
+    {
+        id: "i3",
+        name: "DUT Innovation Fund",
+        type: "University Fund",
+        stage: "Idea, Pre-Seed",
+        ticket: "$5K - $20K",
+        logo: "D",
+        color: "bg-slate-800"
+    }
+];
