@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
     Search, LayoutDashboard, Package, Users, MessageSquare,
     CircleDashed, Eye, CalendarClock, Loader2, CheckCircle2,
@@ -9,18 +11,35 @@ import {
 import { dashboardData } from "./data";
 import { cn } from "@/lib/utils";
 
-const NavItem = ({ icon: Icon, label, active, badge }: any) => (
-    <button className={cn(
-        "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-        active ? "bg-[#16452a]/5 text-[#16452a] font-bold" : "text-slate-600 hover:bg-zinc-50 hover:text-slate-900"
-    )}>
-        <div className="flex items-center gap-3">
-            <Icon className={cn("h-4 w-4", active ? "text-[#16452a]" : "text-slate-400")} />
-            {label}
-        </div>
-        {badge && <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{badge}</span>}
-    </button>
-);
+// --- Component NavItem sử dụng Link và nhận prop 'exact' ---
+const NavItem = ({ icon: Icon, label, href, badge, exact = false }: any) => {
+    const pathname = usePathname();
+
+    // Loại bỏ cái locale (/vi, /en) ở đầu URL đi để đối chiếu cho chuẩn
+    const normalizedPath = pathname.replace(/^\/[a-zA-Z]{2}/, '') || '/';
+
+    // Nếu là exact (dành cho Overview), nó phải khớp 100%
+    // Nếu không, chỉ cần đường dẫn hiện tại bắt đầu bằng href là nó sáng (dành cho các tab con)
+    const isActive = exact
+        ? normalizedPath === href
+        : normalizedPath === href || normalizedPath.startsWith(`${href}/`);
+
+    return (
+        <Link
+            href={href}
+            className={cn(
+                "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                isActive ? "bg-[#16452a]/5 text-[#16452a] font-bold" : "text-slate-600 hover:bg-zinc-50 hover:text-slate-900"
+            )}
+        >
+            <div className="flex items-center gap-3">
+                <Icon className={cn("h-4 w-4", isActive ? "text-[#16452a]" : "text-slate-400")} />
+                {label}
+            </div>
+            {badge && <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{badge}</span>}
+        </Link>
+    );
+};
 
 export function DashboardSidebar() {
     const { user } = dashboardData;
@@ -30,12 +49,12 @@ export function DashboardSidebar() {
 
             {/* Logo & Search */}
             <div className="p-4 flex flex-col gap-4 border-b border-zinc-100">
-                <div className="flex items-center gap-2 px-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#081810]">
+                <Link href="/" className="flex items-center gap-2 px-2 cursor-pointer group">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#081810] group-hover:bg-[#16452a] transition-colors">
                         <Sparkles className="h-4 w-4 text-white" />
                     </div>
                     <span className="font-serif text-lg font-bold tracking-tight text-[#081810]">Kizuna Hub</span>
-                </div>
+                </Link>
 
                 <div className="relative flex items-center w-full">
                     <Search className="absolute left-3 h-4 w-4 text-slate-400" />
@@ -49,15 +68,22 @@ export function DashboardSidebar() {
             </div>
 
             {/* Nav Links (Scrollable) */}
-            <div className="flex-1 overflow-y-auto p-3 [&::-webkit-scrollbar]:hidden flex flex-col gap-6">
+            <div className="flex-1 overflow-y-auto p-3 [&::-webkit-scrollbar]:hidden flex flex-col gap-6 mt-2">
+
+                {/* --- NÚT QUAY LẠI MAIN FEED --- */}
+                <div className="px-3 pb-2 border-b border-zinc-100/50 mb-2">
+                    <Link href="/" className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 hover:text-[#081810] transition-colors uppercase tracking-wider">
+                        &larr; Quay lại Main Feed
+                    </Link>
+                </div>
 
                 {/* PLATFORM */}
                 <div>
                     <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Platform</p>
                     <div className="flex flex-col gap-0.5">
-                        <NavItem icon={LayoutDashboard} label="Overview" active={true} />
-                        <NavItem icon={Package} label="Products" />
-                        <NavItem icon={Users} label="Teams" />
+                        <NavItem icon={LayoutDashboard} label="Overview" href="/founder-dashboard" exact={true} />
+                        <NavItem icon={Package} label="Products" href="/founder-dashboard/products" />
+                        <NavItem icon={Users} label="Teams" href="/founder-dashboard/teams" />
                     </div>
                 </div>
 
@@ -65,13 +91,13 @@ export function DashboardSidebar() {
                 <div>
                     <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Feedback</p>
                     <div className="flex flex-col gap-0.5">
-                        <NavItem icon={MessageSquare} label="All" />
-                        <NavItem icon={CircleDashed} label="Pending" />
-                        <NavItem icon={Eye} label="Reviewing" />
-                        <NavItem icon={CalendarClock} label="Planned" />
-                        <NavItem icon={Loader2} label="In progress" />
-                        <NavItem icon={CheckCircle2} label="Completed" />
-                        <NavItem icon={XCircle} label="Rejected" />
+                        <NavItem icon={MessageSquare} label="All" href="#all" />
+                        <NavItem icon={CircleDashed} label="Pending" href="#pending" />
+                        <NavItem icon={Eye} label="Reviewing" href="#reviewing" />
+                        <NavItem icon={CalendarClock} label="Planned" href="#planned" />
+                        <NavItem icon={Loader2} label="In progress" href="#in-progress" />
+                        <NavItem icon={CheckCircle2} label="Completed" href="#completed" />
+                        <NavItem icon={XCircle} label="Rejected" href="#rejected" />
                     </div>
                 </div>
 
@@ -79,8 +105,8 @@ export function DashboardSidebar() {
                 <div>
                     <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Account</p>
                     <div className="flex flex-col gap-0.5">
-                        <NavItem icon={Settings} label="Settings" />
-                        <NavItem icon={HelpCircle} label="Support" />
+                        <NavItem icon={Settings} label="Settings" href="/settings" />
+                        <NavItem icon={HelpCircle} label="Support" href="/support" />
                     </div>
                 </div>
             </div>
