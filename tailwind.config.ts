@@ -119,6 +119,7 @@ const config = {
         '2xl': 'var(--radius-token-2xl)',
         '3xl': 'var(--radius-token-3xl)',
         '4xl': 'var(--radius-token-4xl)',
+        'card': '20px',
       },
       boxShadow: {
         card: 'var(--shadow-token-card)',
