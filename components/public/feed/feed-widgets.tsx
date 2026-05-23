@@ -9,7 +9,7 @@ export function FeedWidgets() {
             {/* Activity Streak Widget */}
             <div>
                 <h2 className="mb-4 text-sm font-bold text-[#081810]">Activity streak</h2>
-                <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+                <div className="rounded-card border border-zinc-200 bg-white p-5 shadow-sm">
                     <div className="flex items-start gap-4">
                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 text-orange-600">
                             <Flame className="h-6 w-6" />
@@ -40,7 +40,7 @@ export function FeedWidgets() {
             {/* Reviews Widget */}
             <div>
                 <h2 className="mb-4 text-sm font-bold text-[#081810]">Kizuna Reviews</h2>
-                <div className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-4 rounded-card border border-zinc-200 bg-white p-5 shadow-sm">
                     <div className="flex gap-3">
                         <div className="h-8 w-8 shrink-0 rounded-lg bg-blue-600" />
                         <div>

@@ -24,7 +24,7 @@ export function TopMentors() {
                 {topMentors.map((mentor) => (
                     <div
                         key={mentor.id}
-                        className="group flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:border-zinc-300 hover:shadow-md cursor-pointer"
+                        className="group flex flex-col justify-between rounded-card border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:border-zinc-300 hover:shadow-md cursor-pointer"
                     >
                         <div className="flex items-start gap-4">
                             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-lg font-bold text-[#081810] group-hover:bg-[#16452a] group-hover:text-white transition-colors">

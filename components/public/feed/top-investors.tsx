@@ -24,10 +24,10 @@ export function TopInvestors() {
                 {topInvestors.map((investor) => (
                     <div
                         key={investor.id}
-                        className="group flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:border-zinc-300 hover:shadow-md cursor-pointer"
+                        className="group flex flex-col justify-between rounded-card border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:border-zinc-300 hover:shadow-md cursor-pointer"
                     >
                         <div className="flex items-center gap-4 mb-5">
-                            <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-xl font-bold text-white shadow-inner", investor.color)}>
+                            <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-card text-xl font-bold text-white shadow-inner", investor.color)}>
                                 {investor.logo}
                             </div>
                             <div>
@@ -49,7 +49,7 @@ export function TopInvestors() {
                             </div>
                         </div>
 
-                        <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-50 py-3 text-sm font-bold text-[#081810] transition-colors group-hover:bg-[#16452a] group-hover:text-white">
+                        <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-card bg-zinc-50 py-3 text-sm font-bold text-[#081810] transition-colors group-hover:bg-[#16452a] group-hover:text-white">
                             Pitch ngay <ArrowRight className="h-4 w-4" />
                         </button>
                     </div>
