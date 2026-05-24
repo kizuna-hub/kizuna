@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/routing";
 import {
     Search, LayoutDashboard, Package, Users, MessageSquare,
     CircleDashed, Eye, CalendarClock, Loader2, CheckCircle2,
@@ -15,8 +14,7 @@ import { cn } from "@/lib/utils";
 const NavItem = ({ icon: Icon, label, href, badge, exact = false }: any) => {
     const pathname = usePathname();
 
-    // Loại bỏ cái locale (/vi, /en) ở đầu URL đi để đối chiếu cho chuẩn
-    const normalizedPath = pathname.replace(/^\/[a-zA-Z]{2}/, '') || '/';
+    const normalizedPath = pathname === '/' ? '/' : pathname;
 
     // Nếu là exact (dành cho Overview), nó phải khớp 100%
     // Nếu không, chỉ cần đường dẫn hiện tại bắt đầu bằng href là nó sáng (dành cho các tab con)

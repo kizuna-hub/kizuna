@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ChevronRight, Plus, Search, Eye, ArrowUp, UserCheck, DollarSign } from "lucide-react";
 import { DashboardSidebar } from "../overview/dashboard-sidebar";
 import { myProductsData } from "./data";
