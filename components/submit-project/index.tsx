@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, X } from "lucide-react";
 
 // --- IMPORT CÁC SUB-COMPONENTS TỪNG ĐƯỢC TÁCH ---
 import { ProgressBar } from "./progress-bar";
@@ -19,40 +20,65 @@ const steps = [
 ];
 
 export function SubmitProjectWizard() {
+    const router = useRouter();
     const [currentStep, setCurrentStep] = useState(1);
     const [isSaving, setIsSaving] = useState(false);
     const [showSparkle, setShowSparkle] = useState<string | null>(null);
 
+    // State quản lý Popup Thông báo
+    const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({
+        show: false,
+        message: '',
+        type: 'success'
+    });
+
     // MỘT NGUỒN SỰ THẬT DUY NHẤT cho Form
     const [formData, setFormData] = useState({
-        // Step 1
-        role: 'founder', // 'founder' | 'hunter'
+        role: 'founder',
         projectName: '',
         slogan: '',
         logoUrl: '',
-        // Step 2
         categories: [],
-        description: '', // Gộp Problem & Solution
+        description: '',
         techStack: '',
         demoLink: '',
-        // Step 3
-        team: [{ name: '', role: '' }],
+        team: [{ name: '', role: '', email: '', phone: '', social: '', org: '' }],
         gallery: [],
         status: '',
+        mentorName: '',
+        mentorRole: '',
+        mentorOrg: '',
+        mentorEmail: '',
         isCommitted: false
     });
+
+    // Hàm hiển thị Toast (Tự tắt sau 3s)
+    const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+    };
 
     // --- HÀM ĐIỀU HƯỚNG ---
     const handleNext = () => { if (currentStep < 3) setCurrentStep(prev => prev + 1); };
     const handleBack = () => { if (currentStep > 1) setCurrentStep(prev => prev - 1); };
+
     const handleSubmit = () => {
-        if (!formData.isCommitted) return alert('Vui lòng xác nhận lời thề danh dự!');
+        if (!formData.isCommitted) {
+            showToast('Vui lòng xác nhận lời thề danh dự trước khi gửi!', 'error');
+            return;
+        }
         setIsSaving(true);
         setTimeout(() => {
             console.log('Dữ liệu chuẩn bị bắn lên API:', formData);
-            alert('Đăng dự án thành công!');
-            setIsSaving(false);
-        }, 1000);
+            showToast('Gửi dự án thành công! Đang chuyển hướng...', 'success');
+
+            // Đợi Toast hiện xong rồi mới đá user về Dashboard (Hoặc Feed)
+            setTimeout(() => {
+                setIsSaving(false);
+                router.push('/founder-dashboard/products');
+            }, 1500);
+
+        }, 1500);
     };
 
     // --- HÀM XỬ LÝ DỮ LIỆU ---
@@ -62,7 +88,7 @@ export function SubmitProjectWizard() {
         newTeam[index] = { ...newTeam[index], [field]: value };
         updateFormData('team', newTeam);
     };
-    const addTeamMember = () => updateFormData('team', [...formData.team, { name: '', role: '' }]);
+    const addTeamMember = () => updateFormData('team', [...formData.team, { name: '', role: '', email: '', phone: '', social: '', org: '' }]);
     const removeTeamMember = (index: number) => {
         if (formData.team.length > 1) updateFormData('team', formData.team.filter((_, i) => i !== index));
     };
@@ -71,10 +97,10 @@ export function SubmitProjectWizard() {
         setTimeout(() => {
             updateFormData(fieldName, "Văn phong đã được AI gọt giũa.");
             setShowSparkle(null);
+            showToast('AI đã hoàn tất gọt giũa văn bản!', 'success');
         }, 1500);
     };
 
-    // --- RENDER CONTENT ---
     const renderStepContent = () => {
         switch (currentStep) {
             case 1: return <Step1Basic formData={formData} updateFormData={updateFormData} />;
@@ -86,6 +112,30 @@ export function SubmitProjectWizard() {
 
     return (
         <div className="min-h-screen bg-zinc-50 font-sans text-slate-900 selection:bg-[#16452a]/20">
+
+            {/* THÔNG BÁO POPUP TOAST (Góc trên bên phải) */}
+            <div className="fixed top-4 right-4 z-[9999] pointer-events-none">
+                <AnimatePresence>
+                    {toast.show && (
+                        <motion.div
+                            initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            exit={{ opacity: 0, x: 20, scale: 0.9 }}
+                            className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border ${toast.type === 'success'
+                                ? 'bg-white border-emerald-200 text-emerald-800'
+                                : 'bg-white border-red-200 text-red-800'
+                                }`}
+                        >
+                            {toast.type === 'success'
+                                ? <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
+                                : <X className="h-5 w-5 text-red-500 shrink-0" />
+                            }
+                            <p className="text-sm font-bold">{toast.message}</p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
             {/* Header */}
             <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
                 <div className="mx-auto flex h-16 max-w-5xl items-center px-6">
@@ -103,10 +153,9 @@ export function SubmitProjectWizard() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    {/* CỘT TRÁI (8 Cột) */}
+                    {/* CỘT TRÁI */}
                     <div className="lg:col-span-8 flex flex-col gap-6">
 
-                        {/* Gọi Component Progress Bar đã tách */}
                         <ProgressBar currentStep={currentStep} steps={steps} />
 
                         {/* Form Card */}
@@ -120,7 +169,6 @@ export function SubmitProjectWizard() {
                                         exit={{ opacity: 0, x: -20 }}
                                         transition={{ duration: 0.2 }}
                                     >
-                                        {/* Gọi Component Form */}
                                         {renderStepContent()}
                                     </motion.div>
                                 </AnimatePresence>
@@ -142,9 +190,8 @@ export function SubmitProjectWizard() {
                         </div>
                     </div>
 
-                    {/* CỘT PHẢI (4 Cột) */}
+                    {/* CỘT PHẢI */}
                     <div className="lg:col-span-4 flex flex-col gap-4">
-                        {/* Gọi Component Sidebar đã tách */}
                         <DynamicSidebar currentStep={currentStep} />
                     </div>
                 </div>

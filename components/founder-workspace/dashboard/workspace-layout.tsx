@@ -6,15 +6,16 @@ import Header from './header';
 
 export default function WorkspaceLayout({
     children,
+    projectId, // Hứng projectId từ cha truyền xuống
 }: {
     children: React.ReactNode;
+    projectId: string; // Khai báo type
 }) {
     return (
-        // Dùng nền zinc-50 chuẩn
         <div className="min-h-screen bg-zinc-50 font-sans selection:bg-[#16452a]/20 flex">
 
-            {/* 1. Sidebar Fixed bên trái */}
-            <WorkspaceSidebar />
+            {/* 1. Sidebar Fixed bên trái (Ném projectId vào đây) */}
+            <WorkspaceSidebar projectId={projectId} />
 
             {/* 2. Cột nội dung chính (Bị đẩy sang phải 260px) */}
             <div className="flex-1 ml-[260px] flex flex-col">

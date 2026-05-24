@@ -41,8 +41,14 @@ const NavItem = ({ icon: Icon, label, href, exact = false }: any) => {
     );
 };
 
-export default function WorkspaceSidebar() {
+// NHẬN PROJECT ID TỪ LAYOUT TRUYỀN XUỐNG
+export default function WorkspaceSidebar({ projectId }: { projectId: string }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    // MOCK DATA: Lấy tên dự án dựa trên projectId để hiển thị ở Dropdown
+    // Trong thực tế, mày sẽ dùng useEffect fetch data từ API dựa vào projectId này
+    const currentProjectName = projectId === "p1" ? "Kizuna Hub" : projectId === "p2" ? "SnapMoney" : projectId === "p3" ? "Dietfit AI" : "Dự án mới";
+    const currentProjectInitials = currentProjectName.charAt(0);
 
     // Dữ liệu mock User
     const user = {
@@ -50,6 +56,9 @@ export default function WorkspaceSidebar() {
         handle: "Nhà sáng lập",
         avatar: "https://github.com/shadcn.png"
     };
+
+    // TẠO BASE URL CHO CÁC LINK TRONG SIDEBAR
+    const baseUrl = `/founder-workspace/${projectId}`;
 
     return (
         // Dùng fixed left-0 top-0 h-screen w-[260px] để đồng bộ với Global Dashboard
@@ -70,10 +79,10 @@ export default function WorkspaceSidebar() {
                     >
                         <div className="flex items-center gap-2 min-w-0">
                             {/* Logo Project thu nhỏ */}
-                            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-amber-400 text-white font-bold text-[10px]">
-                                S
+                            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[#16452a] text-white font-bold text-[10px]">
+                                {currentProjectInitials}
                             </div>
-                            <span className="text-sm font-bold text-[#081810] truncate">SnapMoney</span>
+                            <span className="text-sm font-bold text-[#081810] truncate">{currentProjectName}</span>
                         </div>
                         <ChevronDown className="h-4 w-4 text-zinc-400 shrink-0" />
                     </button>
@@ -81,14 +90,19 @@ export default function WorkspaceSidebar() {
                     {/* Dropdown Menu (Giả lập) */}
                     {isDropdownOpen && (
                         <div className="absolute top-full left-0 mt-1 w-full rounded-lg border border-zinc-200 bg-white p-1 shadow-lg z-10 animate-in fade-in slide-in-from-top-1">
-                            <button className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs font-bold text-[#081810] hover:bg-zinc-50">
+                            {/* Tạm thời giả lập link chuyển qua lại giữa các dự án */}
+                            <Link href="/founder-workspace/p1" className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs font-bold text-[#081810] hover:bg-zinc-50">
                                 <div className="flex h-5 w-5 items-center justify-center rounded bg-[#081810] text-white text-[9px]">K</div>
                                 Kizuna Hub
-                            </button>
-                            <button className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs font-bold text-[#081810] hover:bg-zinc-50">
+                            </Link>
+                            <Link href="/founder-workspace/p2" className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs font-bold text-[#081810] hover:bg-zinc-50">
+                                <div className="flex h-5 w-5 items-center justify-center rounded bg-amber-400 text-white text-[9px]">S</div>
+                                SnapMoney
+                            </Link>
+                            <Link href="/founder-workspace/p3" className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs font-bold text-[#081810] hover:bg-zinc-50">
                                 <div className="flex h-5 w-5 items-center justify-center rounded bg-orange-500 text-white text-[9px]">D</div>
                                 Dietfit AI
-                            </button>
+                            </Link>
                         </div>
                     )}
                 </div>
@@ -96,12 +110,12 @@ export default function WorkspaceSidebar() {
 
             {/* Navigation Menu */}
             <nav className="flex-1 overflow-y-auto p-3 [&::-webkit-scrollbar]:hidden flex flex-col gap-1 mt-2">
-                {/* Dùng exact=true cho Dashboard để không sáng nhầm khi ở tab con */}
-                <NavItem icon={BarChart3} label="Dashboard" href="/founder-workspace" exact={true} />
-                <NavItem icon={FileText} label="AI Pitch Deck" href="/founder-workspace/ai-pitch-deck" />
-                <NavItem icon={Users} label="Venture Connect" href="/founder-workspace/venture-connect" />
-                <NavItem icon={Lock} label="IP Protection Ledger" href="/founder-workspace/ip-ledger" />
-                <NavItem icon={Zap} label="SaaS Perks & Ưu đãi" href="/founder-workspace/saas-perks" />
+                {/* TRUYỀN BASE URL VÀO href CỦA CÁC NAV ITEM */}
+                <NavItem icon={BarChart3} label="Dashboard" href={baseUrl} exact={true} />
+                <NavItem icon={FileText} label="AI Pitch Deck" href={`${baseUrl}/ai-pitch-deck`} />
+                <NavItem icon={Users} label="Venture Connect" href={`${baseUrl}/venture-connect`} />
+                <NavItem icon={Lock} label="IP Protection Ledger" href={`${baseUrl}/ip-ledger`} />
+                <NavItem icon={Zap} label="SaaS Perks & Ưu đãi" href={`${baseUrl}/saas-perks`} />
             </nav>
 
             {/* Bottom: User Profile */}

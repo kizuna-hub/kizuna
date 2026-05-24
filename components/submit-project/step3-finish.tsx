@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Users, Trash2, Plus, Flag, Activity, LinkIcon, TrendingUp, ImagePlus } from "lucide-react";
+import { Users, Trash2, Plus, Flag, Activity, LinkIcon, TrendingUp, ImagePlus, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Step3FinishProps {
@@ -324,6 +324,74 @@ export function Step3Finish({ formData, updateFormData, updateTeamMember, addTea
                 >
                     <Plus className="h-4 w-4" /> Thêm người đồng hành
                 </button>
+                {/* --- Phần nhập thông tin Mentor --- */}
+                <div className="mt-8 p-5 bg-zinc-50 border border-zinc-200 rounded-xl">
+                    <div className="flex items-center gap-2 mb-4">
+                        <UserCheck className="w-5 h-5 text-[#16452a]" />
+                        <div>
+                            <h3 className="text-sm font-bold text-[#081810]">Thông tin Mentor (Tùy chọn)</h3>
+                            <p className="text-[11px] font-medium text-zinc-500">Người đã cố vấn và đồng hành cùng dự án của bạn.</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {/* Tên Mentor */}
+                        <div>
+                            <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+                                Họ và tên
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.mentorName || ''}
+                                onChange={(e) => updateFormData('mentorName', e.target.value)}
+                                placeholder="VD: TS. Nguyễn Văn A..."
+                                className="w-full h-10 bg-white border border-zinc-200 text-slate-900 rounded-lg px-3 text-sm focus:outline-none focus:border-[#16452a] transition-all"
+                            />
+                        </div>
+
+                        {/* Chức vụ */}
+                        <div>
+                            <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+                                Chức vụ
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.mentorRole || ''}
+                                onChange={(e) => updateFormData('mentorRole', e.target.value)}
+                                placeholder="VD: Giảng viên, CEO..."
+                                className="w-full h-10 bg-white border border-zinc-200 text-slate-900 rounded-lg px-3 text-sm focus:outline-none focus:border-[#16452a] transition-all"
+                            />
+                        </div>
+
+                        {/* Nơi công tác */}
+                        <div>
+                            <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+                                Nơi công tác
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.mentorOrg || ''}
+                                onChange={(e) => updateFormData('mentorOrg', e.target.value)}
+                                placeholder="VD: ĐH Bách Khoa ĐN..."
+                                className="w-full h-10 bg-white border border-zinc-200 text-slate-900 rounded-lg px-3 text-sm focus:outline-none focus:border-[#16452a] transition-all"
+                            />
+                        </div>
+
+                        {/* Email Mentor */}
+                        <div>
+                            <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
+                                Email liên hệ
+                            </label>
+                            <input
+                                type="email"
+                                value={formData.mentorEmail || ''}
+                                onChange={(e) => updateFormData('mentorEmail', e.target.value)}
+                                placeholder="mentor@domain.com"
+                                className="w-full h-10 bg-white border border-zinc-200 text-slate-900 rounded-lg px-3 text-sm focus:outline-none focus:border-[#16452a] transition-all"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <hr className="border-zinc-100" />

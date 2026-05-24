@@ -7,6 +7,7 @@ export const myProductsData = [
         color: "bg-[#081810]",
         categories: ["B2B SaaS", "Networking"],
         mentor: "Dr. Alex Chen",
+        approvalStatus: "Published", // Đã duyệt
         traction: {
             status: "Funded", // Funded, Bootstrapped, Seeking
             amount: "$50K",
@@ -26,6 +27,7 @@ export const myProductsData = [
         color: "bg-amber-400",
         categories: ["Fintech", "Consumer"],
         mentor: "TS. Trần Minh",
+        approvalStatus: "Pending", // Đang chờ duyệt
         traction: {
             status: "Seeking",
             amount: "$100K",
@@ -45,6 +47,7 @@ export const myProductsData = [
         color: "bg-orange-500",
         categories: ["HealthTech", "AI"],
         mentor: "Chưa có",
+        approvalStatus: "Rejected", // Cần bổ sung
         traction: {
             status: "Bootstrapped",
             amount: "$0",
