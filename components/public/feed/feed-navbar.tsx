@@ -72,9 +72,15 @@ export function FeedNavbar() {
                         <kbd className="absolute right-3 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-bold text-slate-400">⌘K</kbd>
                     </div>
 
-                    <button className="flex h-9 items-center gap-2 rounded-full bg-[#16452a] px-4 text-sm font-bold text-white transition-all hover:bg-[#0a1c13]">
+                    <Link href="/submit-project">
+                        <button className="flex h-9 items-center gap-2 rounded-full bg-[#16452a] px-4 text-sm font-bold text-white transition-all hover:bg-[#0a1c13]">
+                            Submit project
+                        </button>
+                    </Link>
+
+                    {/* <button className="flex h-9 items-center gap-2 rounded-full bg-[#16452a] px-4 text-sm font-bold text-white transition-all hover:bg-[#0a1c13]">
                         Submit project
-                    </button>
+                    </button> */}
 
                     {/* KHU VỰC AVATAR & DROPDOWN MENU */}
                     <div className="relative" ref={menuRef}>
