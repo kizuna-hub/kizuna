@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lightbulb, AlertCircle } from "lucide-react";
+import { CheckCircle2, FileText, Image, Tags, Video, AlertCircle, XCircle } from "lucide-react";
 
 interface DynamicSidebarProps {
     currentStep: number;
@@ -10,55 +10,160 @@ interface DynamicSidebarProps {
 
 export function DynamicSidebar({ currentStep }: DynamicSidebarProps) {
     return (
-        <div className="sticky top-24 space-y-4">
+        // Sử dụng sticky top-24 để bám dính khi scroll. Không background, không border.
+        <div className="sticky top-24 space-y-8 pr-2">
 
-            {/* Khối Tips */}
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                    <Lightbulb className="h-5 w-5 text-emerald-600" />
-                    <h3 className="text-sm font-bold text-emerald-900">Mẹo cho bước này</h3>
+            {/* Box Alert Xanh lá nhạt (Bám sát thiết kế Unikorn) */}
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+                <div className="flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-slate-700 shrink-0 mt-0.5" />
+                    <p className="text-sm font-medium text-slate-800 leading-relaxed">
+                        Sản phẩm phải được sáng lập bởi một người Việt Nam hoặc một đội ngũ có thành viên là người Việt.
+                    </p>
                 </div>
-                <div className="text-sm font-medium text-emerald-800 leading-relaxed min-h-[80px]">
+            </div>
+
+            {/* TIPS SECTION */}
+            <div>
+                <h3 className="text-lg font-black text-[#081810] mb-5">Product submission tips</h3>
+
+                <div className="space-y-6">
                     <AnimatePresence mode="wait">
-                        <motion.div key={currentStep} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                            {currentStep === 1 && "Một cái tên dễ nhớ và một câu Slogan đi thẳng vào vấn đề sẽ giúp dự án của bạn thu hút nhiều lượt Upvote hơn trên Feed."}
-                            {currentStep === 2 && "Đừng viết quá dài. Hãy tập trung vào việc bạn đang giải quyết 'nỗi đau' gì của thị trường. Nhớ sử dụng AI Polish để câu văn mượt mà hơn nhé!"}
-                            {currentStep === 3 && "Việc minh bạch thông tin về vai trò trong đội ngũ sẽ giúp bạn dễ dàng thu hút các Mentor phù hợp."}
+                        <motion.div
+                            key={currentStep}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="space-y-6"
+                        >
+                            {/* TIPS CHO BƯỚC 1: CƠ BẢN */}
+                            {currentStep === 1 && (
+                                <>
+                                    <div className="flex items-start gap-3">
+                                        <FileText className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <div>
+                                            <h4 className="text-sm font-bold text-[#081810] mb-1">Clear product name</h4>
+                                            <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                                Use a short, memorable name that accurately reflects your product.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <Image className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <div>
+                                            <h4 className="text-sm font-bold text-[#081810] mb-1">Quality images</h4>
+                                            <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                                Upload a clear thumbnail and demo images that show the UI and key features.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {/* TIPS CHO BƯỚC 2: CHI TIẾT */}
+                            {currentStep === 2 && (
+                                <>
+                                    <div className="flex items-start gap-3">
+                                        <Tags className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <div>
+                                            <h4 className="text-sm font-bold text-[#081810] mb-1">Relevant tags</h4>
+                                            <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                                Choose accurate tags so your product is easily discovered by interested users.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <Video className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <div>
+                                            <h4 className="text-sm font-bold text-[#081810] mb-1">Demo video (if available)</h4>
+                                            <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                                A short 1-2 minute video helps viewers quickly understand how to use it.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {/* TIPS CHO BƯỚC 3: HOÀN TẤT */}
+                            {currentStep === 3 && (
+                                <>
+                                    <div className="flex items-start gap-3">
+                                        <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <div>
+                                            <h4 className="text-sm font-bold text-[#081810] mb-1">Fill in all details</h4>
+                                            <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                                Increases the chance of quick approval and a professional appearance.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </motion.div>
                     </AnimatePresence>
                 </div>
             </div>
 
-            {/* Khối Cảnh báo */}
-            <div className="rounded-2xl border border-orange-100 bg-orange-50/30 p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                    <AlertCircle className="h-5 w-5 text-orange-500" />
-                    <h3 className="text-sm font-bold text-orange-900">Nên tránh</h3>
-                </div>
-                <ul className="text-sm font-medium text-orange-800 space-y-2 list-disc pl-4 min-h-[80px]">
+            {/* AVOID SECTION */}
+            <div className="pt-2">
+                <h3 className="text-lg font-black text-[#081810] mb-5">Avoid</h3>
+
+                <div className="space-y-4">
                     <AnimatePresence mode="wait">
-                        <motion.div key={currentStep} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <motion.div
+                            key={currentStep}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="space-y-4"
+                        >
                             {currentStep === 1 && (
                                 <>
-                                    <li>Slogan vượt quá 80 ký tự.</li>
-                                    <li>Sử dụng Logo mờ, sai tỷ lệ (Nên dùng ảnh vuông 1:1).</li>
+                                    <div className="flex items-start gap-3">
+                                        <XCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                                        <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                            Spam, misleading ads, or copyright violations.
+                                        </p>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <XCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                                        <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                            Blurry, irrelevant, or text-heavy images.
+                                        </p>
+                                    </div>
                                 </>
                             )}
+
                             {currentStep === 2 && (
                                 <>
-                                    <li>Dùng quá nhiều thuật ngữ chuyên ngành khó hiểu.</li>
-                                    <li>Chọn sai lĩnh vực trọng điểm.</li>
+                                    <div className="flex items-start gap-3">
+                                        <XCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                                        <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                            Generic descriptions, copying from other sites, or AI-generated content without quality control.
+                                        </p>
+                                    </div>
                                 </>
                             )}
+
                             {currentStep === 3 && (
                                 <>
-                                    <li>Khai báo khống số lượng thành viên.</li>
-                                    <li>Xác nhận khi dự án chưa phải là tài sản trí tuệ gốc của bạn.</li>
+                                    <div className="flex items-start gap-3">
+                                        <XCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                                        <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                                            Broken links, pages under maintenance, or unfinished products.
+                                        </p>
+                                    </div>
                                 </>
                             )}
                         </motion.div>
                     </AnimatePresence>
-                </ul>
+                </div>
+            </div>
+
+            {/* Bottom text */}
+            <div className="pt-8 pb-4 text-center">
+                <p className="text-xs font-medium text-zinc-400">
+                    Alongside products built by Vietnamese creators
+                </p>
             </div>
         </div>
     );

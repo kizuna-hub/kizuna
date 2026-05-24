@@ -37,6 +37,7 @@ export function SubmitProjectWizard() {
         demoLink: '',
         // Step 3
         team: [{ name: '', role: '' }],
+        gallery: [],
         status: '',
         isCommitted: false
     });

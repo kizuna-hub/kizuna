@@ -127,6 +127,7 @@ export function Step1Basic({ formData, updateFormData }: Step1BasicProps) {
             </div>
 
             {/* 3. Logo/Thumbnail */}
+            {/* 3. Logo/Thumbnail */}
             <div>
                 <label className="flex items-center gap-2 text-sm font-bold text-[#081810] mb-1.5">
                     <ImagePlus className="w-4 h-4 text-zinc-400" /> Logo sản phẩm
@@ -135,27 +136,70 @@ export function Step1Basic({ formData, updateFormData }: Step1BasicProps) {
 
                 <div className="flex items-start gap-6">
                     {/* Thumbnail Preview */}
-                    <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[18px] border-2 border-dashed border-zinc-300 bg-zinc-50 overflow-hidden">
+                    <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[18px] border-2 border-dashed border-zinc-300 bg-zinc-50 overflow-hidden relative group">
                         {formData.logoUrl ? (
-                            <img src={formData.logoUrl} alt="Logo preview" className="h-full w-full object-cover" />
+                            <>
+                                <img src={formData.logoUrl} alt="Logo preview" className="h-full w-full object-cover" />
+                                {/* Overlay mờ đi khi di chuột vào để hiện nút Xóa */}
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            // Xóa URL preview để giải phóng bộ nhớ
+                                            if (formData.logoUrl.startsWith('blob:')) {
+                                                URL.revokeObjectURL(formData.logoUrl);
+                                            }
+                                            updateFormData('logoUrl', '');
+                                        }}
+                                        className="text-white text-xs font-bold hover:underline"
+                                    >
+                                        Xóa
+                                    </button>
+                                </div>
+                            </>
                         ) : (
                             <ImagePlus className="h-6 w-6 text-zinc-300" />
                         )}
                     </div>
 
-                    {/* Nút Upload (Giả lập bằng Input URL cho nhanh) */}
-                    <div className="flex-1">
-                        <div className="relative flex items-center w-full max-w-sm">
-                            <input
-                                type="url"
-                                value={formData.logoUrl}
-                                onChange={(e) => updateFormData('logoUrl', e.target.value)}
-                                placeholder="Dán URL ảnh vào đây..."
-                                className="h-10 w-full rounded-lg border border-zinc-200 bg-white pl-3 pr-4 text-sm text-slate-900 outline-none transition-all focus:border-[#16452a] focus:ring-1 focus:ring-[#16452a] shadow-sm"
-                            />
-                        </div>
+                    {/* Nút Upload Thực tế */}
+                    <div className="flex-1 pt-2">
+                        {/* Thẻ label này hoạt động như một nút bấm. 
+                          Thuộc tính htmlFor="logo-upload" sẽ liên kết nó với cái thẻ <input type="file"> đang bị ẩn ở dưới.
+                        */}
+                        <label
+                            htmlFor="logo-upload"
+                            className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:bg-zinc-50 hover:text-[#081810]"
+                        >
+                            Tải ảnh lên
+                        </label>
+                        <input
+                            id="logo-upload"
+                            type="file"
+                            accept="image/png, image/jpeg, image/jpg"
+                            className="hidden" // Ẩn cái input xấu xí mặc định của trình duyệt đi
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    // Kiểm tra dung lượng (Ví dụ: < 2MB)
+                                    if (file.size > 2 * 1024 * 1024) {
+                                        alert("File quá lớn. Vui lòng chọn ảnh dưới 2MB.");
+                                        return;
+                                    }
+
+                                    // Tạo một URL tạm thời trong trình duyệt để preview ảnh ngay lập tức
+                                    const previewUrl = URL.createObjectURL(file);
+
+                                    // Ở đây tao lưu cái previewUrl vào formData.logoUrl để hiển thị.
+                                    // TRONG THỰC TẾ (khi call API): Mày sẽ cần lưu cả cái object `file` này vào một state khác (ví dụ: formData.logoFile) 
+                                    // để sau này bắn cái file vật lý đó lên Supabase/AWS S3.
+                                    updateFormData('logoUrl', previewUrl);
+                                }
+                            }}
+                        />
                         <p className="mt-2 text-[11px] font-medium text-zinc-400">
-                            *Hiện tại hỗ trợ dán Link ảnh trực tiếp. Chức năng upload file sẽ sớm ra mắt.
+                            Ảnh sẽ được bo góc tự động khi hiển thị.
                         </p>
                     </div>
                 </div>

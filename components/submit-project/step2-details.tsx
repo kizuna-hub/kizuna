@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Layers, FileText, Cpu, Link as LinkIcon, Sparkles } from "lucide-react";
+import { Layers, FileText, Cpu, Link as LinkIcon, Users, Box, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Step2DetailsProps {
@@ -115,35 +115,42 @@ export function Step2Details({ formData, updateFormData, handleAIPolish, showSpa
             </div>
 
             {/* 3. Tech Stack & Link */}
+            {/* 3. Khách hàng & Mô hình (Thay cho Tech Stack & Link cũ) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Tech Stack */}
+                {/* Khách hàng mục tiêu */}
                 <div>
                     <label className="flex items-center gap-2 text-sm font-bold text-[#081810] mb-1.5">
-                        <Cpu className="w-4 h-4 text-zinc-400" /> Tech Stack (Tùy chọn)
+                        <Users className="w-4 h-4 text-zinc-400" /> Khách hàng mục tiêu
                     </label>
-                    <p className="text-xs font-medium text-zinc-500 mb-3">Công nghệ cốt lõi bạn đang sử dụng.</p>
+                    <p className="text-xs font-medium text-zinc-500 mb-3">Ai là người sẽ sử dụng/trả tiền cho bạn?</p>
                     <input
                         type="text"
-                        value={formData.techStack}
-                        onChange={(e) => updateFormData('techStack', e.target.value)}
-                        placeholder="VD: Next.js, PostgreSQL, Prisma..."
+                        value={formData.targetAudience || ''}
+                        onChange={(e) => updateFormData('targetAudience', e.target.value)}
+                        placeholder="VD: Sinh viên IT, Doanh nghiệp SME..."
                         className="w-full h-11 bg-white border border-zinc-200 text-slate-900 rounded-xl px-4 text-sm focus:outline-none focus:border-[#16452a] focus:ring-1 focus:ring-[#16452a] transition-all shadow-sm"
                     />
                 </div>
 
-                {/* Link Demo */}
+                {/* Mô hình */}
                 <div>
                     <label className="flex items-center gap-2 text-sm font-bold text-[#081810] mb-1.5">
-                        <LinkIcon className="w-4 h-4 text-zinc-400" /> Link sản phẩm
+                        <Box className="w-4 h-4 text-zinc-400" /> Mô hình nền tảng
                     </label>
-                    <p className="text-xs font-medium text-zinc-500 mb-3">Website, TestFlight hoặc Figma Demo.</p>
-                    <input
-                        type="url"
-                        value={formData.demoLink}
-                        onChange={(e) => updateFormData('demoLink', e.target.value)}
-                        placeholder="https://..."
-                        className="w-full h-11 bg-white border border-zinc-200 text-slate-900 rounded-xl px-4 text-sm focus:outline-none focus:border-[#16452a] focus:ring-1 focus:ring-[#16452a] transition-all shadow-sm"
-                    />
+                    <p className="text-xs font-medium text-zinc-500 mb-3">Sản phẩm của bạn thuộc dạng nào?</p>
+                    <select
+                        value={formData.businessModel || ''}
+                        onChange={(e) => updateFormData('businessModel', e.target.value)}
+                        className="w-full h-11 bg-white border border-zinc-200 text-slate-900 rounded-xl px-4 text-sm focus:outline-none focus:border-[#16452a] focus:ring-1 focus:ring-[#16452a] transition-all shadow-sm appearance-none"
+                    >
+                        <option value="" disabled>Chọn mô hình...</option>
+                        <option value="B2B SaaS">B2B SaaS (Doanh nghiệp)</option>
+                        <option value="B2C SaaS">B2C SaaS (Người dùng cuối)</option>
+                        <option value="Marketplace">Marketplace (Sàn giao dịch)</option>
+                        <option value="Mobile App">Mobile App / Game</option>
+                        <option value="Hardware">Hardware / IoT</option>
+                        <option value="Other">Khác</option>
+                    </select>
                 </div>
             </div>
 
