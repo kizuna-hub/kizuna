@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/i18n/routing';
 import {
     BarChart3,
     FileText,
@@ -18,8 +17,8 @@ import { cn } from "@/lib/utils";
 // --- Component NavItem (tương tự như Dashboard Global) ---
 const NavItem = ({ icon: Icon, label, href, exact = false }: any) => {
     const pathname = usePathname();
-    // Bóc tách locale (ví dụ: /vi, /en)
-    const normalizedPath = pathname.replace(/^\/[a-zA-Z-]{2,5}(\/|$)/, '/');
+
+    const normalizedPath = pathname === '/' ? '/' : pathname;
 
     // Xác định trạng thái active
     const isActive = exact
