@@ -1,9 +1,15 @@
-import { Search, Settings, Target } from 'lucide-react';
+import { Search, Settings, Target, LayoutDashboard, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const InvestorHeader = () => (
+interface InvestorHeaderProps {
+    viewMode: 'board' | 'list';
+    setViewMode: (mode: 'board' | 'list') => void;
+}
+
+export const InvestorHeader = ({ viewMode, setViewMode }: InvestorHeaderProps) => (
     <header className="relative z-10 border-b border-kizuna-border bg-white sticky top-0 shadow-sm">
         <div className="px-8 py-4 flex items-center justify-between max-w-[1600px] mx-auto">
+            {/* Logo & Title */}
             <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-[#16452a] rounded-lg flex items-center justify-center shadow-sm">
                     <Target className="w-5 h-5 text-white" />
@@ -14,8 +20,27 @@ export const InvestorHeader = () => (
                 </div>
             </div>
 
-            <div className="flex items-center gap-4 w-full max-w-md">
-                <div className="relative flex-1">
+            {/* View Toggles & Search */}
+            <div className="flex items-center gap-4 w-full max-w-xl justify-end">
+                {/* View Mode Toggle */}
+                <div className="flex bg-zinc-100 p-1 rounded-lg border border-kizuna-border/50">
+                    <button
+                        onClick={() => setViewMode('board')}
+                        className={`p-1.5 rounded-md flex items-center gap-2 text-xs font-bold uppercase transition-all ${viewMode === 'board' ? 'bg-white shadow-sm text-kizuna-primary' : 'text-kizuna-text-muted hover:text-kizuna-text-main'}`}
+                    >
+                        <LayoutDashboard className="w-4 h-4" /> Board
+                    </button>
+                    <button
+                        onClick={() => setViewMode('list')}
+                        className={`p-1.5 rounded-md flex items-center gap-2 text-xs font-bold uppercase transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-kizuna-primary' : 'text-kizuna-text-muted hover:text-kizuna-text-main'}`}
+                    >
+                        <List className="w-4 h-4" /> List
+                    </button>
+                </div>
+
+                <div className="h-6 w-px bg-kizuna-border hidden md:block"></div>
+
+                <div className="relative w-64">
                     <Search className="absolute left-3 top-2.5 w-4 h-4 text-kizuna-text-muted" />
                     <input
                         type="text"

@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "target": "ES6",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -23,9 +19,21 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@/app/*": ["./app/*"],
+      "@/components/*": ["./components/*"],
+      "@/config/*": ["./config/*"],
+      "@/entities/*": ["./entities/*"],
+      "@/features/*": ["./features/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/i18n/*": ["./i18n/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/messages/*": ["./messages/*"],
+      "@/shared/*": ["./shared/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/types/*": ["./types/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/widgets/*": ["./widgets/*"]
     }
   },
   "include": [
@@ -33,9 +41,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-, "tailwind.config.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "tailwind.config.ts"
+  ],
+  "exclude": ["node_modules"]
 }

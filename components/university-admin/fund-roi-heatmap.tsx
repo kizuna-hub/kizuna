@@ -22,7 +22,7 @@ export function FundROIHeatmap() {
                 <div className="w-full lg:w-1/4 bg-zinc-50 border border-zinc-200 p-4 rounded-xl text-center relative z-10">
                     <Building2 className="w-6 h-6 text-zinc-400 mx-auto mb-2" />
                     <p className="text-xs text-zinc-500 font-medium">Ngân sách NCKH (Nhà trường)</p>
-                    <p className="text-xl font-bold text-zinc-900 mt-1">500 Triệu</p>
+                    <p className="text-xl font-bold text-zinc-900 mt-1">50 Triệu</p>
                 </div>
 
                 <ArrowRight className="w-6 h-6 text-zinc-300 hidden lg:block rotate-90 lg:rotate-0" />
@@ -31,7 +31,7 @@ export function FundROIHeatmap() {
                 <div className="w-full lg:w-1/4 bg-blue-50 border border-blue-200 p-4 rounded-xl text-center relative z-10">
                     <Lightbulb className="w-6 h-6 text-blue-500 mx-auto mb-2" />
                     <p className="text-xs text-blue-600 font-medium">Đầu tư tạo MVP & IP Ledger</p>
-                    <p className="text-xl font-bold text-blue-900 mt-1">124 Dự án</p>
+                    <p className="text-xl font-bold text-blue-900 mt-1">24 Dự án</p>
                 </div>
 
                 <ArrowRight className="w-6 h-6 text-blue-300 hidden lg:block rotate-90 lg:rotate-0" />
@@ -40,7 +40,7 @@ export function FundROIHeatmap() {
                 <div className="w-full lg:w-1/4 bg-orange-50 border border-orange-200 p-4 rounded-xl text-center relative z-10">
                     <BadgeDollarSign className="w-6 h-6 text-orange-500 mx-auto mb-2" />
                     <p className="text-xs text-orange-600 font-medium">Đạt chuẩn & Lấy vốn NQ-54</p>
-                    <p className="text-xl font-bold text-orange-900 mt-1">15 Dự án</p>
+                    <p className="text-xl font-bold text-orange-900 mt-1">5 Dự án</p>
                 </div>
 
                 <ArrowRight className="w-6 h-6 text-orange-300 hidden lg:block rotate-90 lg:rotate-0" />
@@ -49,7 +49,7 @@ export function FundROIHeatmap() {
                 <div className="w-full lg:w-1/4 bg-gradient-to-br from-kizuna-primary to-[#0a1f14] p-4 rounded-xl text-center relative z-10 shadow-lg transform scale-105">
                     <Coins className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
                     <p className="text-xs text-zinc-300 font-medium">Thu hút Vốn xã hội (VCs)</p>
-                    <p className="text-2xl font-black text-white mt-1">12.5 Tỷ</p>
+                    <p className="text-2xl font-black text-white mt-1">150 Triệu</p>
                 </div>
             </div>
 

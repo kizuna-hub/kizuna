@@ -1,46 +1,107 @@
-import { Sparkles, Gavel } from "lucide-react";
+"use client";
 
-export const AINavigatorSidebar = () => (
-    <div className="bg-white border border-kizuna-border rounded-xl p-4 flex flex-col shadow-sm h-fit sticky top-10">
-        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-kizuna-border">
-            <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center text-[#16452a] border border-emerald-100">
-                <Sparkles className="w-4.5 h-4.5" />
-            </div>
-            <div>
-                <h3 className="font-bold text-[#102c1e] text-sm">AI Navigator</h3>
-                <p className="text-[10px] font-medium text-kizuna-text-muted">Trợ lý Soạn thảo Thông minh</p>
-            </div>
-        </div>
+import React from "react";
+import { Sparkles, Zap, CheckCircle2, Play } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-        <div className="flex flex-col gap-4">
-            <button className="w-full py-2.5 bg-[#16452a] hover:bg-[#102c1e] text-white text-[11px] font-bold rounded-lg shadow-sm hover:shadow-md transition-all flex justify-center items-center gap-2 active:scale-[0.98]">
-                <Sparkles className="w-3.5 h-3.5" /> Tự động Điền Nội dung
+interface AINavigatorSidebarProps {
+    sections: any[];
+    activeSection: string;
+    content: Record<string, string>;
+    onNavigate: (id: string) => void;
+    aiPolishTokens: number;
+    slideGenerationsLeft: number;
+    onGenerateSlides: () => void;
+    isGenerating: boolean;
+}
+
+export function AINavigatorSidebar({
+    sections,
+    activeSection,
+    content,
+    onNavigate,
+    aiPolishTokens,
+    slideGenerationsLeft,
+    onGenerateSlides,
+    isGenerating
+}: AINavigatorSidebarProps) {
+    return (
+        <div className="sticky top-10 flex flex-col gap-5">
+            {/* Core Action: Generate Slides Button (Aha Moment Trigger) */}
+            <button
+                onClick={onGenerateSlides}
+                disabled={isGenerating}
+                className="w-full py-4 bg-[#16452a] hover:bg-[#0a1c13] text-white text-sm font-black rounded-xl shadow-md hover:shadow-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98] border border-[#16452a]"
+            >
+                {isGenerating ? (
+                    <span className="flex items-center gap-2 text-xs font-bold">Cấu trúc hóa Slide...</span>
+                ) : (
+                    <>
+                        <Play className="w-4 h-4 fill-white" /> Khởi tạo Slide Pitch Deck
+                    </>
+                )}
             </button>
 
-            {/* Suggestion Card với màu Pastel nhẹ */}
-            <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-3.5">
-                <h4 className="text-[10px] font-bold text-blue-700 flex items-center gap-1.5 mb-2 uppercase tracking-wider">
-                    <Sparkles className="w-3 h-3" /> Gợi ý theo Ngữ cảnh
-                </h4>
-                <p className="text-xs text-blue-900/80 leading-relaxed">
-                    Dựa trên <strong className="text-blue-900">Nghị quyết 54</strong>, bạn nên nhấn mạnh vào khả năng giải quyết các bài toán giao thông đô thị của thành phố Đà Nẵng để tăng điểm thẩm định.
-                </p>
+            {/* Subscription Limits Status Tracker */}
+            <div className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm space-y-4">
+                {/* AI Polish Token */}
+                <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                        <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-[#16452a]" /> Lượt Trợ lý AI Polish</h3>
+                        <span className="text-xs font-bold text-slate-500">{aiPolishTokens}/50</span>
+                    </div>
+                    <div className="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
+                        <div className={cn("h-full rounded-full transition-all", aiPolishTokens < 5 ? "bg-red-500" : "bg-[#16452a]")} style={{ width: `${(aiPolishTokens / 50) * 100}%` }} />
+                    </div>
+                </div>
+
+                {/* Slide Gen Token */}
+                <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                        <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-amber-500" /> Kết xuất Slide tháng</h3>
+                        <span className="text-xs font-bold text-slate-500">{slideGenerationsLeft}/3</span>
+                    </div>
+                    <div className="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${(slideGenerationsLeft / 3) * 100}%` }} />
+                    </div>
+                </div>
             </div>
 
-            {/* Policy Reference Section */}
-            <div className="bg-white border border-kizuna-border rounded-xl overflow-hidden flex flex-col">
-                <div className="bg-kizuna-surface border-b border-kizuna-border p-2.5">
-                    <h4 className="text-[10px] font-bold text-[#102c1e] flex items-center gap-1.5 uppercase tracking-wider">
-                        <Gavel className="w-3 h-3" /> Tham khảo Chính sách
-                    </h4>
-                </div>
-                <div className="p-3.5 text-xs text-kizuna-text-muted bg-white leading-relaxed max-h-[200px] overflow-y-auto scrollbar-thin">
-                    <p className="mb-2 text-[#16452a] font-bold text-[10px] uppercase tracking-wide">Điều 4.2 - Nghị quyết 54/2021</p>
-                    <p>
-                        Các Startup nộp hồ sơ phải chứng minh sự phù hợp với các định hướng phát triển kinh tế bền vững và Thành phố thông minh.
-                    </p>
+            {/* Structural Form Sections List */}
+            <div className="bg-white border border-zinc-200 rounded-2xl p-4 shadow-sm">
+                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3 px-1">Cấu trúc bài thuyết trình</h3>
+                <div className="flex flex-col gap-1">
+                    {sections.map((section) => (
+                        <button
+                            key={section.id}
+                            onClick={() => onNavigate(section.id)}
+                            className={cn(
+                                "text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2.5",
+                                activeSection === section.id ? "bg-[#16452a]/5 text-[#16452a]" : "text-slate-600 hover:bg-zinc-50"
+                            )}
+                        >
+                            {content[section.id]?.trim() ? (
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                            ) : (
+                                <div className="w-4 h-4 border-2 border-zinc-300 rounded-full shrink-0" />
+                            )}
+                            <span className="truncate">{section.title}</span>
+                        </button>
+                    ))}
                 </div>
             </div>
+
+            {/* Dynamic Contextual AI Helper Hints */}
+            <div className="bg-[#16452a] text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+                <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/5 rounded-full blur-xl" />
+                <h4 className="text-[10px] font-black text-[#16452a] bg-white inline-block px-2 py-0.5 rounded uppercase tracking-wider mb-3">AI Context Hint</h4>
+                <p className="text-xs font-medium leading-relaxed text-white/90 animate-in fade-in duration-300">
+                    {activeSection === "summary" && "Slide tóm tắt cần gói gọn giá trị cốt lõi trong tối đa 3 dòng. Tập trung trả lời câu hỏi: Bạn làm cái gì, cho ai?"}
+                    {activeSection === "problem" && "Nhà đầu tư tìm kiếm các nỗi đau có thể định lượng bằng con số. Hãy chuyển các mô tả định tính thành dữ liệu thực tế."}
+                    {activeSection === "advantage" && "Tránh liệt kê tính năng. Hãy tập trung giải thích rào cản công nghệ hoặc lợi thế mạng lưới khiến đối thủ không thể copy bạn."}
+                    {activeSection !== "summary" && activeSection !== "problem" && activeSection !== "advantage" && "Hãy giữ độ dài văn bản vừa phải. AI sẽ dựa vào đây để thiết kế bố cục slide tinh gọn, thoáng đãng."}
+                </p>
+            </div>
         </div>
-    </div>
-);
+    );
+}
