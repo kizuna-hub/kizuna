@@ -48,12 +48,14 @@ export function UserMenu({ user }: UserMenuProps) {
             </div>
 
             {/* 3. Logout Section */}
-            <div className="p-2 border-t border-zinc-100 bg-zinc-50/50">
-                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm font-bold text-red-500 rounded-lg hover:bg-red-50 transition-colors group">
-                    <LogOut className="h-4 w-4 text-red-400 group-hover:text-red-500" />
-                    Logout
-                </button>
-            </div>
+            <a href="https://kizuna-landing.vercel.app/">
+                <div className="p-2 border-t border-zinc-100 bg-zinc-50/50">
+                    <button className="flex w-full items-center gap-3 px-3 py-2 text-sm font-bold text-red-500 rounded-lg hover:bg-red-50 transition-colors group">
+                        <LogOut className="h-4 w-4 text-red-400 group-hover:text-red-500" />
+                        Logout
+                    </button>
+                </div>
+            </a>
         </div>
     );
 }
