@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Thêm import router
 import { motion, type Variants } from "framer-motion";
-import { ArrowLeft, ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShieldCheck, Zap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils"; // Nhớ import cn để nối class
+import { cn } from "@/lib/utils";
 import { WavyBackground } from "./wavy-background";
 import { authCopy, authFields, type AuthMode, type FieldConfig } from "./auth-config";
 
@@ -57,8 +58,38 @@ function AuthInput({ field }: { field: FieldConfig }) {
 }
 
 export function AuthPage({ mode }: AuthPageProps) {
+  const router = useRouter();
   const pageCopy = authCopy[mode];
   const isLogin = mode === "login";
+
+  // Hàm xử lý điền nhanh dữ liệu cho BGK/Demo
+  const fillMockData = (email: string) => {
+    const emailInput = document.getElementById("email") as HTMLInputElement;
+    const passwordInput = document.getElementById("password") as HTMLInputElement;
+    if (emailInput) emailInput.value = email;
+    if (passwordInput) passwordInput.value = "123456";
+  };
+
+  // Hàm xử lý Submit Form
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isLogin) return; // Tạm thời chỉ xử lý mock cho Login
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email")?.toString().trim().toLowerCase();
+
+    // Logic điều hướng dựa trên Role
+    if (email === "startup@kizuna.com") {
+      router.push("/vi");
+    } else if (email === "mentor@kizuna.com") {
+      router.push("/vi/mentor-dashboard");
+    } else if (email === "investor@kizuna.com") {
+      router.push("/vi/investor-dashboard");
+    } else {
+      // Fallback nếu nhập linh tinh, cứ cho về trang startup hoặc báo lỗi
+      alert("Tài khoản chưa đăng ký. Hãy dùng các email test (startup/mentor/investor@kizuna.com)");
+    }
+  };
 
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
@@ -77,13 +108,12 @@ export function AuthPage({ mode }: AuthPageProps) {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        // FIX: Card Login thì 400px, Card Signup thì 500px cho rộng rãi
         className={cn(
           "relative z-10 w-full mx-4 overflow-hidden rounded-[2rem] bg-white p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]",
           isLogin ? "max-w-[400px]" : "max-w-[500px]"
         )}
       >
-        <motion.div variants={itemVariants} className="flex flex-col items-center text-center mb-8">
+        <motion.div variants={itemVariants} className="flex flex-col items-center text-center mb-6">
           <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-[#0a1c13]/5 text-[#0a1c13]">
             <ShieldCheck className="size-6" strokeWidth={2} />
           </div>
@@ -96,11 +126,9 @@ export function AuthPage({ mode }: AuthPageProps) {
           </p>
         </motion.div>
 
-        <form className="space-y-4">
-
-          {/* Lôgic Render Form thông minh */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Lôgic Render Form */}
           {isLogin ? (
-            // Dành cho Login: Xếp dọc bình thường
             <div className="space-y-4">
               {authFields.login.map((field) => (
                 <motion.div key={field.id} variants={itemVariants}>
@@ -109,7 +137,6 @@ export function AuthPage({ mode }: AuthPageProps) {
               ))}
             </div>
           ) : (
-            // Dành cho Signup: Chia đôi cột đầu tiên (Tên & Công ty)
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <motion.div variants={itemVariants}>
@@ -144,7 +171,7 @@ export function AuthPage({ mode }: AuthPageProps) {
           <motion.div variants={itemVariants} className="pt-2">
             <Button
               type="submit"
-              className="h-11 w-full rounded-xl bg-[#102c1e] text-[13px] font-semibold text-white shadow-md transition-colors"
+              className="h-11 w-full rounded-xl bg-[#102c1e] hover:bg-[#0a1c13] text-[13px] font-semibold text-white shadow-md transition-colors"
             >
               {pageCopy.action}
               <ArrowRight className="ml-1.5 size-4" strokeWidth={2} />
