@@ -8,13 +8,23 @@ import { InvestorSidebar } from '@/components/investor-dashboard/investor-sideba
 import { InvestorTopbar } from '@/components/investor-dashboard/investor-topbar';
 import { InvestorMetrics } from '@/components/investor-dashboard/investor-metrics';
 import { DealListTable } from '@/components/investor-dashboard/deal-list-table';
+import { ProjectDetailModal } from '@/components/investor-dashboard/project-detail-modal';
 
 export default function InvestorDashboardPage() {
     const [activeMenu, setActiveMenu] = useState('dashboard');
     const [activeIndustry, setActiveIndustry] = useState('AI / ML');
 
+    // Khai báo state để quản lý việc mở/đóng Modal Chi tiết dự án
+    const [selectedProject, setSelectedProject] = useState<any>(null);
+
+    // Giả lập User Tier, mày có thể đổi thành 'Free', 'Angel', 'VC' để test UI
+    const userTier = 'VC';
+
+    const triggerPaywall = () => {
+        alert("Tính năng yêu cầu nâng cấp gói VC Enterprise!");
+    };
+
     return (
-        // Root Container: Tràn viền màn hình 100%, không còn thẻ bo góc bên ngoài
         <div className="flex h-screen w-full bg-white overflow-hidden font-sans selection:bg-[#102c1e]/20">
 
             {/* Sidebar tĩnh bên trái */}
@@ -26,10 +36,10 @@ export default function InvestorDashboardPage() {
             />
 
             {/* Vùng Main Content bên phải */}
-            <div className="flex-1 flex flex-col mx-auto max-w-5xl bg-zinc-50/50">
+            <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50">
                 <InvestorTopbar />
 
-                {/* Vùng scroll cho dữ liệu chính */}
+                {/* Vùng scroll cho dữ liệu chính - Đã add class ẩn thanh cuộn */}
                 <main className="flex-1 overflow-y-auto p-6 md:p-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
                     {/* Header Action */}
@@ -50,10 +60,20 @@ export default function InvestorDashboardPage() {
 
                     {/* Components Data */}
                     <InvestorMetrics />
-                    <DealListTable />
+
+                    {/* Truyền hàm setSelectedProject vào bảng */}
+                    <DealListTable onViewProject={setSelectedProject} />
 
                 </main>
             </div>
+
+            {/* Nhúng Modal Bento Board vào đây */}
+            <ProjectDetailModal
+                project={selectedProject}
+                onClose={() => setSelectedProject(null)}
+                userTier={userTier}
+                onTriggerPaywall={triggerPaywall}
+            />
         </div>
     );
 }
