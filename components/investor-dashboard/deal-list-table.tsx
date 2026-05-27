@@ -5,7 +5,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { dealFlowProjects } from './data';
 
-export const DealListTable = () => {
+// 1. Khai báo Interface bắt buộc phải có để nhận prop từ page.tsx
+interface DealListTableProps {
+    onViewProject?: (project: any) => void;
+}
+
+// 2. Phải có dấu ngoặc nhọn { onViewProject } ở đây
+export const DealListTable = ({ onViewProject }: DealListTableProps) => {
     return (
         <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 shadow-sm">
             <div className="flex items-center justify-between mb-6">
@@ -66,8 +72,18 @@ export const DealListTable = () => {
                                     </div>
                                 </td>
                                 <td className="py-4 pl-4 text-right">
-                                    <Button size="sm" className={cn("h-8 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all", project.isLocked ? "bg-[#102c1e] hover:bg-black text-white shadow-sm" : "bg-white border border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900")}>
-                                        {project.isLocked ? 'Yêu Cầu Mở' : 'Chi tiết'}
+                                    <Button
+                                        size="sm"
+                                        // 3. Thêm dấu ? ở đây để code an toàn, không bao giờ bị crash
+                                        onClick={() => onViewProject?.(project)}
+                                        className={cn(
+                                            "h-8 rounded-lg text-xs font-bold transition-all",
+                                            project.isLocked
+                                                ? "bg-[#102c1e] hover:bg-black text-white shadow-sm"
+                                                : "bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
+                                        )}
+                                    >
+                                        {project.isLocked ? 'Yêu cầu mở khóa' : 'Chi tiết'}
                                     </Button>
                                 </td>
                             </tr>
