@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { IPLedgerHeader } from '@/components/founder-workspace/ip-ledger/ip-ledger-header';
-import { IPLedgerTabs } from '@/components/founder-workspace/ip-ledger/ip-ledger-tabs';
-import { RegisterSection } from '@/components/founder-workspace/ip-ledger/register-section';
-import { VerifySection } from '@/components/founder-workspace/ip-ledger/verify-section';
+import { IPLedgerHeader } from '@/components/founder/founder-workspace/ip-ledger/ip-ledger-header';
+import { IPLedgerTabs } from '@/components/founder/founder-workspace/ip-ledger/ip-ledger-tabs';
+import { RegisterSection } from '@/components/founder/founder-workspace/ip-ledger/register-section';
+import { VerifySection } from '@/components/founder/founder-workspace/ip-ledger/verify-section';
 
 export default function IPLedgerPage() {
   const [activeTab, setActiveTab] = useState<'register' | 'verify'>('register');

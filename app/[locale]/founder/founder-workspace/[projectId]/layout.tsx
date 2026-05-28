@@ -1,5 +1,5 @@
 import React from 'react';
-import WorkspaceLayout from '@/components/founder-workspace/dashboard/workspace-layout';
+import WorkspaceLayout from '@/components/founder/founder-workspace/dashboard/workspace-layout';
 
 export default function Layout({
   children,

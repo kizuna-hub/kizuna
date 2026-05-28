@@ -1,8 +1,8 @@
-import IncubationRoadmap from '@/components/founder-workspace/dashboard/incubation-roadmap';
-import AIFormFillerCard from '@/components/founder-workspace/dashboard/cards/ai-form-filler';
-import AIInsightsCard from '@/components/founder-workspace/dashboard/cards/ai-insights';
-import SuggestedMentorsCard from '@/components/founder-workspace/dashboard/cards/suggested-mentor';
-import IPLedgerCard from '@/components/founder-workspace/dashboard/cards/ip-ledger';
+import IncubationRoadmap from '@/components/founder/founder-workspace/dashboard/incubation-roadmap';
+import AIFormFillerCard from '@/components/founder/founder-workspace/dashboard/cards/ai-form-filler';
+import AIInsightsCard from '@/components/founder/founder-workspace/dashboard/cards/ai-insights';
+import SuggestedMentorsCard from '@/components/founder/founder-workspace/dashboard/cards/suggested-mentor';
+import IPLedgerCard from '@/components/founder/founder-workspace/dashboard/cards/ip-ledger';
 
 export default function DashboardPage() {
     return (

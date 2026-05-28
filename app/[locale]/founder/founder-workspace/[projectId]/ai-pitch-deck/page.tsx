@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Sparkles, FileText, Target, Zap, Rocket, PieChart, Users } from "lucide-react";
 
 // --- IMPORT MODULES ĐÃ ĐƯỢC TÁCH NHỎ ---
-import { PitchDeckEditor } from "@/components/founder-workspace/ai-pitch-deck/pitch-deck-editor";
-import { AINavigatorSidebar } from "@/components/founder-workspace/ai-pitch-deck/ai-navigator-sidebar";
-import { EndorsementManager } from "@/components/founder-workspace/ai-pitch-deck/endorsement-manager";
-import { SlidePreviewModal } from "@/components/founder-workspace/ai-pitch-deck/slide-preview-modal";
-import { PaywallModal } from "@/components/founder-workspace/ai-pitch-deck/paywall-modal";
+import { PitchDeckEditor } from "@/components/founder/founder-workspace/ai-pitch-deck/pitch-deck-editor";
+import { AINavigatorSidebar } from "@/components/founder/founder-workspace/ai-pitch-deck/ai-navigator-sidebar";
+import { EndorsementManager } from "@/components/founder/founder-workspace/ai-pitch-deck/endorsement-manager";
+import { SlidePreviewModal } from "@/components/founder/founder-workspace/ai-pitch-deck/slide-preview-modal";
+import { PaywallModal } from "@/components/founder/founder-workspace/ai-pitch-deck/paywall-modal";
 
 const PITCH_DECK_SECTIONS = [
   { id: "summary", title: "Tóm tắt Dự án", icon: FileText, placeholder: "Mô tả ngắn gọn mô hình kinh doanh cốt lõi..." },

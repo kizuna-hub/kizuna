@@ -2,16 +2,16 @@
 
 import { useState } from 'react';
 import { Inbox, Users } from 'lucide-react';
-import { MentorHeader } from '@/components/mentor-dashboard/mentor-header';
-import { ReputationCard } from '@/components/mentor-dashboard/reputation-card';
-import { ActiveMenteeCard } from '@/components/mentor-dashboard/active-mentee-card';
-import { MatchmakingCard } from '@/components/mentor-dashboard/matchmaking-card';
-import { CalendarSidebar } from '@/components/mentor-dashboard/calendar-sidebar';
-import { ChartsSection } from '@/components/mentor-dashboard/charts-section';
-import { FundingLeaderboard } from '@/components/mentor-dashboard/funding-leaderboard';
-import { IPLedgerStream } from '@/components/mentor-dashboard/ip-ledger-stream';
-import { HiddenGems } from '@/components/mentor-dashboard/hidden-gems';
-import { ProjectDetailsDrawer } from '@/components/mentor-dashboard/project-details-drawer';
+import { MentorHeader } from '@/components/mentor/mentor-dashboard/mentor-header';
+import { ReputationCard } from '@/components/mentor/mentor-dashboard/reputation-card';
+import { ActiveMenteeCard } from '@/components/mentor/mentor-dashboard/active-mentee-card';
+import { MatchmakingCard } from '@/components/mentor/mentor-dashboard/matchmaking-card';
+import { CalendarSidebar } from '@/components/mentor/mentor-dashboard/calendar-sidebar';
+import { ChartsSection } from '@/components/mentor/mentor-dashboard/charts-section';
+import { FundingLeaderboard } from '@/components/mentor/mentor-dashboard/funding-leaderboard';
+import { IPLedgerStream } from '@/components/mentor/mentor-dashboard/ip-ledger-stream';
+import { HiddenGems } from '@/components/mentor/mentor-dashboard/hidden-gems';
+import { ProjectDetailsDrawer } from '@/components/mentor/mentor-dashboard/project-details-drawer';
 import { mentorProfile, matchmakingRequests, activeMentees } from './mock-data';
 
 export default function MentorDashboard() {

@@ -5,11 +5,11 @@ import { Filter, Lock, Zap, Briefcase, Users, HeartHandshake } from 'lucide-reac
 import { cn } from "@/lib/utils";
 
 // COMPONENT IMPORTS (Adjust paths based on your actual structure)
-import { MentorMatchCard } from '@/components/founder-workspace/venture-connect/mentor-match-card';
-import { ConnectionPipeline } from '@/components/founder-workspace/venture-connect/connection-pipeline';
-import { UpcomingEvents } from '@/components/founder-workspace/venture-connect/upcoming-events';
-import { PioneerSpotlight } from '@/components/founder-workspace/venture-connect/pioneer-spotlight';
-import { PaywallModal } from '@/components/founder-workspace/ai-pitch-deck/paywall-modal'; // Tái sử dụng Paywall từ Pitch Deck hoặc copy ra folder shared
+import { MentorMatchCard } from '@/components/founder/founder-workspace/venture-connect/mentor-match-card';
+import { ConnectionPipeline } from '@/components/founder/founder-workspace/venture-connect/connection-pipeline';
+import { UpcomingEvents } from '@/components/founder/founder-workspace/venture-connect/upcoming-events';
+import { PioneerSpotlight } from '@/components/founder/founder-workspace/venture-connect/pioneer-spotlight';
+import { PaywallModal } from '@/components/founder/founder-workspace/ai-pitch-deck/paywall-modal'; // Tái sử dụng Paywall từ Pitch Deck hoặc copy ra folder shared
 
 // --- MOCK DATA ---
 const topMentors = [

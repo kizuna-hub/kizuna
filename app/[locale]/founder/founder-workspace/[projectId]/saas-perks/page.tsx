@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { PerksHeader } from '@/components/founder-workspace/saas-perks/perks-header';
-import { FilterBar } from '@/components/founder-workspace/saas-perks/filter-bar';
-import { PerkCard } from '@/components/founder-workspace/saas-perks/perk-card';
-import { SidebarWidgets } from '@/components/founder-workspace/saas-perks/sidebar-widgets';
+import { PerksHeader } from '@/components/founder/founder-workspace/saas-perks/perks-header';
+import { FilterBar } from '@/components/founder/founder-workspace/saas-perks/filter-bar';
+import { PerkCard } from '@/components/founder/founder-workspace/saas-perks/perk-card';
+import { SidebarWidgets } from '@/components/founder/founder-workspace/saas-perks/sidebar-widgets';
 
 const perks = [
     { id: 1, provider: 'AWS Activate', logo: 'AWS', category: 'infrastructure', title: 'Credit $10.000 (2 năm)', description: 'Hỗ trợ hạ tầng chuyên dụng cho startup.', badge: 'Chỉ dự án có MVP', claimed: false },

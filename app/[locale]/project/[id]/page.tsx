@@ -1,5 +1,5 @@
 import { ProjectDetailsPage } from "@/components/project";
-import { FeedNavbar } from "@/components/public/feed/feed-navbar";
+import { FeedNavbar } from "@/components/founder/founder-dashboard/public/feed/feed-navbar";
 
 export default function ProjectPage({ params }: { params: { id: string } }) {
     return (
