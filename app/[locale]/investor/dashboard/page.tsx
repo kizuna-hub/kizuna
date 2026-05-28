@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { Download, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-import { InvestorSidebar } from '@/components/investor-dashboard/investor-sidebar';
-import { InvestorTopbar } from '@/components/investor-dashboard/investor-topbar';
-import { InvestorMetrics } from '@/components/investor-dashboard/investor-metrics';
-import { DealListTable } from '@/components/investor-dashboard/deal-list-table';
-import { ProjectDetailModal } from '@/components/investor-dashboard/project-detail-modal';
+import { InvestorSidebar } from '@/components/investor/investor-dashboard/investor-sidebar';
+import { InvestorTopbar } from '@/components/investor/investor-dashboard/investor-topbar';
+import { InvestorMetrics } from '@/components/investor/investor-dashboard/investor-metrics';
+import { DealListTable } from '@/components/investor/investor-dashboard/deal-list-table';
+import { ProjectDetailModal } from '@/components/investor/investor-dashboard/project-detail-modal';
 
 export default function InvestorDashboardPage() {
     const [activeMenu, setActiveMenu] = useState('dashboard');

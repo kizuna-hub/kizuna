@@ -2,10 +2,10 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { WizardLayout } from "@/components/investor-profile/wizard-layout"
-import { VerificationStep } from "@/components/investor-profile/steps/verification-step"
-import { ThesisStep } from "@/components/investor-profile/steps/thesis-step"
-import { ValueAddStep } from "@/components/investor-profile/steps/value-add-step"
+import { WizardLayout } from "@/components/investor/investor-profile/wizard-layout"
+import { VerificationStep } from "@/components/investor/investor-profile/steps/verification-step"
+import { ThesisStep } from "@/components/investor/investor-profile/steps/thesis-step"
+import { ValueAddStep } from "@/components/investor/investor-profile/steps/value-add-step"
 
 export default function InvestorProfileSetupPage() {
   const router = useRouter()
