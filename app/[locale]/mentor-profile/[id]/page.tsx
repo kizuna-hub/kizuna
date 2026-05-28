@@ -3,10 +3,10 @@
 import { use } from "react";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { MentorHeroSidebar } from "@/components/mentor-profile/mentor-hero-sidebar";
-import { AIMatchCard } from "@/components/mentor-profile/ai-match-card";
-import { MentorMetrics } from "@/components/mentor-profile/mentor-metrics";
-import { MentorDetailTabs } from "@/components/mentor-profile/mentor-detail-tabs";
+import { MentorHeroSidebar } from "@/components/mentor/mentor-profile/mentor-hero-sidebar";
+import { AIMatchCard } from "@/components/mentor/mentor-profile/ai-match-card";
+import { MentorMetrics } from "@/components/mentor/mentor-profile/mentor-metrics";
+import { MentorDetailTabs } from "@/components/mentor/mentor-profile/mentor-detail-tabs";
 
 export interface Mentor {
   id: string;
