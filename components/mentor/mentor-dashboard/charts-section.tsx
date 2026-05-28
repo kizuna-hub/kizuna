@@ -1,7 +1,7 @@
 import {
     LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { valuationData, skillDemandData } from '../../app/[locale]/mentor-dashboard/mock-data';
+import { valuationData, skillDemandData } from '../../../app/[locale]/mentor/dashboard/mock-data';
 import { TrendingUp, Target, Flame, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 

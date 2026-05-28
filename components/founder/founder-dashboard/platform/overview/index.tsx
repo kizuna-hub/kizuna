@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { DashboardSidebar } from "./dashboard-sidebar";
+import { DashboardSidebar } from "../../../dashboard-sidebar";
 import { DashboardHeader } from "./dashboard-header";
 import { LatestNews } from "./latest-news";
 import { GetStarted } from "./get-started";
 import { TasksAndTips } from "./tasks-and-tips";
 // --- THÊM CÁC SECTION MỚI ---
-import { OverviewStats } from "./overview-stats";
-import { PerformanceCharts } from "./performance-charts";
+import { OverviewStats } from "./statistics/overview-stats";
+import { PerformanceCharts } from "./statistics/performance-charts";
 import { StatusSuggestions } from "./status-suggestions";
 import { BottomWidgets } from "./bottom-widgets";
 

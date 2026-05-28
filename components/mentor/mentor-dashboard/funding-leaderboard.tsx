@@ -1,5 +1,5 @@
 import { Crown, BadgeCheck } from 'lucide-react';
-import { fundingLeaderboard } from '../../app/[locale]/mentor-dashboard/mock-data';
+import { fundingLeaderboard } from '../../../app/[locale]/mentor/dashboard/mock-data';
 
 export const FundingLeaderboard = () => {
     return (

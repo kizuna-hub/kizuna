@@ -58,7 +58,7 @@ export default function WorkspaceSidebar({ projectId }: { projectId: string }) {
     };
 
     // TẠO BASE URL CHO CÁC LINK TRONG SIDEBAR
-    const baseUrl = `/founder-workspace/${projectId}`;
+    const baseUrl = `/founder/founder-workspace/${projectId}`;
 
     return (
         // Dùng fixed left-0 top-0 h-screen w-[260px] để đồng bộ với Global Dashboard
@@ -67,7 +67,7 @@ export default function WorkspaceSidebar({ projectId }: { projectId: string }) {
             {/* Top Section: Nút Quay lại & Project Switcher */}
             <div className="p-4 flex flex-col border-b border-zinc-100">
                 {/* Nút Quay lại Khám phá */}
-                <Link href="/founder-dashboard/products" className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400 hover:text-[#081810] mb-5 transition-colors uppercase tracking-wider">
+                <Link href="/founder/founder-dashboard/products" className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400 hover:text-[#081810] mb-5 transition-colors uppercase tracking-wider">
                     &larr; Quay lại danh sách
                 </Link>
 

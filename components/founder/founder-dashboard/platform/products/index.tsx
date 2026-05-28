@@ -5,7 +5,7 @@ import React from "react";
 import { useRouter } from "@/i18n/routing";
 import { Link } from "@/i18n/routing";
 import { ChevronRight, Plus, Search, Eye, ArrowUp, UserCheck, DollarSign, Clock, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
-import { DashboardSidebar } from "../overview/dashboard-sidebar";
+import { DashboardSidebar } from "../../../dashboard-sidebar";
 import { myProductsData } from "./data";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +64,7 @@ const ProjectCard = ({ project }: { project: any }) => {
     const router = useRouter();
 
     const handleCardClick = () => {
-        router.push(`/founder-workspace/${project.id}`);
+        router.push(`/founder/founder-workspace/${project.id}`);
     };
 
     // Đổi window.open thành router.push để mở trong CÙNG 1 TAB

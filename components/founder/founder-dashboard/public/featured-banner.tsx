@@ -5,7 +5,7 @@ import React from "react";
 import Link from "next/link";
 import { Award } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { featuredProjects } from "./data";
+import { featuredProjects } from "./feed/data";
 
 export function FeaturedBanner() {
     return (

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FeedNavbar } from "./feed-navbar";
-import { FeaturedBanner } from "./featured-banner";
+import { FeaturedBanner } from "../featured-banner";
 import { TractionLog } from "./traction-log";
 import { FeedWidgets } from "./feed-widgets";
 import { TopMentors } from "./top-mentors";
@@ -14,7 +14,7 @@ export function MainFeed() {
         <div className="min-h-screen w-full bg-zinc-50 pb-20 font-sans selection:bg-[#16452a]/20">
 
             {/* 1. Header Component */}
-            <FeedNavbar />
+            {/* <FeedNavbar /> */}
 
             <main className="mx-auto mt-10 w-full max-w-5xl px-6 lg:px-8">
 
