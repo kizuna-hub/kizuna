@@ -7,7 +7,7 @@ import { DiscoverFeed } from "./discover-feed";
 // Gộp lại thành 1 component chính để xuất ra cho page.tsx xài
 export function DiscoverMain() {
     return (
-        <div className="flex flex-col w-full h-full bg-[#fafafa]">
+        <div className="mx-auto flex flex-col max-w-5xl h-full bg-[#fafafa]">
             <DiscoverHeader />
             <DiscoverFeed />
         </div>
