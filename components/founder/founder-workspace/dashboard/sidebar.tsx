@@ -10,7 +10,9 @@ import {
     Zap,
     Settings,
     ChevronDown,
-    Sparkles
+    Sparkles,
+    PieChart,
+    Shield
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -116,6 +118,8 @@ export default function WorkspaceSidebar({ projectId }: { projectId: string }) {
                 <NavItem icon={Users} label="Venture Connect" href={`${baseUrl}/venture-connect`} />
                 <NavItem icon={Lock} label="IP Protection Ledger" href={`${baseUrl}/ip-ledger`} />
                 <NavItem icon={Zap} label="SaaS Perks & Ưu đãi" href={`${baseUrl}/saas-perks`} />
+                <NavItem icon={PieChart} label="Cap Table & Equity" href={`${baseUrl}/cap-table`} />
+                <NavItem icon={Shield} label="Secure Data Room" href={`${baseUrl}/data-room`} />
             </nav>
 
             {/* Bottom: User Profile */}

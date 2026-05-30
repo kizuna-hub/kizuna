@@ -7,7 +7,10 @@ import { CATEGORIES } from "./data";
 
 export function DiscoverHeader() {
     return (
-        <div className="sticky top-0 z-10 bg-[#fafafa]/90 backdrop-blur-md pt-6 pb-4 border-b border-[#102c1e]/10">
+        // ĐÃ SỬA: Xóa bỏ `sticky top-0 z-10 backdrop-blur-md`
+        // Thêm `mb-6` để tạo khoảng cách với cái lưới bên dưới
+        <div className="bg-[#fafafa] pt-6 pb-4 border-b border-[#102c1e]/10 mb-6">
+
             {/* Search Input */}
             <div className="relative flex items-center w-full group">
                 <Search className="absolute left-4 h-5 w-5 text-slate-400 group-focus-within:text-[#102c1e] transition-colors" />
@@ -50,6 +53,7 @@ export function DiscoverHeader() {
                     <Plus className="h-3 w-3" /> Filter
                 </button>
             </div>
+
         </div>
     );
 }
