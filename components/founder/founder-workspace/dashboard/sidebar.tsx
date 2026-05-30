@@ -118,6 +118,7 @@ export default function WorkspaceSidebar({ projectId }: { projectId: string }) {
                 <NavItem icon={Activity} label="Survival Matrix" href={`${baseUrl}/metrics`} />
                 <NavItem icon={FileText} label="AI Pitch Deck" href={`${baseUrl}/ai-pitch-deck`} />
                 <NavItem icon={Shield} label="Secure Data Room" href={`${baseUrl}/data-room`} />
+                <NavItem icon={Sparkles} label="Stakeholders Studio" href={`${baseUrl}/stakeholders-studio`} />
                 <NavItem icon={Users} label="Venture Connect" href={`${baseUrl}/venture-connect`} />
                 <NavItem icon={PieChart} label="Cap Table & Equity" href={`${baseUrl}/cap-table`} />
                 {/* <NavItem icon={Lock} label="IP Protection Ledger" href={`${baseUrl}/ip-ledger`} /> */}
