@@ -12,7 +12,8 @@ import {
     ChevronDown,
     Sparkles,
     PieChart,
-    Shield
+    Shield,
+    Activity
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -113,13 +114,15 @@ export default function WorkspaceSidebar({ projectId }: { projectId: string }) {
             {/* Navigation Menu */}
             <nav className="flex-1 overflow-y-auto p-3 [&::-webkit-scrollbar]:hidden flex flex-col gap-1 mt-2">
                 {/* TRUYỀN BASE URL VÀO href CỦA CÁC NAV ITEM */}
-                <NavItem icon={BarChart3} label="Dashboard" href={baseUrl} exact={true} />
+                {/* <NavItem icon={BarChart3} label="Dashboard" href={baseUrl} exact={true} /> */}
+                <NavItem icon={Activity} label="Survival Matrix" href={`${baseUrl}/metrics`} />
                 <NavItem icon={FileText} label="AI Pitch Deck" href={`${baseUrl}/ai-pitch-deck`} />
-                <NavItem icon={Users} label="Venture Connect" href={`${baseUrl}/venture-connect`} />
-                <NavItem icon={Lock} label="IP Protection Ledger" href={`${baseUrl}/ip-ledger`} />
-                <NavItem icon={Zap} label="SaaS Perks & Ưu đãi" href={`${baseUrl}/saas-perks`} />
-                <NavItem icon={PieChart} label="Cap Table & Equity" href={`${baseUrl}/cap-table`} />
                 <NavItem icon={Shield} label="Secure Data Room" href={`${baseUrl}/data-room`} />
+                <NavItem icon={Sparkles} label="Stakeholders Studio" href={`${baseUrl}/stakeholders-studio`} />
+                <NavItem icon={Users} label="Venture Connect" href={`${baseUrl}/venture-connect`} />
+                <NavItem icon={PieChart} label="Cap Table & Equity" href={`${baseUrl}/cap-table`} />
+                {/* <NavItem icon={Lock} label="IP Protection Ledger" href={`${baseUrl}/ip-ledger`} /> */}
+                {/* <NavItem icon={Zap} label="SaaS Perks & Ưu đãi" href={`${baseUrl}/saas-perks`} /> */}
             </nav>
 
             {/* Bottom: User Profile */}
