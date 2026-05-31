@@ -51,11 +51,11 @@ export default function MentorRequests() {
     const [selectedReq, setSelectedReq] = useState(requests[0]);
 
     return (
-        <div className="w-full p-6 md:p-8 lg:p-10 font-inter">
-            <div className="w-full max-w-[1200px] mx-auto space-y-8">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter">
+            <div className="mx-auto flex h-full max-w-5xl flex-col space-y-8">
 
                 {/* Header */}
-                <header className="flex items-center justify-between">
+                <header className="mb-6 flex items-baseline justify-between border-b border-[#102c1e]/10 pb-4 pt-6">
                     <div>
                         <h1 className="font-outfit font-black text-[#102c1e] text-4xl tracking-tight">Lời mời Cố vấn (Inbox)</h1>
                         <p className="font-inter text-slate-600 mt-2 text-base">Hàng chờ các yêu cầu kết nối từ Startup. Ưu tiên theo mức độ phù hợp hồ sơ.</p>

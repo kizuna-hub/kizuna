@@ -23,10 +23,10 @@ const networkConnections = [
 
 export default function WarmIntrosView() {
     return (
-        <div className="w-full p-6 md:p-8 lg:p-10 font-inter">
-            <div className="w-full max-w-[1200px] mx-auto space-y-8">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter">
+            <div className="mx-auto flex h-full max-w-5xl flex-col space-y-8">
                 {/* Header */}
-                <header className="flex items-center justify-between">
+                <header className="mb-6 flex items-baseline justify-between border-b border-[#102c1e]/10 pb-4 pt-6">
                     <div>
                         <h1 className="flex items-center gap-3 font-outfit font-black text-[#102c1e] text-4xl tracking-tight">
                             Trạm Giới Thiệu Chéo <span className="bg-[#a1e2b6]/30 text-[#102c1e] text-sm px-3 py-1 rounded-full border border-[#a1e2b6]/50">Đặc quyền Mentor</span>

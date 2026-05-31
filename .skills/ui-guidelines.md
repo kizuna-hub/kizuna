@@ -48,42 +48,42 @@ UI Elements & Data: font-geist. Use for buttons, badges, navigation items, metri
 Body Text: font-inter. Use strictly for long-form reading, paragraphs, descriptions, or chat messages. Keep leading-relaxed.
 
 4. Layout & Grid Guidelines
-4.1. Workspace Structure
-Sidebar: Fixed width (w-[260px]), sticky left.
 
-Main Content: MUST use ml-[260px] to offset the sidebar, wrapping the content in a flex container. Add breathing room using p-6 md:p-8 lg:p-10.
+4.1. Main Container & Workspace Structure
+- Main Wrapper: `mx-auto flex flex-col max-w-5xl h-full bg-[#fafafa]` (Centered, max-width 5xl, main background `#fafafa`). For wider dashboards, `max-w-5xl` is acceptable.
+- Sidebar: Fixed width (`w-[260px]`), sticky left. Main canvas must use `ml-[260px]` offset.
+- Header: DO NOT use sticky headers or backdrop-blur tricks in the main workspace. Add standard spacing (`pt-6 pb-4 border-b border-[#102c1e]/10 mb-6`) to create a clear separation. Align header titles/tabs using `flex items-baseline gap-6`.
 
-Container Sizing: Restrict width using max-w-5xl or max-w-[1200px] mx-auto to prevent excessive stretching.
-
-4.2. Asymmetrical Bento Grid (Standard Dashboard Layout)
-Use 12-column grids: grid grid-cols-1 md:grid-cols-12 gap-6.
-
-Mix blocks of different spans (e.g., md:col-span-8 for primary tasks/charts, md:col-span-4 for quick shortcuts or radar).
-
-Avoid stacking full-width sections continuously. Strive for asymmetrical, puzzle-like interlocking blocks.
+4.2. Grid Systems (Two Primary Approaches)
+- Asymmetrical Bento Grid (Dashboard Analytics): 12-column grid using `grid grid-cols-1 md:grid-cols-12 gap-6`. Mix blocks of `md:col-span-8` and `md:col-span-4` to create interlocking puzzle layouts. 
+- Masonry Feed Grid (Discover/Timeline): Use CSS multi-columns to create fluid Pinterest-like feeds: `columns-1 md:columns-2 xl:columns-3 gap-6 space-y-6`. Cards inside MUST have `break-inside-avoid`.
 
 5. UI Component Rules
-5.1. The "White Bento" Card
-Styling: rounded-2xl or rounded-3xl, bg-white, border border-[#102c1e]/10, shadow-sm.
 
-Hover States: Slightly increase shadow and border opacity: hover:shadow-md hover:border-[#102c1e]/30 transition-all duration-200.
+5.1. The "White Bento" Card (Standard Implementation)
+- Base Styling: `bg-white rounded-2xl border border-[#102c1e]/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden group`.
+- For Masonry Grids: Add `break-inside-avoid flex flex-col`.
+- Internal Spacing: Base padding `p-5`, or `px-5 pb-4`. Footer/metrics sections use `px-5 py-4 border-t border-[#102c1e]/5 bg-[#fafafa]/50`.
+- Text & Typography Hierarchy inside Cards:
+  - Primary Label/Name: `font-geist text-sm font-bold text-[#102c1e]`.
+  - Body Paragraphs: `font-inter text-sm text-slate-700 leading-relaxed` (allow `whitespace-pre-wrap` for feeds).
+  - Time/Meta: `font-geist text-xs text-slate-400`.
+  - Micro Data (Handles): `font-geist text-[11px] text-slate-500`.
 
-5.2. Buttons & CTAs
-Primary: bg-[#102c1e] text-[#fafafa] font-geist font-bold rounded-xl hover:bg-[#102c1e]/90.
+5.2. Search Inputs & Forms
+- Standard Large Input: `h-12 w-full rounded-xl border border-[#102c1e]/10 bg-white pl-12 pr-12 text-sm font-geist text-[#102c1e] shadow-sm outline-none placeholder:text-slate-400 transition-all focus:border-[#102c1e]/30 focus:ring-4 focus:ring-[#102c1e]/5`.
+- Inner Icons: Position absolute, `text-slate-400 group-focus-within:text-[#102c1e] transition-colors`.
 
-Secondary / Subtle: bg-[#fafafa] text-[#102c1e] font-geist font-bold rounded-xl border border-[#102c1e]/10 hover:bg-[#102c1e]/5.
+5.3. Filter Pills, Tags, and Visual Anchors
+- Active Pill: `bg-[#102c1e] text-[#fafafa] rounded-full px-4 py-1.5 font-geist text-xs font-bold transition-colors shadow-sm whitespace-nowrap`.
+- Inactive Pill: `bg-white border border-[#102c1e]/10 text-[#102c1e]/70 hover:border-[#102c1e]/30 hover:text-[#102c1e] rounded-full px-4 py-1.5 font-geist text-xs font-bold transition-colors shadow-sm whitespace-nowrap`.
+- Dashed Button (e.g., "Add Filter"): `border border-dashed border-[#102c1e]/30 bg-transparent px-3 py-1.5 font-geist text-xs font-bold text-[#102c1e]/50 hover:border-[#102c1e]/50 hover:text-[#102c1e] rounded-full flex items-center gap-1`.
+- Text Visual Anchor (Highlight): `bg-[#a1e2b6]/20 border border-[#a1e2b6]/50 px-2.5 py-1 font-geist text-[10px] font-black text-[#102c1e] rounded-full inline-block`.
 
-5.3. Tags & Badges
-Style: bg-[#102c1e]/5 text-[#102c1e] border border-[#102c1e]/10.
-
-Typography: font-geist text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md.
-
-5.4. Timelines & Traction Logs
-Vertical subtle line: absolute w-px bg-[#102c1e]/10.
-
-Timeline dot: bg-[#102c1e]/20 ring-4 ring-[#fafafa] hover:bg-[#102c1e].
-
-Date labels: Small, uppercase, tracked-out font (text-[11px] font-black font-geist text-slate-400 uppercase tracking-widest).
+5.4. Icon Buttons & Interactions
+- General Icon Wrappers: `p-1.5 rounded-md hover:bg-slate-100 text-slate-500 transition-colors`.
+- Social / Metrics Interaction (Likes, Comments): `flex items-center gap-1.5 text-slate-500 hover:text-[#102c1e] transition-colors group/btn`.
+- Fill Transitions: Nested SVGs should creatively use `group-hover/btn:fill-[#102c1e]/10` to fill SVG paths on hover instead of generic background color switches.
 
 6. Advanced SaaS UI Patterns (Implement when required)
 Command Palette (Ctrl+K): Always use a dark overlay with a White Bento Modal (bg-[#fafafa]). Focus on keyboard navigation.

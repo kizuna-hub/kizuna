@@ -45,11 +45,11 @@ export default function StartupIntelligenceView() {
     const [activeTab, setActiveTab] = useState('pitch');
 
     return (
-        <div className="w-full p-6 md:p-8 lg:p-10 font-inter">
-            <div className="w-full max-w-[1200px] mx-auto space-y-8">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter">
+            <div className="mx-auto flex h-full max-w-5xl flex-col space-y-8">
 
                 {/* Lớp điều hướng (Breadcrumb) & Header */}
-                <header className="space-y-4">
+                <header className="mb-6 flex items-baseline justify-between border-b border-[#102c1e]/10 pb-4 pt-6">
                     <Link href="/mentor/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-[#102c1e] font-geist text-sm font-bold transition-colors group">
                         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         Về Dashboard
@@ -114,8 +114,8 @@ export default function StartupIntelligenceView() {
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
                                     className={`px-6 py-4 font-geist text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${activeTab === tab
-                                            ? 'border-[#102c1e] text-[#102c1e] bg-white'
-                                            : 'border-transparent text-slate-400 hover:text-[#102c1e]'
+                                        ? 'border-[#102c1e] text-[#102c1e] bg-white'
+                                        : 'border-transparent text-slate-400 hover:text-[#102c1e]'
                                         }`}
                                 >
                                     {tab === 'pitch' ? 'Pitch Deck' : tab === 'cap-table' ? 'Cap Table' : 'Báo cáo Tháng'}

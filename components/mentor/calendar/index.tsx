@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Calendar as CalendarIcon, Clock, Plus, Settings, Video, Users, CheckCircle2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const upcomingMeetings = [
     { id: 1, title: 'Họp 1:1 Định hướng Chiến lược', entity: 'Kizuna Hub', time: 'Hôm nay, 14:00 - 15:00', type: 'Google Meet', status: 'upcoming' },
@@ -17,79 +18,84 @@ const availableSlots = [
 
 export default function MentorCalendarView() {
     return (
-        <div className="w-full p-6 md:p-8 lg:p-10 font-inter">
-            <div className="w-full max-w-[1200px] mx-auto space-y-8">
-                {/* Header */}
-                <header className="flex items-center justify-between">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter">
+            <div className="mx-auto flex h-full max-w-5xl flex-col space-y-8">
+                {/* Header chuẩn Rule 4.1 */}
+                <header className="mb-6 flex items-baseline justify-between border-b border-[#102c1e]/10 pb-4 pt-6">
                     <div>
-                        <h1 className="font-outfit font-black text-[#102c1e] text-4xl tracking-tight">Lịch trình & Slot Cố vấn</h1>
-                        <p className="font-inter text-slate-600 mt-2 text-base">Quản lý các buổi tư vấn 1:1 và cấu hình thời gian rảnh của bạn.</p>
+                        <h1 className="font-outfit text-3xl font-black tracking-tight text-[#102c1e] md:text-4xl">Lịch trình & Slot Cố vấn</h1>
+                        <p className="mt-2 font-inter text-base leading-relaxed text-slate-700">Quản lý các buổi tư vấn 1:1 và cấu hình thời gian rảnh của bạn.</p>
                     </div>
                     <div className="flex gap-4">
-                        <button className="flex items-center gap-2 bg-white border border-[#102c1e]/10 text-[#102c1e] font-geist font-bold rounded-xl px-5 py-2.5 hover:bg-[#102c1e]/5 transition-colors shadow-sm text-sm">
-                            <Settings className="w-4 h-4" />
+                        <button className="flex items-center gap-2 rounded-xl border border-[#102c1e]/10 bg-white px-5 py-2.5 font-geist text-sm font-bold text-[#102c1e] shadow-sm transition-colors hover:bg-[#102c1e]/5">
+                            <Settings className="h-4 w-4" />
                             Cấu hình Lịch
                         </button>
-                        <button className="flex items-center gap-2 bg-[#102c1e] text-[#fafafa] font-geist font-bold rounded-xl px-5 py-2.5 hover:bg-[#102c1e]/90 transition-colors shadow-sm text-sm">
-                            <Plus className="w-4 h-4" />
+                        <button className="flex items-center gap-2 rounded-xl bg-[#102c1e] px-5 py-2.5 font-geist text-sm font-bold text-[#fafafa] shadow-sm transition-colors hover:bg-[#102c1e]/90">
+                            <Plus className="h-4 w-4" />
                             Mở Slot Mới
                         </button>
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
                     {/* Left Column (8 cols): Upcoming Meetings */}
-                    <div className="md:col-span-8 flex flex-col gap-6">
-                        <section className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-8 flex flex-col">
-                            <h2 className="font-outfit font-black text-[#102c1e] text-2xl tracking-tight mb-6">Lịch sắp tới</h2>
+                    <div className="flex flex-col gap-6 md:col-span-8">
+                        {/* White Bento Card chuẩn Rule 5.1 */}
+                        <section className="group flex break-inside-avoid flex-col overflow-hidden rounded-2xl border border-[#102c1e]/10 bg-white p-5 shadow-sm transition-shadow hover:shadow-md md:p-6">
+                            <h2 className="mb-6 font-outfit text-2xl font-black tracking-tight text-[#102c1e]">Lịch sắp tới</h2>
                             <div className="flex flex-col gap-4">
                                 {upcomingMeetings.map(meeting => (
-                                    <div key={meeting.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-[#102c1e]/10 hover:border-[#102c1e]/30 transition-colors bg-[#fafafa]/50">
-                                        <div className="flex items-start gap-4 mb-4 md:mb-0">
-                                            <div className="mt-1 bg-[#102c1e]/5 p-3 rounded-xl border border-[#102c1e]/10 text-[#102c1e]">
-                                                <CalendarIcon className="w-5 h-5" />
+                                    <div key={meeting.id} className="flex flex-col justify-between rounded-xl border border-[#102c1e]/10 bg-[#fafafa]/50 p-5 transition-colors hover:border-[#102c1e]/30 md:flex-row md:items-center">
+                                        <div className="mb-4 flex items-start gap-4 md:mb-0">
+                                            <div className="mt-1 rounded-xl border border-[#102c1e]/10 bg-[#102c1e]/5 p-3 text-[#102c1e]">
+                                                <CalendarIcon className="h-5 w-5" />
                                             </div>
                                             <div>
-                                                <h3 className="font-outfit font-black text-[#102c1e] text-lg">{meeting.title}</h3>
-                                                <div className="flex items-center gap-3 mt-1.5 text-sm font-geist text-slate-500">
-                                                    <span className="flex items-center gap-1.5 text-[#102c1e] font-medium bg-[#102c1e]/5 px-2 py-0.5 rounded-md">
-                                                        <Users className="w-3.5 h-3.5" /> {meeting.entity}
+                                                <h3 className="font-outfit text-lg font-black text-[#102c1e]">{meeting.title}</h3>
+                                                <div className="mt-1.5 flex items-center gap-3 font-geist text-sm text-slate-500">
+                                                    <span className="flex items-center gap-1.5 rounded-md bg-[#102c1e]/5 px-2 py-0.5 font-medium text-[#102c1e]">
+                                                        <Users className="h-3.5 w-3.5" /> {meeting.entity}
                                                     </span>
                                                     <span className="flex items-center gap-1.5">
-                                                        <Clock className="w-3.5 h-3.5" /> {meeting.time}
+                                                        <Clock className="h-3.5 w-3.5" /> {meeting.time}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">
-                                            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-[#102c1e]/10 font-bold font-geist text-sm text-[#102c1e] hover:bg-[#102c1e]/5 transition-colors">
-                                                <Video className="w-4 h-4" /> Tham gia
+                                            <button className="flex items-center gap-2 rounded-lg border border-[#102c1e]/10 bg-white px-4 py-2 font-geist text-sm font-bold text-[#102c1e] transition-colors hover:bg-[#102c1e]/5">
+                                                <Video className="h-4 w-4" /> Tham gia
                                             </button>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                            <button className="mt-6 w-full py-3 rounded-xl border border-dashed border-[#102c1e]/20 text-[#102c1e]/60 font-geist font-bold text-sm hover:bg-[#102c1e]/5 hover:text-[#102c1e] transition-colors">
+                            {/* Dashed Button chuẩn Rule 5.3 */}
+                            <button className="mt-6 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#102c1e]/30 bg-transparent py-3 font-geist text-sm font-bold text-[#102c1e]/50 transition-colors hover:border-[#102c1e]/50 hover:text-[#102c1e]">
                                 Xem tất cả lịch sử
                             </button>
                         </section>
                     </div>
 
                     {/* Right Column (4 cols): Slot Management & Availability */}
-                    <div className="md:col-span-4 flex flex-col gap-6">
-                        <section className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-6 flex flex-col">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="font-outfit font-black text-[#102c1e] text-xl tracking-tight">Slot khả dụng định kỳ</h2>
-                                <span className="bg-[#a1e2b6]/30 text-[#102c1e] px-2 py-1 rounded-md text-xs font-bold font-geist">Cập nhật</span>
+                    <div className="flex flex-col gap-6 md:col-span-4">
+                        {/* White Bento Card */}
+                        <section className="group flex break-inside-avoid flex-col overflow-hidden rounded-2xl border border-[#102c1e]/10 bg-white p-5 shadow-sm transition-shadow hover:shadow-md md:p-6">
+                            <div className="mb-6 flex items-center justify-between">
+                                <h2 className="font-outfit text-xl font-black tracking-tight text-[#102c1e]">Slot khả dụng định kỳ</h2>
+                                {/* Text Visual Anchor chuẩn Rule 5.3 */}
+                                <span className="inline-block rounded-full border border-[#a1e2b6]/50 bg-[#a1e2b6]/20 px-2.5 py-1 font-geist text-[10px] font-black text-[#102c1e]">CẬP NHẬT</span>
                             </div>
 
                             <div className="flex flex-col gap-4">
                                 {availableSlots.map(slot => (
-                                    <div key={slot.id} className="p-4 rounded-xl border border-[#102c1e]/10 bg-[#fafafa]/50 group hover:border-[#102c1e]/30 transition-all">
-                                        <h3 className="font-bold font-geist text-[#102c1e] mb-3">{slot.day}</h3>
+                                    <div key={slot.id} className="group/slot rounded-xl border border-[#102c1e]/10 bg-[#fafafa]/50 p-4 transition-all hover:border-[#102c1e]/30">
+                                        <h3 className="mb-3 font-geist font-bold text-[#102c1e]">{slot.day}</h3>
                                         <div className="flex flex-wrap gap-2">
                                             {slot.times.map((time, idx) => (
-                                                <span key={idx} className="bg-white border border-[#102c1e]/10 px-3 py-1.5 rounded-lg text-sm font-geist text-slate-600 font-medium group-hover:border-[#102c1e]/20 group-hover:text-[#102c1e] transition-colors">
+                                                /* Inactive Pill chuẩn Rule 5.3 */
+                                                <span key={idx} className="whitespace-nowrap rounded-full border border-[#102c1e]/10 bg-white px-4 py-1.5 font-geist text-xs font-bold text-[#102c1e]/70 shadow-sm transition-colors hover:border-[#102c1e]/30 hover:text-[#102c1e]">
                                                     {time}
                                                 </span>
                                             ))}
@@ -98,25 +104,26 @@ export default function MentorCalendarView() {
                                 ))}
                             </div>
 
-                            <div className="mt-6 pt-5 border-t border-[#102c1e]/10">
-                                <p className="text-xs text-slate-500 font-inter mb-4">Mặc định mỗi phiên cố vấn kéo dài 45 phút, kèm 15 phút nghỉ ngơi.</p>
-                                <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#102c1e]/10 bg-white font-bold font-geist text-sm text-[#102c1e] hover:bg-[#102c1e]/5 transition-colors">
-                                    <Settings className="w-4 h-4" /> Đồng bộ Google Calendar
+                            <div className="mt-6 border-t border-[#102c1e]/10 pt-5">
+                                <p className="mb-4 font-inter text-xs leading-relaxed text-slate-500">Mặc định mỗi phiên cố vấn kéo dài 45 phút, kèm 15 phút nghỉ ngơi.</p>
+                                <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#102c1e]/10 bg-white py-2.5 font-geist text-sm font-bold text-[#102c1e] transition-colors hover:bg-[#102c1e]/5">
+                                    <Settings className="h-4 w-4" /> Đồng bộ Google Calendar
                                 </button>
                             </div>
                         </section>
 
-                        <section className="bg-[#102c1e] rounded-3xl p-6 flex flex-col shadow-sm text-white">
-                            <h2 className="font-outfit font-black text-xl tracking-tight text-[#fafafa] mb-2">Trạng thái Cố vấn</h2>
-                            <p className="font-inter text-[#fafafa]/70 text-sm mb-6">Hiện tại bạn đang nhận yêu cầu cố vấn mới từ các Startup tiềm năng.</p>
+                        {/* Dark Card - Dùng Core Color #102c1e */}
+                        <section className="flex flex-col overflow-hidden rounded-2xl bg-[#102c1e] p-6 text-white shadow-sm">
+                            <h2 className="mb-2 font-outfit text-xl font-black tracking-tight text-[#fafafa]">Trạng thái Cố vấn</h2>
+                            <p className="mb-6 font-inter text-sm text-[#fafafa]/70">Hiện tại bạn đang nhận yêu cầu cố vấn mới từ các Startup tiềm năng.</p>
 
-                            <div className="flex items-center justify-between p-4 bg-white/10 rounded-xl border border-white/5">
+                            <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
                                 <div className="flex items-center gap-3">
-                                    <CheckCircle2 className="w-5 h-5 text-[#a1e2b6]" />
-                                    <span className="font-bold font-geist text-[#fafafa]">Nhận dự án mới</span>
+                                    <CheckCircle2 className="h-5 w-5 text-[#a1e2b6]" />
+                                    <span className="font-geist font-bold text-[#fafafa]">Nhận dự án mới</span>
                                 </div>
-                                <div className="w-12 h-6 bg-[#a1e2b6] rounded-full relative cursor-pointer">
-                                    <div className="absolute right-1 top-1 w-4 h-4 bg-[#102c1e] rounded-full"></div>
+                                <div className="relative h-6 w-12 cursor-pointer rounded-full bg-[#a1e2b6]">
+                                    <div className="absolute right-1 top-1 h-4 w-4 rounded-full bg-[#102c1e]"></div>
                                 </div>
                             </div>
                         </section>
