@@ -25,12 +25,12 @@ const syncMeetings = [
 
 export default function MentorDashboard() {
     return (
-        <div className="w-full p-6 md:p-8 lg:p-10 font-inter">
-            <div className="w-full max-w-[1200px] mx-auto space-y-8">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter">
+            <div className="mx-auto flex h-full max-w-5xl flex-col space-y-8">
 
                 {/* Header */}
-                <header className="flex items-center justify-between">
-                    <div>
+                <header className="pt-6 pb-4 border-b border-[#102c1e]/10 mb-6 flex items-baseline gap-6">
+                    <div className="flex-1">
                         <h1 className="font-outfit font-black text-[#102c1e] text-4xl tracking-tight">Trung tâm Quản lý Cố vấn</h1>
                         <p className="font-inter text-slate-600 mt-2 text-base">Tổng quan định lượng về danh mục đầu tư sức lực và thời gian của bạn.</p>
                     </div>
