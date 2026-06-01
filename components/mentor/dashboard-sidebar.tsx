@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Link, usePathname } from "@/i18n/routing";
 import {
     Search, LayoutDashboard, Briefcase, FileSignature,
-    CalendarDays, Settings, HelpCircle, Inbox, Send, Mic
+    CalendarDays, Settings, HelpCircle, Inbox, Send, Mic, Star, ArrowUpRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -112,6 +112,7 @@ export function MentorDashboardSidebar() {
                         <div className="flex flex-col gap-0.5">
                             <NavItem icon={Send} label="Trạm Giới thiệu (Intros)" href="/mentor/dashboard/warm-intros" />
                             <NavItem icon={Mic} label="Phản biện Async" href="/mentor/dashboard/async-feedback" />
+                            <NavItem icon={Star} label="Reputation Score" href="/mentor/reputation" badge="73" />
                         </div>
                     </div>
 
@@ -125,16 +126,19 @@ export function MentorDashboardSidebar() {
                 </div>
 
                 <div className="border-t border-white/5 p-4 flex flex-col gap-4 bg-[#102c1e]">
-                    <div className="rounded-xl bg-[#fafafa] p-3 shadow-sm border border-[#102c1e]/10">
+                    <Link href="/mentor/reputation" className="rounded-xl bg-[#fafafa] p-3 shadow-sm border border-[#102c1e]/10 hover:border-[#102c1e]/20 transition-all group block">
                         <div className="flex items-center justify-between mb-2">
                             <span className="font-geist text-sm font-bold text-[#102c1e]">Chỉ số Uy tín</span>
-                            <span className="font-geist text-xs font-bold text-[#102c1e] bg-[#a1e2b6]/30 px-2 py-0.5 rounded-full">{user.engagementScore}/100</span>
+                            <div className="flex items-center gap-1">
+                                <span className="font-geist text-xs font-bold text-[#102c1e] bg-[#a1e2b6]/30 px-2 py-0.5 rounded-full">{user.engagementScore}/100</span>
+                                <ArrowUpRight className="w-3 h-3 text-[#102c1e]/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
                         </div>
                         <div className="h-1.5 w-full rounded-full bg-[#102c1e]/10 overflow-hidden">
-                            <div className="h-full w-[92%] rounded-full bg-[#102c1e]" />
+                            <div className="h-full rounded-full bg-[#102c1e] transition-all" style={{ width: `${user.engagementScore}%` }} />
                         </div>
-                        <p className="mt-2 font-inter text-[10px] text-slate-500">Tier: Elite Advisor</p>
-                    </div>
+                        <p className="mt-2 font-inter text-[10px] text-slate-500">Tier: Elite Advisor → Rising Star</p>
+                    </Link>
 
                     <button className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer group text-left">
                         <img
