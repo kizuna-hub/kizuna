@@ -1,17 +1,32 @@
 "use client";
 
-import { LayoutDashboard, Briefcase, Star } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Briefcase, Star, Radar } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { INDUSTRIES } from './data';
+import { INDUSTRIES } from './investor-dashboard/data';
 
 interface SidebarProps {
-    activeMenu: string;
-    setActiveMenu: (id: string) => void;
+    // Đã bỏ activeMenu vì giờ Sidebar tự đọc URL để biết đang ở tab nào
     activeIndustry: string;
     setActiveIndustry: (id: string) => void;
 }
 
-export const InvestorSidebar = ({ activeMenu, setActiveMenu, activeIndustry, setActiveIndustry }: SidebarProps) => {
+export const InvestorSidebar = ({ activeIndustry, setActiveIndustry }: SidebarProps) => {
+    const pathname = usePathname();
+
+    // Tự động lấy ngôn ngữ (locale) từ đường dẫn hiện tại
+    const locale = pathname.split('/')[1] || 'en';
+    const basePath = `/${locale}/investor`;
+
+    // Cấu hình Link thực tế cho từng tab
+    const menuItems = [
+        { id: 'deal-flow', icon: LayoutDashboard, label: 'Deal Flow CRM', href: `${basePath}/deal-flow` },
+        { id: 'sourcing', icon: Radar, label: 'AI Sourcing Radar', href: `${basePath}/sourcing` },
+        { id: 'portfolio', icon: Briefcase, label: 'Portfolio Command', href: `${basePath}/dashboard` },
+        { id: 'saved', icon: Star, label: 'Đã lưu', href: `${basePath}/saved` },
+    ];
+
     return (
         <aside className="w-[280px] h-full shrink-0 border-r border-zinc-200/60 bg-white flex flex-col p-6 overflow-y-auto hidden md:flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Logo */}
@@ -23,36 +38,37 @@ export const InvestorSidebar = ({ activeMenu, setActiveMenu, activeIndustry, set
             </div>
 
             <div className="space-y-8 flex-1">
-                {/* Menu Điều Hướng */}
+                {/* Menu Điều Hướng (ĐÃ ĐỔI SANG THẺ LINK ĐỂ NAVIGATE) */}
                 <div>
                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3 px-2">Menu</p>
                     <nav className="space-y-1">
-                        {[
-                            { id: 'dashboard', icon: LayoutDashboard, label: 'Deal Hub' },
-                            { id: 'portfolio', icon: Briefcase, label: 'Portfolio' },
-                            { id: 'saved', icon: Star, label: 'Đã lưu' },
-                        ].map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => setActiveMenu(item.id)}
-                                className={cn(
-                                    "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all relative group",
-                                    activeMenu === item.id
-                                        ? "bg-zinc-100 text-[#102c1e]"
-                                        : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
-                                )}
-                            >
-                                <item.icon className={cn("w-5 h-5", activeMenu === item.id ? "text-[#102c1e]" : "text-zinc-400 group-hover:text-zinc-600")} />
-                                {item.label}
-                                {activeMenu === item.id && (
-                                    <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-[#102c1e] shadow-[0_0_8px_#102c1e]" />
-                                )}
-                            </button>
-                        ))}
+                        {menuItems.map((item) => {
+                            // Tự động kiểm tra xem URL hiện tại có chứa href của tab này không
+                            const isActive = pathname.includes(item.href);
+
+                            return (
+                                <Link
+                                    key={item.id}
+                                    href={item.href}
+                                    className={cn(
+                                        "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all relative group",
+                                        isActive
+                                            ? "bg-zinc-100 text-[#102c1e]"
+                                            : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
+                                    )}
+                                >
+                                    <item.icon className={cn("w-5 h-5", isActive ? "text-[#102c1e]" : "text-zinc-400 group-hover:text-zinc-600")} />
+                                    {item.label}
+                                    {isActive && (
+                                        <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-[#102c1e] shadow-[0_0_8px_#102c1e]" />
+                                    )}
+                                </Link>
+                            );
+                        })}
                     </nav>
                 </div>
 
-                {/* AI Radar Filters */}
+                {/* AI Radar Filters (Giữ nguyên giao diện của mày) */}
                 <div>
                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4 px-2">AI Radar Filters</p>
                     <div className="px-2 space-y-7">
