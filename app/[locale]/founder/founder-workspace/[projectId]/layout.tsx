@@ -10,7 +10,7 @@ export default function Layout({
 }) {
   // Ném projectId xuống cho WorkspaceLayout xử lý tiếp
   return (
-    <WorkspaceLayout projectId={params.projectId}>
+    <WorkspaceLayout projectId={params.projectId as string}>
       {children}
     </WorkspaceLayout>
   );

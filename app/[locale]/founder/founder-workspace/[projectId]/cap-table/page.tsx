@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshCw, TrendingUp, DollarSign, LineChart, Percent, ArrowRight, History } from 'lucide-react';
+import { RefreshCw, TrendingUp, DollarSign, LineChart, Percent, ArrowRight, History, AlertCircle } from 'lucide-react';
 
 export default function CapTablePage() {
     const topMetrics = [
@@ -72,14 +72,13 @@ export default function CapTablePage() {
                     ))}
                 </div>
 
-                {/* DashGrid - Asymmetrical Bento Grid - Row 1 */}
+                {/* DashGrid - Row 1 */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* Left Column: Stakeholder Ledger */}
+                    {/* Stakeholder Ledger */}
                     <div className="lg:col-span-8 bg-white border border-[#102c1e]/10 shadow-sm rounded-3xl p-6 flex flex-col">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-outfit font-bold text-[#102c1e] text-lg">Stakeholder Ledger</h3>
                             <div className="flex items-center gap-4">
-                                {/* New Feature Toggle */}
                                 <div className="flex items-center bg-[#fafafa] rounded-lg border border-[#102c1e]/10 p-1">
                                     <button className="px-3 py-1 text-[11px] font-geist font-bold rounded-md bg-white shadow-sm border border-[#102c1e]/5 text-[#102c1e]">Issued Shares</button>
                                     <button className="px-3 py-1 text-[11px] font-geist font-medium rounded-md text-slate-500 hover:text-[#102c1e] transition-colors">Fully Diluted</button>
@@ -130,19 +129,15 @@ export default function CapTablePage() {
                         </div>
                     </div>
 
-                    {/* Right Column: Ownership Distribution */}
+                    {/* Ownership Distribution */}
                     <div className="lg:col-span-4 bg-white border border-[#102c1e]/10 shadow-sm rounded-3xl p-6 flex flex-col items-center">
                         <h3 className="font-outfit font-bold text-[#102c1e] text-lg w-full mb-4 text-left">Ownership Overview</h3>
 
-                        {/* Minimalist Donut Chart */}
                         <div className="relative w-32 h-32 mb-6">
                             <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
                                 <circle cx="50" cy="50" r="40" fill="transparent" stroke="#102c1e" strokeOpacity="0.05" strokeWidth="12"></circle>
-                                {/* 60% Founders */}
                                 <circle cx="50" cy="50" r="40" fill="transparent" stroke="#102c1e" strokeWidth="12" strokeDasharray="150.8 251.2" strokeDashoffset="0"></circle>
-                                {/* 27.5% Investors */}
                                 <circle cx="50" cy="50" r="40" fill="transparent" stroke="#102c1e" strokeOpacity="0.6" strokeWidth="12" strokeDasharray="69.1 251.2" strokeDashoffset="-150.8"></circle>
-                                {/* 12.5% Option Pool */}
                                 <circle cx="50" cy="50" r="40" fill="transparent" stroke="#a1e2b6" strokeWidth="12" strokeDasharray="31.3 251.2" strokeDashoffset="-219.9"></circle>
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
@@ -151,36 +146,27 @@ export default function CapTablePage() {
                             </div>
                         </div>
 
-                        {/* Compact Legend */}
                         <div className="w-full space-y-1 bg-[#fafafa] p-3 rounded-xl border border-[#102c1e]/5">
-                            <div className="flex justify-between items-center py-1">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-[#102c1e]"></div>
-                                    <span className="text-[#102c1e]/70 font-geist text-xs font-medium">Founders</span>
+                            {[
+                                { label: 'Founders', dot: 'bg-[#102c1e]', pct: '60.0%' },
+                                { label: 'Investors', dot: 'bg-[#102c1e]/60', pct: '27.5%' },
+                                { label: 'Option Pool', dot: 'bg-[#a1e2b6]', pct: '12.5%' },
+                            ].map(item => (
+                                <div key={item.label} className="flex justify-between items-center py-1">
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-2.5 h-2.5 rounded-full ${item.dot}`}></div>
+                                        <span className="text-[#102c1e]/70 font-geist text-xs font-medium">{item.label}</span>
+                                    </div>
+                                    <span className="font-mono font-bold text-xs text-[#102c1e]">{item.pct}</span>
                                 </div>
-                                <span className="font-mono font-bold text-xs text-[#102c1e]">60.0%</span>
-                            </div>
-                            <div className="flex justify-between items-center py-1">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-[#102c1e]/60"></div>
-                                    <span className="text-[#102c1e]/70 font-geist text-xs font-medium">Investors</span>
-                                </div>
-                                <span className="font-mono font-bold text-xs text-[#102c1e]">27.5%</span>
-                            </div>
-                            <div className="flex justify-between items-center py-1">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-[#a1e2b6]"></div>
-                                    <span className="text-[#102c1e]/70 font-geist text-xs font-medium">Option Pool</span>
-                                </div>
-                                <span className="font-mono font-bold text-xs text-[#102c1e]">12.5%</span>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
 
                 {/* DashGrid - Row 2 */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* Equity Scenario Modeling */}
+                    {/* Scenario Modeling */}
                     <div className="lg:col-span-6 bg-white border border-[#102c1e]/10 shadow-sm rounded-3xl p-6">
                         <div className="flex items-center justify-between mb-8">
                             <div>
@@ -235,7 +221,7 @@ export default function CapTablePage() {
                         </div>
 
                         <div className="relative before:absolute before:inset-0 before:left-3 before:h-full before:w-px before:bg-[#102c1e]/10 ml-2 space-y-6">
-                            {upcomingVesting.map((item, index) => (
+                            {upcomingVesting.map((item) => (
                                 <div key={item.id} className="relative flex items-start gap-4">
                                     <div className="absolute left-[-21px] top-1.5 w-3 h-3 rounded-full bg-[#a1e2b6] ring-4 ring-white border border-[#102c1e]/10 z-10"></div>
                                     <div className="flex-1 bg-[#fafafa] border border-[#102c1e]/5 hover:border-[#102c1e]/10 transition-colors rounded-xl p-3">
@@ -253,7 +239,20 @@ export default function CapTablePage() {
                             ))}
                         </div>
                     </div>
+                </div>
 
+                {/* ── LEGAL DISCLAIMER — Gap 4 fix ── */}
+                <div className="flex items-start gap-3 p-4 bg-white border border-[#102c1e]/8 rounded-2xl">
+                    <AlertCircle className="w-4 h-4 text-[#102c1e]/30 mt-0.5 shrink-0" />
+                    <div>
+                        <p className="font-geist font-bold text-xs text-[#102c1e] mb-0.5">Lưu ý pháp lý quan trọng</p>
+                        <p className="font-inter text-xs text-slate-500 leading-relaxed">
+                            Cap Table này là <strong>công cụ theo dõi nội bộ</strong>, không phải tài liệu pháp lý có hiệu lực tại Việt Nam.
+                            Mọi thay đổi cơ cấu cổ đông phải được thực hiện qua hợp đồng chính thức có công chứng theo{' '}
+                            <span className="font-bold text-[#102c1e]">Luật Doanh nghiệp 2020</span>.
+                            Kizuna Hub không chịu trách nhiệm pháp lý về tranh chấp equity phát sinh từ dữ liệu trên nền tảng này.
+                        </p>
+                    </div>
                 </div>
 
             </div>
