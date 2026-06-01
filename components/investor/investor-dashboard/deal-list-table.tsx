@@ -43,7 +43,7 @@ export const DealListTable = ({ onViewProject }: DealListTableProps) => {
                                         <div>
                                             <h4 className="text-sm font-black text-zinc-900 flex items-center gap-1.5">
                                                 {project.isLocked ? `Locked Deal #${project.id}` : project.name}
-                                                {!project.isLocked && project.ipSecured && <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />}
+                                                {!project.isLocked && project.ipSecured && <ShieldCheck className="w-3.5 h-3.5 text-[#a1e2b6]" />}
                                             </h4>
                                             <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">{project.industry}</div>
                                         </div>
@@ -63,7 +63,7 @@ export const DealListTable = ({ onViewProject }: DealListTableProps) => {
                                 </td>
                                 <td className="py-4 pr-4">
                                     <div className="flex flex-col items-start gap-1.5 whitespace-nowrap">
-                                        <span className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border border-current/10", project.statusColor)}>
+                                        <span className={cn("px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border border-[#102c1e]/10", project.statusColor)}>
                                             {project.status}
                                         </span>
                                         <span className="flex items-center gap-1 text-[10px] font-black text-[#102c1e] bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">
