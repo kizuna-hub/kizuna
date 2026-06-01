@@ -66,7 +66,7 @@ export default function IncubationRoadmap() {
             </div>
 
             {/* Current Stage Info */}
-            <div className="mt-8 p-4 bg-emerald-50 border border-emerald-100 rounded-lg text-kizuna-primary">
+            <div className="mt-8 p-4 bg-[#a1e2b6]/15 border border-[#a1e2b6]/30 rounded-xl text-[#102c1e]">
                 <p className="text-sm">
                     <span className="font-bold">Giai đoạn Hiện tại:</span> Bạn đang xây dựng MVP. Hãy tập trung vào các tính năng cốt lõi và kiểm chứng người dùng.
                 </p>
