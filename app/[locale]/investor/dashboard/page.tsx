@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Download, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-import { InvestorSidebar } from '@/components/investor/investor-dashboard/investor-sidebar';
+import { InvestorSidebar } from '@/components/investor/investor-sidebar';
 import { InvestorTopbar } from '@/components/investor/investor-dashboard/investor-topbar';
 import { InvestorMetrics } from '@/components/investor/investor-dashboard/investor-metrics';
 import { DealListTable } from '@/components/investor/investor-dashboard/deal-list-table';

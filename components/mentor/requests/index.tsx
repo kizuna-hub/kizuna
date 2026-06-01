@@ -79,7 +79,7 @@ export default function MentorRequests() {
                                     key={req.id}
                                     onClick={() => setSelectedReq(req)}
                                     className={cn(
-                                        "w-full text-left p-4 rounded-2xl transition-all duration-200 border",
+                                        "group relative w-full text-left p-4 rounded-2xl transition-all duration-200 border",
                                         selectedReq.id === req.id
                                             ? "bg-[#fafafa] border-[#102c1e]/20 shadow-sm pointer-events-none"
                                             : "bg-white border-transparent hover:bg-[#102c1e]/5 hover:border-[#102c1e]/10"
@@ -99,9 +99,20 @@ export default function MentorRequests() {
                                     <p className="font-inter text-slate-500 text-xs line-clamp-2 leading-relaxed">
                                         Yêu cầu: <span className="font-semibold text-[#102c1e]">{req.ask}</span>
                                     </p>
-                                    <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between items-center">
+                                    <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between items-center relative">
                                         <span className="font-geist text-xs text-slate-400">{req.date}</span>
-                                        <ArrowRight className={cn("w-4 h-4", selectedReq.id === req.id ? "text-[#102c1e]" : "text-transparent")} />
+
+                                        {/* 1-Click Approval Actions (Thường sẽ ẩn, hiện ra khi hover trên desktop) */}
+                                        <div className="absolute right-6 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 bg-white p-1 rounded-lg border border-[#102c1e]/10 shadow-sm" onClick={(e) => e.stopPropagation()}>
+                                            <button className="text-slate-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-md transition-colors" title="Từ chối nhanh">
+                                                <X className="w-3.5 h-3.5" />
+                                            </button>
+                                            <button className="text-[#102c1e] bg-[#a1e2b6]/30 hover:bg-[#a1e2b6]/80 p-1.5 rounded-md transition-colors" title="Chấp nhận FAST 1-Click">
+                                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+
+                                        <ArrowRight className={cn("w-4 h-4", selectedReq.id === req.id ? "text-[#102c1e]" : "text-transparent truncate")} />
                                     </div>
                                 </button>
                             ))}

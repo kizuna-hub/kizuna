@@ -145,17 +145,32 @@ export default function FastLedger() {
                                                     <span className="font-mono text-xs font-bold text-[#102c1e]/60">{contract.progress}%</span>
                                                 </div>
                                                 {/* Thanh Tiến độ UI */}
-                                                <div className="relative h-2 w-full overflow-hidden rounded-full border border-[#102c1e]/5 bg-[#102c1e]/5">
-                                                    {contract.progress > 0 && contract.progress < 100 && (
-                                                        <div className="absolute bottom-0 left-[25%] top-0 z-20 w-px bg-red-400/50" title="1-Year Cliff Mark"></div>
+                                                <div className="relative mt-2 h-2 w-full rounded-full bg-slate-100/80 ring-1 ring-inset ring-[#102c1e]/5">
+                                                    {!contract.cliff.includes('Không') && (
+                                                        <>
+                                                            <div className="absolute top-0 bottom-0 left-[25%] z-20 w-[2px] bg-white ring-1 ring-[#102c1e]/10"></div>
+                                                            <div className="absolute -top-4 left-[25%] -translate-x-1/2 z-20">
+                                                                {contract.progress >= 25 ? (
+                                                                    <Unlock className="w-3 h-3 text-[#a1e2b6] drop-shadow-sm" />
+                                                                ) : (
+                                                                    <Lock className="w-3 h-3 text-slate-300 drop-shadow-sm" />
+                                                                )}
+                                                            </div>
+                                                        </>
                                                     )}
                                                     <div
                                                         className={cn(
-                                                            "h-full rounded-r-md transition-all duration-1000",
-                                                            contract.progress === 100 ? "bg-[#a1e2b6]" : "bg-[#102c1e]"
+                                                            "h-full rounded-full transition-all duration-1000 relative",
+                                                            contract.progress === 100 ? "bg-[#a1e2b6]" :
+                                                                (contract.progress < 25 && !contract.cliff.includes('Không') ? "bg-amber-400" : "bg-[#102c1e]")
                                                         )}
                                                         style={{ width: `${contract.progress}%` }}
-                                                    />
+                                                    >
+                                                        {/* Pulsing indicator on current progress if active */}
+                                                        {contract.progress > 0 && contract.progress < 100 && (
+                                                            <div className="absolute right-0 top-1/2 -mt-1.5 w-3 h-3 bg-white border-[3px] border-current rounded-full shadow-sm"></div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
