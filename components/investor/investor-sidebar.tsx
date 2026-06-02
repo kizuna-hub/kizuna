@@ -22,8 +22,8 @@ export const InvestorSidebar = ({ activeIndustry, setActiveIndustry }: SidebarPr
     // Cấu hình Link thực tế cho từng tab
     const menuItems = [
         { id: 'deal-flow', icon: LayoutDashboard, label: 'Deal Flow CRM', href: `${basePath}/deal-flow` },
+        { id: 'portfolio', icon: Briefcase, label: 'Portfolio Command', href: `${basePath}/portfolio` },
         { id: 'sourcing', icon: Radar, label: 'AI Sourcing Radar', href: `${basePath}/sourcing` },
-        { id: 'portfolio', icon: Briefcase, label: 'Portfolio Command', href: `${basePath}/dashboard` },
         { id: 'saved', icon: Star, label: 'Đã lưu', href: `${basePath}/saved` },
     ];
 
