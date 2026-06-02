@@ -187,6 +187,25 @@ export default function FastLedger() {
                         </table>
                     </div>
                 </div>
+                {/* ── LEGAL DISCLAIMER (Gap 4 Fix) ── */}
+                <div className="rounded-2xl border border-[#102c1e]/8 bg-white p-5 flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-xl bg-[#102c1e]/5 border border-[#102c1e]/8 flex items-center justify-center shrink-0 mt-0.5">
+                        <Lock className="w-4 h-4 text-[#102c1e]/40" />
+                    </div>
+                    <div>
+                        <p className="font-geist font-black text-xs text-[#102c1e] mb-1">⚖️ Lưu ý pháp lý — FAST Agreement</p>
+                        <p className="font-inter text-xs text-slate-500 leading-relaxed">
+                            Các hợp đồng FAST trên Kizuna Hub là <strong className="text-[#102c1e]">mẫu tham khảo nội bộ</strong> và{' '}
+                            <strong className="text-[#102c1e]">không có hiệu lực pháp lý tại Việt Nam</strong> nếu không được công chứng.
+                            Mọi cam kết cổ phần giữa Mentor và Startup phải được thực hiện qua hợp đồng chính thức theo{' '}
+                            <span className="font-bold text-[#102c1e]">Luật Doanh nghiệp 2020 (Điều 44)</span> và có xác nhận của Công chứng viên.{' '}
+                            Kizuna Hub không phải là bên đảm bảo nghĩa vụ pháp lý trong các thỏa thuận này.{' '}
+                            <a href="#" className="underline underline-offset-2 text-[#102c1e] hover:text-[#102c1e]/70 transition-colors">
+                                Tìm hiểu thêm về quy trình FAST hợp pháp →
+                            </a>
+                        </p>
+                    </div>
+                </div>
 
             </div>
         </div>

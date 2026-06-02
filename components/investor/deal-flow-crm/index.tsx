@@ -498,9 +498,9 @@ function DealCard({ deal, isDragging, isOver, onDragStart, onToggleBookmark }: D
 
                     {/* DD Deadline */}
                     {deal.ddDeadline && (
-                        <div className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded-md">
-                            <Clock className="w-3 h-3 text-amber-500" />
-                            <span className="font-geist text-[9px] font-bold text-amber-600">{deal.ddDeadline}</span>
+                        <div className="flex items-center gap-1 px-1.5 py-0.5 bg-[#102c1e]/5 border border-[#102c1e]/10 rounded-md">
+                            <Clock className="w-3 h-3 text-[#102c1e]/50" />
+                            <span className="font-geist text-[9px] font-bold text-[#102c1e]/60">{deal.ddDeadline}</span>
                         </div>
                     )}
 
@@ -531,6 +531,41 @@ function DealCard({ deal, isDragging, isOver, onDragStart, onToggleBookmark }: D
                 <div className="px-4 py-2 bg-[#102c1e]/5 border-t border-[#102c1e]/5 flex items-center gap-1.5 rounded-b-2xl">
                     <Send className="w-3 h-3 text-[#102c1e]" />
                     <span className="font-geist text-[9px] font-bold text-[#102c1e]/70">Introduced by {deal.referredBy}</span>
+                </div>
+            )}
+
+            {/* DD column: quick links to Terminal & Simulator */}
+            {isInDD && (
+                <div className="mx-0 rounded-b-2xl overflow-hidden">
+                    <div className={cn(
+                        'px-4 py-2.5 border-t flex items-center gap-2',
+                        isUnlocked
+                            ? 'bg-[#102c1e] border-[#102c1e]'
+                            : 'bg-[#102c1e]/5 border-[#102c1e]/8'
+                    )}>
+                        {isUnlocked ? (
+                            <>
+                                <a
+                                    href={`/en/investor/deal-flow/${deal.id}/due-diligence`}
+                                    onClick={e => e.stopPropagation()}
+                                    className="flex-1 flex items-center justify-center gap-1.5 bg-white/15 hover:bg-white/25 text-white rounded-lg py-1.5 font-geist text-[10px] font-black transition-colors"
+                                >
+                                    <ShieldCheck className="w-3 h-3" /> DD Terminal
+                                </a>
+                                <a
+                                    href={`/en/investor/deal-flow/${deal.id}/pro-rata`}
+                                    onClick={e => e.stopPropagation()}
+                                    className="flex-1 flex items-center justify-center gap-1.5 bg-[#a1e2b6]/20 hover:bg-[#a1e2b6]/30 text-[#a1e2b6] rounded-lg py-1.5 font-geist text-[10px] font-black transition-colors"
+                                >
+                                    <Target className="w-3 h-3" /> Pro-Rata
+                                </a>
+                            </>
+                        ) : (
+                            <p className="font-geist text-[9px] text-[#102c1e]/50 font-bold text-center w-full">
+                                Kéo vào đây để mở khóa Data Room & kích hoạt DD Tools
+                            </p>
+                        )}
+                    </div>
                 </div>
             )}
 
