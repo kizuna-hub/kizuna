@@ -1,501 +1,484 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
-    Shield, FileText, CheckSquare, MessageSquare, AlertTriangle,
-    ChevronRight, Download, Send, Plus, Sparkles, Eye, Lock,
-    Clock, Users, TrendingUp, BarChart3, Building2, CheckCircle2,
-    XCircle, Circle, Bookmark, ExternalLink, ArrowLeft, Zap,
-    StickyNote, FolderOpen, Star, Target, Activity
+    Folder, FolderOpen, FileText, FileSpreadsheet, ShieldAlert,
+    CheckCircle2, ChevronRight, Lock, Unlock, Mail, AlertTriangle,
+    Sparkles, Download, Eye, Clock, MoreHorizontal, X, Check,
+    TrendingDown, Users, Building2, Cpu, Scale,
+    ArrowLeft, RefreshCw, BadgeAlert, CircleCheck, ZoomIn, ZoomOut, Link as LinkIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// ─── TYPES ───────────────────────────────────────────────────────
-type DDTab = 'dataroom' | 'checklist' | 'notes' | 'ai-scanner';
-type CheckStatus = 'done' | 'issue' | 'pending' | 'na';
+// ─── TYPES ────────────────────────────────────────────────────────────────────
+type FolderId = 'pitch' | 'financial' | 'legal' | 'tech' | 'hr';
+type VerifyStatus = 'verified' | 'pending' | 'outdated';
 
-interface DDItem {
-    id: string;
-    category: string;
+interface Folder {
+    id: FolderId;
     label: string;
-    status: CheckStatus;
-    assignee?: string;
-    note?: string;
-    weight: 'critical' | 'important' | 'standard';
+    icon: React.ElementType;
+    fileCount: number;
+    verified: number;
+    hasIssue?: boolean;
+    done?: boolean;
 }
 
-interface DataDoc {
+interface DataFile {
     id: string;
     name: string;
-    type: 'pdf' | 'xlsx' | 'ppt' | 'link';
+    type: 'PDF' | 'XLSX' | 'PPT' | 'LINK' | 'DOCX';
+    uploaded: string;
+    status: VerifyStatus;
     size?: string;
-    lastUpdated: string;
-    viewed: boolean;
-    pages?: number;
+    folder: FolderId;
 }
 
-// ─── MOCK DATA ────────────────────────────────────────────────────
-const STARTUP = {
-    name: 'SnapMoney',
-    logo: '💸',
-    vertical: 'FinTech',
-    stage: 'Series A',
-    ask: '$1M',
-    founder: 'Lê Bảo',
-    aiScore: 96,
+interface RiskCard {
+    id: string;
+    severity: 'critical' | 'warning' | 'info';
+    title: string;
+    detail: string;
+    source: string;
+    fileId?: string; // Link to specific file
+    timestamp: string;
+    resolved?: boolean;
+}
+
+// ─── MOCK DATA ────────────────────────────────────────────────────────────────
+const STARTUP = { name: 'SnapMoney', stage: 'Series A', founder: 'Lê Bảo', ask: '$1.2M' };
+
+const FOLDERS: Folder[] = [
+    { id: 'pitch', label: 'Pitch & Exec Summary', icon: Building2, fileCount: 4, verified: 4, done: true },
+    { id: 'financial', label: 'Financial Models', icon: TrendingDown, fileCount: 6, verified: 4, hasIssue: true },
+    { id: 'legal', label: 'Legal & Cap Table', icon: Scale, fileCount: 7, verified: 5, hasIssue: true },
+    { id: 'tech', label: 'Tech Architecture', icon: Cpu, fileCount: 3, verified: 2 },
+    { id: 'hr', label: 'HR & Team', icon: Users, fileCount: 5, verified: 3 },
+];
+
+const FILES: DataFile[] = [
+    // ... [GIỮ NGUYÊN MOCK DATA FILES CỦA BẠN]
+    // Pitch & Exec
+    { id: 'f01', name: 'SnapMoney — Pitch Deck v4.2', type: 'PPT', uploaded: '2d ago', status: 'verified', size: '8.4 MB', folder: 'pitch' },
+    { id: 'f02', name: 'Executive Summary Q1 2025', type: 'PDF', uploaded: '3d ago', status: 'verified', size: '1.2 MB', folder: 'pitch' },
+    { id: 'f04', name: 'Investor Update — Apr 2025', type: 'PDF', uploaded: '5d ago', status: 'verified', size: '780 KB', folder: 'pitch' },
+    // Financial
+    { id: 'f05', name: 'Financial Model 2024–2027', type: 'XLSX', uploaded: '1d ago', status: 'verified', size: '2.1 MB', folder: 'financial' },
+    { id: 'f07', name: 'Cash Flow Projection', type: 'XLSX', uploaded: '1w ago', status: 'outdated', size: '1.4 MB', folder: 'financial' },
+    { id: 'f10', name: 'Burn Rate & Runway Model', type: 'XLSX', uploaded: '2d ago', status: 'pending', size: '890 KB', folder: 'financial' },
+    // Legal & Cap Table
+    { id: 'f11', name: 'Cap Table (Fully Diluted)', type: 'XLSX', uploaded: '2d ago', status: 'verified', size: '400 KB', folder: 'legal' },
+    { id: 'f13', name: 'Shareholder Agreement v3', type: 'PDF', uploaded: '1w ago', status: 'verified', size: '3.4 MB', folder: 'legal' },
+    { id: 'f14', name: 'CTO Vesting Schedule', type: 'DOCX', uploaded: '3d ago', status: 'pending', size: '220 KB', folder: 'legal' },
+    { id: 'f17', name: 'Employment Contracts (Key)', type: 'PDF', uploaded: '5d ago', status: 'pending', size: '2.2 MB', folder: 'legal' },
+    // Tech & HR (Shortened for brevity, use full in prod)
+    { id: 'f18', name: 'System Architecture Diagram', type: 'PDF', uploaded: '4d ago', status: 'verified', size: '5.6 MB', folder: 'tech' },
+    { id: 'f21', name: 'Org Chart & Team Bios', type: 'PDF', uploaded: '3d ago', status: 'verified', size: '900 KB', folder: 'hr' },
+];
+
+const RISK_CARDS: RiskCard[] = [
+    {
+        id: 'r1', severity: 'critical', title: 'Cap Table Discrepancy', fileId: 'f11',
+        detail: 'AI detected a missing vesting schedule for the CTO. The Cap Table shows 8.5% equity allocation but no corresponding vesting agreement was found in the data room.',
+        source: 'Cap Table (Fully Diluted) · CTO Vesting Schedule', timestamp: '2 min ago', resolved: false,
+    },
+    {
+        id: 'r2', severity: 'warning', title: 'Burn Rate Anomaly', fileId: 'f10',
+        detail: 'Projected 18-month runway in the PDF does not match the Excel Financial Model which shows 11-month runway at current MRR of $38K. Variance: $214K.',
+        source: 'Burn Rate & Runway Model · Financial Model 2024–2027', timestamp: '5 min ago', resolved: false,
+    },
+    {
+        id: 'r3', severity: 'warning', title: 'Outdated Cash Flow Projection', fileId: 'f07',
+        detail: 'Cash Flow Projection was last updated 1 week ago and predates the April MRR data. The numbers may not reflect the recent 24% MoM growth spike.',
+        source: 'Cash Flow Projection', timestamp: '8 min ago', resolved: false,
+    },
+];
+
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const STATUS_CONFIG = {
+    verified: { label: 'Verified', color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200', dot: 'bg-emerald-500' },
+    pending: { label: 'Pending Review', color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200', dot: 'bg-amber-500' },
+    outdated: { label: 'Outdated', color: 'text-red-700', bg: 'bg-red-50 border-red-200', dot: 'bg-red-500' },
+} satisfies Record<VerifyStatus, { label: string; color: string; bg: string; dot: string }>;
+
+const TYPE_COLORS: Record<string, string> = {
+    PDF: 'bg-red-50 text-red-600 border-red-200',
+    XLSX: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    PPT: 'bg-orange-50 text-orange-600 border-orange-200',
+    LINK: 'bg-blue-50 text-blue-600 border-blue-200',
+    DOCX: 'bg-indigo-50 text-indigo-600 border-indigo-200',
 };
 
-const DD_CHECKLIST: DDItem[] = [
-    // Legal
-    { id: 'l1', category: 'Pháp lý', label: 'Đăng ký doanh nghiệp hợp lệ', status: 'done', weight: 'critical' },
-    { id: 'l2', category: 'Pháp lý', label: 'Cap Table sạch, không tranh chấp', status: 'done', weight: 'critical' },
-    { id: 'l3', category: 'Pháp lý', label: 'IP đã đăng ký & bảo hộ', status: 'issue', note: 'Patent còn đang pending tại NOIP', weight: 'critical' },
-    { id: 'l4', category: 'Pháp lý', label: 'Hợp đồng lao động key team', status: 'pending', weight: 'important' },
-    { id: 'l5', category: 'Pháp lý', label: 'FAST Agreement (nếu có Mentor equity)', status: 'done', weight: 'standard' },
-    // Finance
-    { id: 'f1', category: 'Tài chính', label: 'Financial model P&L 3 năm', status: 'done', weight: 'critical' },
-    { id: 'f2', category: 'Tài chính', label: 'Bank statement 6 tháng gần nhất', status: 'pending', weight: 'critical' },
-    { id: 'f3', category: 'Tài chính', label: 'MRR verified (screenshot dashboard)', status: 'done', weight: 'important' },
-    { id: 'f4', category: 'Tài chính', label: 'Burn rate & runway calculation', status: 'done', weight: 'important' },
-    { id: 'f5', category: 'Tài chính', label: 'Unit Economics (CAC/LTV)', status: 'issue', note: 'LTV chưa được tính đúng phương pháp', weight: 'important' },
-    // Product
-    { id: 'p1', category: 'Sản phẩm', label: 'Product demo live', status: 'done', weight: 'critical' },
-    { id: 'p2', category: 'Sản phẩm', label: 'Tech stack review', status: 'done', weight: 'standard' },
-    { id: 'p3', category: 'Sản phẩm', label: 'Security audit report', status: 'pending', weight: 'important' },
-    // Market
-    { id: 'm1', category: 'Thị trường', label: 'TAM/SAM/SOM analysis', status: 'done', weight: 'important' },
-    { id: 'm2', category: 'Thị trường', label: 'Competitor landscape', status: 'done', weight: 'standard' },
-    // Team
-    { id: 't1', category: 'Đội ngũ', label: 'LinkedIn verification founder', status: 'done', weight: 'critical' },
-    { id: 't2', category: 'Đội ngũ', label: 'Reference check (2+ references)', status: 'pending', weight: 'important' },
-    { id: 't3', category: 'Đội ngụ', label: 'Vesting schedule key team', status: 'done', weight: 'important' },
-];
-
-const DATA_DOCS: DataDoc[] = [
-    { id: 'd1', name: 'SnapMoney — Pitch Deck v4.2', type: 'ppt', size: '8.4 MB', lastUpdated: '1 ngày trước', viewed: true, pages: 18 },
-    { id: 'd2', name: 'Financial Model 2024–2027', type: 'xlsx', size: '2.1 MB', lastUpdated: '3 ngày trước', viewed: true },
-    { id: 'd3', name: 'Cap Table (Fully Diluted)', type: 'xlsx', size: '400 KB', lastUpdated: '3 ngày trước', viewed: false },
-    { id: 'd4', name: 'Legal — Giấy ĐKKD + Điều lệ', type: 'pdf', size: '1.8 MB', lastUpdated: '1 tuần trước', viewed: false },
-    { id: 'd5', name: 'IP Filing Receipt — NOIP', type: 'pdf', size: '600 KB', lastUpdated: '2 tuần trước', viewed: false },
-    { id: 'd6', name: 'Product Demo — Video Walkthrough', type: 'link', lastUpdated: '5 ngày trước', viewed: true },
-    { id: 'd7', name: 'Team Org Chart & Bios', type: 'pdf', size: '900 KB', lastUpdated: '1 tuần trước', viewed: false },
-];
-
-const AI_FLAGS = [
-    { level: 'warn', title: 'IP Patent Pending', detail: 'Bằng sáng chế thuật toán scoring chưa được cấp. Rủi ro nếu competitor clone trong thời gian này. Cân nhắc thêm covenant bảo hộ vào Term Sheet.' },
-    { level: 'info', title: 'LTV Methodology Gap', detail: 'Tỉ lệ LTV/CAC = 4.2x nhưng cách tính LTV chưa chuẩn theo phương pháp cohort. Yêu cầu founder cung cấp cohort retention data.' },
-    { level: 'ok', title: 'MRR Verified', detail: 'MRR $38K đã được xác nhận qua bank statement tháng 4/2025. Tăng trưởng 24% MoM trong 3 tháng liên tiếp.' },
-    { level: 'ok', title: 'Founder Background Clean', detail: 'LinkedIn xác minh, không có tiền án, không có conflict of interest với portfolio hiện tại của bạn.' },
-    { level: 'warn', title: 'Reference Check Pending', detail: 'Chưa có 2 reference calls bắt buộc. Khuyến nghị ưu tiên điều này trước khi ra Term Sheet.' },
-];
-
-const TYPE_ICON: Record<string, string> = { pdf: '📄', xlsx: '📊', ppt: '📑', link: '🔗' };
-const STATUS_CONFIG: Record<CheckStatus, { icon: typeof CheckCircle2; color: string; bg: string; label: string }> = {
-    done: { icon: CheckCircle2, color: 'text-[#102c1e]', bg: 'bg-[#a1e2b6]/20', label: 'Hoàn thành' },
-    issue: { icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50', label: 'Cần xem xét' },
-    pending: { icon: Circle, color: 'text-slate-400', bg: 'bg-slate-100', label: 'Chưa xem' },
-    na: { icon: XCircle, color: 'text-slate-300', bg: 'bg-slate-50', label: 'Không áp dụng' },
+const FILE_ICON: Record<string, React.ElementType> = {
+    PDF: FileText, XLSX: FileSpreadsheet, PPT: FileText, LINK: LinkIcon, DOCX: FileText,
 };
 
-// ─── PROGRESS RING ────────────────────────────────────────────────
-function ProgressRing({ pct, size = 44, stroke = 4 }: { pct: number; size?: number; stroke?: number }) {
-    const r = (size - stroke * 2) / 2;
-    const c = 2 * Math.PI * r;
+const SEVERITY_CONFIG = {
+    critical: { label: 'Critical', textColor: 'text-red-700', badgeBg: 'bg-red-100 border-red-300', cardBg: 'bg-red-50/60 border-red-200', iconColor: 'text-red-500', icon: ShieldAlert },
+    warning: { label: 'Warning', textColor: 'text-amber-700', badgeBg: 'bg-amber-100 border-amber-300', cardBg: 'bg-amber-50/40 border-amber-200', iconColor: 'text-amber-500', icon: AlertTriangle },
+    info: { label: 'Info', textColor: 'text-blue-700', badgeBg: 'bg-blue-100 border-blue-300', cardBg: 'bg-blue-50/40 border-blue-200', iconColor: 'text-blue-500', icon: Sparkles },
+} satisfies Record<string, { label: string; textColor: string; badgeBg: string; cardBg: string; iconColor: string; icon: React.ElementType }>;
+
+const DD_COMPLETION = 68;
+
+// ─── PROGRESS BAR ──────────────────────────────────────────────────────────── 
+function ProgressBar({ pct }: { pct: number }) {
     return (
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-            <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#102c1e" strokeOpacity="0.08" strokeWidth={stroke} />
-            <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#a1e2b6" strokeWidth={stroke}
-                strokeLinecap="round" strokeDasharray={`${(pct / 100) * c} ${c}`} className="transition-all duration-700" />
-        </svg>
+        <div className="space-y-2">
+            <div className="flex items-center justify-between">
+                <span className="font-geist text-[10px] font-bold text-slate-500 uppercase tracking-widest">DD Completion</span>
+                <span className="font-mono text-sm font-black text-[#102c1e]">{pct}%</span>
+            </div>
+            <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full bg-[#a1e2b6] rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+            </div>
+            <p className="font-inter text-xs text-slate-500">2 items need attention</p>
+        </div>
     );
 }
 
-// ─── SIDEBAR MINI-TABS ─────────────────────────────────────────────
-const TABS: { id: DDTab; icon: typeof Shield; label: string; badge?: string }[] = [
-    { id: 'dataroom', icon: FolderOpen, label: 'Data Room' },
-    { id: 'checklist', icon: CheckSquare, label: 'DD Checklist', badge: '2' },
-    { id: 'notes', icon: StickyNote, label: 'Ghi chú nội bộ' },
-    { id: 'ai-scanner', icon: Sparkles, label: 'AI Red Flag' },
-];
+// ─── STATUS BADGE ─────────────────────────────────────────────────────────────
+function StatusBadge({ status }: { status: VerifyStatus }) {
+    const cfg = STATUS_CONFIG[status];
+    return (
+        <span className={cn(
+            'inline-flex items-center gap-1.5 font-geist text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border',
+            cfg.bg, cfg.color,
+        )}>
+            <span className={cn('w-1.5 h-1.5 rounded-full', cfg.dot)} />
+            {cfg.label}
+        </span>
+    );
+}
 
-// ─── MAIN ─────────────────────────────────────────────────────────
-export default function DueDiligenceTerminal({ dealId }: { dealId?: string }) {
-    const [activeTab, setActiveTab] = useState<DDTab>('dataroom');
-    const [items, setItems] = useState<DDItem[]>(DD_CHECKLIST);
-    const [note, setNote] = useState('');
-    const [notes, setNotes] = useState<{ text: string; time: string }[]>([
-        { text: 'Cần clarify thêm về phương pháp tính LTV. Đã email founder.', time: '10:32 sáng' },
-        { text: 'IP patent pending — sẽ thêm protective covenant vào term sheet draft.', time: 'Hôm qua' },
-    ]);
+// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
+export default function DueDiligenceTerminal() {
+    const [activeFolder, setActiveFolder] = useState<FolderId>('legal');
+    const [activeDocument, setActiveDocument] = useState<DataFile | null>(null);
+    const [risks, setRisks] = useState<RiskCard[]>(RISK_CARDS);
 
-    const done = items.filter(i => i.status === 'done').length;
-    const issues = items.filter(i => i.status === 'issue').length;
-    const pct = Math.round((done / items.length) * 100);
-    const grouped = items.reduce<Record<string, DDItem[]>>((acc, item) => {
-        (acc[item.category] = acc[item.category] || []).push(item);
-        return acc;
-    }, {});
+    const visibleFiles = FILES.filter(f => f.folder === activeFolder);
+    const activeFolderMeta = FOLDERS.find(f => f.id === activeFolder)!;
 
-    const toggleStatus = (id: string) => {
-        setItems(prev => prev.map(item => {
-            if (item.id !== id) return item;
-            const cycle: CheckStatus[] = ['pending', 'done', 'issue', 'na'];
-            const next = cycle[(cycle.indexOf(item.status) + 1) % cycle.length];
-            return { ...item, status: next };
-        }));
-    };
+    const handleResolve = (id: string) => setRisks(prev => prev.map(r => r.id === id ? { ...r, resolved: true } : r));
+
+    const criticalCount = risks.filter(r => r.severity === 'critical' && !r.resolved).length;
+    const warningCount = risks.filter(r => r.severity === 'warning' && !r.resolved).length;
 
     return (
-        <div className="flex h-screen bg-[#fafafa] font-inter overflow-hidden">
+        <div className="flex h-screen bg-[#fafafa] overflow-hidden font-inter">
 
-            {/* ── LEFT PANEL: Sidebar ── */}
-            <div className="w-72 shrink-0 bg-[#102c1e] flex flex-col overflow-hidden">
-                {/* Back nav */}
-                <div className="px-5 pt-5 pb-4 border-b border-white/5">
-                    <a href="/investor/deal-flow" className="flex items-center gap-2 text-white/50 hover:text-white/80 transition-colors text-xs font-geist font-bold mb-4">
-                        <ArrowLeft className="w-3.5 h-3.5" /> Deal Flow CRM
+            {/* ══════════════════════════════════════════
+                LEFT PANE — Index & Folders (w-[22%])
+            ══════════════════════════════════════════ */}
+            <aside className="w-[22%] min-w-[240px] max-w-[300px] shrink-0 bg-white border-r border-slate-200 flex flex-col overflow-hidden">
+                <div className="px-6 py-6 border-b border-slate-100">
+                    <a href="/investor/deal-flow" className="inline-flex items-center gap-2 text-slate-400 hover:text-[#102c1e] transition-colors mb-4 group">
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                        <span className="font-geist text-xs font-bold uppercase tracking-widest">Deal Flow</span>
                     </a>
-                    {/* Startup identity */}
                     <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center text-2xl border border-white/10">
-                            {STARTUP.logo}
-                        </div>
-                        <div>
-                            <h2 className="font-outfit font-black text-white text-base">{STARTUP.name}</h2>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="font-geist text-[9px] font-bold bg-[#a1e2b6]/15 border border-[#a1e2b6]/25 text-[#a1e2b6] px-2 py-0.5 rounded-full">
-                                    {STARTUP.stage}
-                                </span>
-                                <span className="font-geist text-[9px] text-white/40">{STARTUP.vertical}</span>
-                            </div>
+                        <div className="w-10 h-10 rounded-xl bg-[#102c1e] flex items-center justify-center text-xl shrink-0 shadow-md">💸</div>
+                        <div className="min-w-0">
+                            <p className="font-outfit font-black text-[#102c1e] text-lg leading-tight truncate">{STARTUP.name}</p>
+                            <span className="inline-block mt-1 font-geist text-[9px] font-black text-[#102c1e] bg-[#a1e2b6]/30 border border-[#a1e2b6]/50 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                {STARTUP.stage}
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                {/* DD Progress */}
-                <div className="px-5 py-4 border-b border-white/5">
-                    <div className="bg-white/5 rounded-2xl p-4 flex items-center gap-4">
-                        <div className="relative">
-                            <ProgressRing pct={pct} size={52} stroke={5} />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="font-mono font-black text-sm text-white">{pct}%</span>
+                <div className="px-6 py-5 border-b border-slate-100">
+                    <ProgressBar pct={DD_COMPLETION} />
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-3 py-4 [&::-webkit-scrollbar]:hidden">
+                    <p className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Folders</p>
+                    <div className="space-y-1">
+                        {FOLDERS.map(folder => {
+                            const isActive = activeFolder === folder.id;
+                            const Icon = isActive ? FolderOpen : Folder;
+                            const allVerified = folder.verified === folder.fileCount;
+                            return (
+                                <button
+                                    key={folder.id}
+                                    onClick={() => { setActiveFolder(folder.id); setActiveDocument(null); }}
+                                    className={cn(
+                                        'group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left',
+                                        isActive ? 'bg-[#102c1e]/5 border border-[#102c1e]/10' : 'hover:bg-slate-50 border border-transparent',
+                                    )}
+                                >
+                                    <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-[#102c1e]' : 'text-slate-400')} />
+                                    <span className={cn('font-inter text-sm font-semibold flex-1 truncate', isActive ? 'text-[#102c1e]' : 'text-slate-600 group-hover:text-[#102c1e]')}>
+                                        {folder.label}
+                                    </span>
+                                    {folder.hasIssue && !isActive && <span className="w-2 h-2 rounded-full bg-red-500" />}
+                                    {allVerified && !folder.hasIssue && <CheckCircle2 className="w-4 h-4 text-[#a1e2b6]" />}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className="px-5 pb-5 pt-3 border-t border-slate-100">
+                    <div className="flex items-center gap-3 px-4 py-3 bg-[#102c1e]/5 rounded-xl border border-[#102c1e]/10">
+                        <Lock className="w-4 h-4 text-[#102c1e]/60" />
+                        <div className="min-w-0">
+                            <p className="font-geist text-xs font-bold text-[#102c1e]">NDA-Protected Vault</p>
+                            <p className="font-inter text-[10px] text-slate-500">Founder cannot see your notes</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            {/* ══════════════════════════════════════════
+                MIDDLE PANE — Document List OR Reader View (w-[48%])
+            ══════════════════════════════════════════ */}
+            <main className="flex-1 flex flex-col overflow-hidden border-r border-slate-200 min-w-0 bg-white">
+
+                {/* ── STATE 1: DOCUMENT READER ── */}
+                {activeDocument ? (
+                    <div className="flex flex-col h-full bg-[#f4f5f5]">
+                        <div className="shrink-0 flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <button onClick={() => setActiveDocument(null)} className="p-2 -ml-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors">
+                                    <ArrowLeft className="w-4 h-4" />
+                                </button>
+                                <div>
+                                    <h3 className="font-outfit text-lg font-bold text-[#102c1e] leading-none">{activeDocument.name}</h3>
+                                    <p className="font-geist text-[10px] text-slate-500 mt-1 uppercase tracking-widest">{activeDocument.folder} · {activeDocument.type}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                                    <button className="p-1.5 hover:bg-white rounded-md text-slate-500"><ZoomOut className="w-4 h-4" /></button>
+                                    <span className="font-mono text-xs font-bold px-2 text-slate-600">100%</span>
+                                    <button className="p-1.5 hover:bg-white rounded-md text-slate-500"><ZoomIn className="w-4 h-4" /></button>
+                                </div>
+                                <button className="flex items-center gap-2 bg-[#102c1e] text-white px-4 py-2 rounded-xl font-geist text-xs font-bold hover:bg-[#0a1c13] transition-colors">
+                                    <Lock className="w-3.5 h-3.5 text-[#a1e2b6]" /> Request Download
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <p className="font-geist text-[10px] font-bold text-white/40 uppercase tracking-widest">DD Progress</p>
-                            <p className="font-mono font-black text-white text-lg mt-0.5">{done}<span className="text-white/30 font-normal text-sm">/{items.length}</span></p>
-                            {issues > 0 && (
-                                <p className="font-geist text-[10px] font-bold text-red-400 mt-0.5 flex items-center gap-1">
-                                    <AlertTriangle className="w-3 h-3" /> {issues} red flag
-                                </p>
+
+                        {/* Mock PDF Viewer Area */}
+                        <div className="flex-1 overflow-y-auto p-8 flex justify-center items-start">
+                            <div className="w-full max-w-3xl bg-white min-h-[800px] shadow-lg border border-slate-200 relative p-12">
+                                {/* Watermark */}
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5 pointer-events-none">
+                                    <span className="text-6xl font-black transform -rotate-45 font-outfit text-[#102c1e] uppercase tracking-widest whitespace-nowrap">
+                                        CONFIDENTIAL · VIEW ONLY
+                                    </span>
+                                </div>
+
+                                {/* Mock Content */}
+                                <div className="space-y-6 blur-[1px]">
+                                    <div className="h-8 bg-slate-200 w-3/4 rounded" />
+                                    <div className="h-4 bg-slate-100 w-full rounded" />
+                                    <div className="h-4 bg-slate-100 w-full rounded" />
+                                    <div className="h-4 bg-slate-100 w-5/6 rounded" />
+                                </div>
+
+                                {/* AI Highlight Box linked to Risk Card */}
+                                <div className="mt-10 p-4 border-2 border-dashed border-red-400 bg-red-50/50 rounded-lg relative">
+                                    <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white shadow-md">
+                                        <ShieldAlert className="w-3 h-3" />
+                                    </div>
+                                    <p className="font-inter text-sm text-[#102c1e] font-medium leading-relaxed">
+                                        As per section 4.2, the executive team reserves a pool of <span className="bg-red-200 px-1 font-bold">8.5% equity allocation</span> without defined vesting parameters in the current term sheet...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    /* ── STATE 2: DOCUMENT LIST VIEW ── */
+                    <div className="flex flex-col h-full">
+                        <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-slate-200 px-8 py-5 flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-3 min-w-0">
+                                <span className="font-geist text-xs text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">{STARTUP.name}</span>
+                                <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
+                                <div className="flex items-center gap-2">
+                                    <span className="font-outfit text-xl font-black text-[#102c1e] truncate">{activeFolderMeta.label}</span>
+                                    <span className="font-geist text-[10px] font-bold text-slate-400 bg-slate-100 rounded-full px-2.5 py-0.5">{visibleFiles.length} files</span>
+                                </div>
+                            </div>
+                            <button className="flex items-center gap-2 font-geist text-xs font-bold text-[#102c1e] bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-xl transition-all whitespace-nowrap">
+                                <Mail className="w-4 h-4" /> Ask Founder for Document
+                            </button>
+                        </div>
+
+                        {/* Status Filter Bar */}
+                        <div className="flex items-center gap-6 px-8 py-3.5 border-b border-slate-100 bg-[#fafafa]">
+                            <div className="flex items-center gap-2 cursor-pointer group">
+                                <span className="font-mono text-sm font-black text-emerald-600 group-hover:text-emerald-700">{visibleFiles.filter(f => f.status === 'verified').length}</span>
+                                <span className="font-geist text-xs font-semibold text-slate-500 group-hover:text-slate-700">Verified</span>
+                            </div>
+                            <div className="flex items-center gap-2 cursor-pointer group">
+                                <span className="font-mono text-sm font-black text-amber-600 group-hover:text-amber-700">{visibleFiles.filter(f => f.status === 'pending').length}</span>
+                                <span className="font-geist text-xs font-semibold text-slate-500 group-hover:text-slate-700">Pending</span>
+                            </div>
+                            <div className="flex items-center gap-2 cursor-pointer group">
+                                <span className="font-mono text-sm font-black text-red-600 group-hover:text-red-700">{visibleFiles.filter(f => f.status === 'outdated').length}</span>
+                                <span className="font-geist text-xs font-semibold text-slate-500 group-hover:text-slate-700">Outdated</span>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                            <table className="w-full text-left border-collapse">
+                                <thead className="sticky top-0 z-10 bg-white border-b border-slate-200">
+                                    <tr>
+                                        {['Document Name', 'Type', 'Uploaded', 'Verification Status', ''].map(col => (
+                                            <th key={col} className="font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400 px-8 py-4 whitespace-nowrap">
+                                                {col}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {visibleFiles.map(file => {
+                                        const FileIcon = FILE_ICON[file.type] || FileText;
+                                        return (
+                                            <tr key={file.id} onClick={() => setActiveDocument(file)} className="group border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer">
+                                                <td className="px-8 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center shrink-0">
+                                                            <FileIcon className="w-5 h-5 text-slate-400" />
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <p className="font-inter text-sm font-bold text-[#102c1e] truncate group-hover:text-[#4a7c5f] transition-colors">{file.name}</p>
+                                                            {file.size && <p className="font-geist text-[10px] text-slate-400 mt-0.5">{file.size}</p>}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-4">
+                                                    <span className={cn('font-geist text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border', TYPE_COLORS[file.type] ?? 'bg-slate-50 text-slate-500 border-slate-200')}>
+                                                        {file.type}
+                                                    </span>
+                                                </td>
+                                                <td className="px-8 py-4">
+                                                    <div className="flex items-center gap-1.5 text-slate-500">
+                                                        <Clock className="w-3.5 h-3.5" />
+                                                        <span className="font-geist text-xs font-medium">{file.uploaded}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-4"><StatusBadge status={file.status} /></td>
+                                                <td className="px-8 py-4 text-right">
+                                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                                                        <button className="p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 text-slate-400 hover:text-[#102c1e] shadow-sm"><Eye className="w-4 h-4" /></button>
+                                                        <button className="p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 text-slate-400 hover:text-[#102c1e] shadow-sm"><Download className="w-4 h-4" /></button>
+                                                        <button className="p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 text-slate-400 hover:text-[#102c1e] shadow-sm"><MoreHorizontal className="w-4 h-4" /></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                            {visibleFiles.length === 0 && (
+                                <div className="flex flex-col items-center justify-center py-24 text-center">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-4"><FolderOpen className="w-8 h-8 text-slate-300" /></div>
+                                    <p className="font-outfit text-lg font-bold text-[#102c1e] mb-1">No documents found</p>
+                                    <p className="font-inter text-sm text-slate-500">This folder is currently empty.</p>
+                                </div>
                             )}
                         </div>
                     </div>
-                </div>
+                )}
+            </main>
 
-                {/* Section Tabs */}
-                <nav className="flex-1 px-3 py-4 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                    <p className="font-geist text-[9px] font-bold text-white/30 uppercase tracking-widest mb-3 px-2">Modules</p>
-                    <div className="space-y-1">
-                        {TABS.map(tab => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={cn(
-                                    'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all font-geist text-sm font-bold text-left',
-                                    activeTab === tab.id
-                                        ? 'bg-white/10 text-white'
-                                        : 'text-white/50 hover:text-white/80 hover:bg-white/5'
-                                )}
-                            >
-                                <tab.icon className="w-4 h-4 shrink-0" />
-                                <span className="flex-1">{tab.label}</span>
-                                {tab.badge && (
-                                    <span className="bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">{tab.badge}</span>
-                                )}
-                                {activeTab === tab.id && <div className="w-1 h-1 rounded-full bg-[#a1e2b6]" />}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Quick stats */}
-                    <div className="mt-6 px-2 space-y-3">
-                        <p className="font-geist text-[9px] font-bold text-white/30 uppercase tracking-widest">Deal Info</p>
-                        {[
-                            { label: 'Founder', value: STARTUP.founder },
-                            { label: 'Ask', value: STARTUP.ask },
-                            { label: 'AI Match', value: `${STARTUP.aiScore}%` },
-                        ].map(s => (
-                            <div key={s.label} className="flex justify-between items-center">
-                                <span className="font-geist text-xs text-white/40">{s.label}</span>
-                                <span className="font-mono text-xs font-black text-white">{s.value}</span>
+            {/* ══════════════════════════════════════════
+                RIGHT PANE — AI DD Copilot (w-[30%])
+            ══════════════════════════════════════════ */}
+            <aside className="w-[30%] min-w-[320px] max-w-[420px] shrink-0 bg-white flex flex-col overflow-hidden">
+                <div className="px-6 py-5 border-b border-slate-200 bg-[#fafafa]">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-xl bg-[#102c1e] flex items-center justify-center shadow-md">
+                                <Sparkles className="w-4 h-4 text-[#a1e2b6]" />
                             </div>
-                        ))}
-                    </div>
-                </nav>
-
-                {/* Bottom actions */}
-                <div className="px-3 pb-4 border-t border-white/5 pt-3 space-y-2">
-                    <button className="w-full flex items-center gap-2 justify-center bg-[#a1e2b6] text-[#102c1e] rounded-xl py-2.5 font-geist font-black text-sm hover:bg-[#a1e2b6]/90 transition-colors shadow-md">
-                        <Target className="w-4 h-4" />
-                        Tạo Term Sheet Draft
-                    </button>
-                    <button className="w-full flex items-center gap-2 justify-center bg-white/5 text-white/70 rounded-xl py-2 font-geist font-bold text-xs hover:bg-white/10 transition-colors">
-                        <Download className="w-3.5 h-3.5" />
-                        Export DD Report (PDF)
-                    </button>
-                </div>
-            </div>
-
-            {/* ── RIGHT PANEL: Content ── */}
-            <div className="flex-1 overflow-y-auto">
-
-                {/* Topbar */}
-                <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-[#102c1e]/8 px-8 py-3.5 flex items-center justify-between">
-                    <div>
-                        <h1 className="font-outfit font-black text-[#102c1e] text-xl">
-                            {TABS.find(t => t.id === activeTab)?.label}
-                        </h1>
-                        <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
-                            {STARTUP.name} · Due Diligence Terminal
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1.5 bg-[#a1e2b6]/15 border border-[#a1e2b6]/30 px-3 py-1.5 rounded-xl">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#a1e2b6] animate-pulse" />
-                            <span className="font-geist text-[10px] font-black text-[#102c1e]">Data Room Active</span>
+                            <h2 className="font-outfit font-black text-[#102c1e] text-lg">AI Risk Analysis</h2>
                         </div>
-                        <button className="p-2 rounded-xl hover:bg-[#102c1e]/5 text-slate-400 hover:text-[#102c1e] transition-colors">
-                            <Bookmark className="w-4 h-4" />
-                        </button>
+                        <button className="p-2 rounded-lg hover:bg-slate-200 text-slate-500 transition-colors"><RefreshCw className="w-4 h-4" /></button>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 px-4 py-3 bg-[#a1e2b6]/10 border border-[#a1e2b6]/30 rounded-xl">
+                        <div className="w-2 h-2 rounded-full bg-[#a1e2b6] animate-pulse" />
+                        <span className="font-geist text-xs font-bold text-[#102c1e]">Scanning {FILES.length} documents — Live</span>
                     </div>
                 </div>
 
-                <div className="p-8">
+                <div className="flex items-center gap-2.5 px-6 py-3.5 border-b border-slate-100 bg-white">
+                    {criticalCount > 0 && (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 shadow-sm">
+                            <BadgeAlert className="w-3.5 h-3.5 text-red-600" />
+                            <span className="font-geist text-[10px] font-black text-red-700">{criticalCount} Critical</span>
+                        </div>
+                    )}
+                    {warningCount > 0 && (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 shadow-sm">
+                            <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                            <span className="font-geist text-[10px] font-black text-amber-700">{warningCount} Warning</span>
+                        </div>
+                    )}
+                </div>
 
-                    {/* ── TAB: DATA ROOM ── */}
-                    {activeTab === 'dataroom' && (
-                        <div>
-                            <div className="grid grid-cols-3 gap-3 mb-6">
-                                {[
-                                    { label: 'Tài liệu', value: DATA_DOCS.length.toString(), icon: FileText, sub: `${DATA_DOCS.filter(d => d.viewed).length} đã xem` },
-                                    { label: 'Lần truy cập', value: '12', icon: Eye, sub: 'Tổng lượt view' },
-                                    { label: 'Cập nhật', value: '1 ngày', icon: Clock, sub: 'Bởi Founder' },
-                                ].map((s, i) => (
-                                    <div key={i} className="bg-white rounded-2xl border border-[#102c1e]/8 p-4 hover:border-[#102c1e]/20 transition-colors">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.label}</span>
-                                            <s.icon className="w-4 h-4 text-[#102c1e]/30" />
+                <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4 [&::-webkit-scrollbar]:hidden bg-[#fafafa]/50">
+                    {/* Render Risks (Lọc rủi ro nếu đang mở Document) */}
+                    {risks
+                        .filter(risk => !activeDocument || risk.fileId === activeDocument.id)
+                        .map(risk => {
+                            const cfg = SEVERITY_CONFIG[risk.severity];
+                            const SeverityIcon = cfg.icon;
+
+                            if (risk.resolved) return null;
+
+                            return (
+                                <div key={risk.id} className={cn('rounded-2xl border p-5 shadow-sm transition-all bg-white', cfg.cardBg)}>
+                                    <div className="flex items-start gap-3 mb-3">
+                                        <div className={cn('w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border', cfg.badgeBg)}>
+                                            <SeverityIcon className={cn('w-4 h-4', cfg.iconColor)} />
                                         </div>
-                                        <p className="font-mono font-black text-[#102c1e] text-2xl">{s.value}</p>
-                                        <p className="font-geist text-[10px] text-slate-400 mt-1">{s.sub}</p>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="space-y-2">
-                                {DATA_DOCS.map(doc => (
-                                    <div
-                                        key={doc.id}
-                                        className={cn(
-                                            'group flex items-center gap-4 bg-white border rounded-2xl px-5 py-4 hover:border-[#102c1e]/20 transition-all cursor-pointer hover:shadow-sm',
-                                            !doc.viewed ? 'border-[#102c1e]/15 bg-[#102c1e]/[0.01]' : 'border-[#102c1e]/6'
-                                        )}
-                                    >
-                                        <span className="text-2xl">{TYPE_ICON[doc.type]}</span>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <p className="font-geist font-black text-[#102c1e] text-sm truncate">{doc.name}</p>
-                                                {!doc.viewed && (
-                                                    <span className="font-geist text-[9px] font-black bg-[#102c1e] text-white px-1.5 py-0.5 rounded-full shrink-0">NEW</span>
-                                                )}
+                                        <div className="flex-1 min-w-0 pt-0.5">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className={cn('font-geist text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border', cfg.badgeBg, cfg.textColor)}>
+                                                    {cfg.label}
+                                                </span>
+                                                <span className="font-geist text-[10px] font-medium text-slate-400">{risk.timestamp}</span>
                                             </div>
-                                            <p className="font-geist text-[10px] text-slate-400 mt-0.5">
-                                                {doc.size && `${doc.size} · `}Cập nhật {doc.lastUpdated}
-                                                {doc.pages && ` · ${doc.pages} trang`}
-                                            </p>
+                                            <h4 className={cn('font-outfit text-base font-bold leading-tight', cfg.textColor)}>{risk.title}</h4>
                                         </div>
-                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="p-1.5 rounded-lg hover:bg-[#102c1e]/5 text-slate-400 hover:text-[#102c1e] transition-colors">
-                                                <Eye className="w-4 h-4" />
-                                            </button>
-                                            <button className="p-1.5 rounded-lg hover:bg-[#102c1e]/5 text-slate-400 hover:text-[#102c1e] transition-colors">
-                                                <Download className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                        {doc.viewed && <CheckCircle2 className="w-4 h-4 text-[#a1e2b6] shrink-0" />}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* ── TAB: DD CHECKLIST ── */}
-                    {activeTab === 'checklist' && (
-                        <div className="space-y-6">
-                            {/* Summary pills */}
-                            <div className="flex items-center gap-2 flex-wrap">
-                                {(Object.entries(STATUS_CONFIG) as [CheckStatus, typeof STATUS_CONFIG['done']][]).map(([status, cfg]) => {
-                                    const count = items.filter(i => i.status === status).length;
-                                    return (
-                                        <div key={status} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-xl border', cfg.bg)}>
-                                            <cfg.icon className={cn('w-3.5 h-3.5', cfg.color)} />
-                                            <span className={cn('font-geist text-xs font-bold', cfg.color)}>{count} {cfg.label}</span>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Grouped items */}
-                            {Object.entries(grouped).map(([cat, catItems]) => (
-                                <div key={cat}>
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <h3 className="font-outfit font-black text-[#102c1e] text-base">{cat}</h3>
-                                        <div className="h-px flex-1 bg-[#102c1e]/8" />
-                                        <span className="font-geist text-[10px] font-bold text-slate-400">
-                                            {catItems.filter(i => i.status === 'done').length}/{catItems.length}
-                                        </span>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        {catItems.map(item => {
-                                            const cfg = STATUS_CONFIG[item.status];
-                                            const StatusIcon = cfg.icon;
-                                            return (
-                                                <div
-                                                    key={item.id}
-                                                    onClick={() => toggleStatus(item.id)}
-                                                    className={cn(
-                                                        'group flex items-start gap-4 bg-white border rounded-2xl px-4 py-3.5 cursor-pointer hover:shadow-sm transition-all',
-                                                        item.status === 'issue' ? 'border-red-200 bg-red-50/30' :
-                                                            item.status === 'done' ? 'border-[#102c1e]/8' : 'border-[#102c1e]/8 hover:border-[#102c1e]/20'
-                                                    )}
-                                                >
-                                                    {/* Status icon */}
-                                                    <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5', cfg.bg)}>
-                                                        <StatusIcon className={cn('w-4 h-4', cfg.color)} />
-                                                    </div>
+                                    <p className="font-inter text-sm text-slate-600 leading-relaxed mb-4">{risk.detail}</p>
 
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center gap-2">
-                                                            <p className={cn('font-geist font-bold text-sm', item.status === 'done' ? 'text-[#102c1e]' : item.status === 'issue' ? 'text-red-700' : 'text-slate-600')}>
-                                                                {item.label}
-                                                            </p>
-                                                            {item.weight === 'critical' && (
-                                                                <span className="font-geist text-[8px] font-black bg-[#102c1e] text-white px-1.5 py-0.5 rounded-full uppercase tracking-wider">Critical</span>
-                                                            )}
-                                                        </div>
-                                                        {item.note && (
-                                                            <p className="font-inter text-xs text-red-600 mt-1">{item.note}</p>
-                                                        )}
-                                                    </div>
-
-                                                    <ChevronRight className="w-3.5 h-3.5 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
-                                                </div>
-                                            );
-                                        })}
+                                    <div className="flex items-center gap-2 mb-5 p-2.5 bg-slate-50 border border-slate-100 rounded-lg">
+                                        <FileText className="w-4 h-4 text-slate-400 shrink-0" />
+                                        <span className="font-geist text-xs font-semibold text-slate-600 truncate">{risk.source}</span>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
 
-                    {/* ── TAB: INTERNAL NOTES ── */}
-                    {activeTab === 'notes' && (
-                        <div className="max-w-2xl">
-                            <div className="bg-[#102c1e]/[0.02] border border-[#102c1e]/8 rounded-2xl p-3 mb-4 text-xs font-geist text-slate-500 flex items-center gap-2">
-                                <Lock className="w-3.5 h-3.5 text-[#102c1e]/30" />
-                                Ghi chú nội bộ — Founder không thể xem nội dung này. Chỉ team của bạn.
-                            </div>
-
-                            <div className="space-y-3 mb-6">
-                                {notes.map((n, i) => (
-                                    <div key={i} className="bg-white border border-[#102c1e]/8 rounded-2xl p-4 hover:border-[#102c1e]/15 transition-colors">
-                                        <p className="font-inter text-sm text-[#102c1e] leading-relaxed">{n.text}</p>
-                                        <p className="font-geist text-[10px] text-slate-400 mt-2">{n.time}</p>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Note compose */}
-                            <div className="bg-white border border-[#102c1e]/10 rounded-2xl overflow-hidden focus-within:border-[#102c1e]/30 transition-colors shadow-sm">
-                                <textarea
-                                    value={note}
-                                    onChange={e => setNote(e.target.value)}
-                                    placeholder="Ghi chú thẩm định nội bộ..."
-                                    rows={4}
-                                    className="w-full px-5 pt-4 pb-2 bg-transparent font-inter text-sm text-[#102c1e] placeholder:text-slate-300 resize-none focus:outline-none"
-                                />
-                                <div className="flex items-center justify-between px-5 pb-4">
-                                    <span className="font-geist text-[10px] text-slate-400">{note.length} ký tự</span>
-                                    <button
-                                        onClick={() => {
-                                            if (!note.trim()) return;
-                                            setNotes(prev => [{ text: note.trim(), time: 'Vừa xong' }, ...prev]);
-                                            setNote('');
-                                        }}
-                                        className="flex items-center gap-2 bg-[#102c1e] text-white font-geist font-bold text-xs px-4 py-2 rounded-xl hover:bg-[#0a1c13] transition-colors"
-                                    >
-                                        <Send className="w-3 h-3" /> Lưu ghi chú
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* ── TAB: AI RED FLAG SCANNER ── */}
-                    {activeTab === 'ai-scanner' && (
-                        <div>
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="flex items-center gap-2 bg-[#102c1e] text-[#a1e2b6] px-4 py-2 rounded-xl font-geist font-black text-sm">
-                                    <Sparkles className="w-4 h-4" />
-                                    AI Analysis Complete
-                                </div>
-                                <span className="font-geist text-xs text-slate-400">Phân tích {DATA_DOCS.length} tài liệu · Cập nhật 2h trước</span>
-                            </div>
-
-                            <div className="space-y-3">
-                                {AI_FLAGS.map((flag, i) => (
-                                    <div
-                                        key={i}
-                                        className={cn(
-                                            'rounded-2xl border p-5 flex items-start gap-4 transition-all hover:shadow-sm',
-                                            flag.level === 'warn' ? 'bg-red-50/40 border-red-200' :
-                                                flag.level === 'ok' ? 'bg-[#a1e2b6]/8 border-[#a1e2b6]/30' :
-                                                    'bg-white border-[#102c1e]/8'
-                                        )}
-                                    >
-                                        <div className={cn(
-                                            'w-8 h-8 rounded-xl flex items-center justify-center shrink-0',
-                                            flag.level === 'warn' ? 'bg-red-100 text-red-500' :
-                                                flag.level === 'ok' ? 'bg-[#a1e2b6]/20 text-[#102c1e]' :
-                                                    'bg-[#102c1e]/5 text-[#102c1e]'
+                                    <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 pt-1 border-t border-slate-100">
+                                        <button className={cn(
+                                            'flex-1 flex items-center justify-center gap-2 font-geist text-xs font-bold px-4 py-2.5 rounded-xl border transition-all shadow-sm',
+                                            risk.severity === 'critical' ? 'bg-red-600 text-white border-red-600 hover:bg-red-700' : 'bg-amber-500 text-white border-amber-500 hover:bg-amber-600',
                                         )}>
-                                            {flag.level === 'warn' ? <AlertTriangle className="w-4 h-4" /> :
-                                                flag.level === 'ok' ? <CheckCircle2 className="w-4 h-4" /> :
-                                                    <Activity className="w-4 h-4" />}
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className={cn(
-                                                'font-geist font-black text-sm mb-1',
-                                                flag.level === 'warn' ? 'text-red-700' : 'text-[#102c1e]'
-                                            )}>{flag.title}</p>
-                                            <p className="font-inter text-sm text-slate-600 leading-relaxed">{flag.detail}</p>
-                                        </div>
+                                            <Mail className="w-3.5 h-3.5" /> Clarify
+                                        </button>
+                                        <button onClick={() => handleResolve(risk.id)} className="flex-1 flex items-center justify-center gap-2 font-geist text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#102c1e] hover:bg-slate-50 transition-all shadow-sm">
+                                            <Check className="w-3.5 h-3.5" /> Resolve
+                                        </button>
                                     </div>
-                                ))}
-                            </div>
-
-                            {/* Regenerate */}
-                            <button className="mt-6 flex items-center gap-2 text-[#102c1e]/50 hover:text-[#102c1e] font-geist text-xs font-bold transition-colors">
-                                <Sparkles className="w-3.5 h-3.5" />
-                                Chạy lại phân tích AI với tài liệu mới nhất
-                            </button>
-                        </div>
-                    )}
-
+                                </div>
+                            );
+                        })}
                 </div>
-            </div>
+
+                <div className="p-6 border-t border-slate-200 bg-white">
+                    <button className="w-full flex items-center justify-center gap-2 bg-[#102c1e] text-white font-geist font-bold text-sm py-3 rounded-xl hover:bg-[#0a1c13] transition-colors shadow-md">
+                        Export Full Report
+                    </button>
+                </div>
+            </aside>
         </div>
     );
 }

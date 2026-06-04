@@ -9,25 +9,34 @@ import { InvestorTopbar } from '@/components/investor/investor-dashboard/investo
 import { InvestorMetrics } from '@/components/investor/investor-dashboard/investor-metrics';
 import { DealListTable } from '@/components/investor/investor-dashboard/deal-list-table';
 import { ProjectDetailModal } from '@/components/investor/investor-dashboard/project-detail-modal';
+import { usePaywall } from '@/components/ui/upgrade-modal';
+import type { InvestorTier } from '@/lib/subscription-tiers';
+
+// ── Tier Context (in production, pull from auth session/cookie) ───
+// Switch this to 'angel' to test the paywall UI
+const MOCK_USER_TIER: InvestorTier = 'vc_enterprise';
 
 export default function InvestorDashboardPage() {
     const [activeMenu, setActiveMenu] = useState('dashboard');
     const [activeIndustry, setActiveIndustry] = useState('AI / ML');
-
-    // Khai báo state để quản lý việc mở/đóng Modal Chi tiết dự án
     const [selectedProject, setSelectedProject] = useState<any>(null);
 
-    // Giả lập User Tier, mày có thể đổi thành 'Free', 'Angel', 'VC' để test UI
-    const userTier = 'VC';
+    // Real paywall — replaces alert()
+    const { triggerPaywall, PaywallModalElement } = usePaywall();
 
-    const triggerPaywall = () => {
-        alert("Tính năng yêu cầu nâng cấp gói VC Enterprise!");
+    const userTier = MOCK_USER_TIER;
+
+    const handleLockedFeature = () => {
+        triggerPaywall({
+            title: 'Pro-Rata Simulator & Team Collaboration',
+            description: 'Nâng cấp lên VC Enterprise để mở khoá bộ công cụ đầu tư chuyên nghiệp đầy đủ.',
+            targetTier: 'vc_enterprise',
+        });
     };
 
     return (
         <div className="flex h-screen w-full bg-white overflow-hidden font-sans selection:bg-[#102c1e]/20">
 
-            {/* Sidebar tĩnh bên trái */}
             <InvestorSidebar
                 activeMenu={activeMenu}
                 setActiveMenu={setActiveMenu}
@@ -35,21 +44,22 @@ export default function InvestorDashboardPage() {
                 setActiveIndustry={setActiveIndustry}
             />
 
-            {/* Vùng Main Content bên phải */}
             <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50">
                 <InvestorTopbar />
 
-                {/* Vùng scroll cho dữ liệu chính - Đã add class ẩn thanh cuộn */}
                 <main className="flex-1 overflow-y-auto p-6 md:p-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
-                    {/* Header Action */}
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
                         <div>
                             <h1 className="text-3xl font-black text-zinc-900 tracking-tight mb-1">Deal Sourcing</h1>
                             <p className="text-sm font-medium text-zinc-500">Khám phá, ưu tiên và ra quyết định đầu tư dễ dàng.</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Button variant="outline" className="h-10 rounded-full border-zinc-200 text-zinc-600 font-bold text-xs bg-white shadow-sm hover:bg-zinc-50">
+                            <Button
+                                variant="outline"
+                                onClick={userTier !== 'vc_enterprise' ? handleLockedFeature : undefined}
+                                className="h-10 rounded-full border-zinc-200 text-zinc-600 font-bold text-xs bg-white shadow-sm hover:bg-zinc-50"
+                            >
                                 <Download className="w-3.5 h-3.5 mr-2" /> Export
                             </Button>
                             <Button className="h-10 rounded-full bg-[#102c1e] hover:bg-[#0a1c13] text-white font-bold text-xs shadow-md">
@@ -58,22 +68,20 @@ export default function InvestorDashboardPage() {
                         </div>
                     </div>
 
-                    {/* Components Data */}
                     <InvestorMetrics />
-
-                    {/* Truyền hàm setSelectedProject vào bảng */}
                     <DealListTable onViewProject={setSelectedProject} />
-
                 </main>
             </div>
 
-            {/* Nhúng Modal Bento Board vào đây */}
             <ProjectDetailModal
                 project={selectedProject}
                 onClose={() => setSelectedProject(null)}
                 userTier={userTier}
-                onTriggerPaywall={triggerPaywall}
+                onTriggerPaywall={handleLockedFeature}
             />
+
+            {/* Real upgrade modal (replaces alert()) */}
+            {PaywallModalElement}
         </div>
     );
 }

@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import {
-    Sparkles, Target, Building2, DollarSign, TrendingUp,
-    ChevronRight, Check, Plus, X, ArrowRight, Zap, Globe,
-    Sliders, BarChart3, RefreshCw, Filter
+    Sparkles, Target, DollarSign, ChevronRight, Check, Zap, Globe,
+    Sliders, CheckCircle2, Circle, ArrowLeft, BarChart3, Building2, MapPin, Search
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ─── TYPES ────────────────────────────────────────────────────────
-type WizardStep = 1 | 2 | 3;
+type WizardStep = 1 | 2 | 3 | 4; // Tách thành 4 bước cho nhẹ UI giống BorderPilot
 
 interface ThesisConfig {
     stages: string[];
@@ -22,16 +21,29 @@ interface ThesisConfig {
 }
 
 // ─── OPTIONS ──────────────────────────────────────────────────────
-const STAGE_OPTIONS = ['Pre-Seed', 'Seed', 'Series A', 'Series B', 'Growth'];
+const STAGE_OPTIONS = [
+    { id: 'Pre-Seed', desc: 'Ý tưởng & MVP' },
+    { id: 'Seed', desc: 'Có lực kéo (Traction)' },
+    { id: 'Series A', desc: 'Sẵn sàng mở rộng (Scale)' },
+    { id: 'Series B+', desc: 'Tăng trưởng mạnh' }
+];
+
 const VERTICAL_OPTIONS = [
     'FinTech', 'EdTech', 'HealthTech', 'AgriTech', 'AI / ML',
     'SaaS B2B', 'E-Commerce', 'CleanTech', 'PropTech', 'LogiTech',
     'GameFi', 'Web3', 'DeepTech', 'Consumer', 'B2G',
 ];
-const GEO_OPTIONS = ['Vietnam', 'SEA', 'India', 'Singapore', 'Global'];
+
+const GEO_OPTIONS = [
+    { id: 'Vietnam', desc: 'Thị trường nội địa' },
+    { id: 'SEA', desc: 'Đông Nam Á' },
+    { id: 'Singapore', desc: 'Hub tài chính' },
+    { id: 'Global', desc: 'Không giới hạn' }
+];
+
 const REVENUE_OPTIONS = ['Pre-revenue', '$0–10K MRR', '$10–50K MRR', '$50K+ MRR', 'Profitable'];
 
-// ─── AI MATCHES (mock for preview in step 3) ──────────────────────
+// ─── AI MATCHES (Mock data) ───────────────────────────────────────
 const AI_MATCHES = [
     {
         id: 'm1', name: 'SnapMoney', logo: '💸', vertical: 'FinTech', stage: 'Series A',
@@ -50,81 +62,28 @@ const AI_MATCHES = [
     },
 ];
 
-// ─── PILL TOGGLE ──────────────────────────────────────────────────
-function PillToggle({ label, active, onToggle }: { label: string; active: boolean; onToggle: () => void }) {
-    return (
-        <button
-            onClick={onToggle}
-            className={cn(
-                'relative flex items-center gap-1.5 px-3 py-2 rounded-xl font-geist text-xs font-bold transition-all duration-200 border',
-                active
-                    ? 'bg-[#102c1e] text-white border-[#102c1e] shadow-md'
-                    : 'bg-white text-slate-500 border-[#102c1e]/10 hover:border-[#102c1e]/30 hover:text-[#102c1e]'
-            )}
-        >
-            {active && <Check className="w-3 h-3 text-[#a1e2b6] shrink-0" />}
-            {label}
-        </button>
-    );
-}
+const WIZARD_STEPS = [
+    { id: 1, label: 'Target' },
+    { id: 2, label: 'Financials' },
+    { id: 3, label: 'Filters' },
+    { id: 4, label: 'Preview' },
+];
 
-// ─── SCORE CIRCLE ─────────────────────────────────────────────────
-function ScoreCircle({ score }: { score: number }) {
-    const r = 16, c = 2 * Math.PI * r;
-    const color = score >= 90 ? '#a1e2b6' : score >= 75 ? '#a1e2b6' : '#94a3b8';
-    return (
-        <div className="relative w-12 h-12 flex items-center justify-center">
-            <svg viewBox="0 0 44 44" className="absolute inset-0 -rotate-90">
-                <circle cx="22" cy="22" r={r} fill="none" stroke={color} strokeOpacity="0.15" strokeWidth="4" />
-                <circle cx="22" cy="22" r={r} fill="none" stroke={color} strokeWidth="4"
-                    strokeLinecap="round" strokeDasharray={`${(score / 100) * c} ${c}`} />
-            </svg>
-            <span className="font-mono text-[11px] font-black text-[#102c1e]">{score}</span>
-        </div>
-    );
-}
+// ─── HELPERS ──────────────────────────────────────────────────────
+const fmt$ = (v: number) => v >= 1_000_000 ? `$${(v / 1_000_000).toFixed(1)}M` : `$${(v / 1_000).toFixed(0)}K`;
 
-// ─── STEP INDICATOR ───────────────────────────────────────────────
-function Steps({ current }: { current: WizardStep }) {
-    return (
-        <div className="flex items-center justify-center gap-0">
-            {([1, 2, 3] as WizardStep[]).map((s, i) => (
-                <React.Fragment key={s}>
-                    <div className="flex flex-col items-center gap-1.5">
-                        <div className={cn(
-                            'w-8 h-8 rounded-xl flex items-center justify-center font-geist font-black text-sm transition-all duration-300',
-                            current === s ? 'bg-[#102c1e] text-white shadow-lg scale-110' :
-                                current > s ? 'bg-[#a1e2b6]/20 border border-[#a1e2b6]/40 text-[#102c1e]' :
-                                    'bg-white border border-[#102c1e]/15 text-slate-400'
-                        )}>
-                            {current > s ? <Check className="w-4 h-4" /> : s}
-                        </div>
-                        <span className={cn('font-geist text-[9px] font-bold uppercase tracking-wider',
-                            current === s ? 'text-[#102c1e]' : 'text-slate-400')}>
-                            {s === 1 ? 'Stage & Vertical' : s === 2 ? 'Check Size' : 'Preview'}
-                        </span>
-                    </div>
-                    {i < 2 && (
-                        <div className={cn('h-px w-16 mb-4 transition-colors', current > s ? 'bg-[#102c1e]' : 'bg-[#102c1e]/15')} />
-                    )}
-                </React.Fragment>
-            ))}
-        </div>
-    );
-}
-
-// ─── MAIN ─────────────────────────────────────────────────────────
+// ─── COMPONENT ────────────────────────────────────────────────────
 export default function AIThesisSetup() {
     const [step, setStep] = useState<WizardStep>(1);
     const [saved, setSaved] = useState(false);
     const [thesis, setThesis] = useState<ThesisConfig>({
-        stages: ['Series A'],
-        verticals: ['FinTech', 'AI / ML'],
-        minCheckSize: 200_000,
-        maxCheckSize: 1_000_000,
-        geographies: ['Vietnam', 'SEA'],
+        stages: [],
+        verticals: [],
+        minCheckSize: 100_000,
+        maxCheckSize: 500_000,
+        geographies: [],
         minMatchScore: 80,
-        revenueStages: ['$10–50K MRR', '$50K+ MRR'],
+        revenueStages: [],
     });
 
     const toggle = (key: keyof ThesisConfig, val: string) => {
@@ -137,305 +96,414 @@ export default function AIThesisSetup() {
         });
     };
 
-    const fmt$ = (v: number) => v >= 1_000_000 ? `$${(v / 1_000_000).toFixed(1)}M` : `$${(v / 1_000).toFixed(0)}K`;
+    // Calculate validation for steps
+    const isStep1Valid = thesis.stages.length > 0 && thesis.verticals.length > 0;
+    const isStep2Valid = thesis.revenueStages.length > 0;
+    const isStep3Valid = thesis.geographies.length > 0;
+
+    // Calculate "Sourcing Breadth" (Độ rộng của phễu)
+    const calculateBreadth = () => {
+        let score = 100;
+        if (thesis.stages.length === 1) score -= 20;
+        if (thesis.verticals.length === 1) score -= 30;
+        if (thesis.geographies.includes('Vietnam') && thesis.geographies.length === 1) score -= 20;
+        if (thesis.minMatchScore >= 90) score -= 20;
+        return Math.max(10, score); // Min 10%
+    };
+    const breadthScore = calculateBreadth();
+
+    // Range slider pct
     const pctMin = ((thesis.minCheckSize - 50_000) / (5_000_000 - 50_000)) * 100;
     const pctMax = ((thesis.maxCheckSize - 50_000) / (5_000_000 - 50_000)) * 100;
 
     return (
-        <div className="min-h-screen bg-[#fafafa] font-inter">
+        <div className="min-h-screen bg-[#fafafa] font-inter text-[#102c1e]">
 
-            {/* ── AMBIENT ── */}
-            <div className="pointer-events-none fixed inset-0">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#a1e2b6]/6 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#102c1e]/4 rounded-full blur-3xl" />
-            </div>
-
-            <div className="relative max-w-3xl mx-auto px-6 py-16">
-
-                {/* ── HERO HEADER ── */}
-                <div className="text-center mb-14">
-                    <div className="inline-flex items-center gap-2 bg-[#102c1e] text-[#a1e2b6] px-4 py-2 rounded-full text-xs font-geist font-black mb-6 shadow-lg">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        AI Sourcing Radar
+            {/* ── HEADER ── */}
+            <header className="px-10 pt-10 pb-6">
+                <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+                    <div>
+                        <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">
+                            Wizard · Deal Flow
+                        </p>
+                        <h1 className="font-outfit font-black text-[#102c1e] text-3xl">
+                            AI Thesis Setup Wizard
+                        </h1>
+                        <p className="font-inter text-slate-500 text-sm mt-2">
+                            Thiết lập khẩu vị đầu tư (Investment Thesis) để AI Radar tự động săn deal cho bạn.
+                        </p>
                     </div>
-                    <h1 className="font-outfit font-black text-[#102c1e] text-4xl md:text-5xl tracking-tight leading-tight mb-4">
-                        Thiết lập<br />
-                        <span className="relative">
-                            Khẩu Vị Đầu Tư
-                            <div className="absolute -bottom-1 left-0 right-0 h-1 bg-[#a1e2b6]/40 rounded-full" />
-                        </span>
-                    </h1>
-                    <p className="font-inter text-slate-500 text-lg max-w-xl mx-auto leading-relaxed">
-                        AI sẽ tự động lọc và đổ deal vào Inbound của bạn mỗi ngày dựa trên investment thesis này.
-                    </p>
+                    {saved && (
+                        <div className="flex items-center gap-2 bg-[#a1e2b6]/20 border border-[#a1e2b6]/50 text-[#102c1e] px-4 py-2 rounded-xl font-geist text-xs font-bold">
+                            <Zap className="w-4 h-4" /> Radar Active
+                        </div>
+                    )}
                 </div>
+            </header>
 
-                {/* ── STEPS ── */}
-                <div className="mb-10">
-                    <Steps current={step} />
-                </div>
+            {/* ── MAIN LAYOUT (2 COLUMNS) ── */}
+            <div className="max-w-[1400px] mx-auto px-10 pb-20 flex flex-col lg:flex-row gap-10 items-start">
 
-                {/* ── STEP 1: Stage & Vertical ── */}
-                {step === 1 && (
-                    <div className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-8 space-y-8">
-                        <div>
-                            <h2 className="font-outfit font-black text-[#102c1e] text-2xl mb-1">Giai đoạn đầu tư</h2>
-                            <p className="font-inter text-sm text-slate-500">Chọn các giai đoạn bạn quan tâm. AI sẽ chỉ hiển thị deal phù hợp.</p>
-                            <div className="flex flex-wrap gap-2 mt-5">
-                                {STAGE_OPTIONS.map(s => (
-                                    <PillToggle key={s} label={s}
-                                        active={thesis.stages.includes(s)}
-                                        onToggle={() => toggle('stages', s)} />
-                                ))}
-                            </div>
-                        </div>
+                {/* LẼFT COLUMN: Wizard Content */}
+                <div className="flex-1 w-full max-w-4xl">
 
-                        <div className="h-px bg-[#102c1e]/6" />
-
-                        <div>
-                            <h2 className="font-outfit font-black text-[#102c1e] text-2xl mb-1">Ngành / Vertical</h2>
-                            <p className="font-inter text-sm text-slate-500">Tối đa 5 vertical — đây là input quan trọng nhất cho AI Match Score.</p>
-                            <div className="flex flex-wrap gap-2 mt-5">
-                                {VERTICAL_OPTIONS.map(v => (
-                                    <PillToggle key={v} label={v}
-                                        active={thesis.verticals.includes(v)}
-                                        onToggle={() => {
-                                            if (!thesis.verticals.includes(v) && thesis.verticals.length >= 5) return;
-                                            toggle('verticals', v);
-                                        }} />
-                                ))}
-                            </div>
-                            <p className="font-geist text-[10px] text-slate-400 mt-2">{thesis.verticals.length}/5 đã chọn</p>
-                        </div>
-
-                        <div>
-                            <h2 className="font-outfit font-black text-[#102c1e] text-xl mb-1">Địa lý</h2>
-                            <div className="flex flex-wrap gap-2 mt-4">
-                                {GEO_OPTIONS.map(g => (
-                                    <PillToggle key={g} label={g}
-                                        active={thesis.geographies.includes(g)}
-                                        onToggle={() => toggle('geographies', g)} />
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="flex justify-end pt-2">
-                            <button
-                                onClick={() => setStep(2)}
-                                disabled={thesis.stages.length === 0 || thesis.verticals.length === 0}
-                                className="flex items-center gap-2 bg-[#102c1e] text-white font-geist font-black px-6 py-3 rounded-2xl hover:bg-[#0a1c13] transition-all shadow-md disabled:opacity-40 hover:-translate-y-0.5 active:translate-y-0"
-                            >
-                                Tiếp theo <ArrowRight className="w-4 h-4" />
-                            </button>
-                        </div>
+                    {/* Horizontal Step Indicator */}
+                    <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-2">
+                        {WIZARD_STEPS.map((s, idx) => (
+                            <React.Fragment key={s.id}>
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <div className={cn(
+                                        "w-6 h-6 rounded-full flex items-center justify-center font-geist text-[10px] font-black transition-all",
+                                        step === s.id ? "bg-[#102c1e] text-white" :
+                                            step > s.id ? "bg-[#102c1e]/10 text-[#102c1e]" : "bg-white border border-slate-200 text-slate-400"
+                                    )}>
+                                        {step > s.id ? <Check className="w-3.5 h-3.5" /> : s.id}
+                                    </div>
+                                    <span className={cn(
+                                        "font-geist text-xs transition-colors",
+                                        step === s.id ? "font-bold text-[#102c1e]" : "font-medium text-slate-400"
+                                    )}>
+                                        {s.label}
+                                    </span>
+                                </div>
+                                {idx < WIZARD_STEPS.length - 1 && (
+                                    <div className="w-12 h-px bg-slate-200 shrink-0 mx-2" />
+                                )}
+                            </React.Fragment>
+                        ))}
                     </div>
-                )}
 
-                {/* ── STEP 2: Check Size & Revenue ── */}
-                {step === 2 && (
-                    <div className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-8 space-y-8">
-                        <div>
-                            <h2 className="font-outfit font-black text-[#102c1e] text-2xl mb-1">Check Size</h2>
-                            <p className="font-inter text-sm text-slate-500 mb-8">Phạm vi đầu tư mỗi deal bạn có thể cam kết.</p>
+                    {/* Step Content Area */}
+                    <div className="min-h-[400px]">
 
-                            {/* Dual display */}
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="bg-[#102c1e]/5 border border-[#102c1e]/8 rounded-xl px-4 py-2.5 text-center">
-                                    <p className="font-geist text-[9px] font-bold text-slate-400 uppercase tracking-widest">Min</p>
-                                    <p className="font-mono text-xl font-black text-[#102c1e]">{fmt$(thesis.minCheckSize)}</p>
-                                </div>
-                                <div className="text-slate-300 font-geist text-sm">—</div>
-                                <div className="bg-[#102c1e] rounded-xl px-4 py-2.5 text-center shadow-md">
-                                    <p className="font-geist text-[9px] font-bold text-white/50 uppercase tracking-widest">Max</p>
-                                    <p className="font-mono text-xl font-black text-white">{fmt$(thesis.maxCheckSize)}</p>
-                                </div>
-                            </div>
-
-                            {/* Range sliders */}
-                            <div className="space-y-5">
+                        {/* STEP 1: TARGET */}
+                        {step === 1 && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                                 <div>
-                                    <label className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
-                                        Mức tối thiểu: <span className="text-[#102c1e]">{fmt$(thesis.minCheckSize)}</span>
-                                    </label>
-                                    <input type="range"
-                                        min={50_000} max={2_000_000} step={50_000}
-                                        value={thesis.minCheckSize}
-                                        onChange={e => setThesis(p => ({ ...p, minCheckSize: Math.min(Number(e.target.value), p.maxCheckSize - 100_000) }))}
-                                        className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-                                        style={{ background: `linear-gradient(to right, #102c1e 0%, #102c1e ${pctMin}%, #e4e8ef ${pctMin}%, #e4e8ef 100%)` }}
-                                    />
+                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Giai đoạn mục tiêu (Stage)</h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {STAGE_OPTIONS.map(s => {
+                                            const isActive = thesis.stages.includes(s.id);
+                                            return (
+                                                <button
+                                                    key={s.id}
+                                                    onClick={() => toggle('stages', s.id)}
+                                                    className={cn(
+                                                        "flex flex-col items-start p-4 rounded-xl border text-left transition-all",
+                                                        isActive
+                                                            ? "bg-[#102c1e]/5 border-[#102c1e] ring-1 ring-[#102c1e]"
+                                                            : "bg-white border-slate-200 hover:border-[#102c1e]/30"
+                                                    )}
+                                                >
+                                                    <div className="flex items-center justify-between w-full mb-1">
+                                                        <span className={cn("font-geist text-sm font-bold", isActive ? "text-[#102c1e]" : "text-slate-700")}>
+                                                            {s.id}
+                                                        </span>
+                                                        <div className={cn("w-4 h-4 rounded-full border flex items-center justify-center", isActive ? "border-[#102c1e] bg-[#102c1e]" : "border-slate-300")}>
+                                                            {isActive && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                                                        </div>
+                                                    </div>
+                                                    <span className="font-inter text-xs text-slate-500">{s.desc}</span>
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
                                 </div>
+
                                 <div>
-                                    <label className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
-                                        Mức tối đa: <span className="text-[#102c1e]">{fmt$(thesis.maxCheckSize)}</span>
-                                    </label>
-                                    <input type="range"
-                                        min={100_000} max={5_000_000} step={100_000}
-                                        value={thesis.maxCheckSize}
-                                        onChange={e => setThesis(p => ({ ...p, maxCheckSize: Math.max(Number(e.target.value), p.minCheckSize + 100_000) }))}
-                                        className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-                                        style={{ background: `linear-gradient(to right, #a1e2b6 0%, #a1e2b6 ${pctMax}%, #e4e8ef ${pctMax}%, #e4e8ef 100%)` }}
-                                    />
+                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Lĩnh vực ưu tiên (Verticals)</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {VERTICAL_OPTIONS.map(v => {
+                                            const isActive = thesis.verticals.includes(v);
+                                            return (
+                                                <button
+                                                    key={v}
+                                                    onClick={() => {
+                                                        if (!isActive && thesis.verticals.length >= 5) return;
+                                                        toggle('verticals', v);
+                                                    }}
+                                                    className={cn(
+                                                        "px-4 py-2 rounded-lg font-geist text-xs font-bold transition-all border",
+                                                        isActive
+                                                            ? "bg-[#102c1e] text-white border-[#102c1e]"
+                                                            : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                                                    )}
+                                                >
+                                                    {v}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                    <p className="font-inter text-xs text-slate-400 mt-3">Đã chọn {thesis.verticals.length}/5 (Tối đa 5 ngành lõi).</p>
                                 </div>
                             </div>
-                        </div>
+                        )}
 
-                        <div className="h-px bg-[#102c1e]/6" />
+                        {/* STEP 2: FINANCIALS */}
+                        {step === 2 && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <div>
+                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Check Size (Quy mô đầu tư)</h3>
 
-                        <div>
-                            <h2 className="font-outfit font-black text-[#102c1e] text-xl mb-1">Giai đoạn Doanh thu</h2>
-                            <div className="flex flex-wrap gap-2 mt-4">
-                                {REVENUE_OPTIONS.map(r => (
-                                    <PillToggle key={r} label={r}
-                                        active={thesis.revenueStages.includes(r)}
-                                        onToggle={() => toggle('revenueStages', r)} />
-                                ))}
-                            </div>
-                        </div>
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4">
+                                            <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Từ (Min)</p>
+                                            <p className="font-mono text-2xl font-black text-[#102c1e]">{fmt$(thesis.minCheckSize)}</p>
+                                        </div>
+                                        <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4">
+                                            <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Đến (Max)</p>
+                                            <p className="font-mono text-2xl font-black text-[#102c1e]">{fmt$(thesis.maxCheckSize)}</p>
+                                        </div>
+                                    </div>
 
-                        <div>
-                            <h2 className="font-outfit font-black text-[#102c1e] text-xl mb-1">Ngưỡng AI Match Score</h2>
-                            <p className="font-inter text-xs text-slate-500 mb-4">Chỉ hiển thị deal có AI score từ {thesis.minMatchScore}% trở lên.</p>
-                            <div className="flex items-center gap-4">
-                                {[60, 70, 80, 90].map(score => (
-                                    <button
-                                        key={score}
-                                        onClick={() => setThesis(p => ({ ...p, minMatchScore: score }))}
-                                        className={cn(
-                                            'flex-1 py-3 rounded-2xl font-mono font-black text-sm transition-all border',
-                                            thesis.minMatchScore === score
-                                                ? 'bg-[#102c1e] text-white border-[#102c1e] shadow-md'
-                                                : 'bg-white text-slate-400 border-[#102c1e]/10 hover:border-[#102c1e]/30'
-                                        )}
-                                    >
-                                        {score}%+
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-2">
-                            <button onClick={() => setStep(1)} className="flex items-center gap-2 text-slate-400 hover:text-[#102c1e] font-geist font-bold text-sm transition-colors">
-                                <ChevronRight className="w-4 h-4 rotate-180" /> Quay lại
-                            </button>
-                            <button
-                                onClick={() => setStep(3)}
-                                className="flex items-center gap-2 bg-[#102c1e] text-white font-geist font-black px-6 py-3 rounded-2xl hover:bg-[#0a1c13] transition-all shadow-md hover:-translate-y-0.5"
-                            >
-                                Xem Preview AI <Sparkles className="w-4 h-4 text-[#a1e2b6]" />
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* ── STEP 3: Preview ── */}
-                {step === 3 && (
-                    <div className="space-y-5">
-                        {/* Thesis summary card */}
-                        <div className="bg-[#102c1e] rounded-3xl p-6 relative overflow-hidden">
-                            <div className="absolute inset-0 opacity-5 pointer-events-none"
-                                style={{ backgroundImage: 'radial-gradient(ellipse at 80% 20%, #a1e2b6 0%, transparent 60%)' }} />
-                            <div className="relative">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="font-outfit font-black text-white text-xl">Investment Thesis</h3>
-                                    <button onClick={() => setStep(1)} className="font-geist text-[10px] font-bold text-white/40 hover:text-white/70 transition-colors flex items-center gap-1">
-                                        <Sliders className="w-3 h-3" /> Chỉnh sửa
-                                    </button>
+                                    <div className="space-y-6 bg-white border border-slate-200 rounded-xl p-6">
+                                        <div>
+                                            <label className="font-geist text-xs font-bold text-slate-600 flex justify-between mb-3">
+                                                <span>Min Check</span>
+                                            </label>
+                                            <input type="range"
+                                                min={50_000} max={2_000_000} step={50_000}
+                                                value={thesis.minCheckSize}
+                                                onChange={e => setThesis(p => ({ ...p, minCheckSize: Math.min(Number(e.target.value), p.maxCheckSize - 100_000) }))}
+                                                className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-slate-200"
+                                                style={{ background: `linear-gradient(to right, #102c1e 0%, #102c1e ${pctMin}%, #e2e8f0 ${pctMin}%, #e2e8f0 100%)` }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="font-geist text-xs font-bold text-slate-600 flex justify-between mb-3">
+                                                <span>Max Check</span>
+                                            </label>
+                                            <input type="range"
+                                                min={100_000} max={5_000_000} step={100_000}
+                                                value={thesis.maxCheckSize}
+                                                onChange={e => setThesis(p => ({ ...p, maxCheckSize: Math.max(Number(e.target.value), p.minCheckSize + 100_000) }))}
+                                                className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-slate-200"
+                                                style={{ background: `linear-gradient(to right, #a1e2b6 0%, #a1e2b6 ${pctMax}%, #e2e8f0 ${pctMax}%, #e2e8f0 100%)` }}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-3">
-                                    {[
-                                        { label: 'Stage', value: thesis.stages.join(', ') || '—' },
-                                        { label: 'Check Size', value: `${fmt$(thesis.minCheckSize)} – ${fmt$(thesis.maxCheckSize)}` },
-                                        { label: 'Verticals', value: thesis.verticals.slice(0, 3).join(', ') + (thesis.verticals.length > 3 ? ` +${thesis.verticals.length - 3}` : '') },
-                                        { label: 'Min AI Score', value: `${thesis.minMatchScore}%+` },
-                                        { label: 'Geography', value: thesis.geographies.join(', ') || '—' },
-                                        { label: 'Revenue', value: thesis.revenueStages[0] || 'Any' },
-                                    ].map((item, i) => (
-                                        <div key={i} className="bg-white/5 rounded-xl px-3 py-2">
-                                            <p className="font-geist text-[9px] font-bold text-white/40 uppercase tracking-widest">{item.label}</p>
-                                            <p className="font-geist text-xs font-bold text-white mt-0.5 truncate">{item.value}</p>
+
+                                <div>
+                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Giai đoạn doanh thu (Revenue)</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {REVENUE_OPTIONS.map(r => {
+                                            const isActive = thesis.revenueStages.includes(r);
+                                            return (
+                                                <button
+                                                    key={r}
+                                                    onClick={() => toggle('revenueStages', r)}
+                                                    className={cn(
+                                                        "px-4 py-2 rounded-lg font-geist text-xs font-bold transition-all border",
+                                                        isActive
+                                                            ? "bg-[#102c1e] text-white border-[#102c1e]"
+                                                            : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                                                    )}
+                                                >
+                                                    {r}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* STEP 3: FILTERS (Geo & Score) */}
+                        {step === 3 && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <div>
+                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Địa lý (Geography)</h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {GEO_OPTIONS.map(g => {
+                                            const isActive = thesis.geographies.includes(g.id);
+                                            return (
+                                                <button
+                                                    key={g.id}
+                                                    onClick={() => toggle('geographies', g.id)}
+                                                    className={cn(
+                                                        "flex items-center gap-3 p-4 rounded-xl border text-left transition-all",
+                                                        isActive
+                                                            ? "bg-[#102c1e]/5 border-[#102c1e] ring-1 ring-[#102c1e]"
+                                                            : "bg-white border-slate-200 hover:border-[#102c1e]/30"
+                                                    )}
+                                                >
+                                                    <div className={cn("w-8 h-8 flex items-center justify-center rounded-lg border", isActive ? "bg-white border-[#102c1e]/20 text-[#102c1e]" : "bg-slate-50 border-slate-200 text-slate-400")}>
+                                                        {g.id === 'Global' ? <Globe className="w-4 h-4" /> : <MapPin className="w-4 h-4" />}
+                                                    </div>
+                                                    <div>
+                                                        <p className={cn("font-geist text-sm font-bold", isActive ? "text-[#102c1e]" : "text-slate-700")}>{g.id}</p>
+                                                        <p className="font-inter text-xs text-slate-500">{g.desc}</p>
+                                                    </div>
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Độ khớp tối thiểu (AI Match Score)</h3>
+                                    <p className="font-inter text-sm text-slate-500 mb-4">Chỉ hiển thị các dự án được AI chấm điểm từ ngưỡng này trở lên.</p>
+                                    <div className="flex items-center gap-3">
+                                        {[60, 70, 80, 90].map(score => (
+                                            <button
+                                                key={score}
+                                                onClick={() => setThesis(p => ({ ...p, minMatchScore: score }))}
+                                                className={cn(
+                                                    "flex-1 py-4 rounded-xl font-mono font-black text-lg transition-all border",
+                                                    thesis.minMatchScore === score
+                                                        ? "bg-[#102c1e] text-white border-[#102c1e] shadow-md"
+                                                        : "bg-white text-slate-400 border-slate-200 hover:border-slate-300 hover:text-slate-600"
+                                                )}
+                                            >
+                                                {score}%+
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* STEP 4: PREVIEW */}
+                        {step === 4 && (
+                            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <div className="bg-[#102c1e]/5 border border-[#102c1e]/10 rounded-2xl p-5 flex items-start gap-4">
+                                    <div className="p-3 bg-white rounded-xl shadow-sm border border-[#102c1e]/10">
+                                        <Search className="w-6 h-6 text-[#102c1e]" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-outfit font-bold text-[#102c1e] text-lg">AI Simulation Run</h3>
+                                        <p className="font-inter text-sm text-slate-600 mt-1">
+                                            Dựa trên thesis của bạn, AI đã quét cơ sở dữ liệu hiện tại và tìm thấy <strong>{AI_MATCHES.length} deals</strong> tiềm năng.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    {AI_MATCHES.map(match => (
+                                        <div key={match.id} className="bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-md transition-shadow">
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div className="flex items-start gap-4">
+                                                    <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-2xl shrink-0">
+                                                        {match.logo}
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-outfit font-bold text-[#102c1e] text-lg">{match.name}</h4>
+                                                        <div className="flex gap-2 mt-1">
+                                                            <span className="font-geist text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md">{match.vertical}</span>
+                                                            <span className="font-geist text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md">{match.stage}</span>
+                                                            {match.source === 'warm-intro' && (
+                                                                <span className="font-geist text-[10px] font-bold bg-[#102c1e] text-white px-2 py-0.5 rounded-md">Warm Intro</span>
+                                                            )}
+                                                        </div>
+                                                        <p className="font-inter text-sm text-slate-600 mt-2 bg-slate-50 p-2 rounded-lg border border-slate-100 italic">
+                                                            " {match.reason} "
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right shrink-0">
+                                                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border-4 border-[#a1e2b6] font-mono font-black text-[#102c1e] text-sm">
+                                                        {match.score}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                        </div>
+                        )}
+                    </div>
 
-                        {/* AI matches preview */}
-                        <div className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm overflow-hidden">
-                            <div className="px-6 py-4 border-b border-[#102c1e]/5 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex items-center gap-1.5 bg-[#a1e2b6]/15 border border-[#a1e2b6]/30 px-3 py-1.5 rounded-xl">
-                                        <Sparkles className="w-3.5 h-3.5 text-[#102c1e]" />
-                                        <span className="font-geist text-[10px] font-black text-[#102c1e]">AI đang quét {AI_MATCHES.length} deal phù hợp</span>
-                                    </div>
-                                </div>
-                                <span className="font-geist text-[10px] text-slate-400 font-bold">Preview — cập nhật hàng ngày</span>
-                            </div>
+                    {/* Bottom Action Bar */}
+                    <div className="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between">
+                        <button
+                            onClick={() => setStep(Math.max(1, step - 1) as WizardStep)}
+                            className={cn(
+                                "flex items-center gap-2 font-geist text-sm font-bold transition-colors",
+                                step === 1 ? "opacity-0 pointer-events-none" : "text-slate-500 hover:text-[#102c1e]"
+                            )}
+                        >
+                            <ArrowLeft className="w-4 h-4" /> Back
+                        </button>
 
-                            <div className="divide-y divide-[#102c1e]/5">
-                                {AI_MATCHES.map(match => (
-                                    <div key={match.id} className="px-6 py-4 flex items-center gap-4 hover:bg-[#fafafa] transition-colors group">
-                                        <div className="w-11 h-11 rounded-2xl bg-[#102c1e]/5 border border-[#102c1e]/8 flex items-center justify-center text-2xl shrink-0">
-                                            {match.logo}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-0.5">
-                                                <p className="font-geist font-black text-[#102c1e] text-sm">{match.name}</p>
-                                                <span className="font-geist text-[9px] font-bold bg-[#102c1e]/5 text-[#102c1e]/60 px-2 py-0.5 rounded-full">{match.stage}</span>
-                                                {match.source === 'warm-intro' && (
-                                                    <span className="font-geist text-[9px] font-black bg-[#102c1e] text-white px-2 py-0.5 rounded-full">Warm Intro</span>
-                                                )}
-                                            </div>
-                                            <p className="font-inter text-xs text-slate-500 truncate">{match.reason}</p>
-                                        </div>
-                                        <div className="flex items-center gap-3 shrink-0">
-                                            <div className="text-right">
-                                                <p className="font-mono text-xs font-bold text-[#102c1e]">{match.ask}</p>
-                                                <p className="font-geist text-[9px] text-slate-400">{match.mrr}</p>
-                                            </div>
-                                            <ScoreCircle score={match.score} />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Save CTA */}
-                        <div className="flex items-center gap-3 justify-end">
-                            <button onClick={() => setStep(2)} className="font-geist text-sm font-bold text-slate-400 hover:text-[#102c1e] transition-colors flex items-center gap-1">
-                                <ChevronRight className="w-4 h-4 rotate-180" /> Quay lại
+                        {step < 4 ? (
+                            <button
+                                onClick={() => setStep(step + 1 as WizardStep)}
+                                disabled={(step === 1 && !isStep1Valid) || (step === 2 && !isStep2Valid) || (step === 3 && !isStep3Valid)}
+                                className="flex items-center gap-2 bg-[#102c1e] text-white font-geist text-sm font-bold px-8 py-3 rounded-xl hover:bg-[#0a1c13] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Continue <ChevronRight className="w-4 h-4" />
                             </button>
+                        ) : (
                             <button
                                 onClick={() => setSaved(true)}
                                 className={cn(
-                                    'flex items-center gap-2 font-geist font-black text-sm px-6 py-3 rounded-2xl transition-all shadow-lg hover:-translate-y-0.5 active:translate-y-0',
+                                    "flex items-center gap-2 font-geist text-sm font-bold px-8 py-3 rounded-xl transition-all shadow-md",
                                     saved
-                                        ? 'bg-[#a1e2b6]/20 border border-[#a1e2b6]/40 text-[#102c1e]'
-                                        : 'bg-[#102c1e] text-white hover:bg-[#0a1c13]'
+                                        ? "bg-[#a1e2b6] text-[#102c1e]"
+                                        : "bg-[#102c1e] text-white hover:bg-[#0a1c13]"
                                 )}
                             >
-                                {saved ? (
-                                    <><Check className="w-4 h-4 text-[#102c1e]" /> Thesis đã lưu! AI Radar đang chạy</>
-                                ) : (
-                                    <><Zap className="w-4 h-4 text-[#a1e2b6]" /> Kích hoạt AI Radar</>
-                                )}
+                                {saved ? <><Check className="w-4 h-4" /> Active</> : "Confirm & Activate"}
                             </button>
+                        )}
+                    </div>
+
+                </div>
+
+                {/* RIGHT COLUMN: Readiness & Status (Sticky) */}
+                <div className="w-full lg:w-80 shrink-0 space-y-6 lg:sticky lg:top-10">
+
+                    {/* Readiness Checklist */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <h4 className="font-outfit font-bold text-[#102c1e] mb-4">Thesis Checklist</h4>
+                        <div className="space-y-3">
+                            {[
+                                { id: 1, label: 'Stages selected', isValid: isStep1Valid },
+                                { id: 2, label: 'Financial targets set', isValid: isStep2Valid },
+                                { id: 3, label: 'Filters applied', isValid: isStep3Valid },
+                            ].map(item => (
+                                <div key={item.id} className="flex items-center gap-3">
+                                    {item.isValid
+                                        ? <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                                        : <Circle className="w-5 h-5 text-slate-200 shrink-0" />
+                                    }
+                                    <span className={cn("font-inter text-sm", item.isValid ? "text-[#102c1e] font-medium" : "text-slate-400")}>
+                                        {item.label}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Sourcing Power Health */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
+                        <h4 className="font-outfit font-bold text-[#102c1e] mb-2 w-full text-left">Sourcing Breadth</h4>
+                        <p className="font-inter text-xs text-slate-500 w-full text-left mb-6">
+                            Độ bao phủ của bộ lọc. Phần trăm càng cao, AI càng mang về nhiều deal.
+                        </p>
+
+                        <div className="relative w-32 h-32 mb-4">
+                            <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" strokeWidth="12" />
+                                <circle cx="50" cy="50" r="40" fill="none" stroke={breadthScore > 50 ? "#a1e2b6" : "#f59e0b"} strokeWidth="12"
+                                    strokeLinecap="round" strokeDasharray={`${(breadthScore / 100) * 251.2} 251.2`}
+                                    className="transition-all duration-700 ease-out"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="font-mono text-3xl font-black text-[#102c1e]">{breadthScore}%</span>
+                            </div>
                         </div>
 
-                        {saved && (
-                            <div className="bg-[#a1e2b6]/10 border border-[#a1e2b6]/30 rounded-2xl p-4 flex items-start gap-3">
-                                <Check className="w-4 h-4 text-[#102c1e] mt-0.5 shrink-0" />
-                                <div>
-                                    <p className="font-geist font-black text-sm text-[#102c1e]">AI Sourcing Radar đã kích hoạt</p>
-                                    <p className="font-inter text-xs text-slate-600 mt-0.5">
-                                        Deal mới phù hợp thesis sẽ tự động xuất hiện trong cột <strong>AI Matched</strong> của Deal Flow CRM.
-                                        Bạn có thể chỉnh sửa thesis bất cứ lúc nào.
-                                    </p>
-                                </div>
+                        {breadthScore < 50 && (
+                            <div className="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-lg font-inter text-xs text-left">
+                                <span className="font-bold">Warning:</span> Bộ lọc đang quá hẹp, bạn có thể bỏ lỡ nhiều thương vụ tốt.
                             </div>
                         )}
                     </div>
-                )}
+                </div>
+
             </div>
         </div>
     );
