@@ -28,6 +28,8 @@ import {
   type SubmitProjectTeamMember,
   upsertFounderDemoProject,
 } from "@/features/founder/founder-workspace/demo-state";
+import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
+import type { VentureStage } from "@/features/founder/venture-foundation/types";
 import { cn } from "@/lib/utils";
 
 type TeamMemberDraft = SubmitProjectTeamMember;
@@ -100,11 +102,18 @@ const supportNeedOptions = [
 ];
 
 const creationSteps = [
-  "Creating your Founder Workspace...",
-  "Mapping project data into AI Pitch Readiness...",
-  "Preparing Data Room checklist...",
-  "Setting mentor-readiness gate...",
+  "Creating your project workspace...",
+  "Mapping the venture context...",
+  "Preparing the first decision...",
+  "Opening the project overview...",
 ];
+
+function mapVentureStage(stage: string): VentureStage {
+  if (stage === "Launched") return "launched";
+  if (stage.includes("Pilot")) return "pilot";
+  if (stage.includes("Prototype")) return "mvp";
+  return "idea";
+}
 
 const initialFormData: SubmitProjectFormData = {
   projectName: "",
@@ -141,7 +150,7 @@ function fileSizeLabel(size: number) {
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="text-body-framer-sm font-semibold text-ink">
+    <label className="workspace-body font-medium text-ink">
       {children} {required ? <span className="text-accent-blue">*</span> : null}
     </label>
   );
@@ -152,7 +161,7 @@ function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
     <input
       {...props}
       className={cn(
-        "h-11 w-full rounded-xl border border-hairline bg-surface-2 px-4 text-body-framer-sm text-ink outline-none transition-all placeholder:text-ink-muted focus:border-accent-blue focus:shadow-framer-focus",
+        "workspace-input-text h-11 w-full rounded-lg border border-hairline bg-surface-2 px-3.5 text-ink outline-none transition-all placeholder:text-ink-muted focus:border-accent-blue focus:shadow-framer-focus lg:h-9",
         props.className
       )}
     />
@@ -164,7 +173,7 @@ function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
     <textarea
       {...props}
       className={cn(
-        "min-h-32 w-full resize-y rounded-xl border border-hairline bg-surface-2 p-4 text-body-framer-sm text-ink outline-none transition-all placeholder:text-ink-muted focus:border-accent-blue focus:shadow-framer-focus",
+        "workspace-input-text min-h-28 w-full resize-y rounded-lg border border-hairline bg-surface-2 p-3.5 text-ink outline-none transition-all placeholder:text-ink-muted focus:border-accent-blue focus:shadow-framer-focus",
         props.className
       )}
     />
@@ -187,7 +196,7 @@ function SelectableChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex min-h-9 items-center rounded-pill border border-hairline bg-surface-2 px-3 py-2 text-left text-caption font-semibold leading-snug text-ink-muted transition-all hover:border-hairline-soft hover:bg-surface-1 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/30",
+        "workspace-control-text inline-flex min-h-10 items-center rounded-pill border border-hairline bg-surface-2 px-3 py-2 text-left font-semibold leading-snug text-ink-muted transition-all hover:border-hairline-soft hover:bg-surface-1 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/30 lg:min-h-9",
         "whitespace-normal break-words",
         active && "border-accent-blue/60 bg-accent-blue/10 text-ink shadow-framer-edge",
         className
@@ -200,6 +209,7 @@ function SelectableChip({
 
 export function SubmitProjectWizard() {
   const router = useRouter();
+  const { createDemoVenture } = useDemoWorkspace();
   const params = useParams<{ locale?: string }>();
   const locale = typeof params?.locale === "string" ? params.locale : "en";
   const [currentStep, setCurrentStep] = React.useState(1);
@@ -239,17 +249,6 @@ export function SubmitProjectWizard() {
       if (!formData.projectName.trim()) return "Add your startup name so Kizuna can create the workspace.";
       if (!formData.slogan.trim()) return "Add a one-line description. Good enough for a first draft is okay.";
       if (!formData.status) return "Choose the stage that best matches where you are now.";
-      if (formData.categories.length === 0) return "Pick at least one category so mentor matching has context.";
-    }
-    if (step === 2) {
-      if (!formData.problem.trim()) return "Add the problem so Kizuna can generate a stronger AI Pitch Review.";
-      if (!formData.solution.trim()) return "Add the solution so your pitch has a clear before-and-after story.";
-      if (!formData.targetAudience.trim()) return "Add the first customer group you can realistically reach.";
-      if (!formData.businessModel) return "Choose a business model assumption. Not sure yet is acceptable.";
-    }
-    if (step === 3) {
-      if (!formData.team.some((member) => member.name.trim() && member.role.trim())) return "Add at least one team member with a name and role.";
-      if (formData.supportNeeds.length === 0 && !formData.mentorAsk.trim()) return "Add what you need from a mentor right now.";
     }
     if (step === 4) {
       if (!formData.isCommitted) return "Confirm the founder commitment before creating the workspace.";
@@ -323,10 +322,24 @@ export function SubmitProjectWizard() {
       submission,
       workspaceState,
     });
+    const ventureId = createDemoVenture({
+      id: submission.id,
+      name: submission.projectName,
+      oneLineDescription: submission.slogan,
+      stage: mapVentureStage(submission.stage),
+      tags: submission.categories,
+      currentPhase: "venture-context",
+      initialDecisionTitle:
+        submission.mentorAsk ||
+        "What must be clarified before the first action cycle?",
+      initialDecisionRationale:
+        "The first critical decision keeps early work focused on evidence that can change the plan.",
+      createdAt: submission.createdAt,
+    });
 
-    showToast("Founder Workspace created. Opening Overview...", "success");
+    showToast("Project created. Opening Overview...", "success");
     window.setTimeout(() => {
-      router.push(`/${locale}/founder/founder-workspace/${submission.id}`);
+      router.push(`/${locale}/founder/projects/${ventureId}`);
     }, 650);
   };
 
@@ -343,45 +356,47 @@ export function SubmitProjectWizard() {
             )}
           >
             {toast.type === "success" ? <CheckCircle2 className="mt-0.5 size-4 text-accent-blue" /> : <X className="mt-0.5 size-4 text-destructive" />}
-            <p className="text-body-framer-sm text-ink">{toast.message}</p>
+            <p className="workspace-supporting text-ink">{toast.message}</p>
           </div>
         ) : null}
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/85 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link href="/" className="inline-flex items-center gap-2 text-body-framer-sm font-semibold text-ink-muted transition-colors hover:text-ink">
+      <main className="workspace-density mx-auto max-w-6xl px-4 py-5 md:px-5 lg:px-6">
+        <div className="flex min-h-10 items-center justify-between gap-3">
+          <Link
+            href={`/${locale}/founder/projects`}
+            className="inline-flex min-h-10 items-center gap-2 rounded-lg px-1 workspace-supporting font-medium text-ink-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/30"
+          >
             <ArrowLeft className="size-4" />
-            Back to Kizuna
+            Back to projects
           </Link>
-          <div className="hidden items-center gap-2 text-caption text-ink-muted sm:flex">
+          <div className="hidden items-center gap-2 workspace-meta text-ink-muted sm:flex">
             <ShieldCheck className="size-4" />
-            Demo-safe local workspace creation
+            Local demo workspace
           </div>
         </div>
-      </header>
 
-      <main className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-5 py-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_288px]">
         <section className="min-w-0">
-          <div className="mb-7">
-            <p className="text-caption font-semibold uppercase tracking-[0.18em] text-ink-muted">Founder Startup Intake</p>
-            <h1 className="mt-3 max-w-3xl font-display text-display-sm font-semibold text-ink md:text-display-md">
-              Create the workspace your mentor can actually review.
+          <div className="mb-4">
+            <p className="workspace-eyebrow text-ink-muted">Founder intake</p>
+            <h1 className="mt-2 max-w-3xl workspace-page-title text-ink">
+              Create a decision-ready project workspace.
             </h1>
-            <p className="mt-3 max-w-2xl text-body-framer text-ink-muted">
-              Tell us the minimum context Kizuna needs. You can improve the pitch, deck, and data room after the workspace is created.
+            <p className="mt-2 max-w-2xl workspace-body text-ink-muted">
+              Add the minimum identity now. Problem, evidence, team, and support context can stay incomplete until they become relevant.
             </p>
           </div>
 
           <StepProgress currentStep={currentStep} progress={stepProgress} />
 
-          <div className="mt-6 rounded-xxl border border-hairline bg-surface-1 p-5 shadow-framer-edge md:p-7">
-            <div className="mb-6 flex items-start justify-between gap-4">
+          <div className="mt-4 rounded-xl border border-hairline bg-surface-1 p-4">
+            <div className="mb-4 flex items-start justify-between gap-3">
               <div>
-                <p className="text-caption font-semibold uppercase tracking-[0.16em] text-ink-muted">{steps[currentStep - 1].eyebrow}</p>
-                <h2 className="mt-2 text-2xl font-semibold text-ink">{steps[currentStep - 1].title}</h2>
+                <p className="workspace-eyebrow text-ink-muted">{steps[currentStep - 1].eyebrow}</p>
+                <h2 className="mt-1.5 workspace-section-title text-ink">{steps[currentStep - 1].title}</h2>
               </div>
-              <span className="rounded-pill border border-hairline bg-surface-2 px-3 py-1 text-caption text-ink-muted">
+              <span className="rounded-pill border border-hairline bg-surface-2 px-2.5 py-1 workspace-meta text-ink-muted">
                 Step {currentStep} / 4
               </span>
             </div>
@@ -399,20 +414,20 @@ export function SubmitProjectWizard() {
             ) : null}
             {currentStep === 4 ? <ReviewStep formData={formData} updateFormData={updateFormData} isSaving={isSaving} creationStep={creationStep} /> : null}
 
-            <div className="mt-8 flex flex-col-reverse gap-3 border-t border-hairline pt-5 sm:flex-row sm:items-center sm:justify-between">
-              <Button variant="secondary" onClick={() => setCurrentStep((step) => Math.max(1, step - 1))} disabled={currentStep === 1 || isSaving}>
+            <div className="mt-5 flex flex-col-reverse gap-3 border-t border-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <Button className="workspace-control-text h-11 px-4 lg:h-9" variant="secondary" onClick={() => setCurrentStep((step) => Math.max(1, step - 1))} disabled={currentStep === 1 || isSaving}>
                 <ArrowLeft className="size-4" />
-                Back to edit
+                Back
               </Button>
               {currentStep < 4 ? (
-                <Button onClick={goNext}>
-                  {currentStep === 1 ? "Continue to startup clarity" : currentStep === 2 ? "Continue to evidence & mentor need" : "Review workspace seed"}
+                <Button className="workspace-control-text h-11 px-4 lg:h-9" onClick={goNext}>
+                  {currentStep < 3 ? "Continue" : "Review project"}
                   <ArrowRight className="size-4" />
                 </Button>
               ) : (
-                <Button onClick={handleCreateWorkspace} disabled={isSaving}>
+                <Button className="workspace-control-text h-11 px-4 lg:h-9" onClick={handleCreateWorkspace} disabled={isSaving}>
                   {isSaving ? <Loader2 className="size-4 animate-spin" /> : <Rocket className="size-4" />}
-                  {isSaving ? "Creating workspace..." : "Create Founder Workspace"}
+                  {isSaving ? "Creating project..." : "Create project"}
                 </Button>
               )}
             </div>
@@ -420,6 +435,7 @@ export function SubmitProjectWizard() {
         </section>
 
         <RightRail currentStep={currentStep} formData={formData} />
+        </div>
       </main>
     </div>
   );
@@ -427,7 +443,7 @@ export function SubmitProjectWizard() {
 
 function StepProgress({ currentStep, progress }: { currentStep: number; progress: number }) {
   return (
-    <div className="rounded-xl border border-hairline bg-surface-1 p-4">
+    <div className="rounded-xl border border-hairline bg-surface-1 p-3.5">
       <div className="mb-3 h-1.5 overflow-hidden rounded-pill bg-surface-2">
         <div className="h-full rounded-pill bg-inverse-canvas transition-all duration-300" style={{ width: `${progress}%` }} />
       </div>
@@ -437,10 +453,10 @@ function StepProgress({ currentStep, progress }: { currentStep: number; progress
           const active = currentStep === step.id;
           return (
             <div key={step.id} className="flex items-center gap-2">
-              <span className={cn("flex size-6 items-center justify-center rounded-full border border-hairline text-caption", active && "bg-inverse-canvas text-inverse-ink", complete && "bg-accent-blue text-ink")}>
+              <span className={cn("flex size-6 items-center justify-center rounded-full border border-hairline workspace-supporting", active && "bg-inverse-canvas text-inverse-ink", complete && "bg-accent-blue text-ink")}>
                 {complete ? <CheckCircle2 className="size-3.5" /> : step.id}
               </span>
-              <span className={cn("text-caption font-semibold leading-snug", active ? "text-ink" : "text-ink-muted")} title={step.title}>
+              <span className={cn("workspace-supporting font-semibold leading-snug", active ? "text-ink" : "text-ink-muted")} title={step.title}>
                 {step.shortLabel}
               </span>
             </div>
@@ -459,11 +475,11 @@ function StartupSnapshotStep({
   updateFormData: <K extends keyof SubmitProjectFormData>(field: K, value: SubmitProjectFormData[K]) => void;
 }) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border border-hairline bg-surface-2 p-4 text-body-framer-sm text-ink-muted">
+    <div className="space-y-5">
+      <div className="rounded-xl border border-hairline bg-surface-2 p-4 workspace-body text-ink-muted">
         Tell us the minimum context Kizuna needs to create your startup workspace.
       </div>
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <FieldLabel required>Project name</FieldLabel>
           <TextInput value={formData.projectName} onChange={(event) => updateFormData("projectName", event.target.value)} placeholder="Example: Kizuna Hub" />
@@ -492,16 +508,16 @@ function StartupSnapshotStep({
                 formData.status === stage.id && "border-accent-blue/60 bg-surface-1 shadow-framer-edge"
               )}
             >
-              <span className="block text-body-framer-sm font-semibold leading-snug text-ink">{stage.label}</span>
-              <span className="mt-1 block text-caption leading-snug text-ink-muted">{stage.description}</span>
+              <span className="block workspace-body font-semibold leading-snug text-ink">{stage.label}</span>
+              <span className="mt-1 block workspace-supporting leading-snug text-ink-muted">{stage.description}</span>
             </button>
           ))}
         </div>
       </div>
       <div className="space-y-3">
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <FieldLabel required>Industry/category</FieldLabel>
-          <span className="text-caption text-ink-muted">{formData.categories.length}/3 selected</span>
+          <FieldLabel>Industry/category</FieldLabel>
+          <span className="workspace-supporting text-ink-muted">{formData.categories.length}/3 selected</span>
         </div>
         <div className="flex flex-wrap gap-2">
           {categoryOptions.map((category) => (
@@ -510,7 +526,7 @@ function StartupSnapshotStep({
             </SelectableChip>
           ))}
         </div>
-        <p className="text-caption text-ink-muted">Choose up to 3. This helps mentor matching and workspace context.</p>
+        <p className="workspace-supporting text-ink-muted">Choose up to 3. This helps mentor matching and workspace context.</p>
       </div>
     </div>
   );
@@ -524,23 +540,23 @@ function ProblemSolutionStep({
   updateFormData: <K extends keyof SubmitProjectFormData>(field: K, value: SubmitProjectFormData[K]) => void;
 }) {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <FieldLabel required>Problem</FieldLabel>
-          <p className="text-caption text-ink-muted">What painful problem are you solving? Be specific about who feels it and when it happens.</p>
+          <FieldLabel>Problem</FieldLabel>
+          <p className="workspace-supporting text-ink-muted">What painful problem are you solving? Be specific about who feels it and when it happens.</p>
           <TextArea value={formData.problem} onChange={(event) => updateFormData("problem", event.target.value)} placeholder="Student founders do not know what is missing before asking a mentor to review their startup." />
         </div>
         <div className="space-y-2">
-          <FieldLabel required>Solution</FieldLabel>
-          <p className="text-caption text-ink-muted">How does your product solve the problem in a simpler, faster, or better way?</p>
+          <FieldLabel>Solution</FieldLabel>
+          <p className="workspace-supporting text-ink-muted">How does your product solve the problem in a simpler, faster, or better way?</p>
           <TextArea value={formData.solution} onChange={(event) => updateFormData("solution", event.target.value)} placeholder="A guided workspace turns profile gaps, pitch diagnosis, and data room prep into mentor-ready actions." />
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <FieldLabel required>Target customer</FieldLabel>
-          <p className="text-caption text-ink-muted">Who is the first group of users you can realistically reach?</p>
+          <FieldLabel>Target customer</FieldLabel>
+          <p className="workspace-supporting text-ink-muted">Who is the first group of users you can realistically reach?</p>
           <TextArea
             value={formData.targetAudience}
             onChange={(event) => updateFormData("targetAudience", event.target.value)}
@@ -550,7 +566,7 @@ function ProblemSolutionStep({
           />
         </div>
         <div className="space-y-3">
-          <FieldLabel required>Business model</FieldLabel>
+          <FieldLabel>Business model</FieldLabel>
           <div className="flex flex-wrap gap-2">
             {businessModelOptions.map((model) => (
               <SelectableChip key={model} active={formData.businessModel === model} onClick={() => updateFormData("businessModel", model)}>
@@ -558,7 +574,7 @@ function ProblemSolutionStep({
               </SelectableChip>
             ))}
           </div>
-          <p className="text-caption text-ink-muted">It is okay if this is still an assumption.</p>
+          <p className="workspace-supporting text-ink-muted">It is okay if this is still an assumption.</p>
         </div>
       </div>
     </div>
@@ -579,10 +595,10 @@ function EvidenceTeamStep({
   removeTeamMember: (index: number) => void;
 }) {
   return (
-    <div className="space-y-7">
+    <div className="space-y-5">
       <div className="space-y-3">
         <FieldLabel>Evidence signals</FieldLabel>
-        <p className="text-caption text-ink-muted">Small signals are enough. Revenue is not required.</p>
+        <p className="workspace-supporting text-ink-muted">Small signals are enough. Revenue is not required.</p>
         <div className="flex flex-wrap gap-2">
           {evidenceOptions.map((signal) => (
             <SelectableChip key={signal} active={formData.evidenceSignals.includes(signal)} onClick={() => updateFormData("evidenceSignals", toggleValue(formData.evidenceSignals, signal))}>
@@ -603,7 +619,7 @@ function EvidenceTeamStep({
                   type="button"
                   onClick={() => updateFormData("currentMilestone", milestone.id)}
                   className={cn(
-                    "min-h-9 rounded-pill border border-hairline px-3 py-2 text-caption font-semibold leading-snug text-ink-muted transition-all hover:border-hairline-soft hover:bg-surface-1 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/30",
+                    "workspace-control-text min-h-10 rounded-pill border border-hairline px-3 py-2 font-semibold leading-snug text-ink-muted transition-all hover:border-hairline-soft hover:bg-surface-1 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/30 lg:min-h-9",
                     formData.currentMilestone === milestone.id && "border-accent-blue/60 bg-accent-blue/10 text-ink shadow-framer-edge"
                   )}
                 >
@@ -618,13 +634,13 @@ function EvidenceTeamStep({
 
       <div className="space-y-3">
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <FieldLabel required>What do you need from a mentor right now?</FieldLabel>
-          <span className="text-caption text-ink-muted">{formData.supportNeeds.length}/3 selected</span>
+          <FieldLabel>What support would be useful right now?</FieldLabel>
+          <span className="workspace-supporting text-ink-muted">{formData.supportNeeds.length}/3 selected</span>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {supportNeedOptions.map((group) => (
             <div key={group.group} className="rounded-xl border border-hairline bg-surface-2 p-4">
-              <p className="mb-3 text-caption font-semibold uppercase tracking-[0.14em] text-ink-muted">{group.group}</p>
+              <p className="mb-3 workspace-supporting font-semibold uppercase tracking-[0.14em] text-ink-muted">{group.group}</p>
               <div className="flex flex-wrap gap-2">
                 {group.items.map((need) => (
                   <SelectableChip key={need} active={formData.supportNeeds.includes(need)} onClick={() => updateFormData("supportNeeds", toggleValue(formData.supportNeeds, need, 3))}>
@@ -635,7 +651,7 @@ function EvidenceTeamStep({
             </div>
           ))}
         </div>
-        <p className="text-caption text-ink-muted">Choose up to 3. Not sure yet is acceptable.</p>
+        <p className="workspace-supporting text-ink-muted">Choose up to 3. Not sure yet is acceptable.</p>
       </div>
 
       <div className="space-y-2">
@@ -648,9 +664,9 @@ function EvidenceTeamStep({
           <div>
             <div className="flex items-center gap-2">
               <Users className="size-4 text-accent-blue" />
-              <FieldLabel required>Team</FieldLabel>
+              <FieldLabel>Team</FieldLabel>
             </div>
-            <p className="mt-1 text-caption text-ink-muted">Name and role are enough to start. Optional contact details help later handoff.</p>
+            <p className="mt-1 workspace-supporting text-ink-muted">Name and role are enough to start. Optional contact details help later handoff.</p>
           </div>
           <Button variant="secondary" size="sm" onClick={addTeamMember}>
             <Plus className="size-4" />
@@ -661,18 +677,18 @@ function EvidenceTeamStep({
           {formData.team.map((member, index) => (
             <div key={index} className="rounded-xl border border-hairline bg-surface-1 p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="text-caption font-semibold uppercase tracking-[0.14em] text-ink-muted">Member {index + 1}</p>
+                <p className="workspace-supporting font-semibold uppercase tracking-[0.14em] text-ink-muted">Member {index + 1}</p>
                 <Button variant="ghost" size="icon" onClick={() => removeTeamMember(index)} disabled={formData.team.length === 1} aria-label="Remove team member">
                   <Trash2 className="size-4" />
                 </Button>
               </div>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div className="space-y-1.5">
-                  <FieldLabel required>Name</FieldLabel>
+                  <FieldLabel>Name</FieldLabel>
                   <TextInput value={member.name} onChange={(event) => updateTeamMember(index, "name", event.target.value)} placeholder="Founder name" />
                 </div>
                 <div className="space-y-1.5">
-                  <FieldLabel required>Role</FieldLabel>
+                  <FieldLabel>Role</FieldLabel>
                   <TextInput value={member.role} onChange={(event) => updateTeamMember(index, "role", event.target.value)} placeholder="Product, engineering, growth..." />
                 </div>
                 <div className="space-y-1.5">
@@ -698,16 +714,16 @@ function EvidenceTeamStep({
       </div>
 
       <div className="rounded-xl border border-dashed border-hairline bg-surface-2/60 p-4">
-        <p className="text-body-framer-sm font-semibold text-ink">Optional details</p>
-        <p className="mt-1 text-caption text-ink-muted">These can help later, but they should not block your first workspace.</p>
-        <div className="mt-4 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <p className="workspace-body font-semibold text-ink">Optional details</p>
+        <p className="mt-1 workspace-supporting text-ink-muted">These can help later, but they should not block your first workspace.</p>
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <FieldLabel>Demo link</FieldLabel>
             <TextInput value={formData.demoLink} onChange={(event) => updateFormData("demoLink", event.target.value)} placeholder="https://prototype-or-demo-link" />
           </div>
           <div className="space-y-2">
             <FieldLabel>Pitch draft</FieldLabel>
-            <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-xl border border-dashed border-hairline bg-surface-1 px-4 py-2 text-body-framer-sm leading-snug text-ink-muted transition-colors hover:bg-surface-2">
+            <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-xl border border-dashed border-hairline bg-surface-1 px-4 py-2 workspace-body leading-snug text-ink-muted transition-colors hover:bg-surface-2">
               <span className="inline-flex min-w-0 items-center gap-2">
                 <FileUp className="size-4 shrink-0" />
                 <span className="min-w-0 break-words">
@@ -725,7 +741,7 @@ function EvidenceTeamStep({
                 }}
               />
             </label>
-            <p className="text-caption text-ink-muted">No file contents are stored in this demo.</p>
+            <p className="workspace-supporting text-ink-muted">No file contents are stored in this demo.</p>
           </div>
         </div>
       </div>
@@ -754,20 +770,20 @@ function ReviewStep({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {summaryItems.map(([label, value]) => (
           <div key={label} className="rounded-xl border border-hairline bg-surface-2 p-4">
-            <p className="text-caption font-semibold uppercase tracking-[0.14em] text-ink-muted">{label}</p>
-            <p className="mt-2 text-body-framer-sm text-ink">{value}</p>
+            <p className="workspace-supporting font-semibold uppercase tracking-[0.14em] text-ink-muted">{label}</p>
+            <p className="mt-2 workspace-body text-ink">{value}</p>
           </div>
         ))}
       </div>
-      <div className="rounded-xl border border-hairline bg-surface-2 p-5">
-        <p className="text-body-framer-sm font-semibold text-ink">Kizuna will create:</p>
+      <div className="rounded-xl border border-hairline bg-surface-2 p-4">
+        <p className="workspace-body font-semibold text-ink">Kizuna will create:</p>
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {["Founder Workspace Overview", "AI Pitch Readiness draft", "Data Room checklist", "Mentor Review readiness gate"].map((item) => (
-            <div key={item} className="flex items-center gap-2 text-body-framer-sm text-ink-muted">
+            <div key={item} className="flex items-center gap-2 workspace-body text-ink-muted">
               <CheckCircle2 className="size-4 text-accent-blue" />
               {item}
             </div>
@@ -782,14 +798,14 @@ function ReviewStep({
           className="mt-1 size-4 rounded border-hairline bg-surface-1 text-accent-blue focus:ring-accent-blue"
         />
         <span>
-          <span className="block text-body-framer-sm font-semibold text-ink">Founder commitment</span>
-          <span className="mt-1 block text-caption text-ink-muted">
+          <span className="block workspace-body font-semibold text-ink">Founder commitment</span>
+          <span className="mt-1 block workspace-supporting text-ink-muted">
             I confirm this is a good-faith startup intake. Kizuna will use local demo state to prepare the workspace.
           </span>
         </span>
       </label>
       {isSaving ? (
-        <div className="rounded-xl border border-accent-blue/30 bg-surface-2 p-4 text-body-framer-sm text-ink">
+        <div className="rounded-xl border border-accent-blue/30 bg-surface-2 p-4 workspace-body text-ink">
           <Loader2 className="mr-2 inline size-4 animate-spin" />
           {creationStep}
         </div>
@@ -832,25 +848,25 @@ function RightRail({ currentStep, formData }: { currentStep: number; formData: S
   ];
 
   return (
-    <aside className="lg:sticky lg:top-24 lg:self-start">
-      <div className="rounded-xxl border border-hairline bg-surface-1 p-5 shadow-framer-edge">
-        <div className="flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.16em] text-ink-muted">
+    <aside className="lg:sticky lg:top-7 lg:self-start">
+      <div className="rounded-xl border border-hairline bg-surface-1 p-4">
+        <div className="flex items-center gap-2 workspace-eyebrow text-ink-muted">
           <HelpCircle className="size-4" />
-          Intake Companion
+          Intake companion
         </div>
-        <h3 className="mt-4 text-xl font-semibold text-ink">{railContent.title}</h3>
-        <p className="mt-2 text-body-framer-sm leading-relaxed text-ink-muted">
+        <h3 className="mt-3 workspace-card-title text-ink">{railContent.title}</h3>
+        <p className="mt-1.5 workspace-supporting text-ink-muted">
           Kizuna uses this intake to prepare a mentor-review workspace, not a public product listing.
         </p>
 
-        <div className="mt-5 rounded-xl border border-hairline bg-surface-2 p-4">
-          <div className="flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.14em] text-ink-muted">
+        <div className="mt-4 rounded-lg border border-hairline bg-surface-2 p-3.5">
+          <div className="flex items-center gap-2 workspace-eyebrow text-ink-muted">
             <Target className="size-4" />
             What this powers
           </div>
           <div className="mt-3 space-y-2">
           {railContent.items.map((item) => (
-            <div key={item} className="flex items-start gap-2 text-body-framer-sm leading-snug text-ink-muted">
+            <div key={item} className="flex items-start gap-2 workspace-supporting text-ink-muted">
               <CheckCircle2 className="mt-0.5 size-4 text-accent-blue" />
               {item}
             </div>
@@ -858,15 +874,15 @@ function RightRail({ currentStep, formData }: { currentStep: number; formData: S
           </div>
         </div>
 
-        <div className="mt-4 rounded-xl border border-hairline bg-surface-2 p-4">
-          <div className="flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.14em] text-ink-muted">
+        <div className="mt-3 rounded-lg border border-hairline bg-surface-2 p-3.5">
+          <div className="flex items-center gap-2 workspace-eyebrow text-ink-muted">
             <Circle className="size-4" />
             Workspace preview
           </div>
-          <p className="mt-3 break-words text-body-framer-sm font-semibold text-ink">{railContent.preview}</p>
+          <p className="mt-2.5 break-words workspace-supporting font-medium text-ink">{railContent.preview}</p>
           <div className="mt-4 space-y-2">
           {steps.map((step, index) => (
-            <div key={step.id} className="flex items-center gap-2 text-caption leading-snug text-ink-muted">
+            <div key={step.id} className="flex items-center gap-2 workspace-supporting leading-snug text-ink-muted">
               {completed[index] ? <CheckCircle2 className="size-4 shrink-0 text-accent-blue" /> : <Circle className="size-4 shrink-0" />}
               <span className="break-words">{step.title}</span>
             </div>
@@ -874,9 +890,9 @@ function RightRail({ currentStep, formData }: { currentStep: number; formData: S
           </div>
         </div>
 
-        <div className="mt-4 flex items-start gap-3 rounded-xl border border-hairline bg-surface-2 p-4">
+        <div className="mt-3 flex items-start gap-3 rounded-lg border border-hairline bg-surface-2 p-3.5">
           <Sparkles className="mt-0.5 size-4 text-accent-blue" />
-          <p className="text-caption leading-relaxed text-ink-muted">
+          <p className="workspace-supporting leading-relaxed text-ink-muted">
             Good enough for a first draft is okay. You can improve this later in AI Pitch Readiness.
           </p>
         </div>
