@@ -16,7 +16,7 @@ All roles share:
 
 - Warm near-black surfaces and warm off-white text.
 - Kizuna Clay as the primary signal for intent, selection, focus, and progress.
-- Geist headings, Inter body/UI text, and Geist Mono metadata/code.
+- Geist Sans headings/body/UI text and Geist Mono metadata/code.
 - One canonical primitive layer under `components/ui/`.
 - The same focus, disabled, loading, reduced-motion, radius, border, and elevation rules.
 

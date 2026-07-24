@@ -617,6 +617,48 @@ The refactor is complete when:
 
 ---
 
+## 11. Venture Capability Boundaries
+
+Venture capabilities that can serve more than one role live under
+`features/venture/`, not inside a Founder presentation module. The
+Founder workspace may compose those capabilities, but it must not own
+their canonical domain entities or application rules.
+
+The Decision Loop follows these dependency layers:
+
+```txt
+features/venture/core/domain
+  <- features/venture/decision-loop/domain
+  <- features/venture/decision-loop/application
+  <- features/venture/decision-loop/infrastructure
+  <- features/venture/decision-loop/presentation
+  <- app route composition
+```
+
+The practical rules are:
+
+- `domain/` contains framework-free entities, value objects, and
+  invariant validation. It may depend only on role-neutral core domain
+  contracts.
+- `application/` contains queries, commands, services, application
+  models, and repository ports. It must not import React, Next.js,
+  browser storage, or mock fixtures.
+- `infrastructure/` implements application ports. Mock fixtures and
+  browser persistence are adapters, not business truth.
+- `presentation/` renders the capability and invokes the repository
+  port. It does not read local storage or import mock fixtures.
+- `app/` routes stay thin and import the feature's public entry point.
+- Cross-feature consumers use a public `index.ts` or an explicit
+  composition entry point. They do not deep-import another feature's
+  mock internals.
+
+The current browser demo still composes the aggregate through the
+Founder provider because that provider also coordinates Phase 1
+workspace state. This is a deliberate compatibility boundary, not
+ownership of Decision Loop domain rules.
+
+---
+
 # Agent Refactor Prompt
 
 Use this prompt when asking an AI coding agent to perform the migration.

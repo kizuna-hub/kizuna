@@ -60,20 +60,45 @@ These aliases exist because shell surfaces, rows, selections, focus, and status 
 
 | Role | Family | Usage |
 |---|---|---|
-| Display/heading | Geist via `font-heading` / `font-display` | Page titles, section titles, editorial emphasis. |
-| Body/UI | Inter via `font-body` / `font-sans` | Forms, navigation, table text, descriptions, controls. |
-| Mono | Geist Mono fallback stack via `font-mono` | IDs, timestamps, compact metadata, code, and tabular evidence. |
+| Display/heading | Geist Sans via `font-heading` / `font-display` | Page titles, section titles, editorial emphasis. |
+| Body/UI | Geist Sans via `font-body` / `font-sans` | Forms, navigation, table text, descriptions, controls. |
+| Mono | Loaded Geist Mono via `font-mono` | IDs, timestamps, compact metadata, code, and tabular evidence. |
 
 Application page titles normally use `text-display-md`; reserve larger display sizes for sparse onboarding or major milestone moments. Dense tables and forms use the UI scale, not marketing display type.
 
 Text hierarchy should come from size, spacing, surface, and tone before extreme weight. Avoid `font-black` as a default UI hierarchy tool.
 
+The localized root loads both Geist families with `latin` and `latin-ext`; the compiled Latin Extended face covers Vietnamese diacritics.
+
+### Founder operational scale
+
+Founder Workspace operational surfaces use the application-scoped compositions in `app/globals.css` rather than changing public display tokens:
+
+| Role | Mobile / desktop | Class |
+|---|---|---|
+| Page title | 23px / 24px | `workspace-page-title` |
+| Critical decision | 19px / 20px | `workspace-decision-title` |
+| Section title | 16px / 16px | `workspace-section-title` |
+| Card/project title | 14px / 14px | `workspace-card-title` |
+| Body | 14px / 13px | `workspace-body` |
+| Supporting copy | 13px / 12px | `workspace-supporting` |
+| Metadata | 12px / 11px | `workspace-meta` |
+| Eyebrow | 10px / 10px | `workspace-eyebrow` |
+| Project identity | 14px / 14px | `workspace-project-identity` |
+| Buttons/navigation | 14px / 13px | `workspace-control-text` |
+| Inputs | 16px / 13px | `workspace-input-text` |
+
+These classes belong inside a `workspace-density` application surface. They do not shrink landing-page or public editorial typography.
+
 ## Spacing and density
 
 - Use the existing shared scale; do not add page-named spacing tokens.
-- Standard panel padding: `p-5` or `p-6`.
-- Dense row padding: `px-3 py-2` to `px-4 py-3`, while maintaining usable targets.
-- Mobile page gutter: `px-4` to `px-6`; desktop: `px-8` when shell width permits.
+- Standard operational panel padding: `p-3.5` or `p-4`.
+- Dense row padding: `px-3 py-2.5` to `px-3.5 py-3`, while maintaining usable targets.
+- Founder page gutters: `px-4` mobile, `px-5` tablet, and `px-6` desktop.
+- Founder page rails: `max-w-6xl` for wide operational pages and `max-w-5xl` for focused work.
+- Desktop operational controls use a 34–36px visual height; touch layouts retain a 40–44px target.
+- Major page regions use a 20px rhythm; card and compact-row gaps use 10–12px.
 - Separate major page regions with space before introducing extra borders or shadows.
 
 ## Radius, borders, and elevation

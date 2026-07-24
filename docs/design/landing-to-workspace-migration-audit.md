@@ -57,7 +57,7 @@ Package manager discovery: `package-lock.json` is present, so the target package
 - Text: ink `#F7F5F2`, muted ink `#A39D96`.
 - Primary signal: Kizuna Clay `#CC785C`, with explicit hover, active, soft, border, and filled-action values.
 - Filled coral actions use white text through `on-primary`.
-- Typography: Geist for headings, Inter for body/UI, and Geist Mono for metadata/code.
+- Typography: Geist Sans for headings/body/UI and Geist Mono for metadata/code.
 - Radius, spacing, elevation, z-index, focus, selection, motion, and reduced-motion guidance are documented.
 - Tailwind v4 is used through CSS-first `@theme` tokens plus a compatibility `tailwind.config.ts`.
 - `styles/globals.css` is explicitly stale and is not the active style entry.
@@ -101,7 +101,7 @@ No source image or public asset is required by the approved primitive layer.
 - Routing: localized Next.js App Router under `app/[locale]/`.
 - Domain modules: feature-first `features/<role>/**`.
 - Founder shared workspace compositions currently live in `features/founder/founder-workspace/workspace-ui.tsx`; they are domain-shared components, not role-neutral primitives.
-- Font loading currently uses Inter plus Outfit through `app/[locale]/layout.tsx`.
+- Font loading uses Geist Sans plus Geist Mono through `app/[locale]/layout.tsx`, with `latin-ext` coverage for Vietnamese diacritics.
 - A `next-themes` wrapper exists but is not mounted by the root layout; the active application is effectively dark for the migrated Founder surfaces while older Mentor and Investor screens still contain light/forest hardcoded styling.
 
 ## 10. File-by-file source-to-target mapping

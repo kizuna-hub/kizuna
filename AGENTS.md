@@ -13,6 +13,7 @@ Founder, Mentor, and Investor may differ in information architecture, permission
 - Read [docs/design/README.md](docs/design/README.md) and the task-specific design documents before UI work.
 - Follow [docs/architecture/kizuna-feature-first-architecture.md](docs/architecture/kizuna-feature-first-architecture.md) for placement and dependency direction.
 - For Founder v1 work, preserve the flow and scope in `docs/context/founder-workspace-context-pack.md` and `docs/srs-v1.md`.
+- For venture-first Founder work, follow `docs/product/kizuna-core-thesis.md`, `docs/product/venture-domain-model.md`, `docs/design/workspace-information-architecture.md`, and `docs/implementation/phase-1-foundation-contract.md`.
 - Current implementation and accessible behavior take precedence over stale design notes.
 
 ## Architecture
