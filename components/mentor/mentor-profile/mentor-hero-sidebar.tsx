@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, MapPin, Briefcase, Globe, Calendar, Mail, Clock, CheckCircle2 } from "lucide-react";
-import { Mentor } from "@/app/[locale]/mentor-profile/[id]/page";
+import type { Mentor } from "@/features/mentor/mentor-profile/mentor-profile-screen";
 
 export const MentorHeroSidebar = ({ mentor }: { mentor: Mentor }) => (
     /* 
