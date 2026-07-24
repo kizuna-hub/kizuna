@@ -1,15 +1,26 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+﻿import type { Metadata } from 'next'
+import { Geist, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import '../globals.css'
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
-import { ProjectProvider } from '@/lib/context/ProjectContext';
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { routing } from '@/i18n/routing'
+import { ProjectProvider } from '@/lib/context/ProjectContext'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-body-system',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+})
+
+const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-heading-system',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Kizuna Hub - University Startup Ecosystem',
@@ -17,18 +28,9 @@ export const metadata: Metadata = {
   generator: 'v0.app',
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png',  media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
     apple: '/apple-icon.png',
   },
@@ -36,24 +38,20 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params
+  params,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
   params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params;
-
-  // Ensure that the incoming `locale` is valid
+  const { locale } = await params
   if (!routing.locales.includes(locale as any)) {
-    notFound();
+    notFound()
   }
-
-  // Providing all messages to the client side
-  const messages = await getMessages();
+  const messages = await getMessages()
 
   return (
-    <html lang={locale} className="light">
-      <body className="font-sans antialiased bg-kizuna-canvas text-kizuna-text-main">
+    <html lang={locale} className={`${inter.variable} ${geist.variable}`}>
+      <body className="font-body bg-canvas text-ink antialiased min-h-screen">
         <NextIntlClientProvider messages={messages}>
           <ProjectProvider>
             {children}
