@@ -1,16 +1,17 @@
-import React from 'react';
-import WorkspaceLayout from '@/components/founder/founder-workspace/dashboard/workspace-layout';
+﻿import React from 'react';
+import WorkspaceLayout from '@/features/founder/founder-workspace/dashboard/workspace-layout';
 
-export default function Layout({
+export default async function Layout({
   children,
-  params, // Next.js tự động truyền params chứa projectId vào đây
+  params,
 }: {
   children: React.ReactNode;
-  params: { projectId: string }; // Khai báo type
+  params: Promise<{ projectId: string }>;
 }) {
-  // Ném projectId xuống cho WorkspaceLayout xử lý tiếp
+  // Next.js 15: params is a Promise and must be awaited before access.
+  const { projectId } = await params;
   return (
-    <WorkspaceLayout projectId={params.projectId as string}>
+    <WorkspaceLayout projectId={projectId}>
       {children}
     </WorkspaceLayout>
   );
