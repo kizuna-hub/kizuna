@@ -146,30 +146,24 @@ const config = {
       // ─────────────────────────────────────────────────────────────────
       fontFamily: {
         /**
-         * display / heading — Geist, shared with the landing foundation.
+         * display / heading — Geist Sans, shared with the landing foundation.
          */
-        display: ['var(--font-display)', 'Geist', 'sans-serif'],
-        heading: ['var(--font-display)', 'Geist', 'sans-serif'],
+        display: ['var(--font-display)', 'Geist Sans', 'Geist', 'sans-serif'],
+        heading: ['var(--font-display)', 'Geist Sans', 'Geist', 'sans-serif'],
 
         /**
-         * body / sans — Inter Variable.
-         * Use OpenType features: cv01/05/09/11, ss03/ss07 (set in globals.css body).
+         * body / sans — Geist Sans Variable.
          */
-        body: ['var(--font-body)', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        sans: ['var(--font-body)', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        body: ['var(--font-body)', 'Geist Sans', 'Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-body)', 'Geist Sans', 'Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
 
         /**
          * mono — Geist Mono. Only for code, IDs, tokens.
          */
         mono: ['var(--font-mono)', 'Geist Mono', 'Consolas', 'monospace'],
 
-        // Convenience aliases
-        inter: ['var(--font-body)', 'Inter', 'ui-sans-serif'],
-        outfit: ['var(--font-display)', 'Outfit', 'sans-serif'],
-        geist: ['var(--font-mono)', 'Geist Mono', 'Consolas', 'monospace'],
-
         // Aliases retained for legacy call sites.
-        serif: ['var(--font-display)', 'Geist', 'sans-serif'],
+        serif: ['var(--font-display)', 'Geist Sans', 'Geist', 'sans-serif'],
       },
 
       // ─────────────────────────────────────────────────────────────────
@@ -182,7 +176,7 @@ const config = {
         'display-lg': ['3.875rem', { lineHeight: '0.97', fontWeight: '560', letterSpacing: '-3.1px' }],
         'display-md': ['2rem', { lineHeight: '1.05', fontWeight: '560', letterSpacing: '-1.0px' }],
 
-        // UI scale (Inter Variable)
+        // UI scale (Geist Sans Variable)
         'headline': ['1.375rem', { lineHeight: '1.20', fontWeight: '700', letterSpacing: '-0.8px' }],   // 22px
         'subhead': ['1.5rem', { lineHeight: '1.30', fontWeight: '400', letterSpacing: '-0.01px' }],  // 24px
         'body-framer': ['0.9375rem', { lineHeight: '1.30', fontWeight: '400', letterSpacing: '-0.15px' }],  // 15px

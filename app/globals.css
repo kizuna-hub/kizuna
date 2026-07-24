@@ -13,9 +13,9 @@
 
 @theme {
   /* ── Font Variables ─────────────────────────────────────────────── */
-  --font-display: var(--font-heading-system, 'Geist'), sans-serif;
-  --font-body: var(--font-body-system, 'Inter'), sans-serif;
-  --font-mono: 'Geist Mono', 'Consolas', monospace;
+  --font-display: var(--font-geist-sans, 'Geist Sans'), 'Geist', sans-serif;
+  --font-body: var(--font-geist-sans, 'Geist Sans'), 'Geist', sans-serif;
+  --font-mono: var(--font-geist-mono, 'Geist Mono'), 'Consolas', monospace;
 
   /* ══════════════════════════════════════════════════════════════════
      KIZUNA COLOR PALETTE — QUIET CONVICTION
@@ -130,7 +130,7 @@
 
   /* ══════════════════════════════════════════════════════════════════
      TYPOGRAPHY — KIZUNA QUIET CONVICTION
-     Geist headings and Inter application text.
+     Geist Sans application text and Geist Mono metadata/code.
      ══════════════════════════════════════════════════════════════════ */
 
   /* Display scale — editorial weight with restrained workspace use */
@@ -158,7 +158,7 @@
   --font-size-display-md--letter-spacing: -1.0px;
   --font-size-display-md--font-weight: 560;
 
-  /* UI scale — Inter Variable, weight 400–700 */
+  /* UI scale — Geist Sans Variable, weight 400–700 */
   --font-size-headline: 1.375rem;
   /* 22px */
   --font-size-headline--line-height: 1.20;
@@ -302,12 +302,10 @@
     @apply bg-canvas text-ink antialiased;
     min-height: 100%;
     font-family: var(--font-body);
-    /* Inter Variable OpenType character variants — Kizuna body voice.
-       Single-storey 'a', straight-leg 'l', tabular figures. */
     font-feature-settings:
-      'rlig' 1, 'calt' 1,
-      'cv01' 1, 'cv05' 1, 'cv09' 1, 'cv11' 1,
-      'ss03' 1, 'ss07' 1;
+      'rlig' 1,
+      'calt' 1,
+      'kern' 1;
     scrollbar-gutter: stable;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -324,6 +322,122 @@
 /* ═══════════════════════════════════════════════════════════════════
    UTILITY LAYER
    ═══════════════════════════════════════════════════════════════════ */
+@layer components {
+  /*
+   * Founder Workspace density compositions
+   *
+   * These classes intentionally scope the Phase 1.5 operational type
+   * scale to application surfaces. Marketing and public display tokens
+   * keep their existing values.
+   */
+  .workspace-density {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .workspace-page-title {
+    font-family: var(--font-heading);
+    font-size: 1.4375rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.18;
+  }
+
+  .workspace-decision-title {
+    font-family: var(--font-heading);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.24;
+  }
+
+  .workspace-section-title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.28;
+  }
+
+  .workspace-card-title {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.32;
+  }
+
+  .workspace-body {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .workspace-supporting {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .workspace-meta {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .workspace-eyebrow {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .workspace-project-identity {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .workspace-control-text {
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+
+  .workspace-input-text {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  @media (min-width: 64rem) {
+    .workspace-page-title {
+      font-size: 1.5rem;
+    }
+
+    .workspace-decision-title {
+      font-size: 1.25rem;
+    }
+
+    .workspace-body {
+      font-size: 0.8125rem;
+    }
+
+    .workspace-supporting {
+      font-size: 0.75rem;
+    }
+
+    .workspace-meta {
+      font-size: 0.6875rem;
+    }
+
+    .workspace-control-text,
+    .workspace-input-text {
+      font-size: 0.8125rem;
+    }
+  }
+}
+
 @layer utilities {
 
   /* ── Scrollbar hide — for horizontal marquee carousels ─────────── */
