@@ -1,11 +1,16 @@
-import { FounderWorkspaceOverviewScreen } from "@/features/founder/founder-workspace/overview-screen";
+import { redirect } from "next/navigation";
 
 export default async function FounderWorkspaceOverviewPage({
   params,
 }: {
-  params: Promise<{ projectId: string }>;
+  params: Promise<{ locale: string; projectId: string }>;
 }) {
-  const { projectId } = await params;
+  const { locale, projectId } = await params;
+  const legacyProjectMap: Record<string, string> = {
+    p1: "venture-kizuna-hub",
+    p2: "venture-snapmoney",
+  };
+  const ventureId = legacyProjectMap[projectId] ?? projectId;
 
-  return <FounderWorkspaceOverviewScreen projectId={projectId} />;
+  redirect(`/${locale}/founder/projects/${ventureId}`);
 }
