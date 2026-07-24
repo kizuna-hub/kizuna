@@ -1,5 +1,5 @@
-import { HomeFeedScreen } from "@/features/founder/founder-dashboard/home-feed-screen";
+import { FounderEntryScreen } from "@/features/founder/projects/founder-entry-screen";
 
 export default function Home() {
-  return <HomeFeedScreen />;
+  return <FounderEntryScreen />;
 }

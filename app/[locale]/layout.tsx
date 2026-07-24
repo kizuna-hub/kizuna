@@ -1,24 +1,24 @@
-﻿import type { Metadata } from 'next'
-import { Geist, Inter } from 'next/font/google'
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import '../globals.css'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
-import { ProjectProvider } from '@/lib/context/ProjectContext'
+import { DemoWorkspaceProvider } from '@/features/founder/venture-foundation/demo-workspace-provider'
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-body-system',
-  weight: ['400', '500', '600', '700'],
+const geistSans = Geist({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-geist-sans',
+  weight: 'variable',
   display: 'swap',
 })
 
-const geist = Geist({
-  subsets: ['latin'],
-  variable: '--font-heading-system',
-  weight: ['400', '500', '600', '700'],
+const geistMono = Geist_Mono({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-geist-mono',
+  weight: 'variable',
   display: 'swap',
 })
 
@@ -50,12 +50,12 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${inter.variable} ${geist.variable}`}>
+    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-body bg-canvas text-ink antialiased min-h-screen">
         <NextIntlClientProvider messages={messages}>
-          <ProjectProvider>
+          <DemoWorkspaceProvider>
             {children}
-          </ProjectProvider>
+          </DemoWorkspaceProvider>
         </NextIntlClientProvider>
         <Analytics />
       </body>
