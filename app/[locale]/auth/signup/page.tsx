@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
-import { AuthPage } from "@/components/auth/auth-page";
+import { AuthPage } from "@/features/auth/auth-page";
 
 export const metadata: Metadata = {
   title: "Sign up | Kizuna Hub",
-  description: "Tạo workspace tại Kizuna Hub.",
+  description: "Create a Kizuna Founder Workspace account.",
 };
 
 export default function SignupPage() {
