@@ -15,4 +15,7 @@ node_modules
 .next/
 .DS_Store
 
+docs/reports
+
 *.js
+.cursor
