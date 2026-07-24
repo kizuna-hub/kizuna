@@ -581,7 +581,15 @@ export const defaultFounderWorkspaceDemoState: FounderWorkspaceDemoState = {
 
 export const founderWorkspaceStorageKey = "kizuna-founder-workspace-demo-state-v1";
 export const founderProjectDemoStoreKey = "kizuna-founder-project-demo-store-v1";
-const supportedStaticProjectIds = new Set(["p1", "p2", "p3"]);
+const supportedStaticProjectIds = new Set([
+  "p1",
+  "p2",
+  "p3",
+  "venture-kizuna-hub",
+  "venture-snapmoney",
+  "venture-edubridge",
+  "venture-caremind",
+]);
 
 function cloneDefaultWorkspaceState(): FounderWorkspaceDemoState {
   return JSON.parse(JSON.stringify(defaultFounderWorkspaceDemoState)) as FounderWorkspaceDemoState;

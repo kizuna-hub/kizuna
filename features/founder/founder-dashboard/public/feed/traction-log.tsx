@@ -10,8 +10,8 @@ export function TractionLog() {
     return (
         <div className="w-full">
             <div className="mb-8 flex items-center justify-between">
-                <h2 className="text-xl font-black font-outfit text-[#102c1e]">Traction Log</h2>
-                <button className="text-sm font-bold font-geist text-slate-400 hover:text-[#102c1e] underline underline-offset-4 transition-colors">
+                <h2 className="text-xl font-black font-heading text-[#102c1e]">Traction Log</h2>
+                <button className="text-sm font-bold font-sans text-slate-400 hover:text-[#102c1e] underline underline-offset-4 transition-colors">
                     View all
                 </button>
             </div>
@@ -29,7 +29,7 @@ export function TractionLog() {
                         >
                             {/* Khối hiển thị ngày bên lề trái */}
                             <div className="w-auto sm:w-24 shrink-0 pt-3">
-                                <span className="text-[11px] font-black uppercase tracking-widest font-geist text-zinc-400 group-hover:text-[#102c1e] transition-colors">
+                                <span className="text-[11px] font-black uppercase tracking-widest font-sans text-zinc-400 group-hover:text-[#102c1e] transition-colors">
                                     {project.date}
                                 </span>
                             </div>
@@ -42,21 +42,21 @@ export function TractionLog() {
                                 <div className="flex items-start justify-between gap-4">
                                     <div>
                                         <div className="flex items-center gap-3 mb-2">
-                                            <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white shadow-inner font-geist", project.color)}>
+                                            <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white shadow-inner font-sans", project.color)}>
                                                 {project.logo}
                                             </div>
-                                            <h3 className="text-base font-bold font-geist text-[#102c1e] group-hover:text-[#102c1e]/80 transition-colors">
+                                            <h3 className="text-base font-bold font-sans text-[#102c1e] group-hover:text-[#102c1e]/80 transition-colors">
                                                 {project.name}
                                             </h3>
                                         </div>
-                                        <p className="text-sm font-medium leading-relaxed text-slate-500 font-inter">
+                                        <p className="text-sm font-medium leading-relaxed text-slate-500 font-sans">
                                             {project.milestone}
                                         </p>
 
                                         {/* Toàn bộ dải tags */}
                                         <div className="mt-4 flex flex-wrap gap-1.5">
                                             {project.tags.map((tag) => (
-                                                <span key={tag} className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 font-geist">
+                                                <span key={tag} className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 font-sans">
                                                     {tag}
                                                 </span>
                                             ))}
@@ -69,7 +69,7 @@ export function TractionLog() {
                                             <Flame className="h-4 w-4 text-zinc-400 group-hover/btn:text-[#102c1e]" />
                                             <span className="text-xs font-bold text-slate-700">{project.claps}</span>
                                         </button>
-                                        <div className="flex items-center gap-1 text-[10px] font-bold font-geist text-slate-400">
+                                        <div className="flex items-center gap-1 text-[10px] font-bold font-sans text-slate-400">
                                             <MessageCircle className="h-3.5 w-3.5" />
                                             {project.comments}
                                         </div>

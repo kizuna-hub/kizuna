@@ -18,7 +18,7 @@ export function MainFeed() {
                 <div className="flex flex-col items-center justify-center mb-14 mt-4">
                     <div className="flex items-center gap-2.5">
                         <Sparkles className="h-5 w-5 text-[#102c1e]" />
-                        <h1 className="font-outfit text-2xl md:text-3xl font-black text-[#102c1e] tracking-tight">
+                        <h1 className="font-heading text-2xl md:text-3xl font-black text-[#102c1e] tracking-tight">
                             Ready when you are.
                         </h1>
                     </div>

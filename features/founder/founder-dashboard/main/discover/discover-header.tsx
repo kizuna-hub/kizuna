@@ -17,7 +17,7 @@ export function DiscoverHeader() {
                 <input
                     type="text"
                     placeholder="Search startups, mentors, or insights..."
-                    className="h-12 w-full rounded-xl border border-[#102c1e]/10 bg-white pl-12 pr-12 text-sm font-geist text-[#102c1e] shadow-sm outline-none placeholder:text-slate-400 transition-all focus:border-[#102c1e]/30 focus:ring-4 focus:ring-[#102c1e]/5"
+                    className="h-12 w-full rounded-xl border border-[#102c1e]/10 bg-white pl-12 pr-12 text-sm font-sans text-[#102c1e] shadow-sm outline-none placeholder:text-slate-400 transition-all focus:border-[#102c1e]/30 focus:ring-4 focus:ring-[#102c1e]/5"
                 />
                 <button className="absolute right-3 p-1.5 rounded-md hover:bg-slate-100 text-slate-500 transition-colors">
                     <SlidersHorizontal className="h-4 w-4" />
@@ -26,8 +26,8 @@ export function DiscoverHeader() {
 
             {/* Header & Tabs */}
             <div className="mt-8 flex items-baseline gap-6">
-                <h1 className="font-outfit text-3xl font-black text-[#102c1e] tracking-tight">Discover</h1>
-                <div className="flex items-center gap-6 font-geist text-sm font-bold">
+                <h1 className="font-heading text-3xl font-black text-[#102c1e] tracking-tight">Discover</h1>
+                <div className="flex items-center gap-6 font-sans text-sm font-bold">
                     <button className="text-[#102c1e] border-b-2 border-[#102c1e] pb-1">Feed</button>
                     <button className="text-slate-400 hover:text-[#102c1e] transition-colors pb-1">Projects</button>
                     <button className="text-slate-400 hover:text-[#102c1e] transition-colors pb-1">Mentors</button>
@@ -40,7 +40,7 @@ export function DiscoverHeader() {
                     <button
                         key={cat}
                         className={cn(
-                            "whitespace-nowrap rounded-full px-4 py-1.5 font-geist text-xs font-bold transition-colors shadow-sm",
+                            "whitespace-nowrap rounded-full px-4 py-1.5 font-sans text-xs font-bold transition-colors shadow-sm",
                             idx === 0
                                 ? "bg-[#102c1e] text-[#fafafa]"
                                 : "bg-white border border-[#102c1e]/10 text-[#102c1e]/70 hover:border-[#102c1e]/30 hover:text-[#102c1e]"
@@ -49,7 +49,7 @@ export function DiscoverHeader() {
                         {cat}
                     </button>
                 ))}
-                <button className="flex items-center gap-1 whitespace-nowrap rounded-full border border-dashed border-[#102c1e]/30 bg-transparent px-3 py-1.5 font-geist text-xs font-bold text-[#102c1e]/50 hover:border-[#102c1e]/50 hover:text-[#102c1e] transition-colors ml-2">
+                <button className="flex items-center gap-1 whitespace-nowrap rounded-full border border-dashed border-[#102c1e]/30 bg-transparent px-3 py-1.5 font-sans text-xs font-bold text-[#102c1e]/50 hover:border-[#102c1e]/50 hover:text-[#102c1e] transition-colors ml-2">
                     <Plus className="h-3 w-3" /> Filter
                 </button>
             </div>
