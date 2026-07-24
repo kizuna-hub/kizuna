@@ -65,20 +65,20 @@ export function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
 
                     {/* Content */}
                     <div className="mb-6">
-                        <p className="font-geist text-[10px] font-bold text-[#102c1e]/40 uppercase tracking-widest mb-1">
+                        <p className="font-sans text-[10px] font-bold text-[#102c1e]/40 uppercase tracking-widest mb-1">
                             {isEnterprise ? 'VC Enterprise' : 'Angel Investor'} — Yêu cầu nâng cấp
                         </p>
-                        <h2 className="font-outfit font-black text-[#102c1e] text-2xl leading-tight mb-2">
+                        <h2 className="font-heading font-black text-[#102c1e] text-2xl leading-tight mb-2">
                             {feature?.title ?? 'Tính năng cao cấp'}
                         </h2>
-                        <p className="font-inter text-sm text-slate-500 leading-relaxed">
+                        <p className="font-sans text-sm text-slate-500 leading-relaxed">
                             {feature?.description ?? 'Nâng cấp để mở khóa toàn bộ công cụ đầu tư chuyên nghiệp.'}
                         </p>
                     </div>
 
                     {/* Feature list */}
                     <div className="bg-[#fafafa] border border-[#102c1e]/8 rounded-2xl p-4 mb-6 space-y-2.5">
-                        <p className="font-geist text-[10px] font-bold text-[#102c1e]/50 uppercase tracking-widest mb-3">
+                        <p className="font-sans text-[10px] font-bold text-[#102c1e]/50 uppercase tracking-widest mb-3">
                             Bao gồm trong gói {isEnterprise ? 'VC Enterprise' : 'Angel'}
                         </p>
                         {(isEnterprise ? TIER_HIGHLIGHTS.vc_enterprise : TIER_HIGHLIGHTS.angel).map((item, i) => (
@@ -86,7 +86,7 @@ export function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                                 <div className="w-4 h-4 rounded-full bg-[#a1e2b6]/25 flex items-center justify-center shrink-0">
                                     <Check className="w-2.5 h-2.5 text-[#102c1e]" />
                                 </div>
-                                <span className="font-inter text-sm text-[#102c1e]">{item}</span>
+                                <span className="font-sans text-sm text-[#102c1e]">{item}</span>
                             </div>
                         ))}
                     </div>
@@ -94,26 +94,26 @@ export function UpgradeModal({ isOpen, onClose, feature }: UpgradeModalProps) {
                     {/* Pricing */}
                     <div className="flex items-center justify-between mb-5 bg-[#102c1e] rounded-2xl px-5 py-3">
                         <div>
-                            <p className="font-geist text-xs text-white/50 font-bold">Giá từ</p>
+                            <p className="font-sans text-xs text-white/50 font-bold">Giá từ</p>
                             <p className="font-mono font-black text-white text-xl">
                                 ${isEnterprise ? '199' : '79'}<span className="text-white/40 text-sm font-bold">/tháng</span>
                             </p>
                         </div>
                         <div className="bg-[#a1e2b6]/15 border border-[#a1e2b6]/25 px-3 py-1.5 rounded-xl">
-                            <span className="font-geist text-xs font-black text-[#a1e2b6]">-20% nếu thanh toán năm</span>
+                            <span className="font-sans text-xs font-black text-[#a1e2b6]">-20% nếu thanh toán năm</span>
                         </div>
                     </div>
 
                     {/* CTAs */}
                     <div className="space-y-2">
-                        <a href="/pricing" className="w-full flex items-center justify-center gap-2 bg-[#102c1e] text-white font-geist font-black text-sm py-3 rounded-2xl hover:bg-[#0a1c13] transition-all shadow-md hover:-translate-y-0.5 group">
+                        <a href="/pricing" className="w-full flex items-center justify-center gap-2 bg-[#102c1e] text-white font-sans font-black text-sm py-3 rounded-2xl hover:bg-[#0a1c13] transition-all shadow-md hover:-translate-y-0.5 group">
                             <Sparkles className="w-4 h-4 text-[#a1e2b6]" />
                             Xem gói & Nâng cấp
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                         </a>
                         <button
                             onClick={onClose}
-                            className="w-full font-geist text-sm font-bold text-slate-400 hover:text-[#102c1e] py-2 transition-colors"
+                            className="w-full font-sans text-sm font-bold text-slate-400 hover:text-[#102c1e] py-2 transition-colors"
                         >
                             Để sau
                         </button>

@@ -33,7 +33,7 @@ const buttonVariants = cva(
   // ── Base — shared across ALL variants ──────────────────────────────────────
   [
     'inline-flex items-center justify-center gap-2 whitespace-nowrap',
-    'font-body text-btn font-medium',           // Inter, 14px, weight 500
+    'font-body text-btn font-medium',           // Geist Sans, 14px, weight 500
     'transition-all duration-200',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
     'disabled:pointer-events-none disabled:opacity-40',

@@ -137,7 +137,7 @@ function FeatureRow({ text, included }: { text: string; included: boolean }) {
                     : <X className="w-2.5 h-2.5 text-slate-300" />
                 }
             </div>
-            <span className={cn('font-inter text-sm', included ? 'text-[#102c1e]' : 'text-slate-400 line-through decoration-slate-200')}>
+            <span className={cn('font-sans text-sm', included ? 'text-[#102c1e]' : 'text-slate-400 line-through decoration-slate-200')}>
                 {text}
             </span>
         </div>
@@ -164,7 +164,7 @@ function PlanCard({ plan, billing, recommended = false }: {
             {/* Badge */}
             {plan.badge && (
                 <div className={cn(
-                    'absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full font-geist text-xs font-black uppercase tracking-widest whitespace-nowrap shadow-md',
+                    'absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full font-sans text-xs font-black uppercase tracking-widest whitespace-nowrap shadow-md',
                     recommended
                         ? 'bg-[#a1e2b6] text-[#102c1e]'
                         : 'bg-[#102c1e] text-white'
@@ -184,10 +184,10 @@ function PlanCard({ plan, billing, recommended = false }: {
                     )}>
                         <Icon className={cn('w-5 h-5', recommended ? 'text-[#a1e2b6]' : 'text-[#102c1e]')} />
                     </div>
-                    <h3 className={cn('font-outfit font-black text-xl mb-1', recommended ? 'text-white' : 'text-[#102c1e]')}>
+                    <h3 className={cn('font-heading font-black text-xl mb-1', recommended ? 'text-white' : 'text-[#102c1e]')}>
                         {plan.name}
                     </h3>
-                    <p className={cn('font-inter text-sm leading-relaxed', recommended ? 'text-white/60' : 'text-slate-500')}>
+                    <p className={cn('font-sans text-sm leading-relaxed', recommended ? 'text-white/60' : 'text-slate-500')}>
                         {plan.description}
                     </p>
                 </div>
@@ -200,13 +200,13 @@ function PlanCard({ plan, billing, recommended = false }: {
                             {price === 0 ? 'Free' : `$${price}`}
                         </span>
                         {price > 0 && (
-                            <span className={cn('font-geist text-sm font-bold mb-1.5', recommended ? 'text-white/40' : 'text-slate-400')}>
+                            <span className={cn('font-sans text-sm font-bold mb-1.5', recommended ? 'text-white/40' : 'text-slate-400')}>
                                 / tháng
                             </span>
                         )}
                     </div>
                     {billing === 'annual' && plan.monthlyPrice > 0 && (
-                        <p className={cn('font-geist text-xs font-bold mt-1', recommended ? 'text-[#a1e2b6]' : 'text-[#102c1e]/50')}>
+                        <p className={cn('font-sans text-xs font-bold mt-1', recommended ? 'text-[#a1e2b6]' : 'text-[#102c1e]/50')}>
                             Tiết kiệm 20% khi thanh toán năm
                         </p>
                     )}
@@ -214,7 +214,7 @@ function PlanCard({ plan, billing, recommended = false }: {
 
                 {/* CTA */}
                 <button className={cn(
-                    'w-full py-3 rounded-2xl font-geist font-black text-sm transition-all mb-6 flex items-center justify-center gap-2',
+                    'w-full py-3 rounded-2xl font-sans font-black text-sm transition-all mb-6 flex items-center justify-center gap-2',
                     recommended
                         ? 'bg-[#a1e2b6] text-[#102c1e] hover:bg-[#8fd4a4] shadow-md'
                         : plan.ctaVariant === 'outline'
@@ -243,7 +243,7 @@ function PlanCard({ plan, billing, recommended = false }: {
                                     : <X className={cn('w-2.5 h-2.5', recommended ? 'text-white/30' : 'text-slate-300')} />
                                 }
                             </div>
-                            <span className={cn('font-inter text-sm',
+                            <span className={cn('font-sans text-sm',
                                 f.included
                                     ? recommended ? 'text-white/90' : 'text-[#102c1e]'
                                     : recommended ? 'text-white/30 line-through decoration-white/20' : 'text-slate-400 line-through decoration-slate-200'
@@ -287,7 +287,7 @@ export default function PricingPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#fafafa] font-inter">
+        <div className="min-h-screen bg-[#fafafa] font-sans">
 
             {/* ── AMBIENT BACKGROUND ── */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -299,11 +299,11 @@ export default function PricingPage() {
 
                 {/* ── HERO ── */}
                 <div className="text-center mb-16">
-                    <div className="inline-flex items-center gap-2 bg-white border border-[#102c1e]/10 text-[#102c1e] px-4 py-2 rounded-full text-xs font-geist font-black mb-6 shadow-sm">
+                    <div className="inline-flex items-center gap-2 bg-white border border-[#102c1e]/10 text-[#102c1e] px-4 py-2 rounded-full text-xs font-sans font-black mb-6 shadow-sm">
                         <Sparkles className="w-3.5 h-3.5 text-[#a1e2b6]" />
                         Transparent Pricing — No hidden fees
                     </div>
-                    <h1 className="font-outfit font-black text-[#102c1e] text-5xl md:text-6xl tracking-tight leading-none mb-5">
+                    <h1 className="font-heading font-black text-[#102c1e] text-5xl md:text-6xl tracking-tight leading-none mb-5">
                         Chọn gói<br />
                         <span className="relative inline-block">
                             phù hợp với bạn
@@ -312,7 +312,7 @@ export default function PricingPage() {
                             </svg>
                         </span>
                     </h1>
-                    <p className="font-inter text-slate-500 text-xl max-w-2xl mx-auto leading-relaxed">
+                    <p className="font-sans text-slate-500 text-xl max-w-2xl mx-auto leading-relaxed">
                         Kizuna Hub hoạt động theo mô hình SaaS minh bạch. Mentor miễn phí mãi mãi. Founder & Investor trả theo tính năng.
                     </p>
                 </div>
@@ -328,7 +328,7 @@ export default function PricingPage() {
                             key={p.id}
                             onClick={() => setPersona(p.id)}
                             className={cn(
-                                'flex items-center gap-2 px-5 py-2.5 rounded-2xl font-geist font-black text-sm transition-all',
+                                'flex items-center gap-2 px-5 py-2.5 rounded-2xl font-sans font-black text-sm transition-all',
                                 persona === p.id
                                     ? 'bg-[#102c1e] text-white shadow-lg'
                                     : 'bg-white border border-[#102c1e]/10 text-slate-500 hover:text-[#102c1e] hover:border-[#102c1e]/25 shadow-sm'
@@ -343,7 +343,7 @@ export default function PricingPage() {
                 {/* ── BILLING TOGGLE ── */}
                 {persona !== 'mentor' && (
                     <div className="flex items-center justify-center gap-3 mb-12">
-                        <span className={cn('font-geist text-sm font-bold', billing === 'monthly' ? 'text-[#102c1e]' : 'text-slate-400')}>
+                        <span className={cn('font-sans text-sm font-bold', billing === 'monthly' ? 'text-[#102c1e]' : 'text-slate-400')}>
                             Hàng tháng
                         </span>
                         <button
@@ -358,11 +358,11 @@ export default function PricingPage() {
                                 billing === 'annual' ? 'translate-x-7' : 'translate-x-1'
                             )} />
                         </button>
-                        <span className={cn('font-geist text-sm font-bold', billing === 'annual' ? 'text-[#102c1e]' : 'text-slate-400')}>
+                        <span className={cn('font-sans text-sm font-bold', billing === 'annual' ? 'text-[#102c1e]' : 'text-slate-400')}>
                             Hàng năm
                         </span>
                         {billing === 'annual' && (
-                            <span className="font-geist text-xs font-black bg-[#a1e2b6]/20 border border-[#a1e2b6]/40 text-[#102c1e] px-2.5 py-1 rounded-full">
+                            <span className="font-sans text-xs font-black bg-[#a1e2b6]/20 border border-[#a1e2b6]/40 text-[#102c1e] px-2.5 py-1 rounded-full">
                                 -20%
                             </span>
                         )}
@@ -379,8 +379,8 @@ export default function PricingPage() {
                                 <Star className="w-8 h-8 text-[#a1e2b6]" />
                             </div>
                             <div className="flex-1 text-center md:text-left">
-                                <h2 className="font-outfit font-black text-2xl text-white mb-1">Mentor — Hoàn toàn miễn phí</h2>
-                                <p className="font-inter text-white/60 leading-relaxed">
+                                <h2 className="font-heading font-black text-2xl text-white mb-1">Mentor — Hoàn toàn miễn phí</h2>
+                                <p className="font-sans text-white/60 leading-relaxed">
                                     Kizuna Hub tin rằng Mentor không nên bị rào cản tài chính. Thay vào đó, chúng tôi giữ chân Mentor bằng{' '}
                                     <strong className="text-[#a1e2b6]">Reputation Score</strong>,{' '}
                                     <strong className="text-[#a1e2b6]">Deal Credit</strong> và{' '}
@@ -388,7 +388,7 @@ export default function PricingPage() {
                                 </p>
                             </div>
                             <div className="shrink-0">
-                                <button className="bg-[#a1e2b6] text-[#102c1e] font-geist font-black px-6 py-3 rounded-2xl hover:bg-[#8fd4a4] transition-all shadow-md flex items-center gap-2">
+                                <button className="bg-[#a1e2b6] text-[#102c1e] font-sans font-black px-6 py-3 rounded-2xl hover:bg-[#8fd4a4] transition-all shadow-md flex items-center gap-2">
                                     Đăng ký làm Mentor <ArrowRight className="w-4 h-4" />
                                 </button>
                             </div>
@@ -409,11 +409,11 @@ export default function PricingPage() {
                                 <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-5">
                                     <div className="flex items-start justify-between mb-4">
                                         <div>
-                                            <p className="font-outfit font-black text-white text-lg">{tier.name}</p>
-                                            <p className="font-geist text-xs text-white/50 mt-0.5">{tier.price}</p>
+                                            <p className="font-heading font-black text-white text-lg">{tier.name}</p>
+                                            <p className="font-sans text-xs text-white/50 mt-0.5">{tier.price}</p>
                                         </div>
                                         {tier.badge && (
-                                            <span className="font-geist text-[9px] font-black bg-[#a1e2b6]/20 text-[#a1e2b6] border border-[#a1e2b6]/30 px-2 py-0.5 rounded-full">
+                                            <span className="font-sans text-[9px] font-black bg-[#a1e2b6]/20 text-[#a1e2b6] border border-[#a1e2b6]/30 px-2 py-0.5 rounded-full">
                                                 {tier.badge}
                                             </span>
                                         )}
@@ -422,7 +422,7 @@ export default function PricingPage() {
                                         {tier.features.map((f, j) => (
                                             <div key={j} className="flex items-center gap-2">
                                                 <Check className="w-3.5 h-3.5 text-[#a1e2b6] shrink-0" />
-                                                <span className="font-inter text-sm text-white/80">{f}</span>
+                                                <span className="font-sans text-sm text-white/80">{f}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -461,15 +461,15 @@ export default function PricingPage() {
                             <div className="w-8 h-8 rounded-xl bg-[#102c1e]/5 flex items-center justify-center mx-auto mb-2">
                                 <item.icon className="w-4 h-4 text-[#102c1e]" />
                             </div>
-                            <p className="font-geist font-black text-[#102c1e] text-sm">{item.label}</p>
-                            <p className="font-inter text-xs text-slate-400 mt-0.5">{item.sub}</p>
+                            <p className="font-sans font-black text-[#102c1e] text-sm">{item.label}</p>
+                            <p className="font-sans text-xs text-slate-400 mt-0.5">{item.sub}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* ── FAQ ── */}
                 <div className="max-w-2xl mx-auto">
-                    <h2 className="font-outfit font-black text-[#102c1e] text-3xl text-center mb-8">Câu hỏi thường gặp</h2>
+                    <h2 className="font-heading font-black text-[#102c1e] text-3xl text-center mb-8">Câu hỏi thường gặp</h2>
                     <div className="space-y-3">
                         {FAQS.map((faq, i) => (
                             <div key={i} className="bg-white border border-[#102c1e]/10 rounded-2xl overflow-hidden shadow-sm">
@@ -477,7 +477,7 @@ export default function PricingPage() {
                                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                                     className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-[#fafafa] transition-colors"
                                 >
-                                    <span className="font-geist font-black text-[#102c1e] text-sm pr-4">{faq.q}</span>
+                                    <span className="font-sans font-black text-[#102c1e] text-sm pr-4">{faq.q}</span>
                                     {openFaq === i
                                         ? <ChevronUp className="w-4 h-4 text-[#102c1e]/40 shrink-0" />
                                         : <ChevronDown className="w-4 h-4 text-[#102c1e]/40 shrink-0" />
@@ -485,7 +485,7 @@ export default function PricingPage() {
                                 </button>
                                 {openFaq === i && (
                                     <div className="px-6 pb-4 border-t border-[#102c1e]/5">
-                                        <p className="font-inter text-sm text-slate-600 leading-relaxed pt-3">{faq.a}</p>
+                                        <p className="font-sans text-sm text-slate-600 leading-relaxed pt-3">{faq.a}</p>
                                     </div>
                                 )}
                             </div>
@@ -496,12 +496,12 @@ export default function PricingPage() {
                 {/* ── BOTTOM CTA ── */}
                 <div className="mt-20 text-center">
                     <div className="inline-block bg-white border border-[#102c1e]/10 rounded-3xl px-10 py-8 shadow-sm">
-                        <p className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Không chắc nên chọn gói nào?</p>
-                        <h3 className="font-outfit font-black text-[#102c1e] text-2xl mb-3">Nói chuyện với team của chúng tôi</h3>
-                        <p className="font-inter text-sm text-slate-500 mb-5 max-w-sm">
+                        <p className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Không chắc nên chọn gói nào?</p>
+                        <h3 className="font-heading font-black text-[#102c1e] text-2xl mb-3">Nói chuyện với team của chúng tôi</h3>
+                        <p className="font-sans text-sm text-slate-500 mb-5 max-w-sm">
                             Demo 30 phút, không ràng buộc. Chúng tôi sẽ giúp bạn chọn gói phù hợp nhất.
                         </p>
-                        <button className="bg-[#102c1e] text-white font-geist font-black px-6 py-3 rounded-2xl hover:bg-[#0a1c13] transition-all shadow-md flex items-center gap-2 mx-auto hover:-translate-y-0.5">
+                        <button className="bg-[#102c1e] text-white font-sans font-black px-6 py-3 rounded-2xl hover:bg-[#0a1c13] transition-all shadow-md flex items-center gap-2 mx-auto hover:-translate-y-0.5">
                             Đặt lịch demo <ArrowRight className="w-4 h-4" />
                         </button>
                     </div>

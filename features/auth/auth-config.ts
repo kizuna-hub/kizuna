@@ -8,7 +8,7 @@ export const authRoutes = {
   verify: "/auth/verify-email",
   forgot: "/auth/forgot-password",
   reset: "/auth/reset-password",
-  founderWorkspace: "/founder/founder-workspace/p1",
+  founderWorkspace: "/founder",
 };
 
 export const authCopy = {
