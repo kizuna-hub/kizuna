@@ -44,7 +44,7 @@ export function SearchOrCreateModal({ isOpen, onClose }: SearchOrCreateProps) {
                         type="text"
                         placeholder="Search workspace..."
                         autoFocus
-                        className="flex-1 bg-transparent border-none outline-none text-[#102c1e] placeholder:text-[#102c1e]/40 ml-3 font-geist text-base"
+                        className="flex-1 bg-transparent border-none outline-none text-[#102c1e] placeholder:text-[#102c1e]/40 ml-3 font-sans text-base"
                     />
                 </div>
 
@@ -52,15 +52,15 @@ export function SearchOrCreateModal({ isOpen, onClose }: SearchOrCreateProps) {
                 <div className="flex items-center justify-between px-4 py-2 border-b border-[#102c1e]/10 bg-[#102c1e]/5">
                     <div className="flex gap-2">
                         {/* Tab Active: Nền tối chữ sáng */}
-                        <span className="px-3 py-1 rounded bg-[#102c1e] text-[#fafafa] text-xs font-bold font-geist shadow-sm">
+                        <span className="px-3 py-1 rounded bg-[#102c1e] text-[#fafafa] text-xs font-bold font-sans shadow-sm">
                             All
                         </span>
                         {/* Tab Inactive */}
-                        <span className="px-3 py-1 rounded text-[#102c1e]/50 hover:text-[#102c1e] cursor-pointer transition-colors text-xs font-bold font-geist">
+                        <span className="px-3 py-1 rounded text-[#102c1e]/50 hover:text-[#102c1e] cursor-pointer transition-colors text-xs font-bold font-sans">
                             Workspace
                         </span>
                     </div>
-                    <div className="flex items-center gap-2 text-[#102c1e]/40 text-[10px] font-geist">
+                    <div className="flex items-center gap-2 text-[#102c1e]/40 text-[10px] font-sans">
                         <kbd className="px-1.5 py-0.5 rounded bg-[#102c1e]/10 border border-[#102c1e]/5 font-bold">Tab</kbd>
                         to switch
                     </div>
@@ -70,7 +70,7 @@ export function SearchOrCreateModal({ isOpen, onClose }: SearchOrCreateProps) {
                 <div className="max-h-[50vh] overflow-y-auto p-2 [&::-webkit-scrollbar]:hidden">
 
                     {/* Mục Actions */}
-                    <div className="px-3 py-2 text-[10px] font-bold text-[#102c1e]/40 uppercase tracking-widest font-geist">
+                    <div className="px-3 py-2 text-[10px] font-bold text-[#102c1e]/40 uppercase tracking-widest font-sans">
                         Actions
                     </div>
 
@@ -92,7 +92,7 @@ export function SearchOrCreateModal({ isOpen, onClose }: SearchOrCreateProps) {
                     </div>
 
                     {/* Mục Recent */}
-                    <div className="px-3 py-2 mt-2 text-[10px] font-bold text-[#102c1e]/40 uppercase tracking-widest font-geist">
+                    <div className="px-3 py-2 mt-2 text-[10px] font-bold text-[#102c1e]/40 uppercase tracking-widest font-sans">
                         Recent
                     </div>
 
@@ -104,14 +104,14 @@ export function SearchOrCreateModal({ isOpen, onClose }: SearchOrCreateProps) {
 
                 {/* 4. Footer hướng dẫn phím tắt */}
                 <div className="flex justify-end gap-4 px-4 py-3 border-t border-[#102c1e]/10 bg-[#102c1e]/5">
-                    <div className="flex items-center gap-1.5 text-[#102c1e]/50 text-[10px] font-geist">
+                    <div className="flex items-center gap-1.5 text-[#102c1e]/50 text-[10px] font-sans">
                         <div className="flex items-center gap-0.5">
                             <kbd className="flex h-4 w-4 items-center justify-center rounded bg-[#102c1e]/10 border border-[#102c1e]/5"><ArrowUp className="w-2.5 h-2.5" /></kbd>
                             <kbd className="flex h-4 w-4 items-center justify-center rounded bg-[#102c1e]/10 border border-[#102c1e]/5"><ArrowDown className="w-2.5 h-2.5" /></kbd>
                         </div>
                         navigate
                     </div>
-                    <div className="flex items-center gap-1.5 text-[#102c1e]/50 text-[10px] font-geist">
+                    <div className="flex items-center gap-1.5 text-[#102c1e]/50 text-[10px] font-sans">
                         <kbd className="flex h-4 w-4 items-center justify-center rounded bg-[#102c1e]/10 border border-[#102c1e]/5"><CornerDownLeft className="w-2.5 h-2.5" /></kbd>
                         run
                     </div>
@@ -129,10 +129,10 @@ const ActionItem = ({ icon: Icon, label, shortcut, modifier, active = false, hre
         <>
             <div className="flex items-center gap-3">
                 <Icon className="w-4 h-4" />
-                <span className="font-geist text-sm font-bold">{label}</span>
+                <span className="font-sans text-sm font-bold">{label}</span>
             </div>
             {shortcut && (
-                <kbd className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#102c1e]/5 border border-[#102c1e]/10 text-[#102c1e]/50 group-hover:text-[#102c1e]/80 text-[10px] font-geist font-bold transition-colors">
+                <kbd className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#102c1e]/5 border border-[#102c1e]/10 text-[#102c1e]/50 group-hover:text-[#102c1e]/80 text-[10px] font-sans font-bold transition-colors">
                     {modifier && <span>{modifier}</span>}
                     <span>{shortcut}</span>
                 </kbd>
@@ -170,11 +170,11 @@ const RecentItem = ({ icon: Icon, title, subtitle, time }: any) => (
                 <Icon className="w-3.5 h-3.5" />
             </div>
             <div className="flex flex-col">
-                <span className="font-geist text-sm font-bold text-[#102c1e]">{title}</span>
-                <span className="font-geist text-[10px] font-medium text-[#102c1e]/50">{subtitle}</span>
+                <span className="font-sans text-sm font-bold text-[#102c1e]">{title}</span>
+                <span className="font-sans text-[10px] font-medium text-[#102c1e]/50">{subtitle}</span>
             </div>
         </div>
-        <span className="font-geist text-[10px] text-[#102c1e]/40 group-hover:text-[#102c1e]/60 transition-colors">
+        <span className="font-sans text-[10px] text-[#102c1e]/40 group-hover:text-[#102c1e]/60 transition-colors">
             {time}
         </span>
     </div>
