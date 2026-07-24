@@ -13,15 +13,15 @@ export default function AsyncFeedbackView() {
     const [isPlaying, setIsPlaying] = useState<number | null>(null);
 
     return (
-        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-sans">
             <div className="mx-auto flex h-full max-w-5xl flex-col space-y-8">
                 {/* Header */}
                 <header className="flex items-center justify-between">
                     <div>
-                        <h1 className="flex items-center gap-3 font-outfit font-black text-[#102c1e] text-4xl tracking-tight">
+                        <h1 className="flex items-center gap-3 font-heading font-black text-[#102c1e] text-4xl tracking-tight">
                             Phòng Phản Biện Bất Đồng Bộ <span className="bg-[#a1e2b6]/30 text-[#102c1e] text-sm px-3 py-1 rounded-full border border-[#a1e2b6]/50">Async</span>
                         </h1>
-                        <p className="font-inter text-slate-600 mt-2 text-base">Ghi âm & đánh dấu trực tiếp lên tài liệu của Founder. Không cần setup họp rườm rà.</p>
+                        <p className="font-sans text-slate-600 mt-2 text-base">Ghi âm & đánh dấu trực tiếp lên tài liệu của Founder. Không cần setup họp rườm rà.</p>
                     </div>
                 </header>
 
@@ -30,13 +30,13 @@ export default function AsyncFeedbackView() {
                     <div className="md:col-span-8 flex flex-col gap-6">
                         <section className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-8 flex flex-col min-h-[500px]">
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="font-outfit font-black text-[#102c1e] text-2xl tracking-tight">Kho Audio Note</h2>
+                                <h2 className="font-heading font-black text-[#102c1e] text-2xl tracking-tight">Kho Audio Note</h2>
                                 <div className="relative">
                                     <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                                     <input
                                         type="text"
                                         placeholder="Tìm theo startup..."
-                                        className="pl-9 pr-4 py-2 bg-[#fafafa] border border-[#102c1e]/10 rounded-xl text-sm font-geist focus:outline-none focus:border-[#102c1e]/30 transition-colors w-64"
+                                        className="pl-9 pr-4 py-2 bg-[#fafafa] border border-[#102c1e]/10 rounded-xl text-sm font-sans focus:outline-none focus:border-[#102c1e]/30 transition-colors w-64"
                                     />
                                 </div>
                             </div>
@@ -54,13 +54,13 @@ export default function AsyncFeedbackView() {
 
                                             <div className="flex flex-col gap-1">
                                                 <div className="flex items-center gap-2">
-                                                    <h3 className="font-outfit font-black text-[#102c1e] text-lg">{fb.startup}</h3>
-                                                    {fb.isRead && <span className="bg-[#a1e2b6]/20 text-[#102c1e] text-[10px] font-bold px-2 py-0.5 rounded-md font-geist border border-[#a1e2b6]">Đã xem</span>}
+                                                    <h3 className="font-heading font-black text-[#102c1e] text-lg">{fb.startup}</h3>
+                                                    {fb.isRead && <span className="bg-[#a1e2b6]/20 text-[#102c1e] text-[10px] font-bold px-2 py-0.5 rounded-md font-sans border border-[#a1e2b6]">Đã xem</span>}
                                                 </div>
-                                                <p className="font-geist text-sm text-slate-600 flex items-center gap-1">
+                                                <p className="font-sans text-sm text-slate-600 flex items-center gap-1">
                                                     <FileText className="w-3.5 h-3.5" /> Gắn với: {fb.document}
                                                 </p>
-                                                <div className="flex items-center gap-3 mt-1.5 text-xs font-geist text-slate-400">
+                                                <div className="flex items-center gap-3 mt-1.5 text-xs font-sans text-slate-400">
                                                     <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {fb.duration}</span>
                                                     <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                                                     <span>{fb.timeInfo}</span>
@@ -69,7 +69,7 @@ export default function AsyncFeedbackView() {
                                         </div>
 
                                         <div className="flex justify-end">
-                                            <button className="flex items-center gap-1 text-sm font-bold font-geist text-[#102c1e]/60 group-hover:text-[#102c1e] transition-colors bg-white px-4 py-2 border border-[#102c1e]/10 rounded-lg group-hover:border-[#102c1e]/30">
+                                            <button className="flex items-center gap-1 text-sm font-bold font-sans text-[#102c1e]/60 group-hover:text-[#102c1e] transition-colors bg-white px-4 py-2 border border-[#102c1e]/10 rounded-lg group-hover:border-[#102c1e]/30">
                                                 Tới File <ChevronRight className="w-4 h-4" />
                                             </button>
                                         </div>
@@ -88,31 +88,31 @@ export default function AsyncFeedbackView() {
                                 <Mic className="w-8 h-8 text-[#a1e2b6]" />
                             </div>
 
-                            <h2 className="font-outfit font-black text-[#fafafa] text-2xl tracking-tight mb-3 relative z-10">
+                            <h2 className="font-heading font-black text-[#fafafa] text-2xl tracking-tight mb-3 relative z-10">
                                 Bắt đầu Recording
                             </h2>
-                            <p className="font-inter text-sm text-white/70 mb-8 relative z-10">
+                            <p className="font-sans text-sm text-white/70 mb-8 relative z-10">
                                 Mở bất kỳ tài liệu nào của Startup trong Dashboard, trình ghi âm sẽ tự động tích hợp.
                             </p>
 
-                            <button className="w-full py-3.5 rounded-xl bg-white text-[#102c1e] font-geist font-bold text-sm hover:bg-[#fafafa] hover:scale-[1.02] transition-all shadow-lg relative z-10">
+                            <button className="w-full py-3.5 rounded-xl bg-white text-[#102c1e] font-sans font-bold text-sm hover:bg-[#fafafa] hover:scale-[1.02] transition-all shadow-lg relative z-10">
                                 Tới Kho Tài Liệu
                             </button>
                         </section>
 
                         <section className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-6">
-                            <h3 className="font-outfit font-black text-[#102c1e] text-lg mb-4">Cách thức hoạt động</h3>
-                            <ul className="space-y-4 font-inter text-sm text-slate-600">
+                            <h3 className="font-heading font-black text-[#102c1e] text-lg mb-4">Cách thức hoạt động</h3>
+                            <ul className="space-y-4 font-sans text-sm text-slate-600">
                                 <li className="flex items-start gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-[#102c1e]/5 text-[#102c1e] flex items-center justify-center shrink-0 font-geist font-bold text-xs">1</div>
+                                    <div className="w-6 h-6 rounded-full bg-[#102c1e]/5 text-[#102c1e] flex items-center justify-center shrink-0 font-sans font-bold text-xs">1</div>
                                     <span>Bạn mở file PDF / Báo cáo định kỳ của Founder.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-[#102c1e]/5 text-[#102c1e] flex items-center justify-center shrink-0 font-geist font-bold text-xs">2</div>
+                                    <div className="w-6 h-6 rounded-full bg-[#102c1e]/5 text-[#102c1e] flex items-center justify-center shrink-0 font-sans font-bold text-xs">2</div>
                                     <span>Bấm Mic, vừa cuộn trang vừa nói. Dùng chuột vẽ lên điểm bất hợp lý.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-[#102c1e]/5 text-[#102c1e] flex items-center justify-center shrink-0 font-geist font-bold text-xs">3</div>
+                                    <div className="w-6 h-6 rounded-full bg-[#102c1e]/5 text-[#102c1e] flex items-center justify-center shrink-0 font-sans font-bold text-xs">3</div>
                                     <span>Founder nhận được 1 video/audio nhẹ <MessageSquare className="w-3 h-3 inline text-[#102c1e]" /> ghép với đúng context màn hình bạn đang xem.</span>
                                 </li>
                             </ul>

@@ -216,25 +216,25 @@ export default function MentorInbox() {
     const filtered = activeFilter === 'all' ? requests : requests.filter(r => r.status === activeFilter);
 
     return (
-        <div className="h-screen overflow-hidden bg-[#fafafa] font-inter flex flex-col">
+        <div className="h-screen overflow-hidden bg-[#fafafa] font-sans flex flex-col">
 
             {/* ── TOP HEADER BAR ── */}
             <header className="shrink-0 px-8 pt-6 pb-4 border-b border-[#102c1e]/8 bg-white">
                 <div className="flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-1">
-                            <h1 className="font-outfit font-black text-[#102c1e] text-2xl tracking-tight">Mentor Inbox</h1>
+                            <h1 className="font-heading font-black text-[#102c1e] text-2xl tracking-tight">Mentor Inbox</h1>
                             {pending > 0 && (
                                 <div className="flex items-center gap-1.5 bg-[#102c1e] text-white px-2.5 py-1 rounded-full">
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#a1e2b6] opacity-75" />
                                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#a1e2b6]" />
                                     </span>
-                                    <span className="font-geist text-[10px] font-black">{pending} chờ phản hồi</span>
+                                    <span className="font-sans text-[10px] font-black">{pending} chờ phản hồi</span>
                                 </div>
                             )}
                         </div>
-                        <p className="font-inter text-slate-500 text-sm">
+                        <p className="font-sans text-slate-500 text-sm">
                             Founder gửi yêu cầu kết nối. AI đã phân tích và sắp xếp theo độ phù hợp hồ sơ của bạn.
                         </p>
                     </div>
@@ -244,7 +244,7 @@ export default function MentorInbox() {
                                 key={f}
                                 onClick={() => setActiveFilter(f)}
                                 className={cn(
-                                    'px-3 py-1.5 rounded-xl font-geist text-xs font-bold transition-all',
+                                    'px-3 py-1.5 rounded-xl font-sans text-xs font-bold transition-all',
                                     activeFilter === f
                                         ? 'bg-[#102c1e] text-white shadow-md'
                                         : 'bg-[#fafafa] border border-[#102c1e]/10 text-slate-500 hover:text-[#102c1e] hover:border-[#102c1e]/25'
@@ -269,7 +269,7 @@ export default function MentorInbox() {
                         {filtered.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
                                 <Inbox className="w-10 h-10 text-[#102c1e]/20 mb-3" />
-                                <p className="font-geist font-bold text-sm text-slate-400">Không có yêu cầu nào</p>
+                                <p className="font-sans font-bold text-sm text-slate-400">Không có yêu cầu nào</p>
                             </div>
                         ) : (
                             filtered.map(req => {
@@ -297,10 +297,10 @@ export default function MentorInbox() {
                                                 {req.status === 'pending' && (
                                                     <span className="w-1.5 h-1.5 rounded-full bg-[#102c1e] shrink-0 mt-[3px]" />
                                                 )}
-                                                <span className="font-outfit font-black text-[#102c1e] text-base leading-tight truncate">
+                                                <span className="font-heading font-black text-[#102c1e] text-base leading-tight truncate">
                                                     {req.startup}
                                                 </span>
-                                                <span className="font-geist text-[9px] font-bold bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md shrink-0 uppercase tracking-wide">
+                                                <span className="font-sans text-[9px] font-bold bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-md shrink-0 uppercase tracking-wide">
                                                     {req.vertical}
                                                 </span>
                                             </div>
@@ -309,20 +309,20 @@ export default function MentorInbox() {
 
                                         {/* ── ROW 2: The Hook — Ask • Equity • Time ── */}
                                         <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                                            <span className="font-geist text-xs font-bold text-[#102c1e]">{req.ask}</span>
+                                            <span className="font-sans text-xs font-bold text-[#102c1e]">{req.ask}</span>
                                             <span className="text-slate-300 select-none">·</span>
-                                            <span className="font-geist text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">
+                                            <span className="font-sans text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">
                                                 {req.equityOffer} Equity
                                             </span>
                                             <span className="text-slate-300 select-none">·</span>
-                                            <span className="font-geist text-xs text-slate-500 flex items-center gap-1">
+                                            <span className="font-sans text-xs text-slate-500 flex items-center gap-1">
                                                 <Clock className="w-3 h-3" />
                                                 {req.timeCommitment}
                                             </span>
                                         </div>
 
                                         {/* ── ROW 3: Pitch Abstract Snippet (2-line clamp) ── */}
-                                        <p className="font-inter text-xs text-slate-500 leading-relaxed line-clamp-2 mb-2.5">
+                                        <p className="font-sans text-xs text-slate-500 leading-relaxed line-clamp-2 mb-2.5">
                                             {req.pitchAbstract}
                                         </p>
 
@@ -330,21 +330,21 @@ export default function MentorInbox() {
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2 min-w-0">
                                                 <div className="w-5 h-5 rounded-full bg-[#102c1e] flex items-center justify-center shrink-0">
-                                                    <span className="font-geist text-[8px] font-black text-[#a1e2b6]">
+                                                    <span className="font-sans text-[8px] font-black text-[#a1e2b6]">
                                                         {req.founder.split(' ').map(n => n[0]).slice(0, 2).join('')}
                                                     </span>
                                                 </div>
-                                                <span className="font-inter text-xs text-slate-500 truncate">{req.founder}</span>
+                                                <span className="font-sans text-xs text-slate-500 truncate">{req.founder}</span>
                                             </div>
                                             <div className="flex items-center gap-1.5 shrink-0">
                                                 <span className={cn(
-                                                    'inline-flex items-center gap-1 font-geist text-[9px] font-bold px-1.5 py-0.5 rounded-md border',
+                                                    'inline-flex items-center gap-1 font-sans text-[9px] font-bold px-1.5 py-0.5 rounded-md border',
                                                     statusCfg.badge
                                                 )}>
                                                     <span className={cn('w-1 h-1 rounded-full', statusCfg.dot)} />
                                                     {statusCfg.label}
                                                 </span>
-                                                <span className="font-geist text-[10px] text-slate-400">{req.relativeTime}</span>
+                                                <span className="font-sans text-[10px] text-slate-400">{req.relativeTime}</span>
                                             </div>
                                         </div>
                                     </button>
@@ -363,24 +363,24 @@ export default function MentorInbox() {
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-center gap-4">
                                         {/* Logo avatar */}
-                                        <div className="w-14 h-14 rounded-2xl bg-[#102c1e] flex items-center justify-center font-outfit font-black text-2xl text-white shadow-lg">
+                                        <div className="w-14 h-14 rounded-2xl bg-[#102c1e] flex items-center justify-center font-heading font-black text-2xl text-white shadow-lg">
                                             {selected.startup.charAt(0)}
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2.5 mb-1 flex-wrap">
-                                                <h2 className="font-outfit font-black text-[#102c1e] text-2xl tracking-tight">{selected.startup}</h2>
-                                                <span className="font-geist text-[10px] font-bold bg-[#102c1e]/5 border border-[#102c1e]/10 px-2.5 py-1 rounded-full text-[#102c1e]">
+                                                <h2 className="font-heading font-black text-[#102c1e] text-2xl tracking-tight">{selected.startup}</h2>
+                                                <span className="font-sans text-[10px] font-bold bg-[#102c1e]/5 border border-[#102c1e]/10 px-2.5 py-1 rounded-full text-[#102c1e]">
                                                     {selected.vertical}
                                                 </span>
                                                 <span className={cn(
-                                                    'font-geist text-[9px] font-bold px-2 py-0.5 rounded-md border',
+                                                    'font-sans text-[9px] font-bold px-2 py-0.5 rounded-md border',
                                                     STATUS_CFG[selected.status].badge
                                                 )}>
                                                     <span className={cn('inline-block w-1.5 h-1.5 rounded-full mr-1', STATUS_CFG[selected.status].dot)} />
                                                     {STATUS_CFG[selected.status].label}
                                                 </span>
                                             </div>
-                                            <p className="font-inter text-sm text-slate-500">
+                                            <p className="font-sans text-sm text-slate-500">
                                                 Bởi <strong className="text-[#102c1e]">{selected.founder}</strong>
                                                 <span className="text-slate-300 mx-2">·</span>
                                                 {selected.founderTitle}
@@ -395,19 +395,19 @@ export default function MentorInbox() {
                                         <div className="flex items-center gap-2 shrink-0">
                                             <button
                                                 onClick={() => setShowCounter(true)}
-                                                className="font-geist text-sm font-bold text-[#102c1e] border border-[#102c1e]/15 px-4 py-2.5 rounded-xl hover:border-[#102c1e]/30 hover:bg-[#102c1e]/5 transition-all flex items-center gap-2"
+                                                className="font-sans text-sm font-bold text-[#102c1e] border border-[#102c1e]/15 px-4 py-2.5 rounded-xl hover:border-[#102c1e]/30 hover:bg-[#102c1e]/5 transition-all flex items-center gap-2"
                                             >
                                                 <MessageSquare className="w-4 h-4" /> Counter Offer
                                             </button>
                                             <button
                                                 onClick={() => handleAction(selected.id, 'declined')}
-                                                className="font-geist text-sm font-bold text-slate-400 border border-slate-200 px-4 py-2.5 rounded-xl hover:bg-slate-50 hover:text-slate-600 transition-all flex items-center gap-2"
+                                                className="font-sans text-sm font-bold text-slate-400 border border-slate-200 px-4 py-2.5 rounded-xl hover:bg-slate-50 hover:text-slate-600 transition-all flex items-center gap-2"
                                             >
                                                 <X className="w-4 h-4" /> Từ chối
                                             </button>
                                             <button
                                                 onClick={() => handleAction(selected.id, 'accepted')}
-                                                className="font-geist text-sm font-black text-white bg-[#102c1e] px-5 py-2.5 rounded-xl hover:bg-[#0a1c13] transition-all shadow-md flex items-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
+                                                className="font-sans text-sm font-black text-white bg-[#102c1e] px-5 py-2.5 rounded-xl hover:bg-[#0a1c13] transition-all shadow-md flex items-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
                                             >
                                                 <CheckCircle2 className="w-4 h-4 text-[#a1e2b6]" /> Chấp nhận & Ký FAST
                                             </button>
@@ -416,7 +416,7 @@ export default function MentorInbox() {
 
                                     {selected.status !== 'pending' && (
                                         <div className={cn(
-                                            'flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-geist font-bold',
+                                            'flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-sans font-bold',
                                             STATUS_CFG[selected.status].badge
                                         )}>
                                             {selected.status === 'accepted' ? <CheckCircle2 className="w-4 h-4" /> : <X className="w-4 h-4" />}
@@ -428,19 +428,19 @@ export default function MentorInbox() {
                                 {/* Counter form */}
                                 {showCounter && selected.status === 'pending' && (
                                     <div className="mt-5 bg-[#fafafa] border border-[#102c1e]/10 rounded-2xl p-5">
-                                        <p className="font-geist font-black text-sm text-[#102c1e] mb-3">💬 Gửi Counter Offer</p>
+                                        <p className="font-sans font-black text-sm text-[#102c1e] mb-3">💬 Gửi Counter Offer</p>
                                         <textarea
                                             value={counterNote}
                                             onChange={e => setCounterNote(e.target.value)}
                                             placeholder="VD: Tôi đồng ý tham gia với điều kiện equity giảm xuống 0.3% và cam kết 2h/tháng thay vì 4h..."
                                             rows={3}
-                                            className="w-full text-sm font-inter text-[#102c1e] bg-white border border-[#102c1e]/10 rounded-xl px-4 py-3 resize-none focus:outline-none focus:border-[#102c1e]/30 placeholder:text-slate-300"
+                                            className="w-full text-sm font-sans text-[#102c1e] bg-white border border-[#102c1e]/10 rounded-xl px-4 py-3 resize-none focus:outline-none focus:border-[#102c1e]/30 placeholder:text-slate-300"
                                         />
                                         <div className="flex items-center justify-end gap-2 mt-3">
-                                            <button onClick={() => setShowCounter(false)} className="font-geist text-xs font-bold text-slate-400 hover:text-[#102c1e] transition-colors">Hủy</button>
+                                            <button onClick={() => setShowCounter(false)} className="font-sans text-xs font-bold text-slate-400 hover:text-[#102c1e] transition-colors">Hủy</button>
                                             <button
                                                 onClick={() => { handleAction(selected.id, 'countered'); setShowCounter(false); }}
-                                                className="flex items-center gap-2 bg-[#102c1e] text-white font-geist text-xs font-black px-4 py-2 rounded-xl hover:bg-[#0a1c13] transition-colors"
+                                                className="flex items-center gap-2 bg-[#102c1e] text-white font-sans text-xs font-black px-4 py-2 rounded-xl hover:bg-[#0a1c13] transition-colors"
                                             >
                                                 <Send className="w-3.5 h-3.5" /> Gửi Counter
                                             </button>
@@ -462,12 +462,12 @@ export default function MentorInbox() {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <p className="font-geist font-black text-white text-sm">AI Match Analysis</p>
+                                                <p className="font-sans font-black text-white text-sm">AI Match Analysis</p>
                                                 <div className="bg-[#a1e2b6]/15 border border-[#a1e2b6]/25 px-2 py-0.5 rounded-full">
                                                     <span className="font-mono text-[10px] font-black text-[#a1e2b6]">{selected.matchScore}% phù hợp</span>
                                                 </div>
                                             </div>
-                                            <p className="font-inter text-sm text-white/75 leading-relaxed">{selected.aiSummary}</p>
+                                            <p className="font-sans text-sm text-white/75 leading-relaxed">{selected.aiSummary}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -479,15 +479,15 @@ export default function MentorInbox() {
                                     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                                         <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
                                             <DollarSign className="w-4 h-4 text-[#102c1e]/40" />
-                                            <p className="font-geist text-xs font-black text-[#102c1e] uppercase tracking-widest">Điều khoản đề xuất</p>
+                                            <p className="font-sans text-xs font-black text-[#102c1e] uppercase tracking-widest">Điều khoản đề xuất</p>
                                         </div>
 
                                         {/* Equity hero */}
                                         <div className="px-5 pt-5 pb-4 border-b border-dashed border-slate-200">
-                                            <p className="font-geist text-[10px] text-slate-400 uppercase tracking-widest mb-1">Đề xuất Equity (FAST)</p>
+                                            <p className="font-sans text-[10px] text-slate-400 uppercase tracking-widest mb-1">Đề xuất Equity (FAST)</p>
                                             <div className="flex items-end gap-2">
                                                 <span className="font-mono text-4xl font-black text-[#102c1e]">{selected.equityOffer}</span>
-                                                <span className="font-geist text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-lg mb-1">
+                                                <span className="font-sans text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-lg mb-1">
                                                     {selected.vestingSchedule}
                                                 </span>
                                             </div>
@@ -499,7 +499,7 @@ export default function MentorInbox() {
                                                 { label: 'Cam kết thời gian', value: selected.timeCommitment },
                                             ].map((item) => (
                                                 <div key={item.label} className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-slate-50 transition-colors">
-                                                    <span className="font-inter text-sm text-slate-500">{item.label}</span>
+                                                    <span className="font-sans text-sm text-slate-500">{item.label}</span>
                                                     <span className="font-mono text-sm font-bold text-[#102c1e]">{item.value}</span>
                                                 </div>
                                             ))}
@@ -510,12 +510,12 @@ export default function MentorInbox() {
                                     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                                         <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
                                             <TrendingUp className="w-4 h-4 text-[#102c1e]/40" />
-                                            <p className="font-geist text-xs font-black text-[#102c1e] uppercase tracking-widest">Traction Hiện tại</p>
+                                            <p className="font-sans text-xs font-black text-[#102c1e] uppercase tracking-widest">Traction Hiện tại</p>
                                         </div>
 
                                         {/* Mini sparkline bar chart */}
                                         <div className="px-5 pt-4 pb-3">
-                                            <p className="font-geist text-[10px] text-slate-400 uppercase tracking-wide mb-2">Revenue trend (6 mo)</p>
+                                            <p className="font-sans text-[10px] text-slate-400 uppercase tracking-wide mb-2">Revenue trend (6 mo)</p>
                                             <div className="flex items-end gap-1 h-10">
                                                 {selected.sparkline.map((h, i) => (
                                                     <div key={i} className="flex-1 rounded-sm transition-all"
@@ -539,11 +539,11 @@ export default function MentorInbox() {
                                                         ? 'bg-[#102c1e]/5 border-[#102c1e]/15'
                                                         : 'bg-slate-50 border-slate-200'
                                                 )}>
-                                                    <p className="font-geist text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">{m.label}</p>
+                                                    <p className="font-sans text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">{m.label}</p>
                                                     <div className="flex items-end gap-1.5">
                                                         <span className="font-mono text-base font-black text-[#102c1e]">{m.value}</span>
                                                         {m.trend && (
-                                                            <span className="font-geist text-[10px] font-bold text-emerald-600 mb-0.5">{m.trend}</span>
+                                                            <span className="font-sans text-[10px] font-bold text-emerald-600 mb-0.5">{m.trend}</span>
                                                         )}
                                                     </div>
                                                 </div>
@@ -556,12 +556,12 @@ export default function MentorInbox() {
                                 <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                                     <div className="px-6 pt-5 pb-4 border-b border-slate-100 flex items-center gap-2">
                                         <FileText className="w-4 h-4 text-[#102c1e]/50" />
-                                        <h3 className="font-outfit font-black text-[#102c1e] text-lg">Giới thiệu dự án</h3>
+                                        <h3 className="font-heading font-black text-[#102c1e] text-lg">Giới thiệu dự án</h3>
                                         <div className="ml-auto flex items-center gap-1.5">
                                             <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                                            <span className="font-geist text-xs text-slate-400">{selected.location}</span>
+                                            <span className="font-sans text-xs text-slate-400">{selected.location}</span>
                                             <span className="mx-1 text-slate-200">·</span>
-                                            <span className="font-geist text-xs font-bold bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-md">{selected.stage}</span>
+                                            <span className="font-sans text-xs font-bold bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-md">{selected.stage}</span>
                                         </div>
                                     </div>
 
@@ -575,9 +575,9 @@ export default function MentorInbox() {
                                                     <div className="w-6 h-6 rounded-lg bg-red-50 flex items-center justify-center">
                                                         <AlertCircle className="w-3.5 h-3.5 text-red-500" />
                                                     </div>
-                                                    <span className="font-geist text-xs font-black text-red-600 uppercase tracking-widest">Vấn đề</span>
+                                                    <span className="font-sans text-xs font-black text-red-600 uppercase tracking-widest">Vấn đề</span>
                                                 </div>
-                                                <p className="font-inter text-sm text-slate-700 leading-relaxed">{selected.problem}</p>
+                                                <p className="font-sans text-sm text-slate-700 leading-relaxed">{selected.problem}</p>
                                             </div>
                                         </div>
 
@@ -589,9 +589,9 @@ export default function MentorInbox() {
                                                     <div className="w-6 h-6 rounded-lg bg-amber-50 flex items-center justify-center">
                                                         <BarChart3 className="w-3.5 h-3.5 text-amber-500" />
                                                     </div>
-                                                    <span className="font-geist text-xs font-black text-amber-600 uppercase tracking-widest">Thực trạng</span>
+                                                    <span className="font-sans text-xs font-black text-amber-600 uppercase tracking-widest">Thực trạng</span>
                                                 </div>
-                                                <p className="font-inter text-sm text-slate-700 leading-relaxed">{selected.situation}</p>
+                                                <p className="font-sans text-sm text-slate-700 leading-relaxed">{selected.situation}</p>
                                             </div>
                                         </div>
 
@@ -603,9 +603,9 @@ export default function MentorInbox() {
                                                     <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center">
                                                         <Lightbulb className="w-3.5 h-3.5 text-emerald-600" />
                                                     </div>
-                                                    <span className="font-geist text-xs font-black text-emerald-700 uppercase tracking-widest">Giải pháp</span>
+                                                    <span className="font-sans text-xs font-black text-emerald-700 uppercase tracking-widest">Giải pháp</span>
                                                 </div>
-                                                <p className="font-inter text-sm text-slate-700 leading-relaxed">{selected.solution}</p>
+                                                <p className="font-sans text-sm text-slate-700 leading-relaxed">{selected.solution}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -613,7 +613,7 @@ export default function MentorInbox() {
                                     {/* Tags footer */}
                                     <div className="flex flex-wrap gap-2 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
                                         {selected.tags.map(tag => (
-                                            <span key={tag} className="font-geist text-[10px] font-bold bg-white border border-slate-200 text-slate-500 px-2.5 py-1 rounded-lg">
+                                            <span key={tag} className="font-sans text-[10px] font-bold bg-white border border-slate-200 text-slate-500 px-2.5 py-1 rounded-lg">
                                                 {tag}
                                             </span>
                                         ))}
@@ -624,19 +624,19 @@ export default function MentorInbox() {
                                 <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                                     <div className="px-6 pt-5 pb-4 border-b border-slate-100 flex items-center gap-2">
                                         <Briefcase className="w-4 h-4 text-[#102c1e]/50" />
-                                        <h3 className="font-outfit font-black text-[#102c1e] text-lg">Thông tin Founder</h3>
+                                        <h3 className="font-heading font-black text-[#102c1e] text-lg">Thông tin Founder</h3>
                                     </div>
                                     <div className="px-6 py-5">
                                         {/* Avatar + Name row */}
                                         <div className="flex items-center gap-4 mb-5">
-                                            <div className="w-14 h-14 rounded-2xl bg-[#102c1e] flex items-center justify-center font-outfit font-black text-xl text-[#a1e2b6] shrink-0">
+                                            <div className="w-14 h-14 rounded-2xl bg-[#102c1e] flex items-center justify-center font-heading font-black text-xl text-[#a1e2b6] shrink-0">
                                                 {selected.founder.split(' ').map(n => n[0]).slice(0, 2).join('')}
                                             </div>
                                             <div>
-                                                <p className="font-outfit font-black text-[#102c1e] text-lg leading-tight">{selected.founder}</p>
-                                                <p className="font-inter text-sm text-slate-500 mt-0.5">{selected.founderTitle}</p>
+                                                <p className="font-heading font-black text-[#102c1e] text-lg leading-tight">{selected.founder}</p>
+                                                <p className="font-sans text-sm text-slate-500 mt-0.5">{selected.founderTitle}</p>
                                                 <div className="flex items-center gap-2 mt-1.5">
-                                                    <span className="font-geist text-[10px] font-bold bg-[#102c1e]/5 border border-[#102c1e]/10 text-[#102c1e]/60 px-2 py-0.5 rounded-md">
+                                                    <span className="font-sans text-[10px] font-bold bg-[#102c1e]/5 border border-[#102c1e]/10 text-[#102c1e]/60 px-2 py-0.5 rounded-md">
                                                         {selected.founderCompany}
                                                     </span>
                                                 </div>
@@ -656,13 +656,13 @@ export default function MentorInbox() {
                                                         <Icon className="w-3.5 h-3.5 text-slate-500" />
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-wide">{label}</p>
+                                                        <p className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-wide">{label}</p>
                                                         {href ? (
-                                                            <a href={href} className="font-inter text-sm font-semibold text-[#102c1e] truncate block hover:underline mt-0.5">
+                                                            <a href={href} className="font-sans text-sm font-semibold text-[#102c1e] truncate block hover:underline mt-0.5">
                                                                 {value}
                                                             </a>
                                                         ) : (
-                                                            <p className="font-inter text-sm font-semibold text-[#102c1e] truncate mt-0.5">{value}</p>
+                                                            <p className="font-sans text-sm font-semibold text-[#102c1e] truncate mt-0.5">{value}</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -678,12 +678,12 @@ export default function MentorInbox() {
                                             <Shield className="w-5 h-5 text-[#102c1e]/40" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="font-geist font-black text-sm text-[#102c1e]">Data Room đính kèm</p>
-                                            <p className="font-inter text-xs text-slate-500 mt-0.5">
+                                            <p className="font-sans font-black text-sm text-[#102c1e]">Data Room đính kèm</p>
+                                            <p className="font-sans text-xs text-slate-500 mt-0.5">
                                                 Pitch deck, Financial model và Cap Table — chỉ mở khi chấp nhận.
                                             </p>
                                         </div>
-                                        <button className="flex items-center gap-2 bg-[#102c1e] text-white font-geist font-black text-xs px-4 py-2 rounded-xl hover:bg-[#0a1c13] transition-colors">
+                                        <button className="flex items-center gap-2 bg-[#102c1e] text-white font-sans font-black text-xs px-4 py-2 rounded-xl hover:bg-[#0a1c13] transition-colors">
                                             <ExternalLink className="w-3.5 h-3.5" /> Xem Data Room
                                         </button>
                                     </div>
@@ -694,10 +694,10 @@ export default function MentorInbox() {
                                     <div className="bg-[#a1e2b6]/10 border border-[#a1e2b6]/30 rounded-3xl p-5 flex items-center gap-4">
                                         <CalendarDays className="w-8 h-8 text-[#102c1e] shrink-0" />
                                         <div className="flex-1">
-                                            <p className="font-geist font-black text-sm text-[#102c1e]">Đặt lịch buổi kick-off</p>
-                                            <p className="font-inter text-xs text-slate-600 mt-0.5">Hợp đồng FAST đã được khởi tạo. Đặt lịch buổi đầu tiên với {selected.founder}.</p>
+                                            <p className="font-sans font-black text-sm text-[#102c1e]">Đặt lịch buổi kick-off</p>
+                                            <p className="font-sans text-xs text-slate-600 mt-0.5">Hợp đồng FAST đã được khởi tạo. Đặt lịch buổi đầu tiên với {selected.founder}.</p>
                                         </div>
-                                        <button className="flex items-center gap-2 bg-[#102c1e] text-white font-geist font-black text-xs px-4 py-2 rounded-xl hover:bg-[#0a1c13] transition-all shadow-sm whitespace-nowrap">
+                                        <button className="flex items-center gap-2 bg-[#102c1e] text-white font-sans font-black text-xs px-4 py-2 rounded-xl hover:bg-[#0a1c13] transition-all shadow-sm whitespace-nowrap">
                                             Đặt lịch <ArrowRight className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
@@ -708,7 +708,7 @@ export default function MentorInbox() {
                         <div className="flex-1 flex items-center justify-center">
                             <div className="text-center">
                                 <Inbox className="w-12 h-12 text-[#102c1e]/15 mx-auto mb-3" />
-                                <p className="font-geist font-bold text-slate-400">Chọn một yêu cầu để xem chi tiết</p>
+                                <p className="font-sans font-bold text-slate-400">Chọn một yêu cầu để xem chi tiết</p>
                             </div>
                         </div>
                     )}

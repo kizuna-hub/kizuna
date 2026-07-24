@@ -145,15 +145,15 @@ export default function FastLedger() {
     }, [search, filter]);
 
     return (
-        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter text-[#102c1e]">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-sans text-[#102c1e]">
             <div className="mx-auto flex h-full max-w-6xl flex-col space-y-6">
 
                 {/* ── HEADER ── */}
                 <header className="flex items-end justify-between border-b border-slate-200 pb-5">
                     <div>
-                        <p className="font-geist text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Quản trị cổ phần</p>
+                        <p className="font-sans text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Quản trị cổ phần</p>
                         <div className="flex items-center gap-2.5">
-                            <h1 className="font-outfit font-black text-[#102c1e] text-3xl md:text-4xl tracking-tight">
+                            <h1 className="font-heading font-black text-[#102c1e] text-3xl md:text-4xl tracking-tight">
                                 Sổ cái Hợp đồng FAST
                             </h1>
                             {/* [i] Tooltip — compressed legal note */}
@@ -167,8 +167,8 @@ export default function FastLedger() {
                                 </button>
                                 {showTooltip && (
                                     <div className="absolute left-7 top-0 z-30 w-72 bg-[#102c1e] text-white rounded-2xl px-4 py-3 shadow-2xl pointer-events-none">
-                                        <p className="font-geist font-black text-xs mb-1">⚖️ Lưu ý pháp lý — FAST</p>
-                                        <p className="font-inter text-[11px] text-white/70 leading-relaxed">
+                                        <p className="font-sans font-black text-xs mb-1">⚖️ Lưu ý pháp lý — FAST</p>
+                                        <p className="font-sans text-[11px] text-white/70 leading-relaxed">
                                             Hợp đồng là bản ghi nội bộ, không có hiệu lực pháp lý tại Việt Nam nếu chưa công chứng theo Luật DN 2020.{' '}
                                             <a href="#" className="underline text-[#a1e2b6]">Tìm hiểu thêm →</a>
                                         </p>
@@ -177,14 +177,14 @@ export default function FastLedger() {
                                 )}
                             </div>
                         </div>
-                        <p className="font-inter text-sm text-slate-500 mt-1.5">
+                        <p className="font-sans text-sm text-slate-500 mt-1.5">
                             Quản lý Cam kết Tiêu chuẩn & Lộ trình Vesting (Founder / Advisor Standard Template).
                         </p>
                     </div>
                     {/* Template download — header only */}
                     <a
                         href="#"
-                        className="hidden md:flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-geist text-sm font-bold text-[#102c1e] shadow-sm transition-colors hover:bg-slate-50"
+                        className="hidden md:flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-sans text-sm font-bold text-[#102c1e] shadow-sm transition-colors hover:bg-slate-50"
                     >
                         <Download className="h-4 w-4" /> Template FAST-VN
                     </a>
@@ -196,40 +196,40 @@ export default function FastLedger() {
                     {/* Vested */}
                     <div className="relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                         <div className="absolute right-0 top-0 h-28 w-28 rounded-bl-full bg-[#a1e2b6]/8 pointer-events-none" />
-                        <p className="relative font-geist text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <p className="relative font-sans text-[10px] font-black uppercase tracking-widest text-slate-400">
                             Tổng Tài sản Đã Vest
                         </p>
                         <p className="relative mt-3 font-mono text-4xl font-black tracking-tighter text-[#102c1e]">{totalVested}</p>
                         <div className="relative mt-3 flex items-center gap-1.5">
                             <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-                            <span className="font-geist text-xs font-bold text-emerald-600">+$12K vs. tháng trước</span>
+                            <span className="font-sans text-xs font-bold text-emerald-600">+$12K vs. tháng trước</span>
                         </div>
                     </div>
 
                     {/* Unvested */}
                     <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-                        <p className="font-geist text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <p className="font-sans text-[10px] font-black uppercase tracking-widest text-slate-400">
                             Tài sản Đang Chờ (Unvested)
                         </p>
                         <p className="mt-3 font-mono text-4xl font-black tracking-tighter text-slate-400">{totalUnvested}</p>
-                        <p className="mt-3 font-geist text-xs text-slate-400">Trên {CONTRACTS.filter(c => c.status !== 'complete').length} hợp đồng đang chạy</p>
+                        <p className="mt-3 font-sans text-xs text-slate-400">Trên {CONTRACTS.filter(c => c.status !== 'complete').length} hợp đồng đang chạy</p>
                     </div>
 
                     {/* Next Cliff — dark card */}
                     <div className="relative flex flex-col overflow-hidden rounded-2xl bg-[#102c1e] p-6 shadow-sm hover:shadow-md transition-shadow">
                         <div className="absolute -right-6 -top-6 w-32 h-32 bg-[#a1e2b6]/10 rounded-full blur-2xl pointer-events-none" />
-                        <p className="relative flex items-center gap-2 font-geist text-[10px] font-black uppercase tracking-widest text-[#a1e2b6]/70">
+                        <p className="relative flex items-center gap-2 font-sans text-[10px] font-black uppercase tracking-widest text-[#a1e2b6]/70">
                             <Zap className="h-3 w-3 text-[#a1e2b6]" /> Cliff Gần nhất (Sắp tới)
                         </p>
                         {nextCliff ? (
                             <div className="relative mt-3">
                                 <p className="font-mono text-3xl font-black tracking-tighter text-white">{nextCliff.startup}</p>
-                                <p className="mt-2 border-t border-white/10 pt-2 font-inter text-sm text-[#a1e2b6]">
+                                <p className="mt-2 border-t border-white/10 pt-2 font-sans text-sm text-[#a1e2b6]">
                                     Vào ngày {nextCliff.nextEvent}
                                 </p>
                             </div>
                         ) : (
-                            <p className="relative mt-3 font-inter text-sm text-white/50">Không có cliff sắp tới</p>
+                            <p className="relative mt-3 font-sans text-sm text-white/50">Không có cliff sắp tới</p>
                         )}
                     </div>
                 </div>
@@ -244,7 +244,7 @@ export default function FastLedger() {
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Tìm Startup hoặc vai trò..."
-                            className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl font-inter text-sm text-[#102c1e] placeholder:text-slate-400 focus:outline-none focus:border-[#102c1e]/30 focus:bg-white transition-all shadow-sm"
+                            className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl font-sans text-sm text-[#102c1e] placeholder:text-slate-400 focus:outline-none focus:border-[#102c1e]/30 focus:bg-white transition-all shadow-sm"
                         />
                         {search && (
                             <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#102c1e]">
@@ -260,7 +260,7 @@ export default function FastLedger() {
                                 key={f.key}
                                 onClick={() => setFilter(f.key)}
                                 className={cn(
-                                    'px-3.5 py-2 rounded-xl font-geist text-xs font-bold border transition-all',
+                                    'px-3.5 py-2 rounded-xl font-sans text-xs font-bold border transition-all',
                                     filter === f.key
                                         ? 'bg-[#102c1e] text-white border-[#102c1e] shadow-sm'
                                         : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-[#102c1e]'
@@ -276,7 +276,7 @@ export default function FastLedger() {
 
                     {/* Spacer + CSV export */}
                     <div className="ml-auto">
-                        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-geist text-xs font-bold text-[#102c1e] shadow-sm hover:bg-slate-50 transition-all">
+                        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-sans text-xs font-bold text-[#102c1e] shadow-sm hover:bg-slate-50 transition-all">
                             <ArrowUpRight className="w-3.5 h-3.5" /> Xuất CSV
                         </button>
                     </div>
@@ -289,9 +289,9 @@ export default function FastLedger() {
                     <div className="flex items-center justify-between px-6 py-3.5 border-b border-slate-100 bg-slate-50/60">
                         <div className="flex items-center gap-2">
                             <FileSignature className="w-4 h-4 text-[#102c1e]/40" />
-                            <span className="font-outfit font-black text-[#102c1e] text-base">Danh sách Cam kết</span>
+                            <span className="font-heading font-black text-[#102c1e] text-base">Danh sách Cam kết</span>
                         </div>
-                        <div className="flex items-center gap-3 font-geist text-xs text-slate-400">
+                        <div className="flex items-center gap-3 font-sans text-xs text-slate-400">
                             <span><span className="font-black text-[#102c1e]">{CONTRACTS.filter(c => c.status !== 'complete').length}</span> đang chạy</span>
                             <span className="w-px h-4 bg-slate-200" />
                             <span><span className="font-black text-[#102c1e]">{CONTRACTS.filter(c => c.status === 'complete').length}</span> hoàn tất</span>
@@ -302,12 +302,12 @@ export default function FastLedger() {
                         <table className="min-w-[900px] w-full border-collapse text-left">
                             <thead>
                                 <tr className="border-b border-slate-100">
-                                    <th className="px-6 py-3 font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400">Startup & Vai trò</th>
-                                    <th className="px-4 py-3 font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Equity & Value</th>
-                                    <th className="px-4 py-3 font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400">Vesting Terms</th>
-                                    <th className="px-4 py-3 font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400">Tiến độ</th>
-                                    <th className="px-4 py-3 font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400">Sự kiện tới</th>
-                                    <th className="px-4 py-3 font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
+                                    <th className="px-6 py-3 font-sans text-[10px] font-bold uppercase tracking-widest text-slate-400">Startup & Vai trò</th>
+                                    <th className="px-4 py-3 font-sans text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Equity & Value</th>
+                                    <th className="px-4 py-3 font-sans text-[10px] font-bold uppercase tracking-widest text-slate-400">Vesting Terms</th>
+                                    <th className="px-4 py-3 font-sans text-[10px] font-bold uppercase tracking-widest text-slate-400">Tiến độ</th>
+                                    <th className="px-4 py-3 font-sans text-[10px] font-bold uppercase tracking-widest text-slate-400">Sự kiện tới</th>
+                                    <th className="px-4 py-3 font-sans text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
                                     <th className="px-4 py-3" />
                                 </tr>
                             </thead>
@@ -315,7 +315,7 @@ export default function FastLedger() {
                                 {filtered.length === 0 ? (
                                     <tr>
                                         <td colSpan={7} className="px-6 py-12 text-center">
-                                            <p className="font-geist text-sm font-bold text-slate-400">Không tìm thấy hợp đồng nào</p>
+                                            <p className="font-sans text-sm font-bold text-slate-400">Không tìm thấy hợp đồng nào</p>
                                         </td>
                                     </tr>
                                 ) : filtered.map(c => {
@@ -327,12 +327,12 @@ export default function FastLedger() {
                                             {/* COL 1: Startup + Role */}
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-9 h-9 rounded-xl bg-[#102c1e] flex items-center justify-center font-outfit font-black text-sm text-[#a1e2b6] shrink-0">
+                                                    <div className="w-9 h-9 rounded-xl bg-[#102c1e] flex items-center justify-center font-heading font-black text-sm text-[#a1e2b6] shrink-0">
                                                         {c.initials}
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p className="font-outfit font-black text-[#102c1e] text-sm leading-tight truncate">{c.startup}</p>
-                                                        <p className="font-inter text-xs text-slate-500 truncate mt-0.5">{c.role}</p>
+                                                        <p className="font-heading font-black text-[#102c1e] text-sm leading-tight truncate">{c.startup}</p>
+                                                        <p className="font-sans text-xs text-slate-500 truncate mt-0.5">{c.role}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -347,7 +347,7 @@ export default function FastLedger() {
                                             <td className="px-4 py-4">
                                                 <div className="flex flex-col gap-1">
                                                     <span className={cn(
-                                                        'inline-flex items-center gap-1 w-max font-geist text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border',
+                                                        'inline-flex items-center gap-1 w-max font-sans text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border',
                                                         c.cliffMonths === 0
                                                             ? 'bg-slate-50 border-slate-200 text-slate-500'
                                                             : 'bg-[#102c1e]/5 border-[#102c1e]/10 text-[#102c1e]'
@@ -358,7 +358,7 @@ export default function FastLedger() {
                                                         }
                                                         {c.cliffLabel}
                                                     </span>
-                                                    <p className="font-inter text-xs font-medium text-slate-600">{c.vestingLabel}</p>
+                                                    <p className="font-sans text-xs font-medium text-slate-600">{c.vestingLabel}</p>
                                                 </div>
                                             </td>
 
@@ -392,7 +392,7 @@ export default function FastLedger() {
                                             {/* COL 5: Next event date */}
                                             <td className="px-4 py-4">
                                                 <p className="font-mono text-xs font-bold text-[#102c1e]">{c.nextEvent}</p>
-                                                <p className="font-geist text-[10px] text-slate-400 mt-0.5 uppercase tracking-wide">
+                                                <p className="font-sans text-[10px] text-slate-400 mt-0.5 uppercase tracking-wide">
                                                     {c.status === 'cliff' ? 'Cliff date' : c.status === 'complete' ? 'Hoàn tất' : 'Kỳ vesting'}
                                                 </p>
                                             </td>
@@ -400,7 +400,7 @@ export default function FastLedger() {
                                             {/* COL 6: Status badge */}
                                             <td className="px-4 py-4">
                                                 <span className={cn(
-                                                    'inline-flex items-center gap-1.5 font-geist text-[10px] font-bold px-2.5 py-1 rounded-full border whitespace-nowrap',
+                                                    'inline-flex items-center gap-1.5 font-sans text-[10px] font-bold px-2.5 py-1 rounded-full border whitespace-nowrap',
                                                     cfg.badge
                                                 )}>
                                                     <span className={cn('w-1.5 h-1.5 rounded-full', cfg.dot)} />
@@ -422,7 +422,7 @@ export default function FastLedger() {
                                                             <button
                                                                 key={item}
                                                                 onClick={() => setOpenMenu(null)}
-                                                                className="w-full text-left px-4 py-2.5 font-inter text-sm text-[#102c1e] hover:bg-slate-50 transition-colors"
+                                                                className="w-full text-left px-4 py-2.5 font-sans text-sm text-[#102c1e] hover:bg-slate-50 transition-colors"
                                                             >
                                                                 {item}
                                                             </button>
@@ -439,10 +439,10 @@ export default function FastLedger() {
 
                     {/* Grid footer */}
                     <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/40 flex items-center justify-between">
-                        <p className="font-geist text-xs text-slate-400">
+                        <p className="font-sans text-xs text-slate-400">
                             Hiển thị {filtered.length} / {CONTRACTS.length} hợp đồng
                         </p>
-                        <p className="font-geist text-xs text-slate-400">
+                        <p className="font-sans text-xs text-slate-400">
                             Tổng Equity: <span className="font-black text-[#102c1e]">4.8%</span>
                             <span className="mx-2 text-slate-200">·</span>
                             Implied Value: <span className="font-black text-[#102c1e]">$291,500</span>

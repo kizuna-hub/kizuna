@@ -72,17 +72,17 @@ const FAST_LEDGER = [
 // --- COMPONENT ---
 export default function MentorDashboard() {
     return (
-        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter text-[#102c1e]">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-sans text-[#102c1e]">
             <div className="mx-auto flex h-full max-w-6xl flex-col space-y-8">
 
                 {/* ─── HEADER ─── */}
                 <header className="flex items-end justify-between border-b border-slate-200 pb-5">
                     <div>
-                        <p className="font-geist text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Elite Advisor Workspace</p>
-                        <h1 className="font-outfit font-black text-[#102c1e] text-3xl md:text-4xl tracking-tight">Trung tâm Xử lý Tác vụ</h1>
-                        <p className="font-inter text-slate-500 mt-2 text-sm">Xử lý yêu cầu từ Startup, tích lũy điểm uy tín và mở khóa tài sản cổ phần.</p>
+                        <p className="font-sans text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Elite Advisor Workspace</p>
+                        <h1 className="font-heading font-black text-[#102c1e] text-3xl md:text-4xl tracking-tight">Trung tâm Xử lý Tác vụ</h1>
+                        <p className="font-sans text-slate-500 mt-2 text-sm">Xử lý yêu cầu từ Startup, tích lũy điểm uy tín và mở khóa tài sản cổ phần.</p>
                     </div>
-                    <Link href="/mentor/dashboard/calendar" className="hidden md:flex items-center gap-2 bg-[#102c1e] text-[#a1e2b6] font-geist font-bold rounded-xl px-5 py-2.5 hover:bg-[#0a1c13] transition-colors shadow-sm text-sm">
+                    <Link href="/mentor/dashboard/calendar" className="hidden md:flex items-center gap-2 bg-[#102c1e] text-[#a1e2b6] font-sans font-bold rounded-xl px-5 py-2.5 hover:bg-[#0a1c13] transition-colors shadow-sm text-sm">
                         <Calendar className="w-4 h-4" />
                         Quản lý Lịch trống
                     </Link>
@@ -93,24 +93,24 @@ export default function MentorDashboard() {
                     {/* Metric 1: Vested Equity */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="font-geist text-xs font-bold text-slate-500 uppercase tracking-wider">Tài sản cổ phần</span>
+                            <span className="font-sans text-xs font-bold text-slate-500 uppercase tracking-wider">Tài sản cổ phần</span>
                             <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
                                 <DollarSign className="w-4 h-4" />
                             </div>
                         </div>
                         <div className="flex items-end gap-2">
                             <span className="font-mono text-3xl font-black text-[#102c1e]">$125,000</span>
-                            <span className="font-geist text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mb-1">
+                            <span className="font-sans text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded mb-1">
                                 ↑ 12%
                             </span>
                         </div>
-                        <p className="font-inter text-xs text-slate-500 mt-2">Tổng giá trị Vested từ FAST</p>
+                        <p className="font-sans text-xs text-slate-500 mt-2">Tổng giá trị Vested từ FAST</p>
                     </div>
 
                     {/* Metric 2: Capacity */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="font-geist text-xs font-bold text-slate-500 uppercase tracking-wider">Công suất (Slots)</span>
+                            <span className="font-sans text-xs font-bold text-slate-500 uppercase tracking-wider">Công suất (Slots)</span>
                             <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
                                 <Activity className="w-4 h-4" />
                             </div>
@@ -127,7 +127,7 @@ export default function MentorDashboard() {
                     {/* Metric 3: Reputation Tier */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="font-geist text-xs font-bold text-slate-500 uppercase tracking-wider">Chỉ số Uy tín</span>
+                            <span className="font-sans text-xs font-bold text-slate-500 uppercase tracking-wider">Chỉ số Uy tín</span>
                             <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
                                 <Award className="w-4 h-4" />
                             </div>
@@ -136,7 +136,7 @@ export default function MentorDashboard() {
                             <span className="font-mono text-3xl font-black text-[#102c1e]">92</span>
                             <span className="font-mono text-sm text-slate-400 mb-1">/ 100</span>
                         </div>
-                        <p className="font-inter text-xs text-[#102c1e] font-bold mt-2 bg-amber-50 border border-amber-200 w-fit px-2 py-0.5 rounded-md">
+                        <p className="font-sans text-xs text-[#102c1e] font-bold mt-2 bg-amber-50 border border-amber-200 w-fit px-2 py-0.5 rounded-md">
                             Elite Advisor
                         </p>
                     </div>
@@ -145,7 +145,7 @@ export default function MentorDashboard() {
                     <div className="bg-[#102c1e] border border-[#102c1e] rounded-2xl p-5 shadow-sm relative overflow-hidden text-white">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#a1e2b6]/10 rounded-full blur-2xl pointer-events-none" />
                         <div className="flex items-center justify-between mb-3 relative">
-                            <span className="font-geist text-xs font-bold text-white/60 uppercase tracking-wider">Kỳ Vesting Tới</span>
+                            <span className="font-sans text-xs font-bold text-white/60 uppercase tracking-wider">Kỳ Vesting Tới</span>
                             <div className="w-8 h-8 rounded-lg bg-white/10 text-[#a1e2b6] flex items-center justify-center">
                                 <Clock className="w-4 h-4" />
                             </div>
@@ -153,7 +153,7 @@ export default function MentorDashboard() {
                         <div className="font-mono text-2xl font-black text-white relative">
                             30 Tháng 6
                         </div>
-                        <p className="font-inter text-xs text-[#a1e2b6] mt-2 relative">
+                        <p className="font-sans text-xs text-[#a1e2b6] mt-2 relative">
                             +0.25% SnapMoney equity
                         </p>
                     </div>
@@ -163,12 +163,12 @@ export default function MentorDashboard() {
                 <section className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                         <div className="flex items-center gap-3">
-                            <h2 className="font-outfit font-black text-[#102c1e] text-xl">Cần Xử Lý</h2>
-                            <span className="bg-red-100 text-red-700 font-geist text-xs font-bold px-2.5 py-0.5 rounded-full">
+                            <h2 className="font-heading font-black text-[#102c1e] text-xl">Cần Xử Lý</h2>
+                            <span className="bg-red-100 text-red-700 font-sans text-xs font-bold px-2.5 py-0.5 rounded-full">
                                 {ACTION_QUEUE.filter(a => a.priority === 'urgent').length} Gấp
                             </span>
                         </div>
-                        <Link href="/mentor/dashboard/requests" className="font-geist text-xs font-bold text-slate-400 hover:text-[#102c1e] transition-colors flex items-center gap-1">
+                        <Link href="/mentor/dashboard/requests" className="font-sans text-xs font-bold text-slate-400 hover:text-[#102c1e] transition-colors flex items-center gap-1">
                             Xem tất cả <ChevronRight className="w-4 h-4" />
                         </Link>
                     </div>
@@ -188,15 +188,15 @@ export default function MentorDashboard() {
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-geist text-xs font-black text-[#102c1e] px-2 py-0.5 bg-slate-100 rounded-md">
+                                            <span className="font-sans text-xs font-black text-[#102c1e] px-2 py-0.5 bg-slate-100 rounded-md">
                                                 {action.entity}
                                             </span>
-                                            <span className="font-geist text-xs text-slate-400">{action.time}</span>
+                                            <span className="font-sans text-xs text-slate-400">{action.time}</span>
                                         </div>
-                                        <h3 className="font-outfit font-bold text-[#102c1e] text-base leading-tight mb-1 truncate">
+                                        <h3 className="font-heading font-bold text-[#102c1e] text-base leading-tight mb-1 truncate">
                                             {action.title}
                                         </h3>
-                                        <p className="font-inter text-sm text-slate-500 truncate">
+                                        <p className="font-sans text-sm text-slate-500 truncate">
                                             {action.context}
                                         </p>
                                     </div>
@@ -204,10 +204,10 @@ export default function MentorDashboard() {
 
                                 {/* Actions */}
                                 <div className="flex items-center gap-2 shrink-0">
-                                    <button className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 font-geist text-xs font-bold hover:bg-slate-50 hover:text-[#102c1e] transition-colors shadow-sm">
+                                    <button className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 font-sans text-xs font-bold hover:bg-slate-50 hover:text-[#102c1e] transition-colors shadow-sm">
                                         <X className="w-4 h-4" /> Từ chối
                                     </button>
-                                    <button className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#102c1e] text-white font-geist text-xs font-bold hover:bg-[#0a1c13] transition-colors shadow-sm">
+                                    <button className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#102c1e] text-white font-sans text-xs font-bold hover:bg-[#0a1c13] transition-colors shadow-sm">
                                         <Check className="w-4 h-4" /> Xem chi tiết
                                     </button>
                                 </div>
@@ -219,8 +219,8 @@ export default function MentorDashboard() {
                 {/* ─── PHÂN KHU 3: FAST LEDGER GRID (BẢNG DỮ LIỆU) ─── */}
                 <section className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
                     <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                        <h2 className="font-outfit font-black text-[#102c1e] text-xl">Dự án Đang Cố vấn (FAST Ledger)</h2>
-                        <Link href="/mentor/dashboard/fast-ledger" className="font-geist text-xs font-bold text-slate-400 hover:text-[#102c1e] transition-colors flex items-center gap-1">
+                        <h2 className="font-heading font-black text-[#102c1e] text-xl">Dự án Đang Cố vấn (FAST Ledger)</h2>
+                        <Link href="/mentor/dashboard/fast-ledger" className="font-sans text-xs font-bold text-slate-400 hover:text-[#102c1e] transition-colors flex items-center gap-1">
                             Mở Sổ cái FAST <ArrowRight className="w-4 h-4" />
                         </Link>
                     </div>
@@ -229,11 +229,11 @@ export default function MentorDashboard() {
                         <table className="w-full text-left border-collapse whitespace-nowrap">
                             <thead>
                                 <tr className="border-b border-slate-100 bg-white">
-                                    <th className="px-6 py-4 font-geist text-xs font-bold text-slate-400 uppercase tracking-widest">Startup</th>
-                                    <th className="px-4 py-4 font-geist text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Định giá</th>
-                                    <th className="px-4 py-4 font-geist text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Cổ phần (FAST)</th>
-                                    <th className="px-4 py-4 font-geist text-xs font-bold text-slate-400 uppercase tracking-widest">Tăng trưởng</th>
-                                    <th className="px-6 py-4 font-geist text-xs font-bold text-slate-400 uppercase tracking-widest">Lịch họp tới</th>
+                                    <th className="px-6 py-4 font-sans text-xs font-bold text-slate-400 uppercase tracking-widest">Startup</th>
+                                    <th className="px-4 py-4 font-sans text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Định giá</th>
+                                    <th className="px-4 py-4 font-sans text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Cổ phần (FAST)</th>
+                                    <th className="px-4 py-4 font-sans text-xs font-bold text-slate-400 uppercase tracking-widest">Tăng trưởng</th>
+                                    <th className="px-6 py-4 font-sans text-xs font-bold text-slate-400 uppercase tracking-widest">Lịch họp tới</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
@@ -243,12 +243,12 @@ export default function MentorDashboard() {
                                         {/* Tên & Ngành */}
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-outfit font-black text-[#102c1e] text-lg">
+                                                <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-heading font-black text-[#102c1e] text-lg">
                                                     {startup.name.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <p className="font-outfit font-bold text-[#102c1e] text-base group-hover:text-[#4a7c5f] transition-colors">{startup.name}</p>
-                                                    <p className="font-inter text-xs text-slate-500">{startup.vertical}</p>
+                                                    <p className="font-heading font-bold text-[#102c1e] text-base group-hover:text-[#4a7c5f] transition-colors">{startup.name}</p>
+                                                    <p className="font-sans text-xs text-slate-500">{startup.vertical}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -267,7 +267,7 @@ export default function MentorDashboard() {
                                                     {startup.equity}
                                                 </span>
                                                 {startup.vested !== '0%' && (
-                                                    <span className="font-geist text-[10px] text-slate-400 mt-1">
+                                                    <span className="font-sans text-[10px] text-slate-400 mt-1">
                                                         Vested: {startup.vested}
                                                     </span>
                                                 )}
@@ -288,7 +288,7 @@ export default function MentorDashboard() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="w-4 h-4 text-slate-400" />
-                                                <span className="font-inter text-sm text-slate-600">{startup.nextSync}</span>
+                                                <span className="font-sans text-sm text-slate-600">{startup.nextSync}</span>
                                             </div>
                                         </td>
                                     </tr>

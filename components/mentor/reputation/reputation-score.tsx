@@ -106,7 +106,7 @@ function ScoreRing({ score }: { score: number }) {
             {/* Center */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-mono text-4xl font-black text-[#102c1e] leading-none">{score}</span>
-                <span className="font-geist text-[9px] font-bold text-[#102c1e]/40 uppercase tracking-widest mt-1">/ 100</span>
+                <span className="font-sans text-[9px] font-bold text-[#102c1e]/40 uppercase tracking-widest mt-1">/ 100</span>
             </div>
         </div>
     );
@@ -118,13 +118,13 @@ export default function MentorReputationScore() {
     const toNextLevel = data.nextThreshold - data.score;
 
     return (
-        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-inter">
+        <div className="min-h-screen w-full bg-[#fafafa] p-6 md:p-8 lg:p-10 font-sans">
             <div className="mx-auto max-w-5xl space-y-8">
 
                 {/* HEADER */}
                 <header className="pt-6 pb-4 border-b border-[#102c1e]/10">
-                    <h1 className="font-outfit font-black text-[#102c1e] text-4xl tracking-tight">Reputation Score</h1>
-                    <p className="font-inter text-slate-500 mt-2">
+                    <h1 className="font-heading font-black text-[#102c1e] text-4xl tracking-tight">Reputation Score</h1>
+                    <p className="font-sans text-slate-500 mt-2">
                         Uy tín của bạn trên Kizuna Hub — được tính dựa trên chất lượng mentoring, warm intro và deal attribution.
                     </p>
                 </header>
@@ -137,14 +137,14 @@ export default function MentorReputationScore() {
                         <ScoreRing score={data.score} />
 
                         <div className="text-center">
-                            <p className="font-geist text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1">Cấp độ hiện tại</p>
-                            <h2 className="font-outfit font-black text-2xl text-white">{data.level}</h2>
+                            <p className="font-sans text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1">Cấp độ hiện tại</p>
+                            <h2 className="font-heading font-black text-2xl text-white">{data.level}</h2>
                         </div>
 
                         {/* Next Level Progress */}
                         <div className="w-full bg-white/10 rounded-2xl p-4">
                             <div className="flex justify-between items-center mb-2">
-                                <span className="font-geist text-xs font-bold text-white/60">→ {data.nextLevel}</span>
+                                <span className="font-sans text-xs font-bold text-white/60">→ {data.nextLevel}</span>
                                 <span className="font-mono text-xs font-black text-[#a1e2b6]">{toNextLevel} điểm nữa</span>
                             </div>
                             <div className="h-2 rounded-full bg-white/10 overflow-hidden">
@@ -153,7 +153,7 @@ export default function MentorReputationScore() {
                                     style={{ width: `${(data.score / data.nextThreshold) * 100}%` }}
                                 />
                             </div>
-                            <p className="font-geist text-[9px] text-white/40 mt-2">
+                            <p className="font-sans text-[9px] text-white/40 mt-2">
                                 Đạt {data.nextThreshold}+ để mở khoá VC Network Badge và Early Access Deal Flow
                             </p>
                         </div>
@@ -168,7 +168,7 @@ export default function MentorReputationScore() {
                                 <div key={i} className="flex items-center justify-between bg-white/5 rounded-xl px-3 py-2.5">
                                     <div className="flex items-center gap-2">
                                         <stat.icon className="w-3.5 h-3.5 text-[#a1e2b6]" />
-                                        <span className="font-geist text-xs text-white/70">{stat.label}</span>
+                                        <span className="font-sans text-xs text-white/70">{stat.label}</span>
                                     </div>
                                     <span className="font-mono text-xs font-black text-white">{stat.value}</span>
                                 </div>
@@ -182,8 +182,8 @@ export default function MentorReputationScore() {
                         {/* BADGES */}
                         <div className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-6">
                             <div className="flex items-center justify-between mb-5">
-                                <h3 className="font-outfit font-black text-[#102c1e] text-xl">Huy hiệu & Thành tựu</h3>
-                                <span className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                <h3 className="font-heading font-black text-[#102c1e] text-xl">Huy hiệu & Thành tựu</h3>
+                                <span className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                                     {BADGE_MILESTONES.filter(b => b.earned).length}/{BADGE_MILESTONES.length} đạt được
                                 </span>
                             </div>
@@ -207,10 +207,10 @@ export default function MentorReputationScore() {
                                                 <Lock className="w-4 h-4 opacity-40" />
                                             )}
                                         </div>
-                                        <p className={cn('font-outfit font-black text-sm', badge.earned ? 'text-white' : 'text-[#102c1e]/40')}>
+                                        <p className={cn('font-heading font-black text-sm', badge.earned ? 'text-white' : 'text-[#102c1e]/40')}>
                                             {badge.name}
                                         </p>
-                                        <p className={cn('font-inter text-[11px] mt-1 leading-tight', badge.earned ? 'text-white/60' : 'text-slate-400')}>
+                                        <p className={cn('font-sans text-[11px] mt-1 leading-tight', badge.earned ? 'text-white/60' : 'text-slate-400')}>
                                             {badge.description}
                                         </p>
 
@@ -235,9 +235,9 @@ export default function MentorReputationScore() {
 
                         {/* ACTIVITY FEED */}
                         <div className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-6">
-                            <h3 className="font-outfit font-black text-[#102c1e] text-xl mb-5">
+                            <h3 className="font-heading font-black text-[#102c1e] text-xl mb-5">
                                 Hoạt động gần đây
-                                <span className="ml-2 font-geist text-sm font-bold text-slate-400">— tích lũy điểm</span>
+                                <span className="ml-2 font-sans text-sm font-bold text-slate-400">— tích lũy điểm</span>
                             </h3>
 
                             <div className="space-y-3">
@@ -262,8 +262,8 @@ export default function MentorReputationScore() {
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="font-inter text-sm text-[#102c1e] leading-snug">{act.text}</p>
-                                                <p className="font-geist text-[10px] text-slate-400 mt-0.5">{act.time}</p>
+                                                <p className="font-sans text-sm text-[#102c1e] leading-snug">{act.text}</p>
+                                                <p className="font-sans text-[10px] text-slate-400 mt-0.5">{act.time}</p>
                                             </div>
                                         </div>
                                         <span className={cn(
@@ -283,14 +283,14 @@ export default function MentorReputationScore() {
                 <div className="bg-white rounded-3xl border border-[#102c1e]/10 shadow-sm p-6">
                     <div className="flex items-center justify-between mb-5">
                         <div>
-                            <h3 className="font-outfit font-black text-[#102c1e] text-xl">Deal Attribution</h3>
-                            <p className="font-inter text-sm text-slate-500 mt-1">
+                            <h3 className="font-heading font-black text-[#102c1e] text-xl">Deal Attribution</h3>
+                            <p className="font-sans text-sm text-slate-500 mt-1">
                                 Theo dõi các Warm Intro của bạn đã chuyển thành đầu tư thực sự.
                             </p>
                         </div>
                         <div className="flex items-center gap-2 bg-[#a1e2b6]/15 border border-[#a1e2b6]/30 px-3 py-1.5 rounded-xl">
                             <Zap className="w-4 h-4 text-[#102c1e]" />
-                            <span className="font-geist text-sm font-black text-[#102c1e]">{data.dealCreditEarned} Deal Credits</span>
+                            <span className="font-sans text-sm font-black text-[#102c1e]">{data.dealCreditEarned} Deal Credits</span>
                         </div>
                     </div>
 
@@ -303,11 +303,11 @@ export default function MentorReputationScore() {
                             <div key={i} className="bg-[#fafafa] rounded-2xl border border-[#102c1e]/8 p-4 hover:border-[#102c1e]/20 transition-all group cursor-default">
                                 <div className="flex items-start justify-between mb-3">
                                     <div>
-                                        <p className="font-geist font-black text-sm text-[#102c1e]">{deal.startup}</p>
-                                        <p className="font-inter text-xs text-slate-400 mt-0.5">{deal.vc}</p>
+                                        <p className="font-sans font-black text-sm text-[#102c1e]">{deal.startup}</p>
+                                        <p className="font-sans text-xs text-slate-400 mt-0.5">{deal.vc}</p>
                                     </div>
                                     <span className={cn(
-                                        'font-geist text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full',
+                                        'font-sans text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full',
                                         deal.status === 'Closed'
                                             ? 'bg-[#a1e2b6]/20 text-[#102c1e]'
                                             : 'bg-[#102c1e]/8 text-slate-500'
@@ -316,7 +316,7 @@ export default function MentorReputationScore() {
                                     </span>
                                 </div>
                                 <p className="font-mono font-black text-xl text-[#102c1e]">{deal.amount}</p>
-                                <p className="font-geist text-[10px] text-slate-400 mt-1">{deal.date}</p>
+                                <p className="font-sans text-[10px] text-slate-400 mt-1">{deal.date}</p>
                             </div>
                         ))}
                     </div>
@@ -324,7 +324,7 @@ export default function MentorReputationScore() {
 
                 {/* HOW SCORE IS CALCULATED */}
                 <div className="bg-[#102c1e]/[0.02] border border-[#102c1e]/8 rounded-2xl p-5">
-                    <h4 className="font-geist font-black text-[#102c1e] text-sm mb-3 flex items-center gap-2">
+                    <h4 className="font-sans font-black text-[#102c1e] text-sm mb-3 flex items-center gap-2">
                         <Award className="w-4 h-4" />
                         Cách tính Reputation Score
                     </h4>
@@ -336,7 +336,7 @@ export default function MentorReputationScore() {
                             { factor: 'FAST Signed', weight: '10 pts/contract' },
                         ].map((f, i) => (
                             <div key={i} className="bg-white rounded-xl border border-[#102c1e]/8 p-3">
-                                <p className="font-inter text-xs text-slate-500">{f.factor}</p>
+                                <p className="font-sans text-xs text-slate-500">{f.factor}</p>
                                 <p className="font-mono text-sm font-black text-[#102c1e] mt-1">{f.weight}</p>
                             </div>
                         ))}

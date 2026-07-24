@@ -31,7 +31,7 @@ const NavItem = ({ icon: Icon, label, href, badge, exact = false }: any) => {
         <Link
             href={href}
             className={cn(
-                "flex w-full items-center justify-between rounded-lg px-3 py-2 transition-all duration-200 font-geist",
+                "flex w-full items-center justify-between rounded-lg px-3 py-2 transition-all duration-200 font-sans",
                 isActive
                     ? "bg-[#fafafa] text-[#102c1e] font-bold shadow-sm"
                     : "text-white/70 hover:bg-white/10 hover:text-white font-medium text-sm"
@@ -74,9 +74,9 @@ export function MentorDashboardSidebar() {
                 <div className="p-4 flex flex-col gap-6 border-b border-white/5">
                     <Link href="/" className="flex items-center gap-2 px-1 cursor-pointer group">
                         <div className="flex h-7 w-7 items-center justify-center rounded bg-[#fafafa] group-hover:scale-105 transition-transform">
-                            <span className="font-outfit font-black text-xs text-[#102c1e]">K</span>
+                            <span className="font-heading font-black text-xs text-[#102c1e]">K</span>
                         </div>
-                        <span className="font-outfit text-base font-bold tracking-wide text-[#fafafa]">Trạm Cố Vấn</span>
+                        <span className="font-heading text-base font-bold tracking-wide text-[#fafafa]">Trạm Cố Vấn</span>
                     </Link>
 
                     <button
@@ -85,9 +85,9 @@ export function MentorDashboardSidebar() {
                     >
                         <div className="flex items-center gap-2">
                             <Search className="h-4 w-4 text-[#102c1e]/70 group-hover:text-[#102c1e] transition-colors" />
-                            <span className="font-geist text-sm font-bold">Tìm kiếm nhanh</span>
+                            <span className="font-sans text-sm font-bold">Tìm kiếm nhanh</span>
                         </div>
-                        <kbd className="rounded border border-[#102c1e]/10 bg-[#102c1e]/5 px-1.5 py-0.5 text-[10px] font-bold text-[#102c1e]/70 font-geist">
+                        <kbd className="rounded border border-[#102c1e]/10 bg-[#102c1e]/5 px-1.5 py-0.5 text-[10px] font-bold text-[#102c1e]/70 font-sans">
                             Ctrl K
                         </kbd>
                     </button>
@@ -100,7 +100,7 @@ export function MentorDashboardSidebar() {
                     </div>
 
                     <div>
-                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-[#a1e2b6]/70 font-geist">Nhiệm vụ</p>
+                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-[#a1e2b6]/70 font-sans">Nhiệm vụ</p>
                         <div className="flex flex-col gap-0.5">
                             <NavItem icon={FileSignature} label="Sổ cái FAST" href="/mentor/dashboard/fast-ledger" />
                             <NavItem icon={CalendarDays} label="Lịch trình & Slot" href="/mentor/dashboard/calendar" />
@@ -108,7 +108,7 @@ export function MentorDashboardSidebar() {
                     </div>
 
                     <div>
-                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-[#a1e2b6]/70 font-geist">Vũ khí của bạn</p>
+                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-[#a1e2b6]/70 font-sans">Vũ khí của bạn</p>
                         <div className="flex flex-col gap-0.5">
                             <NavItem icon={Send} label="Trạm Giới thiệu (Intros)" href="/mentor/dashboard/warm-intros" />
                             <NavItem icon={Mic} label="Phản biện Async" href="/mentor/dashboard/async-feedback" />
@@ -117,7 +117,7 @@ export function MentorDashboardSidebar() {
                     </div>
 
                     <div>
-                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-[#a1e2b6]/70 font-geist">Tài khoản</p>
+                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-[#a1e2b6]/70 font-sans">Tài khoản</p>
                         <div className="flex flex-col gap-0.5">
                             <NavItem icon={Settings} label="Cài đặt" href="/mentor/dashboard/settings" />
                             <NavItem icon={HelpCircle} label="Hỗ trợ" href="/mentor/dashboard/support" />
@@ -128,16 +128,16 @@ export function MentorDashboardSidebar() {
                 <div className="border-t border-white/5 p-4 flex flex-col gap-4 bg-[#102c1e]">
                     <Link href="/mentor/reputation" className="rounded-xl bg-[#fafafa] p-3 shadow-sm border border-[#102c1e]/10 hover:border-[#102c1e]/20 transition-all group block">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="font-geist text-sm font-bold text-[#102c1e]">Chỉ số Uy tín</span>
+                            <span className="font-sans text-sm font-bold text-[#102c1e]">Chỉ số Uy tín</span>
                             <div className="flex items-center gap-1">
-                                <span className="font-geist text-xs font-bold text-[#102c1e] bg-[#a1e2b6]/30 px-2 py-0.5 rounded-full">{user.engagementScore}/100</span>
+                                <span className="font-sans text-xs font-bold text-[#102c1e] bg-[#a1e2b6]/30 px-2 py-0.5 rounded-full">{user.engagementScore}/100</span>
                                 <ArrowUpRight className="w-3 h-3 text-[#102c1e]/40 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                         </div>
                         <div className="h-1.5 w-full rounded-full bg-[#102c1e]/10 overflow-hidden">
                             <div className="h-full rounded-full bg-[#102c1e] transition-all" style={{ width: `${user.engagementScore}%` }} />
                         </div>
-                        <p className="mt-2 font-inter text-[10px] text-slate-500">Tier: Elite Advisor → Rising Star</p>
+                        <p className="mt-2 font-sans text-[10px] text-slate-500">Tier: Elite Advisor → Rising Star</p>
                     </Link>
 
                     <button className="flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer group text-left">
@@ -147,8 +147,8 @@ export function MentorDashboardSidebar() {
                             className="h-9 w-9 rounded-full object-cover grayscale contrast-125 border border-white/20 group-hover:border-[#fafafa] transition-colors"
                         />
                         <div className="flex-1 min-w-0 flex flex-col">
-                            <p className="font-geist text-sm font-bold text-[#fafafa] truncate">{user.name}</p>
-                            <p className="font-geist text-[11px] font-medium text-[#a1e2b6] truncate">{user.title}</p>
+                            <p className="font-sans text-sm font-bold text-[#fafafa] truncate">{user.name}</p>
+                            <p className="font-sans text-[11px] font-medium text-[#a1e2b6] truncate">{user.title}</p>
                         </div>
                     </button>
                 </div>
