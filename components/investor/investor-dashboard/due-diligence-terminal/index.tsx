@@ -126,13 +126,13 @@ function ProgressBar({ pct }: { pct: number }) {
     return (
         <div className="space-y-2">
             <div className="flex items-center justify-between">
-                <span className="font-geist text-[10px] font-bold text-slate-500 uppercase tracking-widest">DD Completion</span>
+                <span className="font-sans text-[10px] font-bold text-slate-500 uppercase tracking-widest">DD Completion</span>
                 <span className="font-mono text-sm font-black text-[#102c1e]">{pct}%</span>
             </div>
             <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
                 <div className="h-full bg-[#a1e2b6] rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
             </div>
-            <p className="font-inter text-xs text-slate-500">2 items need attention</p>
+            <p className="font-sans text-xs text-slate-500">2 items need attention</p>
         </div>
     );
 }
@@ -142,7 +142,7 @@ function StatusBadge({ status }: { status: VerifyStatus }) {
     const cfg = STATUS_CONFIG[status];
     return (
         <span className={cn(
-            'inline-flex items-center gap-1.5 font-geist text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border',
+            'inline-flex items-center gap-1.5 font-sans text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border',
             cfg.bg, cfg.color,
         )}>
             <span className={cn('w-1.5 h-1.5 rounded-full', cfg.dot)} />
@@ -166,7 +166,7 @@ export default function DueDiligenceTerminal() {
     const warningCount = risks.filter(r => r.severity === 'warning' && !r.resolved).length;
 
     return (
-        <div className="flex h-screen bg-[#fafafa] overflow-hidden font-inter">
+        <div className="flex h-screen bg-[#fafafa] overflow-hidden font-sans">
 
             {/* ══════════════════════════════════════════
                 LEFT PANE — Index & Folders (w-[22%])
@@ -175,13 +175,13 @@ export default function DueDiligenceTerminal() {
                 <div className="px-6 py-6 border-b border-slate-100">
                     <a href="/investor/deal-flow" className="inline-flex items-center gap-2 text-slate-400 hover:text-[#102c1e] transition-colors mb-4 group">
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-geist text-xs font-bold uppercase tracking-widest">Deal Flow</span>
+                        <span className="font-sans text-xs font-bold uppercase tracking-widest">Deal Flow</span>
                     </a>
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-[#102c1e] flex items-center justify-center text-xl shrink-0 shadow-md">💸</div>
                         <div className="min-w-0">
-                            <p className="font-outfit font-black text-[#102c1e] text-lg leading-tight truncate">{STARTUP.name}</p>
-                            <span className="inline-block mt-1 font-geist text-[9px] font-black text-[#102c1e] bg-[#a1e2b6]/30 border border-[#a1e2b6]/50 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                            <p className="font-heading font-black text-[#102c1e] text-lg leading-tight truncate">{STARTUP.name}</p>
+                            <span className="inline-block mt-1 font-sans text-[9px] font-black text-[#102c1e] bg-[#a1e2b6]/30 border border-[#a1e2b6]/50 px-2 py-0.5 rounded-full uppercase tracking-widest">
                                 {STARTUP.stage}
                             </span>
                         </div>
@@ -193,7 +193,7 @@ export default function DueDiligenceTerminal() {
                 </div>
 
                 <div className="flex-1 overflow-y-auto px-3 py-4 [&::-webkit-scrollbar]:hidden">
-                    <p className="font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Folders</p>
+                    <p className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Folders</p>
                     <div className="space-y-1">
                         {FOLDERS.map(folder => {
                             const isActive = activeFolder === folder.id;
@@ -209,7 +209,7 @@ export default function DueDiligenceTerminal() {
                                     )}
                                 >
                                     <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-[#102c1e]' : 'text-slate-400')} />
-                                    <span className={cn('font-inter text-sm font-semibold flex-1 truncate', isActive ? 'text-[#102c1e]' : 'text-slate-600 group-hover:text-[#102c1e]')}>
+                                    <span className={cn('font-sans text-sm font-semibold flex-1 truncate', isActive ? 'text-[#102c1e]' : 'text-slate-600 group-hover:text-[#102c1e]')}>
                                         {folder.label}
                                     </span>
                                     {folder.hasIssue && !isActive && <span className="w-2 h-2 rounded-full bg-red-500" />}
@@ -224,8 +224,8 @@ export default function DueDiligenceTerminal() {
                     <div className="flex items-center gap-3 px-4 py-3 bg-[#102c1e]/5 rounded-xl border border-[#102c1e]/10">
                         <Lock className="w-4 h-4 text-[#102c1e]/60" />
                         <div className="min-w-0">
-                            <p className="font-geist text-xs font-bold text-[#102c1e]">NDA-Protected Vault</p>
-                            <p className="font-inter text-[10px] text-slate-500">Founder cannot see your notes</p>
+                            <p className="font-sans text-xs font-bold text-[#102c1e]">NDA-Protected Vault</p>
+                            <p className="font-sans text-[10px] text-slate-500">Founder cannot see your notes</p>
                         </div>
                     </div>
                 </div>
@@ -245,8 +245,8 @@ export default function DueDiligenceTerminal() {
                                     <ArrowLeft className="w-4 h-4" />
                                 </button>
                                 <div>
-                                    <h3 className="font-outfit text-lg font-bold text-[#102c1e] leading-none">{activeDocument.name}</h3>
-                                    <p className="font-geist text-[10px] text-slate-500 mt-1 uppercase tracking-widest">{activeDocument.folder} · {activeDocument.type}</p>
+                                    <h3 className="font-heading text-lg font-bold text-[#102c1e] leading-none">{activeDocument.name}</h3>
+                                    <p className="font-sans text-[10px] text-slate-500 mt-1 uppercase tracking-widest">{activeDocument.folder} · {activeDocument.type}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -255,7 +255,7 @@ export default function DueDiligenceTerminal() {
                                     <span className="font-mono text-xs font-bold px-2 text-slate-600">100%</span>
                                     <button className="p-1.5 hover:bg-white rounded-md text-slate-500"><ZoomIn className="w-4 h-4" /></button>
                                 </div>
-                                <button className="flex items-center gap-2 bg-[#102c1e] text-white px-4 py-2 rounded-xl font-geist text-xs font-bold hover:bg-[#0a1c13] transition-colors">
+                                <button className="flex items-center gap-2 bg-[#102c1e] text-white px-4 py-2 rounded-xl font-sans text-xs font-bold hover:bg-[#0a1c13] transition-colors">
                                     <Lock className="w-3.5 h-3.5 text-[#a1e2b6]" /> Request Download
                                 </button>
                             </div>
@@ -266,7 +266,7 @@ export default function DueDiligenceTerminal() {
                             <div className="w-full max-w-3xl bg-white min-h-[800px] shadow-lg border border-slate-200 relative p-12">
                                 {/* Watermark */}
                                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5 pointer-events-none">
-                                    <span className="text-6xl font-black transform -rotate-45 font-outfit text-[#102c1e] uppercase tracking-widest whitespace-nowrap">
+                                    <span className="text-6xl font-black transform -rotate-45 font-heading text-[#102c1e] uppercase tracking-widest whitespace-nowrap">
                                         CONFIDENTIAL · VIEW ONLY
                                     </span>
                                 </div>
@@ -284,7 +284,7 @@ export default function DueDiligenceTerminal() {
                                     <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white shadow-md">
                                         <ShieldAlert className="w-3 h-3" />
                                     </div>
-                                    <p className="font-inter text-sm text-[#102c1e] font-medium leading-relaxed">
+                                    <p className="font-sans text-sm text-[#102c1e] font-medium leading-relaxed">
                                         As per section 4.2, the executive team reserves a pool of <span className="bg-red-200 px-1 font-bold">8.5% equity allocation</span> without defined vesting parameters in the current term sheet...
                                     </p>
                                 </div>
@@ -296,14 +296,14 @@ export default function DueDiligenceTerminal() {
                     <div className="flex flex-col h-full">
                         <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-slate-200 px-8 py-5 flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3 min-w-0">
-                                <span className="font-geist text-xs text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">{STARTUP.name}</span>
+                                <span className="font-sans text-xs text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">{STARTUP.name}</span>
                                 <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
                                 <div className="flex items-center gap-2">
-                                    <span className="font-outfit text-xl font-black text-[#102c1e] truncate">{activeFolderMeta.label}</span>
-                                    <span className="font-geist text-[10px] font-bold text-slate-400 bg-slate-100 rounded-full px-2.5 py-0.5">{visibleFiles.length} files</span>
+                                    <span className="font-heading text-xl font-black text-[#102c1e] truncate">{activeFolderMeta.label}</span>
+                                    <span className="font-sans text-[10px] font-bold text-slate-400 bg-slate-100 rounded-full px-2.5 py-0.5">{visibleFiles.length} files</span>
                                 </div>
                             </div>
-                            <button className="flex items-center gap-2 font-geist text-xs font-bold text-[#102c1e] bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-xl transition-all whitespace-nowrap">
+                            <button className="flex items-center gap-2 font-sans text-xs font-bold text-[#102c1e] bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-xl transition-all whitespace-nowrap">
                                 <Mail className="w-4 h-4" /> Ask Founder for Document
                             </button>
                         </div>
@@ -312,15 +312,15 @@ export default function DueDiligenceTerminal() {
                         <div className="flex items-center gap-6 px-8 py-3.5 border-b border-slate-100 bg-[#fafafa]">
                             <div className="flex items-center gap-2 cursor-pointer group">
                                 <span className="font-mono text-sm font-black text-emerald-600 group-hover:text-emerald-700">{visibleFiles.filter(f => f.status === 'verified').length}</span>
-                                <span className="font-geist text-xs font-semibold text-slate-500 group-hover:text-slate-700">Verified</span>
+                                <span className="font-sans text-xs font-semibold text-slate-500 group-hover:text-slate-700">Verified</span>
                             </div>
                             <div className="flex items-center gap-2 cursor-pointer group">
                                 <span className="font-mono text-sm font-black text-amber-600 group-hover:text-amber-700">{visibleFiles.filter(f => f.status === 'pending').length}</span>
-                                <span className="font-geist text-xs font-semibold text-slate-500 group-hover:text-slate-700">Pending</span>
+                                <span className="font-sans text-xs font-semibold text-slate-500 group-hover:text-slate-700">Pending</span>
                             </div>
                             <div className="flex items-center gap-2 cursor-pointer group">
                                 <span className="font-mono text-sm font-black text-red-600 group-hover:text-red-700">{visibleFiles.filter(f => f.status === 'outdated').length}</span>
-                                <span className="font-geist text-xs font-semibold text-slate-500 group-hover:text-slate-700">Outdated</span>
+                                <span className="font-sans text-xs font-semibold text-slate-500 group-hover:text-slate-700">Outdated</span>
                             </div>
                         </div>
 
@@ -329,7 +329,7 @@ export default function DueDiligenceTerminal() {
                                 <thead className="sticky top-0 z-10 bg-white border-b border-slate-200">
                                     <tr>
                                         {['Document Name', 'Type', 'Uploaded', 'Verification Status', ''].map(col => (
-                                            <th key={col} className="font-geist text-[10px] font-bold uppercase tracking-widest text-slate-400 px-8 py-4 whitespace-nowrap">
+                                            <th key={col} className="font-sans text-[10px] font-bold uppercase tracking-widest text-slate-400 px-8 py-4 whitespace-nowrap">
                                                 {col}
                                             </th>
                                         ))}
@@ -346,20 +346,20 @@ export default function DueDiligenceTerminal() {
                                                             <FileIcon className="w-5 h-5 text-slate-400" />
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <p className="font-inter text-sm font-bold text-[#102c1e] truncate group-hover:text-[#4a7c5f] transition-colors">{file.name}</p>
-                                                            {file.size && <p className="font-geist text-[10px] text-slate-400 mt-0.5">{file.size}</p>}
+                                                            <p className="font-sans text-sm font-bold text-[#102c1e] truncate group-hover:text-[#4a7c5f] transition-colors">{file.name}</p>
+                                                            {file.size && <p className="font-sans text-[10px] text-slate-400 mt-0.5">{file.size}</p>}
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-4">
-                                                    <span className={cn('font-geist text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border', TYPE_COLORS[file.type] ?? 'bg-slate-50 text-slate-500 border-slate-200')}>
+                                                    <span className={cn('font-sans text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border', TYPE_COLORS[file.type] ?? 'bg-slate-50 text-slate-500 border-slate-200')}>
                                                         {file.type}
                                                     </span>
                                                 </td>
                                                 <td className="px-8 py-4">
                                                     <div className="flex items-center gap-1.5 text-slate-500">
                                                         <Clock className="w-3.5 h-3.5" />
-                                                        <span className="font-geist text-xs font-medium">{file.uploaded}</span>
+                                                        <span className="font-sans text-xs font-medium">{file.uploaded}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-4"><StatusBadge status={file.status} /></td>
@@ -378,8 +378,8 @@ export default function DueDiligenceTerminal() {
                             {visibleFiles.length === 0 && (
                                 <div className="flex flex-col items-center justify-center py-24 text-center">
                                     <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-4"><FolderOpen className="w-8 h-8 text-slate-300" /></div>
-                                    <p className="font-outfit text-lg font-bold text-[#102c1e] mb-1">No documents found</p>
-                                    <p className="font-inter text-sm text-slate-500">This folder is currently empty.</p>
+                                    <p className="font-heading text-lg font-bold text-[#102c1e] mb-1">No documents found</p>
+                                    <p className="font-sans text-sm text-slate-500">This folder is currently empty.</p>
                                 </div>
                             )}
                         </div>
@@ -397,14 +397,14 @@ export default function DueDiligenceTerminal() {
                             <div className="w-8 h-8 rounded-xl bg-[#102c1e] flex items-center justify-center shadow-md">
                                 <Sparkles className="w-4 h-4 text-[#a1e2b6]" />
                             </div>
-                            <h2 className="font-outfit font-black text-[#102c1e] text-lg">AI Risk Analysis</h2>
+                            <h2 className="font-heading font-black text-[#102c1e] text-lg">AI Risk Analysis</h2>
                         </div>
                         <button className="p-2 rounded-lg hover:bg-slate-200 text-slate-500 transition-colors"><RefreshCw className="w-4 h-4" /></button>
                     </div>
 
                     <div className="flex items-center gap-2.5 px-4 py-3 bg-[#a1e2b6]/10 border border-[#a1e2b6]/30 rounded-xl">
                         <div className="w-2 h-2 rounded-full bg-[#a1e2b6] animate-pulse" />
-                        <span className="font-geist text-xs font-bold text-[#102c1e]">Scanning {FILES.length} documents — Live</span>
+                        <span className="font-sans text-xs font-bold text-[#102c1e]">Scanning {FILES.length} documents — Live</span>
                     </div>
                 </div>
 
@@ -412,13 +412,13 @@ export default function DueDiligenceTerminal() {
                     {criticalCount > 0 && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 shadow-sm">
                             <BadgeAlert className="w-3.5 h-3.5 text-red-600" />
-                            <span className="font-geist text-[10px] font-black text-red-700">{criticalCount} Critical</span>
+                            <span className="font-sans text-[10px] font-black text-red-700">{criticalCount} Critical</span>
                         </div>
                     )}
                     {warningCount > 0 && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 shadow-sm">
                             <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                            <span className="font-geist text-[10px] font-black text-amber-700">{warningCount} Warning</span>
+                            <span className="font-sans text-[10px] font-black text-amber-700">{warningCount} Warning</span>
                         </div>
                     )}
                 </div>
@@ -441,30 +441,30 @@ export default function DueDiligenceTerminal() {
                                         </div>
                                         <div className="flex-1 min-w-0 pt-0.5">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <span className={cn('font-geist text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border', cfg.badgeBg, cfg.textColor)}>
+                                                <span className={cn('font-sans text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border', cfg.badgeBg, cfg.textColor)}>
                                                     {cfg.label}
                                                 </span>
-                                                <span className="font-geist text-[10px] font-medium text-slate-400">{risk.timestamp}</span>
+                                                <span className="font-sans text-[10px] font-medium text-slate-400">{risk.timestamp}</span>
                                             </div>
-                                            <h4 className={cn('font-outfit text-base font-bold leading-tight', cfg.textColor)}>{risk.title}</h4>
+                                            <h4 className={cn('font-heading text-base font-bold leading-tight', cfg.textColor)}>{risk.title}</h4>
                                         </div>
                                     </div>
 
-                                    <p className="font-inter text-sm text-slate-600 leading-relaxed mb-4">{risk.detail}</p>
+                                    <p className="font-sans text-sm text-slate-600 leading-relaxed mb-4">{risk.detail}</p>
 
                                     <div className="flex items-center gap-2 mb-5 p-2.5 bg-slate-50 border border-slate-100 rounded-lg">
                                         <FileText className="w-4 h-4 text-slate-400 shrink-0" />
-                                        <span className="font-geist text-xs font-semibold text-slate-600 truncate">{risk.source}</span>
+                                        <span className="font-sans text-xs font-semibold text-slate-600 truncate">{risk.source}</span>
                                     </div>
 
                                     <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 pt-1 border-t border-slate-100">
                                         <button className={cn(
-                                            'flex-1 flex items-center justify-center gap-2 font-geist text-xs font-bold px-4 py-2.5 rounded-xl border transition-all shadow-sm',
+                                            'flex-1 flex items-center justify-center gap-2 font-sans text-xs font-bold px-4 py-2.5 rounded-xl border transition-all shadow-sm',
                                             risk.severity === 'critical' ? 'bg-red-600 text-white border-red-600 hover:bg-red-700' : 'bg-amber-500 text-white border-amber-500 hover:bg-amber-600',
                                         )}>
                                             <Mail className="w-3.5 h-3.5" /> Clarify
                                         </button>
-                                        <button onClick={() => handleResolve(risk.id)} className="flex-1 flex items-center justify-center gap-2 font-geist text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#102c1e] hover:bg-slate-50 transition-all shadow-sm">
+                                        <button onClick={() => handleResolve(risk.id)} className="flex-1 flex items-center justify-center gap-2 font-sans text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#102c1e] hover:bg-slate-50 transition-all shadow-sm">
                                             <Check className="w-3.5 h-3.5" /> Resolve
                                         </button>
                                     </div>
@@ -474,7 +474,7 @@ export default function DueDiligenceTerminal() {
                 </div>
 
                 <div className="p-6 border-t border-slate-200 bg-white">
-                    <button className="w-full flex items-center justify-center gap-2 bg-[#102c1e] text-white font-geist font-bold text-sm py-3 rounded-xl hover:bg-[#0a1c13] transition-colors shadow-md">
+                    <button className="w-full flex items-center justify-center gap-2 bg-[#102c1e] text-white font-sans font-bold text-sm py-3 rounded-xl hover:bg-[#0a1c13] transition-colors shadow-md">
                         Export Full Report
                     </button>
                 </div>

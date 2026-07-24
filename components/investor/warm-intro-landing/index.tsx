@@ -83,7 +83,7 @@ function StepDot({ done, active, label }: { done?: boolean; active?: boolean; la
                     : <div className={cn('w-2 h-2 rounded-full', active ? 'bg-[#102c1e]' : 'bg-[#102c1e]/20')} />
                 }
             </div>
-            <span className={cn('font-geist text-[9px] font-bold uppercase tracking-wider', active ? 'text-[#102c1e]' : 'text-slate-400')}>
+            <span className={cn('font-sans text-[9px] font-bold uppercase tracking-wider', active ? 'text-[#102c1e]' : 'text-slate-400')}>
                 {label}
             </span>
         </div>
@@ -106,7 +106,7 @@ export default function WarmIntroLanding() {
     };
 
     return (
-        <div className="min-h-screen bg-[#fafafa] font-inter relative overflow-hidden">
+        <div className="min-h-screen bg-[#fafafa] font-sans relative overflow-hidden">
 
             {/* ── AMBIENT BACKGROUND ── */}
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -121,12 +121,12 @@ export default function WarmIntroLanding() {
                 <div className="flex justify-center mb-10">
                     <div className="flex items-center gap-2.5 bg-white border border-[#102c1e]/10 rounded-full px-4 py-2 shadow-sm">
                         <div className="w-5 h-5 bg-[#102c1e] rounded-full flex items-center justify-center">
-                            <span className="font-outfit font-black text-[8px] text-white">K</span>
+                            <span className="font-heading font-black text-[8px] text-white">K</span>
                         </div>
-                        <span className="font-geist text-xs font-bold text-[#102c1e]">Kizuna Hub</span>
+                        <span className="font-sans text-xs font-bold text-[#102c1e]">Kizuna Hub</span>
                         <div className="w-px h-3 bg-[#102c1e]/15" />
                         <Shield className="w-3.5 h-3.5 text-[#a1e2b6]" />
-                        <span className="font-geist text-[10px] font-bold text-slate-500">Verified Warm Intro</span>
+                        <span className="font-sans text-[10px] font-bold text-slate-500">Verified Warm Intro</span>
                     </div>
                 </div>
 
@@ -150,17 +150,17 @@ export default function WarmIntroLanding() {
                             <div className="relative flex items-start gap-4">
                                 {/* Avatar */}
                                 <div className="w-12 h-12 rounded-2xl bg-[#a1e2b6]/20 border border-[#a1e2b6]/30 flex items-center justify-center shrink-0">
-                                    <span className="font-geist font-black text-[#a1e2b6] text-sm">{d.mentor.avatar}</span>
+                                    <span className="font-sans font-black text-[#a1e2b6] text-sm">{d.mentor.avatar}</span>
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <p className="font-geist font-black text-white text-sm">{d.mentor.name}</p>
-                                        <span className="bg-[#a1e2b6]/15 border border-[#a1e2b6]/25 text-[#a1e2b6] font-geist text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                                        <p className="font-sans font-black text-white text-sm">{d.mentor.name}</p>
+                                        <span className="bg-[#a1e2b6]/15 border border-[#a1e2b6]/25 text-[#a1e2b6] font-sans text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
                                             Rep. {d.mentor.reputationScore}/100
                                         </span>
                                     </div>
-                                    <p className="font-geist text-[10px] text-white/50 mt-0.5">{d.mentor.title}</p>
-                                    <p className="font-inter text-sm text-white/75 mt-3 leading-relaxed italic">
+                                    <p className="font-sans text-[10px] text-white/50 mt-0.5">{d.mentor.title}</p>
+                                    <p className="font-sans text-sm text-white/75 mt-3 leading-relaxed italic">
                                         "{d.mentor.endorsement}"
                                     </p>
                                     <div className="flex items-center gap-1 mt-3">
@@ -169,7 +169,7 @@ export default function WarmIntroLanding() {
                                                 <Star key={i} className="w-3 h-3" fill={i < 4 ? '#a1e2b6' : 'none'} stroke="#a1e2b6" />
                                             ))}
                                         </div>
-                                        <span className="font-geist text-[10px] text-white/40 ml-1">{d.mentor.successfulIntros} successful intros</span>
+                                        <span className="font-sans text-[10px] text-white/40 ml-1">{d.mentor.successfulIntros} successful intros</span>
                                     </div>
                                 </div>
                             </div>
@@ -187,15 +187,15 @@ export default function WarmIntroLanding() {
                                             {d.startup.logo}
                                         </div>
                                         <div>
-                                            <h1 className="font-outfit font-black text-[#102c1e] text-2xl tracking-tight">{d.startup.name}</h1>
-                                            <p className="font-inter text-sm text-slate-500 mt-0.5">{d.startup.tagline}</p>
+                                            <h1 className="font-heading font-black text-[#102c1e] text-2xl tracking-tight">{d.startup.name}</h1>
+                                            <p className="font-sans text-sm text-slate-500 mt-0.5">{d.startup.tagline}</p>
                                         </div>
                                     </div>
                                     <div className="shrink-0 flex flex-col items-end gap-1.5">
-                                        <span className="font-geist text-[10px] font-bold bg-[#a1e2b6]/20 border border-[#a1e2b6]/40 text-[#102c1e] px-3 py-1 rounded-full">
+                                        <span className="font-sans text-[10px] font-bold bg-[#a1e2b6]/20 border border-[#a1e2b6]/40 text-[#102c1e] px-3 py-1 rounded-full">
                                             {d.startup.stage}
                                         </span>
-                                        <span className="font-geist text-[10px] font-bold text-slate-400">
+                                        <span className="font-sans text-[10px] font-bold text-slate-400">
                                             {d.startup.vertical}
                                         </span>
                                     </div>
@@ -205,9 +205,9 @@ export default function WarmIntroLanding() {
                                 <div className="grid grid-cols-3 gap-3 mb-5">
                                     {d.startup.metrics.map((m, i) => (
                                         <div key={i} className="bg-[#fafafa] rounded-2xl border border-[#102c1e]/6 p-3.5 hover:border-[#102c1e]/15 transition-colors">
-                                            <p className="font-geist text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">{m.label}</p>
+                                            <p className="font-sans text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">{m.label}</p>
                                             <p className="font-mono font-black text-[#102c1e] text-lg">{m.value}</p>
-                                            <p className="font-geist text-[10px] font-bold text-[#a1e2b6] mt-0.5">{m.trend}</p>
+                                            <p className="font-sans text-[10px] font-bold text-[#a1e2b6] mt-0.5">{m.trend}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -217,7 +217,7 @@ export default function WarmIntroLanding() {
                                     {d.startup.highlights.map((h, i) => (
                                         <div key={i} className="flex items-start gap-2.5">
                                             <CheckCircle2 className="w-4 h-4 text-[#a1e2b6] shrink-0 mt-0.5" />
-                                            <p className="font-inter text-sm text-slate-600 leading-relaxed">{h}</p>
+                                            <p className="font-sans text-sm text-slate-600 leading-relaxed">{h}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -225,14 +225,14 @@ export default function WarmIntroLanding() {
                                 {/* Tags row */}
                                 <div className="flex items-center gap-2 flex-wrap">
                                     {[d.startup.country, `Founded ${d.startup.founded}`, `${d.startup.teamSize} people`].map((t, i) => (
-                                        <span key={i} className="flex items-center gap-1 bg-[#102c1e]/5 px-2.5 py-1 rounded-full font-geist text-[10px] font-bold text-[#102c1e]/60">
+                                        <span key={i} className="flex items-center gap-1 bg-[#102c1e]/5 px-2.5 py-1 rounded-full font-sans text-[10px] font-bold text-[#102c1e]/60">
                                             {i === 0 && <Globe className="w-3 h-3" />}
                                             {i === 1 && <Clock className="w-3 h-3" />}
                                             {i === 2 && <Users className="w-3 h-3" />}
                                             {t}
                                         </span>
                                     ))}
-                                    <span className="ml-auto font-geist text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                                    <span className="ml-auto font-sans text-[10px] font-bold text-slate-400 flex items-center gap-1">
                                         <Lock className="w-3 h-3" />
                                         Ask: <span className="text-[#102c1e] font-black">{d.startup.ask}</span>
                                     </span>
@@ -246,8 +246,8 @@ export default function WarmIntroLanding() {
                                 <Lock className="w-5 h-5 text-[#102c1e]/40" />
                             </div>
                             <div className="flex-1">
-                                <p className="font-geist font-black text-sm text-[#102c1e]">Secure Data Room</p>
-                                <p className="font-inter text-xs text-slate-500 mt-0.5">
+                                <p className="font-sans font-black text-sm text-[#102c1e]">Secure Data Room</p>
+                                <p className="font-sans text-xs text-slate-500 mt-0.5">
                                     Pitch deck đầy đủ, Financial model, Cap Table và IP Ledger sẽ được mở sau khi chấp nhận.
                                 </p>
                             </div>
@@ -264,7 +264,7 @@ export default function WarmIntroLanding() {
                         <button
                             onClick={handleAccept}
                             disabled={step === 'accepting'}
-                            className="w-full relative group overflow-hidden rounded-2xl bg-[#102c1e] text-white py-4 font-geist font-black text-base tracking-wide shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all active:translate-y-0 disabled:opacity-70"
+                            className="w-full relative group overflow-hidden rounded-2xl bg-[#102c1e] text-white py-4 font-sans font-black text-base tracking-wide shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all active:translate-y-0 disabled:opacity-70"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                             {step === 'accepting' ? (
@@ -282,7 +282,7 @@ export default function WarmIntroLanding() {
                         </button>
 
                         {/* Expiry notice */}
-                        <p className="text-center font-geist text-[10px] text-slate-400 mt-3">
+                        <p className="text-center font-sans text-[10px] text-slate-400 mt-3">
                             Link này hết hạn sau <span className="font-bold text-[#102c1e]">{daysLeft} ngày</span> · Được bảo mật bởi Kizuna Hub
                         </p>
                     </>
@@ -292,22 +292,22 @@ export default function WarmIntroLanding() {
                         <div className="w-16 h-16 rounded-2xl bg-[#102c1e] flex items-center justify-center mx-auto mb-6 shadow-lg">
                             <CheckCircle2 className="w-8 h-8 text-[#a1e2b6]" />
                         </div>
-                        <h2 className="font-outfit font-black text-[#102c1e] text-2xl mb-2">Deal đã vào CRM!</h2>
-                        <p className="font-inter text-slate-500 text-sm mb-2">
+                        <h2 className="font-heading font-black text-[#102c1e] text-2xl mb-2">Deal đã vào CRM!</h2>
+                        <p className="font-sans text-slate-500 text-sm mb-2">
                             <strong className="text-[#102c1e]">SnapMoney</strong> đã được thêm vào cột <strong>Warm Intros</strong> trong Deal Flow CRM của bạn.
                         </p>
-                        <p className="font-inter text-slate-400 text-sm mb-8">
+                        <p className="font-sans text-slate-400 text-sm mb-8">
                             Data Room đã được mở khoá. Mentor Tuấn đã nhận thông báo bạn đã xem xét giới thiệu này.
                         </p>
                         <div className="flex items-center gap-3 justify-center">
                             <a
                                 href="/investor/deal-flow"
-                                className="flex items-center gap-2 bg-[#102c1e] text-white font-geist font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#0a1c13] transition-colors shadow-md"
+                                className="flex items-center gap-2 bg-[#102c1e] text-white font-sans font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#0a1c13] transition-colors shadow-md"
                             >
                                 <ChevronRight className="w-4 h-4" />
                                 Mở Deal Flow CRM
                             </a>
-                            <button className="flex items-center gap-2 border border-[#102c1e]/10 text-[#102c1e] font-geist font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#102c1e]/5 transition-colors">
+                            <button className="flex items-center gap-2 border border-[#102c1e]/10 text-[#102c1e] font-sans font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-[#102c1e]/5 transition-colors">
                                 <ExternalLink className="w-4 h-4" />
                                 Xem Data Room
                             </button>

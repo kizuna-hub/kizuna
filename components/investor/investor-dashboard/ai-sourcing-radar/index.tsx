@@ -117,24 +117,24 @@ export default function AIThesisSetup() {
     const pctMax = ((thesis.maxCheckSize - 50_000) / (5_000_000 - 50_000)) * 100;
 
     return (
-        <div className="min-h-screen bg-[#fafafa] font-inter text-[#102c1e]">
+        <div className="min-h-screen bg-[#fafafa] font-sans text-[#102c1e]">
 
             {/* ── HEADER ── */}
             <header className="px-10 pt-10 pb-6">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <div>
-                        <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">
+                        <p className="font-sans text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">
                             Wizard · Deal Flow
                         </p>
-                        <h1 className="font-outfit font-black text-[#102c1e] text-3xl">
+                        <h1 className="font-heading font-black text-[#102c1e] text-3xl">
                             AI Thesis Setup Wizard
                         </h1>
-                        <p className="font-inter text-slate-500 text-sm mt-2">
+                        <p className="font-sans text-slate-500 text-sm mt-2">
                             Thiết lập khẩu vị đầu tư (Investment Thesis) để AI Radar tự động săn deal cho bạn.
                         </p>
                     </div>
                     {saved && (
-                        <div className="flex items-center gap-2 bg-[#a1e2b6]/20 border border-[#a1e2b6]/50 text-[#102c1e] px-4 py-2 rounded-xl font-geist text-xs font-bold">
+                        <div className="flex items-center gap-2 bg-[#a1e2b6]/20 border border-[#a1e2b6]/50 text-[#102c1e] px-4 py-2 rounded-xl font-sans text-xs font-bold">
                             <Zap className="w-4 h-4" /> Radar Active
                         </div>
                     )}
@@ -153,14 +153,14 @@ export default function AIThesisSetup() {
                             <React.Fragment key={s.id}>
                                 <div className="flex items-center gap-2 shrink-0">
                                     <div className={cn(
-                                        "w-6 h-6 rounded-full flex items-center justify-center font-geist text-[10px] font-black transition-all",
+                                        "w-6 h-6 rounded-full flex items-center justify-center font-sans text-[10px] font-black transition-all",
                                         step === s.id ? "bg-[#102c1e] text-white" :
                                             step > s.id ? "bg-[#102c1e]/10 text-[#102c1e]" : "bg-white border border-slate-200 text-slate-400"
                                     )}>
                                         {step > s.id ? <Check className="w-3.5 h-3.5" /> : s.id}
                                     </div>
                                     <span className={cn(
-                                        "font-geist text-xs transition-colors",
+                                        "font-sans text-xs transition-colors",
                                         step === s.id ? "font-bold text-[#102c1e]" : "font-medium text-slate-400"
                                     )}>
                                         {s.label}
@@ -180,7 +180,7 @@ export default function AIThesisSetup() {
                         {step === 1 && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                                 <div>
-                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Giai đoạn mục tiêu (Stage)</h3>
+                                    <h3 className="font-heading text-xl font-bold text-[#102c1e] mb-4">Giai đoạn mục tiêu (Stage)</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {STAGE_OPTIONS.map(s => {
                                             const isActive = thesis.stages.includes(s.id);
@@ -196,14 +196,14 @@ export default function AIThesisSetup() {
                                                     )}
                                                 >
                                                     <div className="flex items-center justify-between w-full mb-1">
-                                                        <span className={cn("font-geist text-sm font-bold", isActive ? "text-[#102c1e]" : "text-slate-700")}>
+                                                        <span className={cn("font-sans text-sm font-bold", isActive ? "text-[#102c1e]" : "text-slate-700")}>
                                                             {s.id}
                                                         </span>
                                                         <div className={cn("w-4 h-4 rounded-full border flex items-center justify-center", isActive ? "border-[#102c1e] bg-[#102c1e]" : "border-slate-300")}>
                                                             {isActive && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                                                         </div>
                                                     </div>
-                                                    <span className="font-inter text-xs text-slate-500">{s.desc}</span>
+                                                    <span className="font-sans text-xs text-slate-500">{s.desc}</span>
                                                 </button>
                                             )
                                         })}
@@ -211,7 +211,7 @@ export default function AIThesisSetup() {
                                 </div>
 
                                 <div>
-                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Lĩnh vực ưu tiên (Verticals)</h3>
+                                    <h3 className="font-heading text-xl font-bold text-[#102c1e] mb-4">Lĩnh vực ưu tiên (Verticals)</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {VERTICAL_OPTIONS.map(v => {
                                             const isActive = thesis.verticals.includes(v);
@@ -223,7 +223,7 @@ export default function AIThesisSetup() {
                                                         toggle('verticals', v);
                                                     }}
                                                     className={cn(
-                                                        "px-4 py-2 rounded-lg font-geist text-xs font-bold transition-all border",
+                                                        "px-4 py-2 rounded-lg font-sans text-xs font-bold transition-all border",
                                                         isActive
                                                             ? "bg-[#102c1e] text-white border-[#102c1e]"
                                                             : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
@@ -234,7 +234,7 @@ export default function AIThesisSetup() {
                                             )
                                         })}
                                     </div>
-                                    <p className="font-inter text-xs text-slate-400 mt-3">Đã chọn {thesis.verticals.length}/5 (Tối đa 5 ngành lõi).</p>
+                                    <p className="font-sans text-xs text-slate-400 mt-3">Đã chọn {thesis.verticals.length}/5 (Tối đa 5 ngành lõi).</p>
                                 </div>
                             </div>
                         )}
@@ -243,22 +243,22 @@ export default function AIThesisSetup() {
                         {step === 2 && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                                 <div>
-                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Check Size (Quy mô đầu tư)</h3>
+                                    <h3 className="font-heading text-xl font-bold text-[#102c1e] mb-4">Check Size (Quy mô đầu tư)</h3>
 
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4">
-                                            <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Từ (Min)</p>
+                                            <p className="font-sans text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Từ (Min)</p>
                                             <p className="font-mono text-2xl font-black text-[#102c1e]">{fmt$(thesis.minCheckSize)}</p>
                                         </div>
                                         <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4">
-                                            <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Đến (Max)</p>
+                                            <p className="font-sans text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Đến (Max)</p>
                                             <p className="font-mono text-2xl font-black text-[#102c1e]">{fmt$(thesis.maxCheckSize)}</p>
                                         </div>
                                     </div>
 
                                     <div className="space-y-6 bg-white border border-slate-200 rounded-xl p-6">
                                         <div>
-                                            <label className="font-geist text-xs font-bold text-slate-600 flex justify-between mb-3">
+                                            <label className="font-sans text-xs font-bold text-slate-600 flex justify-between mb-3">
                                                 <span>Min Check</span>
                                             </label>
                                             <input type="range"
@@ -270,7 +270,7 @@ export default function AIThesisSetup() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="font-geist text-xs font-bold text-slate-600 flex justify-between mb-3">
+                                            <label className="font-sans text-xs font-bold text-slate-600 flex justify-between mb-3">
                                                 <span>Max Check</span>
                                             </label>
                                             <input type="range"
@@ -285,7 +285,7 @@ export default function AIThesisSetup() {
                                 </div>
 
                                 <div>
-                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Giai đoạn doanh thu (Revenue)</h3>
+                                    <h3 className="font-heading text-xl font-bold text-[#102c1e] mb-4">Giai đoạn doanh thu (Revenue)</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {REVENUE_OPTIONS.map(r => {
                                             const isActive = thesis.revenueStages.includes(r);
@@ -294,7 +294,7 @@ export default function AIThesisSetup() {
                                                     key={r}
                                                     onClick={() => toggle('revenueStages', r)}
                                                     className={cn(
-                                                        "px-4 py-2 rounded-lg font-geist text-xs font-bold transition-all border",
+                                                        "px-4 py-2 rounded-lg font-sans text-xs font-bold transition-all border",
                                                         isActive
                                                             ? "bg-[#102c1e] text-white border-[#102c1e]"
                                                             : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
@@ -313,7 +313,7 @@ export default function AIThesisSetup() {
                         {step === 3 && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                                 <div>
-                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Địa lý (Geography)</h3>
+                                    <h3 className="font-heading text-xl font-bold text-[#102c1e] mb-4">Địa lý (Geography)</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {GEO_OPTIONS.map(g => {
                                             const isActive = thesis.geographies.includes(g.id);
@@ -332,8 +332,8 @@ export default function AIThesisSetup() {
                                                         {g.id === 'Global' ? <Globe className="w-4 h-4" /> : <MapPin className="w-4 h-4" />}
                                                     </div>
                                                     <div>
-                                                        <p className={cn("font-geist text-sm font-bold", isActive ? "text-[#102c1e]" : "text-slate-700")}>{g.id}</p>
-                                                        <p className="font-inter text-xs text-slate-500">{g.desc}</p>
+                                                        <p className={cn("font-sans text-sm font-bold", isActive ? "text-[#102c1e]" : "text-slate-700")}>{g.id}</p>
+                                                        <p className="font-sans text-xs text-slate-500">{g.desc}</p>
                                                     </div>
                                                 </button>
                                             )
@@ -342,8 +342,8 @@ export default function AIThesisSetup() {
                                 </div>
 
                                 <div>
-                                    <h3 className="font-outfit text-xl font-bold text-[#102c1e] mb-4">Độ khớp tối thiểu (AI Match Score)</h3>
-                                    <p className="font-inter text-sm text-slate-500 mb-4">Chỉ hiển thị các dự án được AI chấm điểm từ ngưỡng này trở lên.</p>
+                                    <h3 className="font-heading text-xl font-bold text-[#102c1e] mb-4">Độ khớp tối thiểu (AI Match Score)</h3>
+                                    <p className="font-sans text-sm text-slate-500 mb-4">Chỉ hiển thị các dự án được AI chấm điểm từ ngưỡng này trở lên.</p>
                                     <div className="flex items-center gap-3">
                                         {[60, 70, 80, 90].map(score => (
                                             <button
@@ -372,8 +372,8 @@ export default function AIThesisSetup() {
                                         <Search className="w-6 h-6 text-[#102c1e]" />
                                     </div>
                                     <div>
-                                        <h3 className="font-outfit font-bold text-[#102c1e] text-lg">AI Simulation Run</h3>
-                                        <p className="font-inter text-sm text-slate-600 mt-1">
+                                        <h3 className="font-heading font-bold text-[#102c1e] text-lg">AI Simulation Run</h3>
+                                        <p className="font-sans text-sm text-slate-600 mt-1">
                                             Dựa trên thesis của bạn, AI đã quét cơ sở dữ liệu hiện tại và tìm thấy <strong>{AI_MATCHES.length} deals</strong> tiềm năng.
                                         </p>
                                     </div>
@@ -388,15 +388,15 @@ export default function AIThesisSetup() {
                                                         {match.logo}
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-outfit font-bold text-[#102c1e] text-lg">{match.name}</h4>
+                                                        <h4 className="font-heading font-bold text-[#102c1e] text-lg">{match.name}</h4>
                                                         <div className="flex gap-2 mt-1">
-                                                            <span className="font-geist text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md">{match.vertical}</span>
-                                                            <span className="font-geist text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md">{match.stage}</span>
+                                                            <span className="font-sans text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md">{match.vertical}</span>
+                                                            <span className="font-sans text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md">{match.stage}</span>
                                                             {match.source === 'warm-intro' && (
-                                                                <span className="font-geist text-[10px] font-bold bg-[#102c1e] text-white px-2 py-0.5 rounded-md">Warm Intro</span>
+                                                                <span className="font-sans text-[10px] font-bold bg-[#102c1e] text-white px-2 py-0.5 rounded-md">Warm Intro</span>
                                                             )}
                                                         </div>
-                                                        <p className="font-inter text-sm text-slate-600 mt-2 bg-slate-50 p-2 rounded-lg border border-slate-100 italic">
+                                                        <p className="font-sans text-sm text-slate-600 mt-2 bg-slate-50 p-2 rounded-lg border border-slate-100 italic">
                                                             " {match.reason} "
                                                         </p>
                                                     </div>
@@ -419,7 +419,7 @@ export default function AIThesisSetup() {
                         <button
                             onClick={() => setStep(Math.max(1, step - 1) as WizardStep)}
                             className={cn(
-                                "flex items-center gap-2 font-geist text-sm font-bold transition-colors",
+                                "flex items-center gap-2 font-sans text-sm font-bold transition-colors",
                                 step === 1 ? "opacity-0 pointer-events-none" : "text-slate-500 hover:text-[#102c1e]"
                             )}
                         >
@@ -430,7 +430,7 @@ export default function AIThesisSetup() {
                             <button
                                 onClick={() => setStep(step + 1 as WizardStep)}
                                 disabled={(step === 1 && !isStep1Valid) || (step === 2 && !isStep2Valid) || (step === 3 && !isStep3Valid)}
-                                className="flex items-center gap-2 bg-[#102c1e] text-white font-geist text-sm font-bold px-8 py-3 rounded-xl hover:bg-[#0a1c13] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex items-center gap-2 bg-[#102c1e] text-white font-sans text-sm font-bold px-8 py-3 rounded-xl hover:bg-[#0a1c13] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Continue <ChevronRight className="w-4 h-4" />
                             </button>
@@ -438,7 +438,7 @@ export default function AIThesisSetup() {
                             <button
                                 onClick={() => setSaved(true)}
                                 className={cn(
-                                    "flex items-center gap-2 font-geist text-sm font-bold px-8 py-3 rounded-xl transition-all shadow-md",
+                                    "flex items-center gap-2 font-sans text-sm font-bold px-8 py-3 rounded-xl transition-all shadow-md",
                                     saved
                                         ? "bg-[#a1e2b6] text-[#102c1e]"
                                         : "bg-[#102c1e] text-white hover:bg-[#0a1c13]"
@@ -456,7 +456,7 @@ export default function AIThesisSetup() {
 
                     {/* Readiness Checklist */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                        <h4 className="font-outfit font-bold text-[#102c1e] mb-4">Thesis Checklist</h4>
+                        <h4 className="font-heading font-bold text-[#102c1e] mb-4">Thesis Checklist</h4>
                         <div className="space-y-3">
                             {[
                                 { id: 1, label: 'Stages selected', isValid: isStep1Valid },
@@ -468,7 +468,7 @@ export default function AIThesisSetup() {
                                         ? <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
                                         : <Circle className="w-5 h-5 text-slate-200 shrink-0" />
                                     }
-                                    <span className={cn("font-inter text-sm", item.isValid ? "text-[#102c1e] font-medium" : "text-slate-400")}>
+                                    <span className={cn("font-sans text-sm", item.isValid ? "text-[#102c1e] font-medium" : "text-slate-400")}>
                                         {item.label}
                                     </span>
                                 </div>
@@ -478,8 +478,8 @@ export default function AIThesisSetup() {
 
                     {/* Sourcing Power Health */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
-                        <h4 className="font-outfit font-bold text-[#102c1e] mb-2 w-full text-left">Sourcing Breadth</h4>
-                        <p className="font-inter text-xs text-slate-500 w-full text-left mb-6">
+                        <h4 className="font-heading font-bold text-[#102c1e] mb-2 w-full text-left">Sourcing Breadth</h4>
+                        <p className="font-sans text-xs text-slate-500 w-full text-left mb-6">
                             Độ bao phủ của bộ lọc. Phần trăm càng cao, AI càng mang về nhiều deal.
                         </p>
 
@@ -497,7 +497,7 @@ export default function AIThesisSetup() {
                         </div>
 
                         {breadthScore < 50 && (
-                            <div className="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-lg font-inter text-xs text-left">
+                            <div className="bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-lg font-sans text-xs text-left">
                                 <span className="font-bold">Warning:</span> Bộ lọc đang quá hẹp, bạn có thể bỏ lỡ nhiều thương vụ tốt.
                             </div>
                         )}

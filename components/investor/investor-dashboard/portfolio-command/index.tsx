@@ -101,11 +101,11 @@ export default function PortfolioCommandCenter() {
             <header className="shrink-0 px-8 pt-8 pb-6 bg-white border-b border-slate-200">
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">PROTECT · POST-INVESTMENT</p>
-                        <h1 className="font-outfit font-black text-[#102c1e] text-3xl tracking-tight leading-none">
+                        <p className="font-sans text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">PROTECT · POST-INVESTMENT</p>
+                        <h1 className="font-heading font-black text-[#102c1e] text-3xl tracking-tight leading-none">
                             Portfolio Command Center
                         </h1>
-                        <p className="font-inter text-slate-500 text-sm mt-2">
+                        <p className="font-sans text-slate-500 text-sm mt-2">
                             Detect operational risks — burn rate, runway, MRR churn — before they damage your fund's growth.
                         </p>
                     </div>
@@ -119,10 +119,10 @@ export default function PortfolioCommandCenter() {
                             placeholder="Search portfolio companies..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl font-geist text-xs text-[#102c1e] focus:outline-none focus:border-[#a1e2b6] focus:ring-4 focus:ring-[#a1e2b6]/10 transition-all shadow-sm"
+                            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl font-sans text-xs text-[#102c1e] focus:outline-none focus:border-[#a1e2b6] focus:ring-4 focus:ring-[#a1e2b6]/10 transition-all shadow-sm"
                         />
                     </div>
-                    <button className="flex items-center gap-2 bg-[#102c1e] text-white px-4 py-2 rounded-xl font-geist text-xs font-bold hover:bg-[#0a1c13] transition-colors shadow-sm">
+                    <button className="flex items-center gap-2 bg-[#102c1e] text-white px-4 py-2 rounded-xl font-sans text-xs font-bold hover:bg-[#0a1c13] transition-colors shadow-sm">
                         <PieChart className="w-4 h-4" /> Pro-Rata Simulator
                     </button>
                 </div>
@@ -137,12 +137,12 @@ export default function PortfolioCommandCenter() {
                         {/* Card 1: Critical Runway */}
                         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-2 mb-3">
-                                <span className="bg-red-50 border border-red-200 text-red-600 px-2 py-0.5 rounded-md font-geist text-[10px] font-bold uppercase tracking-wide">High Risk</span>
-                                <span className="font-geist text-[10px] font-bold text-slate-500">AgriSense</span>
+                                <span className="bg-red-50 border border-red-200 text-red-600 px-2 py-0.5 rounded-md font-sans text-[10px] font-bold uppercase tracking-wide">High Risk</span>
+                                <span className="font-sans text-[10px] font-bold text-slate-500">AgriSense</span>
                             </div>
-                            <h3 className="font-outfit font-black text-[#102c1e] text-base mb-1">Runway Alert: 2 months left</h3>
-                            <p className="font-inter text-xs text-slate-500 mb-4">Cash out date projected: Aug 15. MRR dropping 5% MoM.</p>
-                            <button className="bg-[#102c1e] text-white px-4 py-2 rounded-lg font-geist text-[10px] font-bold hover:bg-[#0a1c13] transition-colors w-full text-center">
+                            <h3 className="font-heading font-black text-[#102c1e] text-base mb-1">Runway Alert: 2 months left</h3>
+                            <p className="font-sans text-xs text-slate-500 mb-4">Cash out date projected: Aug 15. MRR dropping 5% MoM.</p>
+                            <button className="bg-[#102c1e] text-white px-4 py-2 rounded-lg font-sans text-[10px] font-bold hover:bg-[#0a1c13] transition-colors w-full text-center">
                                 Review Bridge Loan
                             </button>
                         </div>
@@ -150,12 +150,12 @@ export default function PortfolioCommandCenter() {
                         {/* Card 2: Watchlist */}
                         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-2 mb-3">
-                                <span className="bg-amber-50 border border-amber-200 text-amber-600 px-2 py-0.5 rounded-md font-geist text-[10px] font-bold uppercase tracking-wide">Watch</span>
-                                <span className="font-geist text-[10px] font-bold text-slate-500">EduPath AI</span>
+                                <span className="bg-amber-50 border border-amber-200 text-amber-600 px-2 py-0.5 rounded-md font-sans text-[10px] font-bold uppercase tracking-wide">Watch</span>
+                                <span className="font-sans text-[10px] font-bold text-slate-500">EduPath AI</span>
                             </div>
-                            <h3 className="font-outfit font-black text-[#102c1e] text-base mb-1">Burn rate spike: $30K/mo</h3>
-                            <p className="font-inter text-xs text-slate-500 mb-4">Marketing spend increased 40% but CAC worsened by 15%.</p>
-                            <button className="bg-[#102c1e] text-white px-4 py-2 rounded-lg font-geist text-[10px] font-bold hover:bg-[#0a1c13] transition-colors w-full text-center">
+                            <h3 className="font-heading font-black text-[#102c1e] text-base mb-1">Burn rate spike: $30K/mo</h3>
+                            <p className="font-sans text-xs text-slate-500 mb-4">Marketing spend increased 40% but CAC worsened by 15%.</p>
+                            <button className="bg-[#102c1e] text-white px-4 py-2 rounded-lg font-sans text-[10px] font-bold hover:bg-[#0a1c13] transition-colors w-full text-center">
                                 Schedule Board Call
                             </button>
                         </div>
@@ -163,12 +163,12 @@ export default function PortfolioCommandCenter() {
                         {/* Card 3: Report Due */}
                         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-2 mb-3">
-                                <span className="bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-md font-geist text-[10px] font-bold uppercase tracking-wide">Action</span>
-                                <span className="font-geist text-[10px] font-bold text-slate-500">3 Companies</span>
+                                <span className="bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-md font-sans text-[10px] font-bold uppercase tracking-wide">Action</span>
+                                <span className="font-sans text-[10px] font-bold text-slate-500">3 Companies</span>
                             </div>
-                            <h3 className="font-outfit font-black text-[#102c1e] text-base mb-1">Q2 Reports Missing</h3>
-                            <p className="font-inter text-xs text-slate-500 mb-4">SnapMoney, HealthKit and 1 other haven't submitted financials.</p>
-                            <button className="bg-[#102c1e] text-white px-4 py-2 rounded-lg font-geist text-[10px] font-bold hover:bg-[#0a1c13] transition-colors w-full text-center">
+                            <h3 className="font-heading font-black text-[#102c1e] text-base mb-1">Q2 Reports Missing</h3>
+                            <p className="font-sans text-xs text-slate-500 mb-4">SnapMoney, HealthKit and 1 other haven't submitted financials.</p>
+                            <button className="bg-[#102c1e] text-white px-4 py-2 rounded-lg font-sans text-[10px] font-bold hover:bg-[#0a1c13] transition-colors w-full text-center">
                                 Send Automated Reminders
                             </button>
                         </div>
@@ -176,12 +176,12 @@ export default function PortfolioCommandCenter() {
                         {/* Card 4: Good News */}
                         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-2 mb-3">
-                                <span className="bg-emerald-50 border border-emerald-200 text-emerald-600 px-2 py-0.5 rounded-md font-geist text-[10px] font-bold uppercase tracking-wide">Success</span>
-                                <span className="font-geist text-[10px] font-bold text-slate-500">Kizuna Hub</span>
+                                <span className="bg-emerald-50 border border-emerald-200 text-emerald-600 px-2 py-0.5 rounded-md font-sans text-[10px] font-bold uppercase tracking-wide">Success</span>
+                                <span className="font-sans text-[10px] font-bold text-slate-500">Kizuna Hub</span>
                             </div>
-                            <h3 className="font-outfit font-black text-[#102c1e] text-base mb-1">MRR Growth +40% MoM</h3>
-                            <p className="font-inter text-xs text-slate-500 mb-4">Hit $8K MRR. Valuation estimate increased to $3M.</p>
-                            <button className="bg-white border border-slate-200 text-[#102c1e] px-4 py-2 rounded-lg font-geist text-[10px] font-bold hover:bg-slate-50 transition-colors w-full text-center">
+                            <h3 className="font-heading font-black text-[#102c1e] text-base mb-1">MRR Growth +40% MoM</h3>
+                            <p className="font-sans text-xs text-slate-500 mb-4">Hit $8K MRR. Valuation estimate increased to $3M.</p>
+                            <button className="bg-white border border-slate-200 text-[#102c1e] px-4 py-2 rounded-lg font-sans text-[10px] font-bold hover:bg-slate-50 transition-colors w-full text-center">
                                 View Traction Report
                             </button>
                         </div>
@@ -191,8 +191,8 @@ export default function PortfolioCommandCenter() {
                     {/* ── PORTFOLIO LEDGER GRID ── */}
                     <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                         <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                            <h3 className="font-outfit font-black text-[#102c1e] text-lg">Portfolio Ledger</h3>
-                            <div className="flex items-center gap-4 font-geist text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            <h3 className="font-heading font-black text-[#102c1e] text-lg">Portfolio Ledger</h3>
+                            <div className="flex items-center gap-4 font-sans text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                                 <span>Deployed: $1.25M</span>
                                 <span>Total Value: $23.1M</span>
                             </div>
@@ -202,11 +202,11 @@ export default function PortfolioCommandCenter() {
                             <table className="w-full text-left border-collapse whitespace-nowrap">
                                 <thead>
                                     <tr className="border-b border-slate-100">
-                                        <th className="px-6 py-4 font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest">Company</th>
-                                        <th className="px-4 py-4 font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest">Health & Runway</th>
-                                        <th className="px-4 py-4 font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Invested / Value</th>
-                                        <th className="px-4 py-4 font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Ownership</th>
-                                        <th className="px-4 py-4 font-geist text-[10px] font-bold text-slate-400 uppercase tracking-widest">MRR / Burn</th>
+                                        <th className="px-6 py-4 font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest">Company</th>
+                                        <th className="px-4 py-4 font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest">Health & Runway</th>
+                                        <th className="px-4 py-4 font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Invested / Value</th>
+                                        <th className="px-4 py-4 font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Ownership</th>
+                                        <th className="px-4 py-4 font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest">MRR / Burn</th>
                                         <th className="px-6 py-4"></th>
                                     </tr>
                                 </thead>
@@ -221,8 +221,8 @@ export default function PortfolioCommandCenter() {
                                                     <div className="flex items-center gap-3">
                                                         <div className={cn("w-2 h-2 rounded-full shrink-0", h.dot)} />
                                                         <div>
-                                                            <p className="font-outfit font-bold text-[#102c1e] text-base leading-none mb-1">{company.name}</p>
-                                                            <p className="font-inter text-[11px] text-slate-500">{company.vertical} · {company.stage}</p>
+                                                            <p className="font-heading font-bold text-[#102c1e] text-base leading-none mb-1">{company.name}</p>
+                                                            <p className="font-sans text-[11px] text-slate-500">{company.vertical} · {company.stage}</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -230,7 +230,7 @@ export default function PortfolioCommandCenter() {
                                                 {/* Health & Runway */}
                                                 <td className="px-4 py-4">
                                                     <div className="flex flex-col gap-1.5">
-                                                        <div className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border w-fit font-geist text-[9px] font-bold uppercase tracking-wider", h.bg, h.text)}>
+                                                        <div className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border w-fit font-sans text-[9px] font-bold uppercase tracking-wider", h.bg, h.text)}>
                                                             <h.icon className="w-3 h-3" /> {h.label}
                                                         </div>
                                                         <div className="flex items-center gap-1 font-mono text-[11px] text-slate-500">
@@ -262,7 +262,7 @@ export default function PortfolioCommandCenter() {
                                                                     {company.mrrGrowth > 0 ? '+' : ''}{company.mrrGrowth}%
                                                                 </span>
                                                             </div>
-                                                            <p className="font-inter text-[10px] text-slate-500">Burn: {company.burnRate}/mo</p>
+                                                            <p className="font-sans text-[10px] text-slate-500">Burn: {company.burnRate}/mo</p>
                                                         </div>
                                                         <div className="w-16 opacity-70 group-hover:opacity-100 transition-opacity">
                                                             <Sparkline data={company.sparkline} isUp={company.mrrGrowth > 0} />
@@ -272,7 +272,7 @@ export default function PortfolioCommandCenter() {
 
                                                 {/* Action */}
                                                 <td className="px-6 py-4 text-right">
-                                                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-geist text-[10px] font-bold text-[#102c1e] hover:border-[#102c1e]/30 hover:bg-slate-50 transition-colors">
+                                                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-sans text-[10px] font-bold text-[#102c1e] hover:border-[#102c1e]/30 hover:bg-slate-50 transition-colors">
                                                         Command <ChevronRight className="w-3 h-3" />
                                                     </button>
                                                 </td>

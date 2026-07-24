@@ -244,11 +244,11 @@ export default function DealFlowActionCenter() {
             <header className="shrink-0 px-8 pt-8 pb-6 bg-white border-b border-[#102c1e]/10">
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <p className="font-geist text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Workflow · Approvals Queue</p>
-                        <h1 className="font-outfit font-black text-[#102c1e] text-3xl tracking-tight leading-none">
+                        <p className="font-sans text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Workflow · Approvals Queue</p>
+                        <h1 className="font-heading font-black text-[#102c1e] text-3xl tracking-tight leading-none">
                             Action Center
                         </h1>
-                        <p className="font-inter text-slate-500 text-sm mt-2">
+                        <p className="font-sans text-slate-500 text-sm mt-2">
                             Mọi quyết định đầu tư, thẩm định và cảnh báo AI đều tập trung tại đây. Duyệt, từ chối hoặc yêu cầu thêm Data.
                         </p>
                     </div>
@@ -269,7 +269,7 @@ export default function DealFlowActionCenter() {
                                     key={stage.id}
                                     onClick={() => setActiveStage(stage.id)}
                                     className={cn(
-                                        'flex items-center gap-2 px-3 py-1.5 rounded-lg font-geist text-[11px] font-bold transition-all',
+                                        'flex items-center gap-2 px-3 py-1.5 rounded-lg font-sans text-[11px] font-bold transition-all',
                                         // ĐỔI MÀU NÚT KHI ACTIVE THÀNH MÀU KIZUNA (#102c1e)
                                         isActive
                                             ? 'bg-[#102c1e] text-[#a1e2b6] shadow-sm'
@@ -295,7 +295,7 @@ export default function DealFlowActionCenter() {
                             placeholder="Search deals..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl font-geist text-xs text-[#102c1e] focus:outline-none focus:border-[#102c1e] focus:ring-1 focus:ring-[#102c1e] transition-all shadow-sm"
+                            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl font-sans text-xs text-[#102c1e] focus:outline-none focus:border-[#102c1e] focus:ring-1 focus:ring-[#102c1e] transition-all shadow-sm"
                         />
                     </div>
                 </div>
@@ -306,7 +306,7 @@ export default function DealFlowActionCenter() {
                 <div className="max-w-5xl space-y-4 pb-20">
                     {filteredDeals.length === 0 ? (
                         <div className="text-center py-20">
-                            <p className="font-geist text-sm text-slate-400 font-bold">No deals in this queue.</p>
+                            <p className="font-sans text-sm text-slate-400 font-bold">No deals in this queue.</p>
                         </div>
                     ) : (
                         filteredDeals.map(deal => {
@@ -320,57 +320,57 @@ export default function DealFlowActionCenter() {
                                     <div className="flex items-center gap-2">
                                         <div className={cn("flex items-center gap-1.5 px-2 py-1 rounded-md border border-black/5", pCfg.bg)}>
                                             <Flame className={cn("w-3 h-3", pCfg.text)} />
-                                            <span className={cn("font-geist text-[10px] font-bold uppercase tracking-wide", pCfg.text)}>{pCfg.label}</span>
+                                            <span className={cn("font-sans text-[10px] font-bold uppercase tracking-wide", pCfg.text)}>{pCfg.label}</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-50 border border-slate-100">
-                                            <span className="font-geist text-[10px] font-bold text-slate-500 uppercase tracking-wide">Stage: {deal.col.replace('-', ' ')}</span>
+                                            <span className="font-sans text-[10px] font-bold text-slate-500 uppercase tracking-wide">Stage: {deal.col.replace('-', ' ')}</span>
                                         </div>
                                     </div>
 
                                     {/* MIDDLE: Title, Abstract & FOUNDER INFO */}
                                     <div>
-                                        <h3 className="font-outfit text-xl font-black text-[#102c1e] flex items-center gap-2">
+                                        <h3 className="font-heading text-xl font-black text-[#102c1e] flex items-center gap-2">
                                             {deal.startup}
                                             <span className="font-mono text-lg font-medium text-slate-400">· {deal.ask}</span>
                                         </h3>
 
                                         {/* THÔNG TIN FOUNDER VÀ MENTOR */}
                                         <div className="flex items-center gap-2 mt-2 mb-3">
-                                            <span className="font-inter text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                                            <span className="font-sans text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
                                                 Founder: <span className="font-bold text-[#102c1e]">{deal.founder}</span> ({deal.founderTitle})
                                             </span>
                                             {deal.source === 'warm-intro' && deal.referredBy && (
-                                                <span className="flex items-center gap-1 font-inter text-xs text-[#102c1e] bg-[#a1e2b6]/20 px-2 py-1 rounded-md border border-[#a1e2b6]/30">
+                                                <span className="flex items-center gap-1 font-sans text-xs text-[#102c1e] bg-[#a1e2b6]/20 px-2 py-1 rounded-md border border-[#a1e2b6]/30">
                                                     <Send className="w-3 h-3" />
                                                     Warm Intro by: <span className="font-bold">{deal.referredBy}</span>
                                                 </span>
                                             )}
                                         </div>
 
-                                        <p className="font-inter text-sm text-slate-600 max-w-3xl">
+                                        <p className="font-sans text-sm text-slate-600 max-w-3xl">
                                             <span className="font-bold text-[#102c1e]">{deal.tagline}.</span> {deal.abstract}
                                         </p>
                                     </div>
 
                                     {/* DATA PILLS ROW */}
                                     <div className="flex flex-wrap items-center gap-3">
-                                        <div className="flex items-center gap-1.5 text-[11px] font-geist font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                                        <div className="flex items-center gap-1.5 text-[11px] font-sans font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
                                             <span className="w-1.5 h-1.5 rounded-full bg-[#102c1e]"></span>
                                             {deal.vertical}
                                         </div>
                                         {deal.mrr && (
-                                            <div className="flex items-center gap-1.5 text-[11px] font-geist font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                                            <div className="flex items-center gap-1.5 text-[11px] font-sans font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                 {deal.mrr}
                                             </div>
                                         )}
                                         {deal.traction && (
-                                            <div className="flex items-center gap-1.5 text-[11px] font-geist font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                                            <div className="flex items-center gap-1.5 text-[11px] font-sans font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                                                 {deal.traction}
                                             </div>
                                         )}
-                                        <div className="flex items-center gap-1.5 text-[11px] font-geist font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                                        <div className="flex items-center gap-1.5 text-[11px] font-sans font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
                                             {deal.hasDataRoom ? (
                                                 deal.dataRoomStatus === 'unlocked'
                                                     ? <><Unlock className="w-3 h-3 text-emerald-500" /> Data Room: Open</>
@@ -381,7 +381,7 @@ export default function DealFlowActionCenter() {
                                         </div>
                                         {deal.sparkline && (
                                             <div className="ml-2 flex items-center gap-2">
-                                                <span className="text-[10px] font-geist font-bold text-slate-400 uppercase">Growth</span>
+                                                <span className="text-[10px] font-sans font-bold text-slate-400 uppercase">Growth</span>
                                                 <Sparkline data={deal.sparkline} />
                                             </div>
                                         )}
@@ -392,14 +392,14 @@ export default function DealFlowActionCenter() {
                                         <div className="flex items-center gap-3">
                                             {isDD ? (
                                                 <>
-                                                    <button className="flex items-center gap-2 px-4 py-2 bg-[#102c1e] text-white rounded-lg font-geist text-xs font-bold hover:bg-[#0a1c13] transition-colors">
+                                                    <button className="flex items-center gap-2 px-4 py-2 bg-[#102c1e] text-white rounded-lg font-sans text-xs font-bold hover:bg-[#0a1c13] transition-colors">
                                                         <ShieldCheck className="w-4 h-4" /> DD Terminal
                                                     </button>
                                                 </>
                                             ) : (
                                                 <button
                                                     onClick={() => handleAdvance(deal.id, deal.col, deal.hasDataRoom)}
-                                                    className="flex items-center gap-2 px-4 py-2 bg-[#102c1e] text-white rounded-lg font-geist text-xs font-bold hover:bg-[#0a1c13] transition-colors shadow-sm"
+                                                    className="flex items-center gap-2 px-4 py-2 bg-[#102c1e] text-white rounded-lg font-sans text-xs font-bold hover:bg-[#0a1c13] transition-colors shadow-sm"
                                                 >
                                                     <Check className="w-4 h-4" />
                                                     {deal.col === 'screening' && deal.hasDataRoom ? 'Unlock Data Room & Advance' : 'Approve & Advance'}
@@ -409,7 +409,7 @@ export default function DealFlowActionCenter() {
                                             {!isDD && deal.col !== 'term-sheet' && (
                                                 <button
                                                     onClick={() => handleReject(deal.id)}
-                                                    className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-red-500 rounded-lg font-geist text-xs font-bold hover:bg-red-50 border border-transparent hover:border-red-100 transition-colors"
+                                                    className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-red-500 rounded-lg font-sans text-xs font-bold hover:bg-red-50 border border-transparent hover:border-red-100 transition-colors"
                                                 >
                                                     <X className="w-4 h-4" /> Reject
                                                 </button>
@@ -418,7 +418,7 @@ export default function DealFlowActionCenter() {
 
                                         <button
                                             onClick={() => setSelectedDeal(deal)} // KÍCH HOẠT MỞ SIDEBAR
-                                            className="flex items-center gap-1 font-geist text-[11px] font-bold text-[#102c1e] hover:opacity-70 transition-opacity"
+                                            className="flex items-center gap-1 font-sans text-[11px] font-bold text-[#102c1e] hover:opacity-70 transition-opacity"
                                         >
                                             Open detail <ChevronRight className="w-3 h-3" />
                                         </button>

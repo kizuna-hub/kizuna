@@ -176,7 +176,7 @@ function generateDraft(mentor: Mentor, startup: AdvisedStartup | null, purpose: 
 function Initials({ text, size = 'md' }: { text: string; size?: 'sm' | 'md' | 'lg' }) {
     const sizeClass = { sm: 'w-8 h-8 text-sm', md: 'w-10 h-10 text-base', lg: 'w-16 h-16 text-2xl' }[size];
     return (
-        <div className={cn('rounded-2xl bg-[#102c1e] text-[#a1e2b6] font-outfit font-black flex items-center justify-center shrink-0', sizeClass)}>
+        <div className={cn('rounded-2xl bg-[#102c1e] text-[#a1e2b6] font-heading font-black flex items-center justify-center shrink-0', sizeClass)}>
             {text}
         </div>
     );
@@ -227,7 +227,7 @@ export default function MentorNetworkDirectory() {
     };
 
     return (
-        <div className="flex h-screen bg-[#fafafa] overflow-hidden font-inter">
+        <div className="flex h-screen bg-[#fafafa] overflow-hidden font-sans">
 
             {/* ══════════════════════════════════════════════════════════
                 LEFT PANE — The Directory (w-1/4)
@@ -238,9 +238,9 @@ export default function MentorNetworkDirectory() {
                 <div className="px-6 pt-6 pb-4 border-b border-slate-100">
                     <div className="flex items-center gap-2 mb-1">
                         <Users className="w-5 h-5 text-[#102c1e]" />
-                        <h1 className="font-outfit font-black text-[#102c1e] text-xl">Mentor Directory</h1>
+                        <h1 className="font-heading font-black text-[#102c1e] text-xl">Mentor Directory</h1>
                     </div>
-                    <p className="font-inter text-sm text-slate-500">
+                    <p className="font-sans text-sm text-slate-500">
                         {MENTORS.length} vetted advisors · {MENTORS.reduce((a, m) => a + m.advisedCount, 0)} active mandates
                     </p>
                 </div>
@@ -254,7 +254,7 @@ export default function MentorNetworkDirectory() {
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Search by name, firm, or title..."
-                            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-inter text-sm text-[#102c1e] placeholder:text-slate-400 focus:outline-none focus:border-[#102c1e]/30 focus:bg-white transition-all"
+                            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-sans text-sm text-[#102c1e] placeholder:text-slate-400 focus:outline-none focus:border-[#102c1e]/30 focus:bg-white transition-all"
                         />
                     </div>
                 </div>
@@ -267,7 +267,7 @@ export default function MentorNetworkDirectory() {
                                 key={industry}
                                 onClick={() => setActiveIndustry(industry)}
                                 className={cn(
-                                    'whitespace-nowrap font-geist text-xs font-bold px-3 py-1.5 rounded-full border transition-all',
+                                    'whitespace-nowrap font-sans text-xs font-bold px-3 py-1.5 rounded-full border transition-all',
                                     activeIndustry === industry
                                         ? 'bg-[#102c1e] text-white border-[#102c1e]'
                                         : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700',
@@ -284,7 +284,7 @@ export default function MentorNetworkDirectory() {
                     {filteredMentors.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-16 text-center px-6">
                             <Users className="w-8 h-8 text-slate-200 mb-3" />
-                            <p className="font-inter text-sm font-semibold text-slate-400">No mentors found</p>
+                            <p className="font-sans text-sm font-semibold text-slate-400">No mentors found</p>
                         </div>
                     ) : (
                         <div className="space-y-0.5 px-2">
@@ -311,7 +311,7 @@ export default function MentorNetworkDirectory() {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-1.5 mb-0.5">
                                                 <p className={cn(
-                                                    'font-inter text-sm font-bold truncate',
+                                                    'font-sans text-sm font-bold truncate',
                                                     isActive ? 'text-[#102c1e]' : 'text-slate-700 group-hover:text-[#102c1e]',
                                                 )}>
                                                     {mentor.name}
@@ -320,11 +320,11 @@ export default function MentorNetworkDirectory() {
                                                     <BadgeCheck className="w-3.5 h-3.5 text-[#a1e2b6] shrink-0" />
                                                 )}
                                             </div>
-                                            <p className="font-inter text-xs text-slate-500 truncate">{mentor.title}</p>
+                                            <p className="font-sans text-xs text-slate-500 truncate">{mentor.title}</p>
                                         </div>
 
                                         <div className={cn(
-                                            'shrink-0 font-geist text-xs font-bold px-2 py-1 rounded-lg border',
+                                            'shrink-0 font-sans text-xs font-bold px-2 py-1 rounded-lg border',
                                             isActive
                                                 ? 'bg-[#a1e2b6]/20 border-[#a1e2b6]/40 text-[#102c1e]'
                                                 : 'bg-slate-50 border-slate-200 text-slate-500',
@@ -351,28 +351,28 @@ export default function MentorNetworkDirectory() {
 
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-3 flex-wrap mb-1">
-                                <h2 className="font-outfit font-black text-[#102c1e] text-2xl leading-tight">
+                                <h2 className="font-heading font-black text-[#102c1e] text-2xl leading-tight">
                                     {activeMentor.name}
                                 </h2>
                                 {activeMentor.verified && (
                                     <div className="flex items-center gap-1 bg-[#a1e2b6]/20 border border-[#a1e2b6]/40 px-2.5 py-1 rounded-full">
                                         <BadgeCheck className="w-3.5 h-3.5 text-[#102c1e]" />
-                                        <span className="font-geist text-xs font-bold text-[#102c1e]">Verified</span>
+                                        <span className="font-sans text-xs font-bold text-[#102c1e]">Verified</span>
                                     </div>
                                 )}
                             </div>
-                            <p className="font-inter text-base text-slate-600 mb-3">
+                            <p className="font-sans text-base text-slate-600 mb-3">
                                 {activeMentor.title} · <span className="font-semibold text-slate-700">{activeMentor.company}</span>
                             </p>
 
                             {/* Industry tags */}
                             <div className="flex items-center gap-2 flex-wrap">
                                 {activeMentor.industries.map(ind => (
-                                    <span key={ind} className="font-geist text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1 rounded-full">
+                                    <span key={ind} className="font-sans text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1 rounded-full">
                                         {ind}
                                     </span>
                                 ))}
-                                <span className="font-geist text-xs text-slate-400 flex items-center gap-1">
+                                <span className="font-sans text-xs text-slate-400 flex items-center gap-1">
                                     <Clock className="w-3.5 h-3.5" /> Responds {activeMentor.responseTime}
                                 </span>
                             </div>
@@ -384,12 +384,12 @@ export default function MentorNetworkDirectory() {
                                 href={`https://${activeMentor.linkedin}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 font-geist text-xs font-bold text-[#102c1e] bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-xl transition-all"
+                                className="flex items-center gap-2 font-sans text-xs font-bold text-[#102c1e] bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-2 rounded-xl transition-all"
                             >
                                 <Linkedin className="w-4 h-4" /> LinkedIn
                                 <ExternalLink className="w-3 h-3 text-slate-400" />
                             </a>
-                            <button className="flex items-center gap-2 font-geist text-xs font-bold bg-[#102c1e] text-[#a1e2b6] hover:bg-[#0a1c13] px-3 py-2 rounded-xl transition-all">
+                            <button className="flex items-center gap-2 font-sans text-xs font-bold bg-[#102c1e] text-[#a1e2b6] hover:bg-[#0a1c13] px-3 py-2 rounded-xl transition-all">
                                 <Mail className="w-4 h-4" /> Contact
                             </button>
                         </div>
@@ -401,10 +401,10 @@ export default function MentorNetworkDirectory() {
 
                     {/* Section 1: Expertise & Background */}
                     <div className="px-8 py-6 border-b border-slate-100">
-                        <h3 className="font-outfit font-black text-[#102c1e] text-lg mb-3 flex items-center gap-2">
+                        <h3 className="font-heading font-black text-[#102c1e] text-lg mb-3 flex items-center gap-2">
                             <Briefcase className="w-5 h-5" /> Expertise & Background
                         </h3>
-                        <p className="font-inter text-sm text-slate-600 leading-relaxed mb-5">
+                        <p className="font-sans text-sm text-slate-600 leading-relaxed mb-5">
                             {activeMentor.bio}
                         </p>
 
@@ -417,11 +417,11 @@ export default function MentorNetworkDirectory() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            <span className="font-inter text-sm font-bold text-[#102c1e]">{bg.role}</span>
-                                            <span className="font-geist text-xs text-slate-400">·</span>
-                                            <span className="font-inter text-sm font-semibold text-slate-700">{bg.org}</span>
+                                            <span className="font-sans text-sm font-bold text-[#102c1e]">{bg.role}</span>
+                                            <span className="font-sans text-xs text-slate-400">·</span>
+                                            <span className="font-sans text-sm font-semibold text-slate-700">{bg.org}</span>
                                         </div>
-                                        <p className="font-geist text-xs text-slate-400 mt-0.5">{bg.period}</p>
+                                        <p className="font-sans text-xs text-slate-400 mt-0.5">{bg.period}</p>
                                     </div>
                                 </div>
                             ))}
@@ -431,17 +431,17 @@ export default function MentorNetworkDirectory() {
                     {/* Section 2: Advised Startups & FAST Ledger */}
                     <div className="px-8 py-6">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-outfit font-black text-[#102c1e] text-lg flex items-center gap-2">
+                            <h3 className="font-heading font-black text-[#102c1e] text-lg flex items-center gap-2">
                                 <Wallet className="w-5 h-5" /> Advised Startups & FAST Ledger
                             </h3>
                             <div className="flex items-center gap-2">
                                 <div className="text-right">
-                                    <p className="font-geist text-xs text-slate-400 uppercase tracking-widest">Total Advisory Equity</p>
+                                    <p className="font-sans text-xs text-slate-400 uppercase tracking-widest">Total Advisory Equity</p>
                                     <p className="font-mono text-lg font-black text-[#102c1e]">{activeMentor.totalFastEquity}</p>
                                 </div>
                                 <div className="w-px h-8 bg-slate-200" />
                                 <div className="text-right">
-                                    <p className="font-geist text-xs text-slate-400 uppercase tracking-widest">Active Mandates</p>
+                                    <p className="font-sans text-xs text-slate-400 uppercase tracking-widest">Active Mandates</p>
                                     <p className="font-mono text-lg font-black text-[#102c1e]">{activeMentor.advisedCount}</p>
                                 </div>
                             </div>
@@ -450,7 +450,7 @@ export default function MentorNetworkDirectory() {
                         {/* FAST context note */}
                         <div className="flex items-start gap-2.5 bg-[#102c1e]/4 border border-[#102c1e]/10 rounded-xl p-4 mb-5">
                             <Shield className="w-4 h-4 text-[#102c1e]/60 shrink-0 mt-0.5" />
-                            <p className="font-inter text-sm text-slate-600">
+                            <p className="font-sans text-sm text-slate-600">
                                 <span className="font-bold text-[#102c1e]">FAST = Founder-Advisor Standard Template.</span>
                                 {' '}Equity percentages below represent vested advisory stakes, proving this mentor has real skin-in-the-game alignment with each startup.
                             </p>
@@ -479,8 +479,8 @@ export default function MentorNetworkDirectory() {
                                                     {startup.logo}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="font-inter text-sm font-bold text-[#102c1e] truncate">{startup.name}</p>
-                                                    <p className="font-geist text-xs text-slate-400 truncate">{startup.vertical}</p>
+                                                    <p className="font-sans text-sm font-bold text-[#102c1e] truncate">{startup.name}</p>
+                                                    <p className="font-sans text-xs text-slate-400 truncate">{startup.vertical}</p>
                                                 </div>
                                             </div>
                                             {isSelected && <Check className="w-4 h-4 text-[#102c1e] shrink-0" />}
@@ -488,11 +488,11 @@ export default function MentorNetworkDirectory() {
 
                                         {/* Tags row */}
                                         <div className="flex items-center gap-1.5 flex-wrap mb-3">
-                                            <span className="font-geist text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-md">
+                                            <span className="font-sans text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-md">
                                                 {startup.stage}
                                             </span>
                                             <span className={cn(
-                                                'inline-flex items-center gap-1 font-geist text-xs font-bold px-2 py-0.5 rounded-md border',
+                                                'inline-flex items-center gap-1 font-sans text-xs font-bold px-2 py-0.5 rounded-md border',
                                                 stCfg.bg, stCfg.color,
                                             )}>
                                                 <span className={cn('w-1.5 h-1.5 rounded-full', stCfg.dot)} />
@@ -503,12 +503,12 @@ export default function MentorNetworkDirectory() {
                                         {/* FAST equity — the key data point */}
                                         <div className="flex items-center justify-between pt-2.5 border-t border-slate-200">
                                             <div>
-                                                <p className="font-geist text-xs text-slate-400 uppercase tracking-wide">Advisory Equity (FAST)</p>
+                                                <p className="font-sans text-xs text-slate-400 uppercase tracking-wide">Advisory Equity (FAST)</p>
                                                 <p className="font-mono text-base font-black text-[#102c1e] mt-0.5">{startup.fastEquity}</p>
                                             </div>
                                             {startup.mrr && (
                                                 <div className="text-right">
-                                                    <p className="font-geist text-xs text-slate-400 uppercase tracking-wide">MRR</p>
+                                                    <p className="font-sans text-xs text-slate-400 uppercase tracking-wide">MRR</p>
                                                     <p className="font-mono text-sm font-bold text-emerald-600 mt-0.5 flex items-center gap-1">
                                                         <TrendingUp className="w-3 h-3" />{startup.mrr}
                                                     </p>
@@ -523,7 +523,7 @@ export default function MentorNetworkDirectory() {
                         {selectedStartup && (
                             <div className="mt-3 flex items-center gap-2 px-4 py-3 bg-[#a1e2b6]/10 border border-[#a1e2b6]/30 rounded-xl">
                                 <Check className="w-4 h-4 text-[#102c1e]" />
-                                <p className="font-inter text-sm text-[#102c1e]">
+                                <p className="font-sans text-sm text-[#102c1e]">
                                     <span className="font-bold">{selectedStartup.name}</span> selected for connection request — see AI draft →
                                 </p>
                             </div>
@@ -543,26 +543,26 @@ export default function MentorNetworkDirectory() {
                         <div className="w-7 h-7 rounded-lg bg-[#102c1e] flex items-center justify-center">
                             <Sparkles className="w-4 h-4 text-[#a1e2b6]" />
                         </div>
-                        <h2 className="font-outfit font-black text-[#102c1e] text-base">Request Connection</h2>
+                        <h2 className="font-heading font-black text-[#102c1e] text-base">Request Connection</h2>
                     </div>
-                    <p className="font-inter text-sm text-slate-500">AI drafts a contextual outreach for you</p>
+                    <p className="font-sans text-sm text-slate-500">AI drafts a contextual outreach for you</p>
                 </div>
 
                 {/* To: */}
                 <div className="px-5 py-4 border-b border-slate-100">
-                    <p className="font-geist text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">To</p>
+                    <p className="font-sans text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">To</p>
                     <div className="flex items-center gap-3">
                         <Initials text={activeMentor.initials} size="sm" />
                         <div className="min-w-0">
-                            <p className="font-inter text-sm font-bold text-[#102c1e] truncate">{activeMentor.name}</p>
-                            <p className="font-geist text-xs text-slate-400 truncate">{activeMentor.email}</p>
+                            <p className="font-sans text-sm font-bold text-[#102c1e] truncate">{activeMentor.name}</p>
+                            <p className="font-sans text-xs text-slate-400 truncate">{activeMentor.email}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Purpose Selector */}
                 <div className="px-5 py-4 border-b border-slate-100">
-                    <p className="font-geist text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Purpose</p>
+                    <p className="font-sans text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Purpose</p>
                     <div className="space-y-2">
                         {PURPOSE_OPTIONS.map(opt => {
                             const Icon = opt.icon;
@@ -585,10 +585,10 @@ export default function MentorNetworkDirectory() {
                                         <Icon className="w-3.5 h-3.5" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className={cn('font-inter text-sm font-bold leading-tight', isActive ? 'text-[#102c1e]' : 'text-slate-600')}>
+                                        <p className={cn('font-sans text-sm font-bold leading-tight', isActive ? 'text-[#102c1e]' : 'text-slate-600')}>
                                             {opt.label}
                                         </p>
-                                        <p className="font-inter text-xs text-slate-400 mt-0.5 leading-snug">{opt.desc}</p>
+                                        <p className="font-sans text-xs text-slate-400 mt-0.5 leading-snug">{opt.desc}</p>
                                     </div>
                                 </button>
                             );
@@ -599,11 +599,11 @@ export default function MentorNetworkDirectory() {
                 {/* Regarding */}
                 {selectedStartup && (
                     <div className="px-5 py-3 border-b border-slate-100 bg-[#fafafa]">
-                        <p className="font-geist text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Re: Startup</p>
+                        <p className="font-sans text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Re: Startup</p>
                         <div className="flex items-center gap-2">
                             <span className="text-lg">{selectedStartup.logo}</span>
-                            <span className="font-inter text-sm font-bold text-[#102c1e]">{selectedStartup.name}</span>
-                            <span className="font-geist text-xs text-slate-400">{selectedStartup.stage}</span>
+                            <span className="font-sans text-sm font-bold text-[#102c1e]">{selectedStartup.name}</span>
+                            <span className="font-sans text-xs text-slate-400">{selectedStartup.stage}</span>
                         </div>
                     </div>
                 )}
@@ -613,7 +613,7 @@ export default function MentorNetworkDirectory() {
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1.5">
                             <Sparkles className="w-3.5 h-3.5 text-[#102c1e]/50" />
-                            <p className="font-geist text-xs font-bold text-slate-400 uppercase tracking-widest">AI Draft</p>
+                            <p className="font-sans text-xs font-bold text-slate-400 uppercase tracking-widest">AI Draft</p>
                         </div>
                         <div className="flex items-center gap-2">
                             <button
@@ -640,8 +640,8 @@ export default function MentorNetworkDirectory() {
                                 <Check className="w-6 h-6 text-[#102c1e]" />
                             </div>
                             <div>
-                                <p className="font-outfit font-black text-[#102c1e] text-lg">Message Sent!</p>
-                                <p className="font-inter text-sm text-slate-600 mt-1">
+                                <p className="font-heading font-black text-[#102c1e] text-lg">Message Sent!</p>
+                                <p className="font-sans text-sm text-slate-600 mt-1">
                                     Your request has been sent to{' '}
                                     <span className="font-bold">{activeMentor.name.split(' ')[0]}</span>.
                                     Expected reply in {activeMentor.responseTime}.
@@ -649,7 +649,7 @@ export default function MentorNetworkDirectory() {
                             </div>
                             <button
                                 onClick={() => setSent(false)}
-                                className="font-geist text-xs font-bold text-slate-500 hover:text-[#102c1e] transition-colors mt-2"
+                                className="font-sans text-xs font-bold text-slate-500 hover:text-[#102c1e] transition-colors mt-2"
                             >
                                 Send another request
                             </button>
@@ -661,7 +661,7 @@ export default function MentorNetworkDirectory() {
                             onChange={e => setDraft(e.target.value)}
                             readOnly={!isEditing}
                             className={cn(
-                                'flex-1 w-full font-inter text-sm text-[#102c1e] leading-relaxed bg-slate-50 border border-slate-200 rounded-xl p-4 resize-none transition-all',
+                                'flex-1 w-full font-sans text-sm text-[#102c1e] leading-relaxed bg-slate-50 border border-slate-200 rounded-xl p-4 resize-none transition-all',
                                 isEditing
                                     ? 'focus:outline-none focus:border-[#102c1e]/30 focus:bg-white'
                                     : 'cursor-default',
@@ -675,7 +675,7 @@ export default function MentorNetworkDirectory() {
                     <div className="px-5 pb-5 pt-3 border-t border-slate-100 space-y-2">
                         <button
                             onClick={handleSend}
-                            className="w-full flex items-center justify-center gap-2 bg-[#102c1e] text-[#a1e2b6] font-geist font-black text-sm py-3 rounded-xl hover:bg-[#0a1c13] transition-all shadow-sm"
+                            className="w-full flex items-center justify-center gap-2 bg-[#102c1e] text-[#a1e2b6] font-sans font-black text-sm py-3 rounded-xl hover:bg-[#0a1c13] transition-all shadow-sm"
                         >
                             <Send className="w-4 h-4" />
                             Approve & Send
@@ -683,7 +683,7 @@ export default function MentorNetworkDirectory() {
                         <button
                             onClick={() => setIsEditing(e => !e)}
                             className={cn(
-                                'w-full flex items-center justify-center gap-2 font-geist font-bold text-sm py-2.5 rounded-xl border transition-all',
+                                'w-full flex items-center justify-center gap-2 font-sans font-bold text-sm py-2.5 rounded-xl border transition-all',
                                 isEditing
                                     ? 'bg-[#a1e2b6]/20 border-[#a1e2b6]/40 text-[#102c1e]'
                                     : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300',
