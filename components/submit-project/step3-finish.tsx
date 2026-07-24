@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Users, Trash2, Plus, Flag, Activity, LinkIcon, TrendingUp, ImagePlus, UserCheck } from "lucide-react";
+import { Users, Trash2, Plus, Flag, Activity, LinkIcon, TrendingUp, ImagePlus, UserCheck, MessageSquareText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Step3FinishProps {
@@ -324,6 +324,20 @@ export function Step3Finish({ formData, updateFormData, updateTeamMember, addTea
                 >
                     <Plus className="h-4 w-4" /> Thêm người đồng hành
                 </button>
+                <div className="mt-8 p-5 bg-white border border-zinc-200 rounded-xl shadow-sm">
+                    <label className="flex items-center gap-2 text-sm font-bold text-[#081810] mb-1.5">
+                        <MessageSquareText className="w-4 h-4 text-[#16452a]" /> Mentor ask / support need <span className="text-red-500">*</span>
+                    </label>
+                    <p className="text-xs font-medium text-zinc-500 mb-3">
+                        What specific decision or feedback do you want a mentor to review first?
+                    </p>
+                    <textarea
+                        value={formData.supportNeed || ''}
+                        onChange={(e) => updateFormData('supportNeed', e.target.value)}
+                        placeholder="Example: Help us validate the first customer segment and pricing model before our pilot."
+                        className="w-full min-h-[110px] bg-white border border-zinc-200 text-slate-900 rounded-xl p-4 text-sm focus:outline-none focus:border-[#16452a] focus:ring-1 focus:ring-[#16452a] transition-all shadow-sm resize-y"
+                    />
+                </div>
                 {/* --- Phần nhập thông tin Mentor --- */}
                 <div className="mt-8 p-5 bg-zinc-50 border border-zinc-200 rounded-xl">
                     <div className="flex items-center gap-2 mb-4">

@@ -2,7 +2,7 @@
 
 import React from "react";
 // 1. Kéo cái Sidebar tổng của hệ thống vào
-import { DashboardSidebar } from "../founder/dashboard-sidebar";
+import { DashboardSidebar } from "@/features/founder/dashboard-sidebar";
 
 import { ProjectHeader } from "./project-header";
 import { ProjectSidebar } from "./project-sidebar";

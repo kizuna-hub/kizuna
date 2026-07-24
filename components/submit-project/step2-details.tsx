@@ -114,6 +114,34 @@ export function Step2Details({ formData, updateFormData, handleAIPolish, showSpa
                 </div>
             </div>
 
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div>
+                    <label className="flex items-center gap-2 text-sm font-bold text-[#081810] mb-1.5">
+                        <FileText className="w-4 h-4 text-zinc-400" /> Problem statement <span className="text-red-500">*</span>
+                    </label>
+                    <p className="text-xs font-medium text-zinc-500 mb-3">What painful customer moment are you solving first?</p>
+                    <textarea
+                        value={formData.problem || ''}
+                        onChange={(e) => updateFormData('problem', e.target.value)}
+                        placeholder="Example: Student founders cannot see what is missing before asking a mentor for review."
+                        className="w-full min-h-[110px] bg-white border border-zinc-200 text-slate-900 rounded-xl p-4 text-sm focus:outline-none focus:border-[#16452a] focus:ring-1 focus:ring-[#16452a] transition-all shadow-sm resize-y"
+                    />
+                </div>
+
+                <div>
+                    <label className="flex items-center gap-2 text-sm font-bold text-[#081810] mb-1.5">
+                        <Box className="w-4 h-4 text-zinc-400" /> Solution summary <span className="text-red-500">*</span>
+                    </label>
+                    <p className="text-xs font-medium text-zinc-500 mb-3">What workflow or product outcome solves that problem?</p>
+                    <textarea
+                        value={formData.solution || ''}
+                        onChange={(e) => updateFormData('solution', e.target.value)}
+                        placeholder="Example: A guided workspace turns profile gaps, pitch diagnosis, and data room prep into mentor-ready actions."
+                        className="w-full min-h-[110px] bg-white border border-zinc-200 text-slate-900 rounded-xl p-4 text-sm focus:outline-none focus:border-[#16452a] focus:ring-1 focus:ring-[#16452a] transition-all shadow-sm resize-y"
+                    />
+                </div>
+            </div>
+
             {/* 3. Tech Stack & Link */}
             {/* 3. Khách hàng & Mô hình (Thay cho Tech Stack & Link cũ) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
