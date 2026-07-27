@@ -11,6 +11,7 @@ import {
   GraduationCap,
   Lightbulb,
   MessagesSquare,
+  Plus,
   Repeat2,
   Sparkles,
 } from "lucide-react";
@@ -89,27 +90,67 @@ function formatMeta(value?: string) {
 export function HomePageHeader({
   userName,
   state,
+  entryPreference,
+  onEntryPreferenceChange,
 }: {
   userName: string;
   state: FounderHomeState;
+  entryPreference: "continue-last-work" | "hub-home";
+  onEntryPreferenceChange: (
+    value: "continue-last-work" | "hub-home",
+  ) => void;
 }) {
   const isFirstProject = state === "no-venture";
 
   return (
-    <header className="border-b border-workspace-border pb-4">
-      <p className="workspace-eyebrow text-primary">
-        Founder workspace
-      </p>
-      <h1 className="mt-1.5 workspace-page-title text-ink">
-        {isFirstProject
-          ? "Welcome to Kizuna"
-          : `Welcome back, ${userName}`}
-      </h1>
-      <p className="mt-1.5 max-w-2xl workspace-body text-workspace-muted-text">
-        {isFirstProject
-          ? "Turn a startup idea into a focused decision and a practical first validation cycle."
-          : "Continue the work that matters across your active projects."}
-      </p>
+    <header className="flex flex-col gap-4 border-b border-workspace-border pb-4 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <p className="workspace-eyebrow text-primary">
+          Kizuna Home
+        </p>
+        <h1 className="mt-1.5 workspace-page-title text-ink">
+          {isFirstProject
+            ? `Chào mừng đến với Kizuna, ${userName}`
+            : `Chào mừng trở lại, ${userName}`}
+        </h1>
+        <p className="mt-1.5 max-w-2xl workspace-body text-workspace-muted-text">
+          {isFirstProject
+            ? "Kizuna đồng hành để bạn tạo venture đầu tiên."
+            : "Tiếp tục công việc quan trọng trên các venture đang hoạt động."}
+        </p>
+      </div>
+      <div className="flex flex-col gap-2 sm:items-end">
+        <Button
+          asChild
+          className="h-11 workspace-control-text"
+        >
+          <Link href="/founder/projects/new">
+            <Plus className="size-4" />
+            Tạo venture mới
+          </Link>
+        </Button>
+        {!isFirstProject ? (
+          <label className="flex items-center gap-2 workspace-meta text-workspace-muted-text">
+            Sau đăng nhập
+            <select
+              value={entryPreference}
+              onChange={(event) =>
+                onEntryPreferenceChange(
+                  event.target.value as
+                    | "continue-last-work"
+                    | "hub-home",
+                )
+              }
+              className="h-9 rounded-md border border-workspace-border bg-workspace-panel px-2 text-ink"
+            >
+              <option value="continue-last-work">
+                Tiếp tục gần nhất
+              </option>
+              <option value="hub-home">Mở Kizuna Home</option>
+            </select>
+          </label>
+        ) : null}
+      </div>
     </header>
   );
 }
@@ -127,18 +168,17 @@ export function NoVentureHome() {
         id="start-first-project"
         className="mt-4 workspace-section-title text-ink"
       >
-        Start your first project
+        Tạo venture đầu tiên
       </h2>
       <p className="mt-1.5 max-w-xl workspace-supporting text-workspace-muted-text">
-        Bring the startup context you already have. Kizuna will help
-        you frame one decision, plan the next validation step, and
-        keep the evidence connected.
+        Bắt đầu từ tài liệu, hội thoại hoặc một venture trống. Kizuna
+        sẽ giúp bạn tạo context và mở workspace đầu tiên.
       </p>
       <ul className="mt-4 grid gap-2 workspace-supporting text-workspace-muted-text sm:grid-cols-3">
         {[
-          "Capture the venture context",
-          "Frame the first decision",
-          "Commit a validation cycle",
+          "Tạo context ban đầu",
+          "Xác định điểm nghẽn",
+          "Theo dõi mức độ sẵn sàng",
         ].map((benefit) => (
           <li key={benefit} className="flex items-start gap-2">
             <Check
@@ -153,8 +193,8 @@ export function NoVentureHome() {
         asChild
         className="mt-5 workspace-control-text h-11 px-4 lg:h-9"
       >
-        <Link href="/submit-project">
-          Create your first project
+        <Link href="/founder/projects/new">
+          Bắt đầu
           <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       </Button>
@@ -273,7 +313,7 @@ export function ContinueVenturePanel({
           id="continue-work-title"
           className="workspace-section-title text-ink"
         >
-          Continue where you left off
+          Tiếp tục làm việc
         </h2>
         <span className="hidden workspace-meta text-workspace-muted-text sm:block">
           Updated {formatDate(continuation.lastUpdatedAt)}
@@ -324,10 +364,10 @@ export function ContinueVenturePanel({
             className="workspace-control-text h-11 px-4 lg:h-9"
           >
             <Link
-              href={continuation.primaryAction.href}
-              aria-label={`${continuation.primaryAction.label} for ${continuation.ventureName}`}
+              href={`/founder/projects/${continuation.ventureId}/workspace`}
+              aria-label={`Tiếp tục ${continuation.ventureName}`}
             >
-              {continuation.primaryAction.label}
+              Tiếp tục
               <ArrowRight
                 className="size-4"
                 aria-hidden="true"
@@ -340,7 +380,7 @@ export function ContinueVenturePanel({
             className="workspace-control-text h-11 px-3 lg:h-9"
           >
             <Link href={continuation.overviewHref}>
-              Open overview
+              Mở tổng quan
             </Link>
           </Button>
           <span className="ml-auto workspace-meta text-workspace-muted-text sm:hidden">
@@ -367,7 +407,7 @@ export function HomeQuickActions({
         id="quick-actions-title"
         className="workspace-section-title text-ink"
       >
-        Quick actions
+        Hành động nhanh
       </h2>
       <div
         className={cn(
@@ -426,10 +466,10 @@ export function NeedsAttentionList({
           id="attention-title"
           className="workspace-section-title text-ink"
         >
-          Needs your attention
+          Cần bạn chú ý
         </h2>
         <span className="workspace-meta text-workspace-muted-text">
-          {items.length} {items.length === 1 ? "item" : "items"}
+          {items.length} mục
         </span>
       </div>
       <div className="mt-2.5 divide-y divide-workspace-border overflow-hidden rounded-xl border border-workspace-border bg-workspace-panel">
@@ -483,7 +523,7 @@ export function RecentActivityList({
         id="recent-activity-title"
         className="workspace-section-title text-ink"
       >
-        Recent activity
+        Hoạt động gần đây
       </h2>
       <div className="mt-2.5 divide-y divide-workspace-border border-y border-workspace-border">
         {activities.map((activity) => {
@@ -535,13 +575,13 @@ export function OtherActiveProjects({
           id="other-projects-title"
           className="workspace-section-title text-ink"
         >
-          Other active projects
+          Các venture khác
         </h2>
         <Link
           href="/founder/projects"
           className="inline-flex min-h-9 items-center gap-1 workspace-meta font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40"
         >
-          View all
+          Xem tất cả
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
       </div>

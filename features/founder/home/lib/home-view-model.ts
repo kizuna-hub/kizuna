@@ -182,7 +182,9 @@ function getHomeSetupJourney(venture: Venture): HomeSetupJourney {
     description:
       "Kizuna needs enough context to identify the first decision worth validating.",
     actionLabel: "Review context",
-    actionHref: `/founder/projects/${venture.id}/context`,
+    actionHref: venture.setup
+      ? `/founder/projects/${venture.id}/setup`
+      : `/founder/projects/${venture.id}/context`,
     steps: [
       { label: "Create project", status: "completed" },
       { label: "Confirm startup context", status: "current" },
@@ -330,7 +332,9 @@ export function getHomeAttentionItems(
         title: `Finish setting up ${venture.name}`,
         context: "Startup context is incomplete",
         meta: "Continue",
-        href: `/founder/projects/${venture.id}/context`,
+        href: venture.setup
+          ? `/founder/projects/${venture.id}/setup`
+          : `/founder/projects/${venture.id}/context`,
         priority: 2,
         sortAt: venture.lastUpdatedAt,
       });
@@ -351,7 +355,10 @@ export function getHomeAttentionItems(
         title: `Mentor session with ${relationship.personName}`,
         context: venture.name,
         meta: relationship.nextSessionAt,
-        href: `/founder/projects/${venture.id}/sessions`,
+        href:
+          relationship.id === "support-kizuna-mai"
+            ? `/founder/projects/${venture.id}/workspace?conversation=conversation-mentor&session=mentor-session-growth`
+            : `/founder/projects/${venture.id}/sessions`,
         priority: 3,
         sortAt: relationship.nextSessionAt,
       });
@@ -379,7 +386,7 @@ export function getHomeAttentionItems(
         title: program.nextDeliverable,
         context: `${venture.name} / ${program.name}`,
         meta: program.nextDeadlineAt,
-        href: `/founder/projects/${venture.id}`,
+        href: `/founder/projects/${venture.id}/workspace`,
         priority: 3,
         sortAt: program.nextDeadlineAt,
       });
@@ -472,7 +479,7 @@ export function getOtherActiveVentures(
         phaseLabel: venturePhaseLabels[venture.currentPhase],
         nextAction: nextAction.description ?? nextAction.label,
         updatedAt: venture.lastUpdatedAt,
-        href: `/founder/projects/${venture.id}`,
+        href: `/founder/projects/${venture.id}/workspace`,
       };
     });
 }
