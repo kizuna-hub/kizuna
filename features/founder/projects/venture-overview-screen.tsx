@@ -285,7 +285,7 @@ function InvalidVentureState({ ventureId }: { ventureId: string }) {
             variant="secondary"
             className="workspace-control-text h-11 px-4 lg:h-9"
           >
-            <Link href="/submit-project">
+            <Link href="/founder/projects/new">
               <Plus className="size-4" />
               New project
             </Link>

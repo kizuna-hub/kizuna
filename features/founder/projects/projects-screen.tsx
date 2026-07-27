@@ -1,194 +1,144 @@
 "use client";
 
 import React from "react";
-import { ArrowRight, FolderOpen, Plus, Search } from "lucide-react";
+import {
+  Grid2X2,
+  List,
+  Plus,
+  Search,
+  SlidersHorizontal,
+  SortDesc,
+  X,
+} from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getCompactNextActionLabel } from "@/features/founder/projects/next-action-label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
+import { ProjectCard } from "@/features/founder/projects/components/project-card";
+import {
+  formatProjectActivity,
+  getProjectPortfolioReferenceTime,
+  groupProjectVenturesByActivity,
+  sortProjectVentures,
+} from "@/features/founder/projects/project-portfolio";
 import { FounderShell } from "@/features/founder/shell/founder-shell";
 import {
-  getActiveDecisionForVenture,
   getAllVentures,
   getFilteredVentures,
-  getNextActionForVenture,
-  getVentureStageLabel,
-  venturePhaseLabels,
   ventureStageLabels,
 } from "@/features/founder/venture-foundation/demo-repository";
 import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
 import type {
-  Venture,
+  ProjectsSort,
+  ProjectsViewMode,
   VentureStage,
+  VentureStatus,
 } from "@/features/founder/venture-foundation/types";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
-function formatUpdatedAt(value: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
-}
+const projectStatusLabels: Record<VentureStatus, string> = {
+  setup: "Setup",
+  active: "Active",
+  paused: "Paused",
+  archived: "Archived",
+};
 
-function ProjectPortfolioItem({
-  venture,
-}: {
-  venture: Venture;
-}) {
-  const {
-    state,
-    setActiveVenture,
-    setLastVisitedVenturePath,
-  } = useDemoWorkspace();
-  const decision = getActiveDecisionForVenture(state, venture.id);
-  const nextAction = getNextActionForVenture(state, venture.id);
-  const compactActionLabel = getCompactNextActionLabel(
-    nextAction.targetPath,
-    nextAction.kind,
-  );
-  const overviewPath = `/founder/projects/${venture.id}`;
-
-  const rememberDestination = (path: string) => {
-    setActiveVenture(venture.id);
-    setLastVisitedVenturePath(venture.id, path);
-  };
-
-  return (
-    <article className="rounded-xl border border-workspace-border bg-workspace-panel p-4 transition-colors hover:border-hairline-soft">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="workspace-card-title text-ink">
-                {venture.name}
-              </h2>
-              {venture.status === "setup" ? (
-                <Badge
-                  variant="outline"
-                  className="border-workspace-warning/30 bg-workspace-warning-soft text-workspace-warning"
-                >
-                  Setup
-                </Badge>
-              ) : null}
-            </div>
-            <p className="mt-1.5 max-w-3xl workspace-supporting text-workspace-muted-text">
-              {venture.oneLineDescription}
-            </p>
-          </div>
-          <p className="shrink-0 workspace-meta text-workspace-muted-text">
-            {getVentureStageLabel(venture)} · Updated{" "}
-            {formatUpdatedAt(venture.lastUpdatedAt)}
-          </p>
-        </div>
-
-        <div className="grid gap-3 border-y border-workspace-border py-3 md:grid-cols-[152px_minmax(0,1fr)]">
-          <div>
-            <p className="workspace-eyebrow text-workspace-muted-text">
-              Current phase
-            </p>
-            <p className="mt-1.5 workspace-body font-medium text-ink">
-              {venturePhaseLabels[venture.currentPhase]}
-            </p>
-          </div>
-          <div>
-            <p className="workspace-eyebrow text-workspace-muted-text">
-              Critical decision
-            </p>
-            <p className="mt-1.5 workspace-body font-medium text-ink">
-              {decision?.title ?? "No active decision recorded"}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="workspace-eyebrow text-workspace-muted-text">
-              Next action
-            </p>
-            <p className="mt-1.5 workspace-body font-medium text-ink">
-              {nextAction.label}
-            </p>
-            {nextAction.description ? (
-              <p className="mt-1 workspace-meta text-workspace-muted-text">
-                {nextAction.description}
-              </p>
-            ) : null}
-          </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button asChild className="workspace-control-text h-11 px-4 lg:h-9">
-              <Link
-                href={nextAction.targetPath}
-                aria-label={`${compactActionLabel} for ${venture.name}`}
-                onClick={() =>
-                  rememberDestination(nextAction.targetPath)
-                }
-              >
-                {compactActionLabel}
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="ghost"
-              className="workspace-control-text h-11 px-3 lg:h-9"
-            >
-              <Link
-                href={overviewPath}
-                aria-label={`Open ${venture.name} overview`}
-                onClick={() => rememberDestination(overviewPath)}
-              >
-                <FolderOpen className="size-4" />
-                Open overview
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-}
+const selectContentClassName =
+  "border-workspace-border bg-workspace-elevated text-ink shadow-framer-edge";
+const selectItemClassName =
+  "workspace-input-text cursor-pointer text-workspace-muted-text focus:bg-workspace-row-hover focus:text-ink data-[state=checked]:bg-workspace-selected data-[state=checked]:text-primary";
 
 export function ProjectsScreen() {
   const searchParams = useSearchParams();
   const { state, updateUiPreferences } = useDemoWorkspace();
   const ventures = getAllVentures(state);
-  const [query, setQuery] = React.useState(
-    state.uiPreferences.projectsQuery,
-  );
-  const [stage, setStage] = React.useState<VentureStage | "all">(
-    state.uiPreferences.projectsStageFilter,
-  );
+  const query = state.uiPreferences.projectsQuery;
+  const stage = state.uiPreferences.projectsStageFilter;
+  const status =
+    state.uiPreferences.projectsStatusFilter ?? "all";
+  const sort = state.uiPreferences.projectsSort ?? "last-edited";
+  const view = state.uiPreferences.projectsView ?? "grid";
   const notice = searchParams.get("notice");
 
   const stages = React.useMemo(
     () =>
-      Array.from(new Set(ventures.map((venture) => venture.stage))),
+      Array.from(new Set(ventures.map((venture) => venture.stage))).sort(
+        (left, right) =>
+          ventureStageLabels[left].localeCompare(
+            ventureStageLabels[right],
+          ),
+      ),
     [ventures],
   );
 
-  const visibleVentures = React.useMemo(
-    () => getFilteredVentures(state, { query, stage }),
-    [query, stage, state],
+  const statuses = React.useMemo(
+    () =>
+      Array.from(
+        new Set(ventures.map((venture) => venture.status)),
+      ),
+    [ventures],
   );
 
-  const updateQuery = (value: string) => {
-    setQuery(value);
-    updateUiPreferences({ projectsQuery: value });
+  const referenceTime = React.useMemo(
+    () => getProjectPortfolioReferenceTime(ventures),
+    [ventures],
+  );
+
+  const visibleVentures = React.useMemo(() => {
+    const filtered = getFilteredVentures(state, {
+      query,
+      stage,
+      status,
+    });
+    return sortProjectVentures(filtered, sort);
+  }, [query, sort, stage, state, status]);
+
+  const activityGroups = React.useMemo(
+    () =>
+      groupProjectVenturesByActivity(
+        visibleVentures,
+        referenceTime,
+      ),
+    [referenceTime, visibleVentures],
+  );
+
+  const activeFilterCount =
+    Number(Boolean(query.trim())) +
+    Number(stage !== "all") +
+    Number(status !== "all");
+
+  const clearFilters = () => {
+    updateUiPreferences({
+      projectsQuery: "",
+      projectsStageFilter: "all",
+      projectsStatusFilter: "all",
+    });
   };
 
-  const updateStage = (value: VentureStage | "all") => {
-    setStage(value);
-    updateUiPreferences({ projectsStageFilter: value });
+  const updateView = (value: string) => {
+    if (value === "grid" || value === "list") {
+      updateUiPreferences({
+        projectsView: value as ProjectsViewMode,
+      });
+    }
   };
 
   return (
     <FounderShell>
       <div className="space-y-5">
-        <header className="flex flex-col gap-3 border-b border-workspace-border pb-4 md:flex-row md:items-end md:justify-between">
+        <header className="flex flex-col gap-3 border-b border-workspace-border pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="workspace-eyebrow text-primary">
               Project portfolio
@@ -197,13 +147,16 @@ export function ProjectsScreen() {
               Projects
             </h1>
             <p className="mt-1.5 max-w-2xl workspace-body text-workspace-muted-text">
-              Manage and continue your startup workspaces.
+              Find a venture and continue from its latest work.
             </p>
           </div>
-          <Button asChild className="workspace-control-text h-11 px-4 lg:h-9">
-            <Link href="/submit-project">
+          <Button
+            asChild
+            className="workspace-control-text h-11 self-start px-4 sm:self-auto lg:h-9"
+          >
+            <Link href="/founder/projects/new">
               <Plus className="size-4" />
-              New project
+              Create project
             </Link>
           </Button>
         </header>
@@ -219,54 +172,247 @@ export function ProjectsScreen() {
         ) : null}
 
         <section
-          aria-label="Project filters"
-          className="flex flex-col gap-3 sm:flex-row"
+          aria-label="Project controls"
+          className="space-y-3"
         >
-          <label className="relative min-w-0 flex-1">
-            <span className="sr-only">Search projects</span>
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-workspace-muted-text" />
-            <Input
-              value={query}
-              onChange={(event) => updateQuery(event.target.value)}
-              placeholder="Search projects"
-              className="workspace-input-text h-11 border-workspace-border bg-workspace-panel pl-10 lg:h-9"
-            />
-          </label>
-          <label>
-            <span className="sr-only">Filter by stage</span>
-            <select
-              value={stage}
-              onChange={(event) =>
-                updateStage(
-                  event.target.value as VentureStage | "all",
-                )
+          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-[minmax(240px,1fr)_160px_160px_142px_auto]">
+            <label className="relative min-w-0 sm:col-span-2 xl:col-span-1">
+              <span className="sr-only">Search projects</span>
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-workspace-muted-text" />
+              <Input
+                value={query}
+                onChange={(event) =>
+                  updateUiPreferences({
+                    projectsQuery: event.target.value,
+                  })
+                }
+                placeholder="Search projects..."
+                className="workspace-input-text h-11 border-workspace-border bg-workspace-panel pl-10 pr-10 lg:h-9"
+              />
+              {query ? (
+                <button
+                  type="button"
+                  aria-label="Clear project search"
+                  onClick={() =>
+                    updateUiPreferences({ projectsQuery: "" })
+                  }
+                  className="absolute right-1 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-md text-workspace-muted-text outline-none transition-colors hover:bg-workspace-row-hover hover:text-ink focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/50 lg:size-8"
+                >
+                  <X className="size-4" />
+                </button>
+              ) : null}
+            </label>
+
+            <Select
+              value={sort}
+              onValueChange={(value) =>
+                updateUiPreferences({
+                  projectsSort: value as ProjectsSort,
+                })
               }
-              className="workspace-input-text h-11 min-w-44 rounded-md border border-workspace-border bg-workspace-panel px-3 text-ink outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40 lg:h-9"
             >
-              <option value="all">All stages</option>
-              {stages.map((stageValue) => (
-                <option key={stageValue} value={stageValue}>
-                  {ventureStageLabels[stageValue]}
-                </option>
-              ))}
-            </select>
-          </label>
+              <SelectTrigger
+                aria-label="Sort projects"
+                className="workspace-input-text h-11 w-full border-workspace-border bg-workspace-panel px-3 text-ink shadow-none hover:bg-workspace-row-hover lg:h-9"
+              >
+                <SortDesc className="size-4 text-workspace-muted-text" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent
+                position="item-aligned"
+                className={selectContentClassName}
+              >
+                <SelectItem
+                  value="last-edited"
+                  className={selectItemClassName}
+                >
+                  Last edited
+                </SelectItem>
+                <SelectItem
+                  value="name"
+                  className={selectItemClassName}
+                >
+                  Name A–Z
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={stage}
+              onValueChange={(value) =>
+                updateUiPreferences({
+                  projectsStageFilter: value as
+                    | VentureStage
+                    | "all",
+                })
+              }
+            >
+              <SelectTrigger
+                aria-label="Filter projects by stage"
+                className="workspace-input-text h-11 w-full border-workspace-border bg-workspace-panel px-3 text-ink shadow-none hover:bg-workspace-row-hover lg:h-9"
+              >
+                <SlidersHorizontal className="size-4 text-workspace-muted-text" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent
+                position="item-aligned"
+                className={selectContentClassName}
+              >
+                <SelectItem
+                  value="all"
+                  className={selectItemClassName}
+                >
+                  All stages
+                </SelectItem>
+                {stages.map((stageValue) => (
+                  <SelectItem
+                    key={stageValue}
+                    value={stageValue}
+                    className={selectItemClassName}
+                  >
+                    {ventureStageLabels[stageValue]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={status}
+              onValueChange={(value) =>
+                updateUiPreferences({
+                  projectsStatusFilter: value as
+                    | VentureStatus
+                    | "all",
+                })
+              }
+            >
+              <SelectTrigger
+                aria-label="Filter projects by status"
+                className="workspace-input-text h-11 w-full border-workspace-border bg-workspace-panel px-3 text-ink shadow-none hover:bg-workspace-row-hover lg:h-9"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent
+                position="item-aligned"
+                className={selectContentClassName}
+              >
+                <SelectItem
+                  value="all"
+                  className={selectItemClassName}
+                >
+                  Any status
+                </SelectItem>
+                {statuses.map((statusValue) => (
+                  <SelectItem
+                    key={statusValue}
+                    value={statusValue}
+                    className={selectItemClassName}
+                  >
+                    {projectStatusLabels[statusValue]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <ToggleGroup
+              type="single"
+              value={view}
+              onValueChange={updateView}
+              aria-label="Project layout"
+              variant="outline"
+              className="h-11 w-full border-workspace-border bg-workspace-panel p-0.5 shadow-none sm:w-auto lg:h-9"
+            >
+              <ToggleGroupItem
+                value="grid"
+                aria-label="Grid view"
+                title="Grid view"
+                className="h-full min-w-11 border-0 text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink data-[state=on]:bg-workspace-selected data-[state=on]:text-primary lg:min-w-9"
+              >
+                <Grid2X2 className="size-4" />
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="list"
+                aria-label="List view"
+                title="List view"
+                className="h-full min-w-11 border-0 text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink data-[state=on]:bg-workspace-selected data-[state=on]:text-primary lg:min-w-9"
+              >
+                <List className="size-4" />
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+
+          <div className="flex min-h-8 flex-wrap items-center justify-between gap-2">
+            <p
+              className="workspace-meta text-workspace-muted-text"
+              aria-live="polite"
+            >
+              {visibleVentures.length}{" "}
+              {visibleVentures.length === 1 ? "project" : "projects"}
+              {activeFilterCount
+                ? ` · ${activeFilterCount} ${
+                    activeFilterCount === 1
+                      ? "filter"
+                      : "filters"
+                  } active`
+                : ""}
+            </p>
+            {activeFilterCount ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="h-8 px-3 workspace-control-text"
+              >
+                <X className="size-3.5" />
+                Clear filters
+              </Button>
+            ) : null}
+          </div>
         </section>
 
         {visibleVentures.length ? (
-          <section
-            aria-label={`${visibleVentures.length} projects`}
-            className="space-y-3"
-          >
-            {visibleVentures.map((venture) => (
-              <ProjectPortfolioItem
-                key={venture.id}
-                venture={venture}
-              />
+          <div className="space-y-6">
+            {activityGroups.map((group) => (
+              <section
+                key={group.id}
+                aria-labelledby={`project-group-${group.id}`}
+              >
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h2
+                    id={`project-group-${group.id}`}
+                    className="workspace-section-title text-ink"
+                  >
+                    {group.label}
+                  </h2>
+                  <span className="workspace-meta tabular-nums text-workspace-muted-text">
+                    {group.ventures.length}
+                  </span>
+                </div>
+                <div
+                  className={cn(
+                    view === "grid"
+                      ? "grid gap-x-5 gap-y-6 sm:grid-cols-2 xl:grid-cols-3"
+                      : "space-y-3",
+                  )}
+                >
+                  {group.ventures.map((venture) => (
+                    <ProjectCard
+                      key={venture.id}
+                      venture={venture}
+                      view={view}
+                      activityLabel={formatProjectActivity(
+                        venture.lastUpdatedAt,
+                        referenceTime,
+                      )}
+                    />
+                  ))}
+                </div>
+              </section>
             ))}
-          </section>
+          </div>
         ) : (
-          <section className="rounded-xl border border-workspace-border bg-workspace-panel p-4 text-center">
+          <section className="rounded-xl border border-workspace-border bg-workspace-panel p-6 text-center">
             <h2 className="workspace-card-title text-ink">
               {ventures.length
                 ? "No projects match these filters"
@@ -274,37 +420,26 @@ export function ProjectsScreen() {
             </h2>
             <p className="mx-auto mt-2 max-w-lg workspace-supporting text-workspace-muted-text">
               {ventures.length
-                ? "Clear the search or choose another stage."
+                ? "Clear the filters or try a broader search."
                 : "Add the minimum venture context, then open a decision-led workspace."}
             </p>
             {ventures.length ? (
               <Button
                 variant="secondary"
                 className="mt-5"
-                onClick={() => {
-                  updateQuery("");
-                  updateStage("all");
-                }}
+                onClick={clearFilters}
               >
                 Clear filters
               </Button>
             ) : (
               <Button asChild className="mt-5">
-                <Link href="/submit-project">New project</Link>
+                <Link href="/founder/projects/new">
+                  Create project
+                </Link>
               </Button>
             )}
           </section>
         )}
-
-        <p
-          className={cn(
-            "workspace-meta text-workspace-muted-text",
-            visibleVentures.length === ventures.length && "sr-only",
-          )}
-          aria-live="polite"
-        >
-          Showing {visibleVentures.length} of {ventures.length} projects.
-        </p>
       </div>
     </FounderShell>
   );
