@@ -36,6 +36,12 @@ function wait(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
+function withNextIntent(path: string, next?: string | null) {
+  if (!next) return path;
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}next=${encodeURIComponent(next)}`;
+}
+
 function maskEmail(email: string) {
   const fallback = "founder@company.com";
   const normalized = email || fallback;
@@ -250,6 +256,8 @@ function AuthFooter({ mode }: { mode: AuthMode }) {
 
 function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextIntent = searchParams.get("next");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
@@ -276,7 +284,12 @@ function LoginForm() {
 
     const normalizedEmail = email.trim().toLowerCase();
     if (normalizedEmail.includes("unverified")) {
-      router.push(`${authRoutes.verify}?email=${encodeURIComponent(normalizedEmail)}&intent=login`);
+      router.push(
+        withNextIntent(
+          `${authRoutes.verify}?email=${encodeURIComponent(normalizedEmail)}&intent=login`,
+          nextIntent,
+        ),
+      );
       return;
     }
 
@@ -289,14 +302,18 @@ function LoginForm() {
     setStatus("success");
     setBanner("Authenticated. Redirecting to Founder Workspace...");
     await wait(500);
-    router.push(authRoutes.founderWorkspace);
+    router.push(
+      withNextIntent(authRoutes.founderWorkspace, nextIntent),
+    );
   };
 
   const handleProvider = async (provider: "Google" | "GitHub") => {
     setStatus("loading");
     setBanner(`${provider} authentication approved. Redirecting...`);
     await wait(600);
-    router.push(authRoutes.founderWorkspace);
+    router.push(
+      withNextIntent(authRoutes.founderWorkspace, nextIntent),
+    );
   };
 
   return (
@@ -383,6 +400,8 @@ function LoginForm() {
 
 function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextIntent = searchParams.get("next");
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -410,14 +429,24 @@ function SignupForm() {
     setBanner("Creating workspace access...");
     await wait(750);
     setStatus("success");
-    router.push(`${authRoutes.verify}?email=${encodeURIComponent(email.trim().toLowerCase())}&intent=signup`);
+    router.push(
+      withNextIntent(
+        `${authRoutes.verify}?email=${encodeURIComponent(email.trim().toLowerCase())}&intent=signup`,
+        nextIntent,
+      ),
+    );
   };
 
   const handleProvider = async (provider: "Google" | "GitHub") => {
     setStatus("loading");
     setBanner(`${provider} account connected. Email verification is next.`);
     await wait(600);
-    router.push(`${authRoutes.verify}?email=${encodeURIComponent(`founder.${provider.toLowerCase()}@company.com`)}&intent=signup`);
+    router.push(
+      withNextIntent(
+        `${authRoutes.verify}?email=${encodeURIComponent(`founder.${provider.toLowerCase()}@company.com`)}&intent=signup`,
+        nextIntent,
+      ),
+    );
   };
 
   return (
@@ -514,6 +543,7 @@ function VerificationForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialEmail = searchParams.get("email") ?? "";
+  const nextIntent = searchParams.get("next");
   const [email, setEmail] = React.useState(initialEmail);
   const [draftEmail, setDraftEmail] = React.useState(initialEmail);
   const [isChangingEmail, setIsChangingEmail] = React.useState(false);
@@ -592,7 +622,9 @@ function VerificationForm() {
     setStatus("success");
     setError("");
     await wait(700);
-    router.push(authRoutes.founderWorkspace);
+    router.push(
+      withNextIntent(authRoutes.founderWorkspace, nextIntent),
+    );
   };
 
   const handleResend = () => {
