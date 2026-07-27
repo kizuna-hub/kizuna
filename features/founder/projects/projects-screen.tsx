@@ -56,7 +56,7 @@ const projectStatusLabels: Record<VentureStatus, string> = {
 };
 
 const selectContentClassName =
-  "border-workspace-border bg-workspace-elevated text-ink shadow-framer-edge";
+  "w-[var(--radix-select-trigger-width)] border-workspace-border bg-workspace-elevated text-ink shadow-framer-edge";
 const selectItemClassName =
   "workspace-input-text cursor-pointer text-workspace-muted-text focus:bg-workspace-row-hover focus:text-ink data-[state=checked]:bg-workspace-selected data-[state=checked]:text-primary";
 
@@ -152,10 +152,11 @@ export function ProjectsScreen() {
           </div>
           <Button
             asChild
-            className="workspace-control-text h-11 self-start px-4 sm:self-auto lg:h-9"
+            size="sm"
+            className="h-8 self-start rounded-lg px-3.5 text-xs font-semibold shadow-none sm:self-auto"
           >
             <Link href="/founder/projects/new">
-              <Plus className="size-4" />
+              <Plus className="size-3.5" />
               Create project
             </Link>
           </Button>
@@ -219,7 +220,7 @@ export function ProjectsScreen() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent
-                position="item-aligned"
+                position="popper"
                 className={selectContentClassName}
               >
                 <SelectItem
@@ -255,7 +256,7 @@ export function ProjectsScreen() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent
-                position="item-aligned"
+                position="popper"
                 className={selectContentClassName}
               >
                 <SelectItem
@@ -293,7 +294,7 @@ export function ProjectsScreen() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent
-                position="item-aligned"
+                position="popper"
                 className={selectContentClassName}
               >
                 <SelectItem

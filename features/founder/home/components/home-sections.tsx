@@ -90,13 +90,11 @@ function formatMeta(value?: string) {
 export function HomePageHeader({
   userName,
   state,
-  entryPreference,
-  onEntryPreferenceChange,
 }: {
   userName: string;
   state: FounderHomeState;
-  entryPreference: "continue-last-work" | "hub-home";
-  onEntryPreferenceChange: (
+  entryPreference?: "continue-last-work" | "hub-home";
+  onEntryPreferenceChange?: (
     value: "continue-last-work" | "hub-home",
   ) => void;
 }) {
@@ -119,37 +117,17 @@ export function HomePageHeader({
             : "Tiếp tục công việc quan trọng trên các venture đang hoạt động."}
         </p>
       </div>
-      <div className="flex flex-col gap-2 sm:items-end">
+      <div className="flex shrink-0 sm:items-end">
         <Button
           asChild
-          className="h-11 workspace-control-text"
+          size="sm"
+          className="h-8 rounded-lg px-3.5 text-xs font-semibold shadow-none"
         >
           <Link href="/founder/projects/new">
-            <Plus className="size-4" />
+            <Plus className="size-3.5" />
             Tạo venture mới
           </Link>
         </Button>
-        {!isFirstProject ? (
-          <label className="flex items-center gap-2 workspace-meta text-workspace-muted-text">
-            Sau đăng nhập
-            <select
-              value={entryPreference}
-              onChange={(event) =>
-                onEntryPreferenceChange(
-                  event.target.value as
-                    | "continue-last-work"
-                    | "hub-home",
-                )
-              }
-              className="h-9 rounded-md border border-workspace-border bg-workspace-panel px-2 text-ink"
-            >
-              <option value="continue-last-work">
-                Tiếp tục gần nhất
-              </option>
-              <option value="hub-home">Mở Kizuna Home</option>
-            </select>
-          </label>
-        ) : null}
       </div>
     </header>
   );
