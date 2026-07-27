@@ -47,6 +47,7 @@ import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-wor
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
+import { WorkspaceUserFooter } from "./workspace-user-footer";
 import { founderShellVi } from "./copy/vi";
 import { VentureSwitcher } from "./venture-switcher";
 
@@ -213,50 +214,7 @@ function NavigationLink({
 function AccountFooter({ collapsed }: { collapsed: boolean }) {
   const { state } = useDemoWorkspace();
   const user = getCurrentUser(state);
-  const avatar = (
-    <div
-      className={cn(
-        "flex min-h-11 items-center rounded-lg py-1.5 lg:min-h-10",
-        collapsed ? "justify-center px-1" : "gap-2.5 px-2",
-      )}
-    >
-      <Avatar className="size-8 border border-workspace-border">
-        <AvatarImage src={user.avatarUrl} alt="" />
-        <AvatarFallback className="bg-workspace-elevated text-xs font-semibold text-ink">
-          {user.name
-            .split(" ")
-            .slice(-2)
-            .map((part) => part.charAt(0))
-            .join("")}
-        </AvatarFallback>
-      </Avatar>
-      {collapsed ? null : (
-        <div className="min-w-0">
-          <p className="truncate workspace-supporting font-medium text-ink">
-            {user.name}
-          </p>
-          <p className="truncate text-xs leading-4 text-workspace-muted-text">
-            {founderShellVi.account.role}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-
-  return (
-    <div className="border-t border-workspace-border p-2.5">
-      {collapsed ? (
-        <Tooltip>
-          <TooltipTrigger asChild>{avatar}</TooltipTrigger>
-          <TooltipContent side="right" sideOffset={8}>
-            {user.name}
-          </TooltipContent>
-        </Tooltip>
-      ) : (
-        avatar
-      )}
-    </div>
-  );
+  return <WorkspaceUserFooter user={user} collapsed={collapsed} />;
 }
 
 function SidebarContent({
@@ -284,7 +242,12 @@ function SidebarContent({
       : globalNavigation;
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-workspace-sidebar">
+    <div
+      className={cn(
+        "flex h-full min-h-0 flex-col bg-workspace-sidebar",
+        !collapsed && "w-[248px]",
+      )}
+    >
       <div
         className={cn(
           "pb-2 pt-3",
@@ -485,12 +448,8 @@ export function FounderShell({
         className={cn(
           "fixed inset-y-2 left-2 z-header hidden overflow-hidden rounded-2xl border border-workspace-border bg-workspace-sidebar lg:block",
           hydrated &&
-            "transition-[width] duration-200 motion-reduce:transition-none",
-          compactCustomSidebar
-            ? "w-14"
-            : collapsed
-              ? "w-[72px]"
-              : "w-[248px]",
+            "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+          collapsed ? "w-[68px]" : "w-[248px]",
         )}
       >
         {renderSidebar ? (
@@ -513,12 +472,8 @@ export function FounderShell({
         className={cn(
           "flex min-h-[100dvh] min-w-0 flex-col",
           hydrated &&
-            "transition-[padding] duration-200 motion-reduce:transition-none",
-          compactCustomSidebar
-            ? "lg:pl-[72px]"
-            : collapsed
-              ? "lg:pl-[88px]"
-              : "lg:pl-[264px]",
+            "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+          collapsed ? "lg:pl-[84px]" : "lg:pl-[264px]",
         )}
       >
         <div className="flex items-center px-4 pt-3 md:px-5 lg:hidden">

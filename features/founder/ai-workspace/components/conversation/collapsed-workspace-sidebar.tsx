@@ -8,12 +8,8 @@ import {
   Search,
 } from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { WorkspaceUserFooter } from "@/features/founder/shell/workspace-user-footer";
 import {
   Tooltip,
   TooltipContent,
@@ -141,15 +137,9 @@ export function CollapsedWorkspaceSidebar({
           onClick={() => onOpenSurface("pinned")}
         />
       </div>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Avatar className="mt-2 size-7 border border-workspace-border">
-            <AvatarImage src={user.avatarUrl} alt="" />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-        </TooltipTrigger>
-        <TooltipContent side="right">{user.name}</TooltipContent>
-      </Tooltip>
+      <div className="w-full">
+        <WorkspaceUserFooter user={user} collapsed />
+      </div>
     </div>
   );
 }

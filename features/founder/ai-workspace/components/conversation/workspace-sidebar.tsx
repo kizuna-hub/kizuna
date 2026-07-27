@@ -10,12 +10,8 @@ import {
   Search,
 } from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { WorkspaceUserFooter } from "@/features/founder/shell/workspace-user-footer";
 import { getCurrentUser } from "@/features/founder/venture-foundation/demo-repository";
 import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
 import { Link } from "@/i18n/routing";
@@ -87,7 +83,7 @@ export function WorkspaceSidebar({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-workspace-sidebar">
+    <div className="flex h-full min-h-0 w-[248px] flex-col bg-workspace-sidebar">
       <div className="flex items-center justify-between px-3 pb-2 pt-3">
         <div className="flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-lg border border-primary-border bg-primary-soft font-heading text-sm font-semibold text-primary">
@@ -221,20 +217,7 @@ export function WorkspaceSidebar({
         </button>
       </div>
 
-      <div className="flex items-center gap-2.5 border-t border-workspace-border px-3 py-2.5">
-        <Avatar className="size-8 border border-workspace-border">
-          <AvatarImage src={user.avatarUrl} alt="" />
-          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <div className="min-w-0">
-          <p className="truncate workspace-supporting font-medium text-ink">
-            {user.name}
-          </p>
-          <p className="workspace-meta text-workspace-muted-text">
-            Founder
-          </p>
-        </div>
-      </div>
+      <WorkspaceUserFooter user={user} collapsed={false} />
     </div>
   );
 }
