@@ -1,0 +1,243 @@
+import {
+  AlertTriangle,
+  Bot,
+  Pin,
+  PinOff,
+  UserRound,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+import type { AiWorkspaceCopy } from "../../copy/types";
+import type {
+  AiWorkspaceMessage,
+  AiWorkspaceState,
+} from "../../types/ai-workspace.types";
+import { StructuredResponseView } from "../responses/structured-response";
+import { SourceIndicator } from "../shared/source-indicator";
+
+function formatTime(value: string) {
+  return new Intl.DateTimeFormat("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function highlightText(content: string, query: string) {
+  const normalizedQuery = query.trim();
+  if (!normalizedQuery) return content;
+  const escaped = normalizedQuery.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&",
+  );
+  const parts = content.split(
+    new RegExp(`(${escaped})`, "gi"),
+  );
+  return parts.map((part, index) =>
+    part.toLocaleLowerCase("vi") ===
+    normalizedQuery.toLocaleLowerCase("vi") ? (
+      <mark
+        key={`${part}-${index}`}
+        className="rounded-sm bg-workspace-warning-soft px-0.5 text-ink"
+      >
+        {part}
+      </mark>
+    ) : (
+      part
+    ),
+  );
+}
+
+export function ChatMessage({
+  message,
+  state,
+  copy,
+  searchQuery,
+  active,
+  pinned,
+  onTogglePin,
+  onOpenCycle,
+  onSendPrompt,
+  onConfirmInterpretation,
+  onRetry,
+  onEditFailedMessage,
+  onDeleteFailedMessage,
+  onOpenMentor,
+  onDeferMentor,
+}: {
+  message: AiWorkspaceMessage;
+  state: AiWorkspaceState;
+  copy: AiWorkspaceCopy;
+  searchQuery: string;
+  active: boolean;
+  pinned: boolean;
+  onTogglePin?: () => void;
+  onOpenCycle: () => void;
+  onSendPrompt: (prompt: string) => void;
+  onConfirmInterpretation: (
+    status: "confirmed" | "disputed",
+  ) => void;
+  onRetry: () => void;
+  onEditFailedMessage?: () => void;
+  onDeleteFailedMessage?: () => void;
+  onOpenMentor: () => void;
+  onDeferMentor: () => void;
+}) {
+  const founder = message.role === "founder";
+
+  return (
+    <article
+      id={`message-${message.id}`}
+      className={cn(
+        "animate-in fade-in slide-in-from-bottom-1 duration-150 motion-reduce:animate-none",
+        founder ? "ml-auto max-w-[85%]" : "max-w-full",
+        active &&
+          "rounded-xl ring-2 ring-workspace-focus-ring/50 ring-offset-2 ring-offset-workspace-background",
+      )}
+      aria-label={
+        founder
+          ? copy.chat.founderLabel
+          : copy.chat.assistantLabel
+      }
+    >
+      <div
+        className={cn(
+          "flex gap-2.5",
+          founder && "flex-row-reverse",
+        )}
+      >
+        <span
+          className={cn(
+            "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border",
+            founder
+              ? "border-primary-border bg-primary-soft text-primary"
+              : "border-workspace-border bg-workspace-elevated text-ink",
+          )}
+        >
+          {founder ? (
+            <UserRound className="size-3.5" />
+          ) : (
+            <Bot className="size-3.5" />
+          )}
+        </span>
+        <div
+          className={cn(
+            "min-w-0",
+            founder
+              ? "rounded-xl rounded-tr-sm bg-workspace-elevated px-3.5 py-2.5"
+              : "flex-1",
+          )}
+        >
+          {!founder && message.thinkingDurationSeconds ? (
+            <p className="mb-2 flex items-center gap-1.5 workspace-meta font-medium text-workspace-muted-text">
+              <span
+                aria-hidden="true"
+                className="size-1.5 rounded-full bg-workspace-success"
+              />
+              {copy.chat.thoughtFor.replace(
+                "{seconds}",
+                String(message.thinkingDurationSeconds),
+              )}
+            </p>
+          ) : null}
+          <p className="whitespace-pre-wrap workspace-body text-ink">
+            {highlightText(message.content, searchQuery)}
+          </p>
+          <div className="mt-1 flex items-center gap-1">
+            <time
+              dateTime={message.createdAt}
+              className="workspace-meta text-workspace-muted-text"
+            >
+              {formatTime(message.createdAt)}
+            </time>
+            {onTogglePin ? (
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="ghost"
+                className="size-7"
+                onClick={onTogglePin}
+                aria-label={
+                  pinned
+                    ? copy.longRun.common.unpin
+                    : copy.longRun.common.pin
+                }
+              >
+                {pinned ? (
+                  <PinOff className="size-3" />
+                ) : (
+                  <Pin className="size-3" />
+                )}
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      {founder && message.status === "failed" ? (
+        <div
+          role="alert"
+          className="mt-2 flex flex-wrap items-center justify-end gap-1 workspace-meta text-workspace-danger"
+        >
+          <span>{copy.chat.messageSendFailed}</span>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={onRetry}
+          >
+            {copy.longRun.common.retry}
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={onEditFailedMessage}
+          >
+            {copy.longRun.common.edit}
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={onDeleteFailedMessage}
+          >
+            {copy.longRun.common.delete}
+          </Button>
+        </div>
+      ) : null}
+
+      {!founder &&
+      message.status === "complete" &&
+      message.structuredResponse ? (
+        <div className="ml-9 mt-3 overflow-hidden rounded-xl">
+          <StructuredResponseView
+            response={message.structuredResponse}
+            copy={copy}
+            onOpenCycle={onOpenCycle}
+            onSendPrompt={onSendPrompt}
+            onConfirmInterpretation={onConfirmInterpretation}
+            onOpenMentor={onOpenMentor}
+            onDeferMentor={onDeferMentor}
+            currentMaterialAnalysis={state.materialAnalysis}
+            currentMentorRecommendation={
+              state.mentorRecommendation
+            }
+          />
+          <SourceIndicator
+            sources={message.sources ?? []}
+            copy={copy}
+          />
+        </div>
+      ) : null}
+
+      {!founder && message.status === "incomplete" ? (
+        <p className="ml-9 mt-2 flex items-center gap-1.5 workspace-meta text-workspace-warning">
+          <AlertTriangle className="size-3.5" />
+          {copy.chat.incompleteResponse}
+        </p>
+      ) : null}
+    </article>
+  );
+}
