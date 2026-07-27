@@ -1,6 +1,5 @@
-import { GlobalPlaceholderScreen } from "@/features/founder/projects/global-placeholder-screen";
+import { OpportunityEntryScreen } from "@/features/founder/opportunities/opportunity-entry-screen";
 
 export default function OpportunitiesPage() {
-  return <GlobalPlaceholderScreen section="opportunities" />;
+  return <OpportunityEntryScreen />;
 }
-
