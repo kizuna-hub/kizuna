@@ -16,21 +16,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   getAllVentures,
   getVentureById,
-  ventureStageLabels,
 } from "@/features/founder/venture-foundation/demo-repository";
 import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
 import { getVentureSwitchPath } from "@/features/founder/venture-foundation/route-resolver";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
+import { founderShellVi } from "./copy/vi";
+
 export function VentureSwitcher({
   ventureId,
   onNavigate,
+  collapsed = false,
 }: {
   ventureId: string;
   onNavigate?: () => void;
+  collapsed?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -52,40 +60,60 @@ export function VentureSwitcher({
 
   if (!current) return null;
 
+  const trigger = (
+    <DropdownMenuTrigger asChild>
+      <button
+        type="button"
+        aria-label={`${founderShellVi.switcher.switchProject}. ${founderShellVi.switcher.currentProject}: ${current.name}`}
+        className={cn(
+          "flex min-h-11 items-center gap-2.5 rounded-lg border border-workspace-border bg-workspace-elevated py-1.5 text-left transition-colors hover:bg-workspace-row-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40 lg:min-h-9",
+          collapsed
+            ? "w-10 justify-center px-1"
+            : "w-full px-2.5",
+        )}
+      >
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-md border border-primary-border bg-primary-soft font-heading text-xs font-semibold text-primary">
+          {current.name.charAt(0)}
+        </span>
+        {collapsed ? null : (
+          <>
+            <span className="min-w-0 flex-1">
+              <span className="workspace-project-identity block truncate text-ink">
+                {current.name}
+              </span>
+              <span className="block truncate text-xs leading-4 text-workspace-muted-text">
+                {founderShellVi.stages[current.stage]} ·{" "}
+                {founderShellVi.statuses[current.status]}
+              </span>
+            </span>
+            <ChevronsUpDown className="size-3.5 shrink-0 text-workspace-muted-text" />
+          </>
+        )}
+      </button>
+    </DropdownMenuTrigger>
+  );
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          aria-label={`Switch project. Current project: ${current.name}`}
-          className="flex min-h-11 w-full items-center gap-2.5 rounded-lg border border-workspace-border bg-workspace-elevated px-2.5 py-1.5 text-left transition-colors hover:bg-workspace-row-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40 lg:min-h-9"
-        >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-md border border-primary-border bg-primary-soft font-heading text-xs font-semibold text-primary">
-            {current.name.charAt(0)}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="workspace-project-identity block truncate text-ink">
-              {current.name}
-            </span>
-            <span className="block truncate text-xs leading-4 text-workspace-muted-text">
-              {ventureStageLabels[current.stage]} ·{" "}
-              {current.status === "setup"
-                ? "Setup"
-                : current.status === "paused"
-                  ? "Paused"
-                  : "Active"}
-            </span>
-          </span>
-          <ChevronsUpDown className="size-3.5 shrink-0 text-workspace-muted-text" />
-        </button>
-      </DropdownMenuTrigger>
+      {collapsed ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="inline-flex">{trigger}</span>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={8}>
+            {current.name}
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        trigger
+      )}
       <DropdownMenuContent
         align="start"
         sideOffset={6}
         className="w-[min(280px,calc(100vw-1rem))] border-workspace-border bg-workspace-panel p-1.5"
       >
         <DropdownMenuLabel className="px-2 py-1.5 workspace-eyebrow text-workspace-muted-text">
-          Switch project
+          {founderShellVi.switcher.switchProject}
         </DropdownMenuLabel>
         {ventures.map((venture) => {
           const isCurrent = venture.id === ventureId;
@@ -106,13 +134,13 @@ export function VentureSwitcher({
                   {venture.name}
                 </span>
                 <span className="block truncate text-xs leading-4 text-workspace-muted-text">
-                  {ventureStageLabels[venture.stage]}
+                  {founderShellVi.stages[venture.stage]}
                 </span>
               </span>
               {isCurrent ? (
                 <Check
                   className="size-4 text-primary"
-                  aria-label="Current project"
+                  aria-label={founderShellVi.switcher.current}
                 />
               ) : null}
             </DropdownMenuItem>
@@ -124,20 +152,20 @@ export function VentureSwitcher({
             router.push("/founder/projects");
             onNavigate?.();
           }}
-          className="min-h-10 text-[13px] focus:bg-workspace-row-hover focus:text-ink"
+          className="min-h-10 workspace-supporting focus:bg-workspace-row-hover focus:text-ink"
         >
           <LayoutGrid className="size-4" />
-          View all projects
+          {founderShellVi.switcher.viewAll}
         </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() => {
-            router.push("/submit-project");
+            router.push("/founder/projects/new");
             onNavigate?.();
           }}
-          className="min-h-10 text-[13px] focus:bg-workspace-row-hover focus:text-ink"
+          className="min-h-10 workspace-supporting focus:bg-workspace-row-hover focus:text-ink"
         >
           <Plus className="size-4" />
-          Create project
+          {founderShellVi.switcher.create}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
