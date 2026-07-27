@@ -30,6 +30,46 @@ export type VenturePhase =
   | "evidence-review"
   | "action-cycle";
 
+export type VentureSetupStepId =
+  | "venture-name"
+  | "problem"
+  | "target-user"
+  | "materials"
+  | "confirm-context";
+
+export type VentureCreationIntent =
+  | "analyze-materials"
+  | "conversational-setup"
+  | "empty-venture";
+
+export interface VentureSetupMaterial {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+}
+
+export interface VentureSetupDraft {
+  problem: string;
+  targetUser: string;
+  initialGoal: string;
+  materials: VentureSetupMaterial[];
+}
+
+export interface VentureSetupStatus {
+  status:
+    | "draft"
+    | "in-progress"
+    | "ready-for-confirmation"
+    | "completed";
+  creationIntent: VentureCreationIntent;
+  currentStepId: VentureSetupStepId;
+  completedStepIds: VentureSetupStepId[];
+  missingRequiredFields: string[];
+  draft: VentureSetupDraft;
+  lastUpdatedAt: string;
+}
+
 export type CycleProgressStatus =
   | "draft"
   | "committed"
@@ -69,6 +109,7 @@ export interface Venture {
   currentPhase: VenturePhase;
   activeDecisionId?: DecisionId;
   activeCycleId?: ActionCycleId;
+  setup?: VentureSetupStatus;
   overallProgress?: ProgressSummary;
   supportSummary: SupportCoverageSummary;
   lastUpdatedAt: string;
