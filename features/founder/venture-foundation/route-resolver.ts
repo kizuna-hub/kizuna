@@ -9,6 +9,7 @@ import type {
 } from "./types";
 
 const canonicalSections = new Set([
+  "workspace",
   "context",
   "cycle",
   "evidence",
@@ -26,6 +27,12 @@ export function getVentureOverviewPath(ventureId: VentureId) {
   return `/founder/projects/${ventureId}`;
 }
 
+export function getFounderAiWorkspacePath(
+  ventureId: VentureId,
+) {
+  return `${getVentureOverviewPath(ventureId)}/workspace`;
+}
+
 export function normalizeFounderPath(pathname: string) {
   const withoutQuery = pathname.split(/[?#]/, 1)[0] || "/";
   const withoutLocale = withoutQuery.replace(/^\/(?:en|vi)(?=\/)/, "");
@@ -37,12 +44,14 @@ export function normalizeFounderPath(pathname: string) {
 
 export function resolveFounderEntryPath(state: DemoWorkspaceState) {
   const ventures = getAllVentures(state);
-  if (ventures.length === 0) return "/submit-project";
+  if (ventures.length === 0) return "/founder/projects/new";
 
   if (ventures.length === 1) {
     const [venture] = ventures;
     if (venture.status === "setup") {
-      return `${getVentureOverviewPath(venture.id)}/context`;
+      return venture.setup
+        ? `${getVentureOverviewPath(venture.id)}/setup`
+        : `${getVentureOverviewPath(venture.id)}/context`;
     }
     return (
       getLastVisitedPathForVenture(state, venture.id) ??
@@ -75,6 +84,9 @@ export function getVentureSwitchPath(
   targetVentureId: VentureId,
 ) {
   const normalized = normalizeFounderPath(pathname);
+  if (normalized === "/founder/home") {
+    return "/founder/home";
+  }
   const canonicalMatch = normalized.match(
     /^\/founder\/projects\/[^/]+(?:\/([^/]+))?$/,
   );
@@ -110,4 +122,3 @@ export function isValidDirectVenture(
   const venture = getVentureById(state, ventureId);
   return Boolean(venture && venture.status !== "archived");
 }
-

@@ -103,6 +103,12 @@ test("project filters and overview data use the canonical repository", () => {
     ),
     ["CareMind"],
   );
+  assert.deepEqual(
+    getFilteredVentures(seed, { status: "setup" }).map(
+      (venture) => venture.name,
+    ),
+    ["SnapMoney"],
+  );
 
   const overview = getVentureOverviewData(
     seed,
@@ -272,7 +278,10 @@ test("venture creation activates the new project and archive falls back", () => 
 test("founder entry resolves zero, one, many, and archived continuity", () => {
   const empty = createDemoWorkspaceSeed();
   empty.ventures = [];
-  assert.equal(resolveFounderEntryPath(empty), "/submit-project");
+  assert.equal(
+    resolveFounderEntryPath(empty),
+    "/founder/projects/new",
+  );
 
   const one = createDemoWorkspaceSeed();
   one.ventures = [
@@ -308,6 +317,13 @@ test("founder entry resolves zero, one, many, and archived continuity", () => {
 });
 
 test("project switching preserves valid equivalent sections", () => {
+  assert.equal(
+    getVentureSwitchPath(
+      "/vi/founder/home",
+      "venture-caremind",
+    ),
+    "/founder/home",
+  );
   assert.equal(
     getVentureSwitchPath(
       "/en/founder/projects/venture-kizuna-hub/evidence",

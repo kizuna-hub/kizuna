@@ -17,7 +17,8 @@ const deterministicSeed: DemoWorkspaceState = {
     activeVentureId: "venture-kizuna-hub",
     lastVisitedVentureId: "venture-kizuna-hub",
     lastVisitedPathByVenture: {
-      "venture-kizuna-hub": "/founder/projects/venture-kizuna-hub",
+      "venture-kizuna-hub":
+        "/founder/projects/venture-kizuna-hub/workspace",
     },
   },
   ventures: [
@@ -354,6 +355,17 @@ const deterministicSeed: DemoWorkspaceState = {
   ],
   evidence: [
     {
+      id: "evidence-kizuna-activation-funnel",
+      ventureId: "venture-kizuna-hub",
+      decisionId: "decision-kizuna-buyer",
+      title: "Onboarding activation funnel",
+      summary:
+        "The latest cohort shows the largest drop before the first value moment.",
+      sourceType: "metric",
+      status: "accepted",
+      collectedAt: "2026-07-25T08:00:00.000Z",
+    },
+    {
       id: "evidence-caremind-end-users",
       ventureId: "venture-caremind",
       decisionId: "decision-caremind-family-workflow",
@@ -393,7 +405,18 @@ const deterministicSeed: DemoWorkspaceState = {
   ],
   outcomes: [],
   readinessDeltas: [],
-  opportunities: [],
+  opportunities: [
+    {
+      id: "opportunity-launchpad",
+      ventureId: "venture-kizuna-hub",
+      name: "LaunchPad 2026",
+      type: "program",
+      status: "saved",
+      relevance:
+        "Relevant to the current activation and buyer-validation focus.",
+      deadlineAt: "2026-08-15T16:00:00.000Z",
+    },
+  ],
   activities: [
     {
       id: "activity-kizuna-cycle",
@@ -443,6 +466,14 @@ const deterministicSeed: DemoWorkspaceState = {
     storageVersion: DEMO_WORKSPACE_STORAGE_VERSION,
     projectsQuery: "",
     projectsStageFilter: "all",
+    projectsStatusFilter: "all",
+    projectsSort: "last-edited",
+    projectsView: "grid",
+    founderSidebarCollapsed: false,
+    entryPreference: "continue-last-work",
+    ventureCreationRequestMap: {},
+    dismissedMentorSessionIds: [],
+    mentorPreparationBySession: {},
   },
 };
 

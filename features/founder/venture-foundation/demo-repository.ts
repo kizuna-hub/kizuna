@@ -27,6 +27,9 @@ import type {
   VentureId,
   VenturePhase,
   VentureStage,
+  VentureStatus,
+  VentureSetupDraft,
+  VentureSetupStepId,
 } from "./types";
 
 type PersistedWorkspaceEnvelope = {
@@ -146,12 +149,137 @@ function migrateLegacyDemoWorkspaceState(
   };
 }
 
+function normalizePersistedVentureSetup(
+  venture: Venture,
+): Venture {
+  if (!venture.setup) return venture;
+  const raw = venture.setup as unknown;
+  if (!isRecord(raw)) {
+    return { ...venture, setup: undefined };
+  }
+
+  const rawDraft = isRecord(raw.draft) ? raw.draft : {};
+  const materials = Array.isArray(rawDraft.materials)
+    ? rawDraft.materials.filter(
+        (
+          item,
+        ): item is VentureSetupDraft["materials"][number] =>
+          isRecord(item) &&
+          typeof item.id === "string" &&
+          typeof item.name === "string" &&
+          typeof item.size === "number" &&
+          typeof item.type === "string",
+      )
+    : [];
+  const draft: VentureSetupDraft = {
+    problem:
+      typeof rawDraft.problem === "string"
+        ? rawDraft.problem
+        : "",
+    targetUser:
+      typeof rawDraft.targetUser === "string"
+        ? rawDraft.targetUser
+        : "",
+    initialGoal:
+      typeof rawDraft.initialGoal === "string"
+        ? rawDraft.initialGoal
+        : "",
+    materials,
+  };
+  const validCompleted = Array.isArray(raw.completedStepIds)
+    ? raw.completedStepIds.filter(
+        (step): step is VentureSetupStepId =>
+          typeof step === "string" &&
+          setupStepIds.includes(step as VentureSetupStepId),
+      )
+    : [];
+  const missingRequiredFields = getMissingSetupFields(
+    venture,
+    draft,
+  );
+  const earliestIncomplete = missingRequiredFields.includes(
+    "Vấn đề",
+  )
+    ? "problem"
+    : missingRequiredFields.includes("Người dùng mục tiêu") ||
+        missingRequiredFields.includes("Mục tiêu ban đầu")
+      ? "target-user"
+      : "confirm-context";
+  const currentStepId =
+    typeof raw.currentStepId === "string" &&
+    setupStepIds.includes(
+      raw.currentStepId as VentureSetupStepId,
+    )
+      ? (raw.currentStepId as VentureSetupStepId)
+      : earliestIncomplete;
+  const creationIntent =
+    raw.creationIntent === "analyze-materials" ||
+    raw.creationIntent === "empty-venture"
+      ? raw.creationIntent
+      : "conversational-setup";
+  const status =
+    raw.status === "draft" ||
+    raw.status === "ready-for-confirmation" ||
+    raw.status === "completed"
+      ? raw.status
+      : "in-progress";
+
+  return {
+    ...venture,
+    setup: {
+      status,
+      creationIntent,
+      currentStepId,
+      completedStepIds: validCompleted,
+      missingRequiredFields,
+      draft,
+      lastUpdatedAt:
+        typeof raw.lastUpdatedAt === "string"
+          ? raw.lastUpdatedAt
+          : venture.lastUpdatedAt,
+    },
+  };
+}
+
 function mergeCanonicalDemoAdditions(
   state: DemoWorkspaceState,
 ): DemoWorkspaceState {
   const seed = createDemoWorkspaceSeed();
+  const normalizedState: DemoWorkspaceState = {
+    ...state,
+    ventures: state.ventures.map(normalizePersistedVentureSetup),
+    uiPreferences: {
+      ...seed.uiPreferences,
+      ...state.uiPreferences,
+    },
+    evidence: [
+      ...state.evidence,
+      ...seed.evidence.filter(
+        (seeded) =>
+          state.ventures.some(
+            (venture) => venture.id === seeded.ventureId,
+          ) &&
+          !state.evidence.some(
+            (existing) => existing.id === seeded.id,
+          ),
+      ),
+    ],
+    opportunities: [
+      ...state.opportunities,
+      ...seed.opportunities.filter(
+        (seeded) =>
+          (!seeded.ventureId ||
+            state.ventures.some(
+              (venture) => venture.id === seeded.ventureId,
+            )) &&
+          !state.opportunities.some(
+            (existing) => existing.id === seeded.id,
+          ),
+      ),
+    ],
+  };
   const existingVentureIds = new Set(
-    state.ventures.map((venture) => venture.id),
+    normalizedState.ventures.map((venture) => venture.id),
   );
   const missingVentureIds = new Set(
     seed.ventures
@@ -159,7 +287,7 @@ function mergeCanonicalDemoAdditions(
       .map((venture) => venture.id),
   );
 
-  if (missingVentureIds.size === 0) return state;
+  if (missingVentureIds.size === 0) return normalizedState;
 
   const appendForMissingVentures = <T extends { ventureId: VentureId }>(
     existing: T[],
@@ -170,58 +298,58 @@ function mergeCanonicalDemoAdditions(
   ];
 
   return {
-    ...state,
+    ...normalizedState,
     ventures: [
-      ...state.ventures,
+      ...normalizedState.ventures,
       ...seed.ventures.filter((venture) =>
         missingVentureIds.has(venture.id),
       ),
     ],
-    sources: appendForMissingVentures(state.sources, seed.sources),
-    baselines: appendForMissingVentures(state.baselines, seed.baselines),
+    sources: appendForMissingVentures(normalizedState.sources, seed.sources),
+    baselines: appendForMissingVentures(normalizedState.baselines, seed.baselines),
     challengeScans: appendForMissingVentures(
-      state.challengeScans,
+      normalizedState.challengeScans,
       seed.challengeScans,
     ),
     challengeItems: appendForMissingVentures(
-      state.challengeItems,
+      normalizedState.challengeItems,
       seed.challengeItems,
     ),
     decisions: appendForMissingVentures(
-      state.decisions,
+      normalizedState.decisions,
       seed.decisions,
     ),
     experiments: appendForMissingVentures(
-      state.experiments,
+      normalizedState.experiments,
       seed.experiments,
     ),
     evidenceRequirements: appendForMissingVentures(
-      state.evidenceRequirements,
+      normalizedState.evidenceRequirements,
       seed.evidenceRequirements,
     ),
     cycleTasks: appendForMissingVentures(
-      state.cycleTasks,
+      normalizedState.cycleTasks,
       seed.cycleTasks,
     ),
     actionCycles: appendForMissingVentures(
-      state.actionCycles,
+      normalizedState.actionCycles,
       seed.actionCycles,
     ),
     supportRelationships: appendForMissingVentures(
-      state.supportRelationships,
+      normalizedState.supportRelationships,
       seed.supportRelationships,
     ),
-    programs: appendForMissingVentures(state.programs, seed.programs),
-    evidence: appendForMissingVentures(state.evidence, seed.evidence),
-    feedback: appendForMissingVentures(state.feedback, seed.feedback),
-    outcomes: appendForMissingVentures(state.outcomes, seed.outcomes),
+    programs: appendForMissingVentures(normalizedState.programs, seed.programs),
+    evidence: appendForMissingVentures(normalizedState.evidence, seed.evidence),
+    feedback: appendForMissingVentures(normalizedState.feedback, seed.feedback),
+    outcomes: appendForMissingVentures(normalizedState.outcomes, seed.outcomes),
     readinessDeltas: appendForMissingVentures(
-      state.readinessDeltas,
+      normalizedState.readinessDeltas,
       seed.readinessDeltas,
     ),
-    opportunities: state.opportunities,
+    opportunities: normalizedState.opportunities,
     activities: appendForMissingVentures(
-      state.activities,
+      normalizedState.activities,
       seed.activities,
     ),
   };
@@ -391,6 +519,22 @@ export function getNextActionForVenture(
   state: DemoWorkspaceState,
   ventureId: VentureId,
 ): NextAction {
+  const venture = getVentureById(state, ventureId);
+  if (
+    venture?.status === "setup" &&
+    venture.setup?.status !== "completed"
+  ) {
+    return {
+      id: `next-${ventureId}-setup`,
+      label: "Continue venture setup",
+      description: `Resume ${venture.setup?.currentStepId ?? "venture context"}.`,
+      targetPath: venture.setup
+        ? `/founder/projects/${ventureId}/setup`
+        : `/founder/projects/${ventureId}/context`,
+      kind: "continue-setup",
+    };
+  }
+
   const decisionLoopAction = getDecisionLoopNextAction(state, ventureId);
   if (decisionLoopAction) return decisionLoopAction;
 
@@ -448,13 +592,16 @@ export function getFilteredVentures(
   options: {
     query?: string;
     stage?: VentureStage | "all";
+    status?: VentureStatus | "all";
   } = {},
 ) {
   const query = options.query?.trim().toLowerCase() ?? "";
   const stage = options.stage ?? "all";
+  const status = options.status ?? "all";
 
   return getAllVentures(state).filter((venture) => {
     if (stage !== "all" && venture.stage !== stage) return false;
+    if (status !== "all" && venture.status !== status) return false;
     if (!query) return true;
     const decision = getActiveDecisionForVenture(state, venture.id);
     return [
@@ -577,6 +724,31 @@ function createEmptyBaselineField(
   };
 }
 
+const setupStepIds: VentureSetupStepId[] = [
+  "venture-name",
+  "problem",
+  "target-user",
+  "materials",
+  "confirm-context",
+];
+
+function getMissingSetupFields(
+  venture: Pick<Venture, "name" | "stage">,
+  draft: VentureSetupDraft,
+) {
+  const missing: string[] = [];
+  if (!venture.name.trim()) missing.push("Tên venture");
+  if (!draft.problem.trim()) missing.push("Vấn đề");
+  if (!draft.targetUser.trim()) missing.push("Người dùng mục tiêu");
+  if (!venture.stage) missing.push("Giai đoạn");
+  if (!draft.initialGoal.trim()) missing.push("Mục tiêu ban đầu");
+  return missing;
+}
+
+function getSetupStepIndex(stepId: VentureSetupStepId) {
+  return setupStepIds.indexOf(stepId);
+}
+
 function uniqueVentureId(
   state: DemoWorkspaceState,
   preferredId: string,
@@ -600,6 +772,17 @@ export function createDemoVenture(
   state: DemoWorkspaceState,
   input: CreateDemoVentureInput,
 ) {
+  const requestId = input.requestId?.trim();
+  const existingVentureId = requestId
+    ? state.uiPreferences.ventureCreationRequestMap?.[requestId]
+    : undefined;
+  if (
+    existingVentureId &&
+    getVentureById(state, existingVentureId)
+  ) {
+    return { ventureId: existingVentureId, state };
+  }
+
   const slug = slugify(input.name);
   const id = uniqueVentureId(
     state,
@@ -608,6 +791,14 @@ export function createDemoVenture(
   const createdAt = input.createdAt ?? new Date().toISOString();
   const decisionId = `decision-${id}-context`;
   const currentPhase = input.currentPhase ?? "venture-context";
+  const setupDraft: VentureSetupDraft = {
+    problem: "",
+    targetUser: "",
+    initialGoal: input.initialDecisionTitle ?? "",
+    materials: [],
+  };
+  const initialSetupStepId =
+    input.initialSetupStepId ?? "problem";
   const decision: VentureDecision = {
     id: decisionId,
     ventureId: id,
@@ -640,6 +831,19 @@ export function createDemoVenture(
       currentPhase === "venture-context" ? "setup" : "active",
     tags: input.tags ?? [],
     currentPhase,
+    setup: {
+      status: "in-progress",
+      creationIntent:
+        input.creationIntent ?? "conversational-setup",
+      currentStepId: initialSetupStepId,
+      completedStepIds: ["venture-name"],
+      missingRequiredFields: getMissingSetupFields(
+        { name: input.name, stage: input.stage },
+        setupDraft,
+      ),
+      draft: setupDraft,
+      lastUpdatedAt: createdAt,
+    },
     activeDecisionId: decisionId,
     supportSummary: {
       status: "uncovered",
@@ -698,6 +902,15 @@ export function createDemoVenture(
       },
       ...state.activities,
     ],
+    uiPreferences: {
+      ...state.uiPreferences,
+      ventureCreationRequestMap: requestId
+        ? {
+            ...(state.uiPreferences.ventureCreationRequestMap ?? {}),
+            [requestId]: id,
+          }
+        : state.uiPreferences.ventureCreationRequestMap,
+    },
   };
 
   return {
@@ -706,6 +919,207 @@ export function createDemoVenture(
       setActiveVenture(nextState, id),
       id,
       `/founder/projects/${id}`,
+    ),
+  };
+}
+
+export interface UpdateVentureSetupInput {
+  currentStepId?: VentureSetupStepId;
+  completedStepIds?: VentureSetupStepId[];
+  name?: string;
+  stage?: VentureStage;
+  problem?: string;
+  targetUser?: string;
+  initialGoal?: string;
+  materials?: VentureSetupDraft["materials"];
+  updatedAt?: string;
+}
+
+export function updateDemoVentureSetup(
+  state: DemoWorkspaceState,
+  ventureId: VentureId,
+  input: UpdateVentureSetupInput,
+) {
+  const venture = getVentureById(state, ventureId);
+  if (!venture || venture.status === "archived") return state;
+
+  const updatedAt = input.updatedAt ?? new Date().toISOString();
+  const currentSetup = venture.setup ?? {
+    status: "in-progress" as const,
+    creationIntent: "conversational-setup" as const,
+    currentStepId: "problem" as const,
+    completedStepIds: ["venture-name" as const],
+    missingRequiredFields: [],
+    draft: {
+      problem: "",
+      targetUser: "",
+      initialGoal: "",
+      materials: [],
+    },
+    lastUpdatedAt: updatedAt,
+  };
+  const nextDraft: VentureSetupDraft = {
+    problem: input.problem ?? currentSetup.draft.problem,
+    targetUser: input.targetUser ?? currentSetup.draft.targetUser,
+    initialGoal:
+      input.initialGoal ?? currentSetup.draft.initialGoal,
+    materials: input.materials ?? currentSetup.draft.materials,
+  };
+  const nextVenture = {
+    ...venture,
+    name: input.name?.trim() || venture.name,
+    slug: input.name ? slugify(input.name) : venture.slug,
+    stage: input.stage ?? venture.stage,
+    oneLineDescription:
+      nextDraft.problem || venture.oneLineDescription,
+    lastUpdatedAt: updatedAt,
+  };
+  const completedStepIds = Array.from(
+    new Set(
+      input.completedStepIds ?? currentSetup.completedStepIds,
+    ),
+  ).filter((stepId): stepId is VentureSetupStepId =>
+    setupStepIds.includes(stepId),
+  );
+  const currentStepId =
+    input.currentStepId ?? currentSetup.currentStepId;
+  const missingRequiredFields = getMissingSetupFields(
+    nextVenture,
+    nextDraft,
+  );
+
+  return {
+    ...state,
+    ventures: state.ventures.map((item) =>
+      item.id === ventureId
+        ? {
+            ...nextVenture,
+            setup: {
+              ...currentSetup,
+              status:
+                currentStepId === "confirm-context" &&
+                missingRequiredFields.length === 0
+                  ? ("ready-for-confirmation" as const)
+                  : ("in-progress" as const),
+              currentStepId,
+              completedStepIds,
+              missingRequiredFields,
+              draft: nextDraft,
+              lastUpdatedAt: updatedAt,
+            },
+          }
+        : item,
+    ),
+  };
+}
+
+export function confirmDemoVentureSetup(
+  state: DemoWorkspaceState,
+  ventureId: VentureId,
+  confirmedAt = new Date().toISOString(),
+) {
+  const venture = getVentureById(state, ventureId);
+  if (!venture?.setup || venture.status === "archived") {
+    return { confirmed: false, state };
+  }
+  const setup = venture.setup;
+  const missingRequiredFields = getMissingSetupFields(
+    venture,
+    setup.draft,
+  );
+  if (missingRequiredFields.length > 0) {
+    return {
+      confirmed: false,
+      state: updateDemoVentureSetup(state, ventureId, {
+        currentStepId: "confirm-context",
+        updatedAt: confirmedAt,
+      }),
+    };
+  }
+
+  const nextState: DemoWorkspaceState = {
+    ...state,
+    ventures: state.ventures.map((item) =>
+      item.id === ventureId
+        ? {
+            ...item,
+            status: "active" as const,
+            currentPhase: "decision-framing" as const,
+            setup: {
+              ...setup,
+              status: "completed" as const,
+              currentStepId: "confirm-context" as const,
+              completedStepIds: [...setupStepIds],
+              missingRequiredFields: [],
+              lastUpdatedAt: confirmedAt,
+            },
+            overallProgress: {
+              confidence: "developing" as const,
+              recentChange:
+                "Founder confirmed the initial venture context.",
+              unresolvedGap:
+                "The first validation cycle still needs evidence.",
+            },
+            lastUpdatedAt: confirmedAt,
+          }
+        : item,
+    ),
+    baselines: state.baselines.map((baseline) =>
+      baseline.ventureId === ventureId
+        ? {
+            ...baseline,
+            problem: createEmptyBaselineField(
+              setup.draft.problem,
+            ),
+            customer: createEmptyBaselineField(
+              setup.draft.targetUser,
+            ),
+            currentGoal: createEmptyBaselineField(
+              setup.draft.initialGoal,
+            ),
+            acknowledgedIncomplete: true,
+            status: "confirmed" as const,
+            updatedAt: confirmedAt,
+          }
+        : baseline,
+    ),
+    decisions: state.decisions.map((decision) =>
+      decision.ventureId === ventureId
+        ? {
+            ...decision,
+            title:
+              setup.draft.initialGoal || decision.title,
+            nextAction: {
+              ...decision.nextAction,
+              label: "Open Founder AI Workspace",
+              description:
+                "Continue with the first conversation and validation focus.",
+              targetPath: `/founder/projects/${ventureId}/workspace`,
+              kind: "open-workspace" as const,
+            },
+            updatedAt: confirmedAt,
+          }
+        : decision,
+    ),
+    activities: [
+      {
+        id: `activity-${ventureId}-context-confirmed`,
+        ventureId,
+        type: "project",
+        message:
+          "Initial venture context confirmed and AI workspace activated.",
+        occurredAt: confirmedAt,
+      },
+      ...state.activities,
+    ],
+  };
+
+  return {
+    confirmed: true,
+    state: setLastVisitedVenturePath(
+      setActiveVenture(nextState, ventureId),
+      ventureId,
+      `/founder/projects/${ventureId}/workspace`,
     ),
   };
 }

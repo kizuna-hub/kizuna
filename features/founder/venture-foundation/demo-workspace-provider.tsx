@@ -8,12 +8,15 @@ import { createMockDecisionLoopRepository } from "@/features/venture/decision-lo
 
 import {
   archiveDemoVenture as archiveDemoVentureState,
+  confirmDemoVentureSetup as confirmDemoVentureSetupState,
   createDemoVenture as createDemoVentureState,
   resetDemoState as createResetState,
   restoreDemoState as parseRestoredState,
   serializeDemoWorkspaceState,
   setActiveVenture as setActiveVentureState,
   setLastVisitedVenturePath as setLastVisitedVenturePathState,
+  updateDemoVentureSetup as updateDemoVentureSetupState,
+  type UpdateVentureSetupInput,
 } from "./demo-repository";
 import {
   createDemoWorkspaceSeed,
@@ -38,7 +41,13 @@ type DemoWorkspaceContextValue = {
   createDemoVenture: (
     input: CreateDemoVentureInput,
   ) => VentureId;
+  updateVentureSetup: (
+    ventureId: VentureId,
+    input: UpdateVentureSetupInput,
+  ) => void;
+  confirmVentureSetup: (ventureId: VentureId) => boolean;
   archiveDemoVenture: (ventureId: VentureId) => void;
+  replaceDemoState: (state: DemoWorkspaceState) => void;
   restoreDemoState: () => void;
   resetDemoState: () => void;
   updateUiPreferences: (
@@ -99,33 +108,69 @@ export function DemoWorkspaceProvider({
 
   const setActiveVenture = React.useCallback(
     (ventureId: VentureId) => {
-      setState((current) =>
-        setActiveVentureState(current, ventureId),
+      const nextState = setActiveVentureState(
+        stateRef.current,
+        ventureId,
       );
+      stateRef.current = nextState;
+      setState(nextState);
     },
     [],
   );
 
   const setLastVisitedVenturePath = React.useCallback(
     (ventureId: VentureId, path: string) => {
-      setState((current) =>
-        setLastVisitedVenturePathState(
-          current,
-          ventureId,
-          path,
-        ),
+      const nextState = setLastVisitedVenturePathState(
+        stateRef.current,
+        ventureId,
+        path,
       );
+      stateRef.current = nextState;
+      setState(nextState);
     },
     [],
   );
 
   const createDemoVenture = React.useCallback(
     (input: CreateDemoVentureInput) => {
-      const result = createDemoVentureState(state, input);
+      const result = createDemoVentureState(
+        stateRef.current,
+        input,
+      );
+      stateRef.current = result.state;
       setState(result.state);
       return result.ventureId;
     },
-    [state],
+    [],
+  );
+
+  const updateVentureSetup = React.useCallback(
+    (
+      ventureId: VentureId,
+      input: UpdateVentureSetupInput,
+    ) => {
+      const nextState = updateDemoVentureSetupState(
+        stateRef.current,
+        ventureId,
+        input,
+      );
+      stateRef.current = nextState;
+      setState(nextState);
+    },
+    [],
+  );
+
+  const confirmVentureSetup = React.useCallback(
+    (ventureId: VentureId) => {
+      const result = confirmDemoVentureSetupState(
+        stateRef.current,
+        ventureId,
+      );
+      stateRef.current = result.state;
+      setState(result.state);
+      return result.confirmed;
+    },
+    [],
   );
 
   const archiveDemoVenture = React.useCallback(
@@ -147,15 +192,26 @@ export function DemoWorkspaceProvider({
     setState(createResetState());
   }, [workspaceStorage]);
 
+  const replaceDemoState = React.useCallback(
+    (nextState: DemoWorkspaceState) => {
+      stateRef.current = nextState;
+      setState(nextState);
+    },
+    [],
+  );
+
   const updateUiPreferences = React.useCallback(
     (preferences: Partial<WorkspaceUiPreferences>) => {
-      setState((current) => ({
+      const current = stateRef.current;
+      const nextState = {
         ...current,
         uiPreferences: {
           ...current.uiPreferences,
           ...preferences,
         },
-      }));
+      };
+      stateRef.current = nextState;
+      setState(nextState);
     },
     [],
   );
@@ -167,7 +223,10 @@ export function DemoWorkspaceProvider({
       setActiveVenture,
       setLastVisitedVenturePath,
       createDemoVenture,
+      updateVentureSetup,
+      confirmVentureSetup,
       archiveDemoVenture,
+      replaceDemoState,
       restoreDemoState,
       resetDemoState,
       updateUiPreferences,
@@ -176,13 +235,16 @@ export function DemoWorkspaceProvider({
     [
       archiveDemoVenture,
       createDemoVenture,
+      confirmVentureSetup,
       decisionLoopRepository,
       hydrated,
       resetDemoState,
       restoreDemoState,
+      replaceDemoState,
       setActiveVenture,
       setLastVisitedVenturePath,
       state,
+      updateVentureSetup,
       updateUiPreferences,
     ],
   );
