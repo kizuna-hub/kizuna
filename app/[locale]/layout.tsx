@@ -50,7 +50,7 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable}`} data-scroll-behavior="smooth">
       <body className="font-body bg-canvas text-ink antialiased min-h-screen">
         <NextIntlClientProvider messages={messages}>
           <DemoWorkspaceProvider>

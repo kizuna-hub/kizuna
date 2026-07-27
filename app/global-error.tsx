@@ -11,7 +11,7 @@ export default function GlobalError({
     console.error(error)
 
     return (
-        <html>
+        <html data-scroll-behavior="smooth">
             <head>
                 <style>{`
           * { box-sizing: border-box; }
