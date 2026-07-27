@@ -4,6 +4,7 @@ import {
   createAiWorkspaceScenarioState,
 } from "../demo/demo-scenarios";
 import type {
+  AiWorkspaceMessage,
   AiWorkspaceScenarioId,
   AiWorkspaceState,
 } from "../types/ai-workspace.types";
@@ -11,7 +12,7 @@ import type { LongRunWorkspaceState } from "../types/long-run-workspace.types";
 
 export const AI_WORKSPACE_STORAGE_KEY =
   "kizuna-founder-ai-workspace-demo-v1";
-export const AI_WORKSPACE_STORAGE_VERSION = 3;
+export const AI_WORKSPACE_STORAGE_VERSION = 4;
 
 export type PersistedAiWorkspaceSession = Pick<
   AiWorkspaceState,
@@ -21,7 +22,9 @@ export type PersistedAiWorkspaceSession = Pick<
   | "evidenceHealth"
   | "materialAnalysis"
   | "decisionCycle"
+  | "decisionCycleLifecycle"
   | "mentorRecommendation"
+  | "mentorSession"
 > & {
   longRun?: LongRunWorkspaceState;
 };
@@ -36,6 +39,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export const scenarioIds = new Set<AiWorkspaceScenarioId>([
+  "onboarding-case-study",
   "bottleneck",
   "materials",
   "readiness",
@@ -67,9 +71,9 @@ export function parseAiWorkspaceEnvelope(
     if (
       !isRecord(parsed) ||
       !isRecord(parsed.sessions) ||
-      (parsed.version !== 1 &&
-        parsed.version !== 2 &&
-        parsed.version !== AI_WORKSPACE_STORAGE_VERSION)
+      ![1, 2, 3, AI_WORKSPACE_STORAGE_VERSION].includes(
+        parsed.version as number,
+      )
     ) {
       return empty;
     }
@@ -96,7 +100,9 @@ export function toPersistedSession(
     evidenceHealth: state.evidenceHealth,
     materialAnalysis: state.materialAnalysis,
     decisionCycle: state.decisionCycle,
+    decisionCycleLifecycle: state.decisionCycleLifecycle,
     mentorRecommendation: state.mentorRecommendation,
+    mentorSession: state.mentorSession,
     longRun,
   };
 }
@@ -131,6 +137,9 @@ export function restoreAiSession(
     evidenceHealth: persisted.evidenceHealth,
     materialAnalysis: persisted.materialAnalysis,
     decisionCycle: persisted.decisionCycle,
+    decisionCycleLifecycle:
+      persisted.decisionCycleLifecycle ??
+      initial.decisionCycleLifecycle,
     mentorRecommendation: persisted.mentorRecommendation
       ? {
           ...structuredClone(baselineMentorRecommendation),
@@ -157,6 +166,36 @@ export function restoreAiSession(
             ),
         }
       : undefined,
+    mentorSession: persisted.mentorSession,
+  };
+}
+
+function migrateAssistantMessage(
+  message: AiWorkspaceMessage,
+): AiWorkspaceMessage {
+  if (message.role === "founder") return message;
+  const responseKind =
+    message.responseKind ??
+    (message.structuredResponse?.type === "current-focus"
+      ? "insight"
+      : message.structuredResponse?.type ===
+          "mentor-recommendation"
+        ? "mentor_intervention"
+        : message.structuredResponse?.type ===
+            "suggested-action"
+          ? "action_proposal"
+          : message.structuredResponse
+            ? "artifact_preview"
+            : "conversation");
+  return {
+    ...message,
+    responseKind,
+    responseLifecycle:
+      message.responseLifecycle ??
+      (message.status === "failed" ||
+      message.status === "incomplete"
+        ? "failed"
+        : "completed"),
   };
 }
 
@@ -183,7 +222,7 @@ export function restoreLongRunSession(
       session.id === candidate.activeConversationId &&
       !session.isArchived,
   );
-  return activeExists
+  const restored = activeExists
     ? candidate
     : {
         ...candidate,
@@ -192,4 +231,15 @@ export function restoreLongRunSession(
             (session) => !session.isArchived,
           )?.id ?? candidate.lastConversationId,
       };
+  return {
+    ...restored,
+    messagesByConversation: Object.fromEntries(
+      Object.entries(restored.messagesByConversation).map(
+        ([conversationId, messages]) => [
+          conversationId,
+          messages.map(migrateAssistantMessage),
+        ],
+      ),
+    ),
+  };
 }

@@ -14,8 +14,8 @@ import type {
   AiWorkspaceMessage,
   AiWorkspaceState,
 } from "../../types/ai-workspace.types";
-import { StructuredResponseView } from "../responses/structured-response";
-import { SourceIndicator } from "../shared/source-indicator";
+import { AssistantResponseRenderer } from "../responses/assistant-response-renderer";
+import { ResponseSourceFooter } from "../responses/response-source-footer";
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("vi-VN", {
@@ -59,12 +59,13 @@ export function ChatMessage({
   onTogglePin,
   onOpenCycle,
   onSendPrompt,
-  onConfirmInterpretation,
+  onConfirmActionProposal,
   onRetry,
   onEditFailedMessage,
   onDeleteFailedMessage,
   onOpenMentor,
   onDeferMentor,
+  onOpenArtifact,
 }: {
   message: AiWorkspaceMessage;
   state: AiWorkspaceState;
@@ -75,14 +76,15 @@ export function ChatMessage({
   onTogglePin?: () => void;
   onOpenCycle: () => void;
   onSendPrompt: (prompt: string) => void;
-  onConfirmInterpretation: (
-    status: "confirmed" | "disputed",
-  ) => void;
+  onConfirmActionProposal: (messageId: string) => void;
   onRetry: () => void;
   onEditFailedMessage?: () => void;
   onDeleteFailedMessage?: () => void;
   onOpenMentor: () => void;
   onDeferMentor: () => void;
+  onOpenArtifact: (
+    surface: "documents" | "timeline",
+  ) => void;
 }) {
   const founder = message.role === "founder";
 
@@ -210,22 +212,30 @@ export function ChatMessage({
 
       {!founder &&
       message.status === "complete" &&
+      message.responseKind !== "conversation" &&
       message.structuredResponse ? (
-        <div className="ml-9 mt-3 overflow-hidden rounded-xl">
-          <StructuredResponseView
-            response={message.structuredResponse}
+        <div className="ml-9 mt-3">
+          <AssistantResponseRenderer
+            message={message}
+            state={state}
             copy={copy}
             onOpenCycle={onOpenCycle}
             onSendPrompt={onSendPrompt}
-            onConfirmInterpretation={onConfirmInterpretation}
+            onConfirmActionProposal={
+              onConfirmActionProposal
+            }
             onOpenMentor={onOpenMentor}
             onDeferMentor={onDeferMentor}
-            currentMaterialAnalysis={state.materialAnalysis}
-            currentMentorRecommendation={
-              state.mentorRecommendation
-            }
+            onOpenArtifact={onOpenArtifact}
           />
-          <SourceIndicator
+        </div>
+      ) : null}
+
+      {!founder &&
+      message.status === "complete" &&
+      (message.sources?.length ?? 0) > 0 ? (
+        <div className="ml-9">
+          <ResponseSourceFooter
             sources={message.sources ?? []}
             copy={copy}
           />

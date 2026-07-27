@@ -19,12 +19,13 @@ export function ConversationThread({
   copy,
   onOpenCycle,
   onSendPrompt,
-  onConfirmInterpretation,
+  onConfirmActionProposal,
   onRetry,
   onEditFailedMessage,
   onDeleteFailedMessage,
   onOpenMentor,
   onDeferMentor,
+  onOpenArtifact,
   messages,
   searchQuery = "",
   activeMatchMessageId,
@@ -40,14 +41,15 @@ export function ConversationThread({
   copy: AiWorkspaceCopy;
   onOpenCycle: () => void;
   onSendPrompt: (prompt: string) => void;
-  onConfirmInterpretation: (
-    status: "confirmed" | "disputed",
-  ) => void;
+  onConfirmActionProposal: (messageId: string) => void;
   onRetry: () => void;
   onEditFailedMessage?: (messageId: string) => void;
   onDeleteFailedMessage?: (messageId: string) => void;
   onOpenMentor: () => void;
   onDeferMentor: () => void;
+  onOpenArtifact: (
+    surface: "documents" | "timeline",
+  ) => void;
   messages?: AiWorkspaceMessage[];
   searchQuery?: string;
   activeMatchMessageId?: string;
@@ -213,8 +215,8 @@ export function ConversationThread({
             }
             onOpenCycle={onOpenCycle}
             onSendPrompt={onSendPrompt}
-            onConfirmInterpretation={
-              onConfirmInterpretation
+            onConfirmActionProposal={
+              onConfirmActionProposal
             }
             onRetry={onRetry}
             onEditFailedMessage={
@@ -229,6 +231,7 @@ export function ConversationThread({
             }
             onOpenMentor={onOpenMentor}
             onDeferMentor={onDeferMentor}
+            onOpenArtifact={onOpenArtifact}
           />
         ))}
 

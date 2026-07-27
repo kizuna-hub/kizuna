@@ -28,12 +28,16 @@ export function AiWorkspaceBody({
   jumpMessageId,
   onJumpHandled,
   overlayOpen,
+  onOpenArtifact,
 }: {
   workspace: AiWorkspaceController;
   onOpenSearch: () => void;
   jumpMessageId?: string;
   onJumpHandled: () => void;
   overlayOpen: boolean;
+  onOpenArtifact: (
+    surface: "documents" | "timeline",
+  ) => void;
 }) {
   const [pulseOpen, setPulseOpen] = React.useState(false);
   const [panelView, setPanelView] = React.useState<
@@ -41,6 +45,9 @@ export function AiWorkspaceBody({
   >("pulse");
   const [cycleReviewing, setCycleReviewing] =
     React.useState(false);
+  const mentorTriggerRef = React.useRef<HTMLElement | null>(
+    null,
+  );
   const { state, longRun } = workspace;
   const copy = aiWorkspaceVi;
   const generating =
@@ -65,11 +72,33 @@ export function AiWorkspaceBody({
 
   const openMentorDetails = () => {
     if (!state.mentorRecommendation) return;
+    if (document.activeElement instanceof HTMLElement) {
+      mentorTriggerRef.current = document.activeElement;
+    }
     setPanelView("mentor");
     if (window.matchMedia("(max-width: 1279px)").matches) {
       setPulseOpen(true);
     }
   };
+
+  const closeMentorDetails = React.useCallback(() => {
+    setPanelView("pulse");
+    window.requestAnimationFrame(() =>
+      mentorTriggerRef.current?.focus(),
+    );
+  }, []);
+
+  React.useEffect(() => {
+    if (panelView !== "mentor") return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setPulseOpen(false);
+      closeMentorDetails();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () =>
+      window.removeEventListener("keydown", onKeyDown);
+  }, [closeMentorDetails, panelView]);
 
   const pulse = (
     <VenturePulsePanel
@@ -86,8 +115,9 @@ export function AiWorkspaceBody({
     panelView === "mentor" && state.mentorRecommendation ? (
       <MentorMatchDetailPanel
         mentor={state.mentorRecommendation}
+        session={state.mentorSession}
         copy={copy}
-        onBack={() => setPanelView("pulse")}
+        onBack={closeMentorDetails}
         onBook={workspace.bookMentor}
         onSave={workspace.saveMentor}
         onDismiss={(reason) => {
@@ -175,6 +205,7 @@ export function AiWorkspaceBody({
                   search.setTopicDriftDismissed(true)
                 }
                 onOpenMentor={openMentorDetails}
+                onOpenArtifact={onOpenArtifact}
               />
             ) : (
               <DecisionCycleCanvas
@@ -208,7 +239,15 @@ export function AiWorkspaceBody({
         </div>
       )}
 
-      <Sheet open={pulseOpen} onOpenChange={setPulseOpen}>
+      <Sheet
+        open={pulseOpen}
+        onOpenChange={(open) => {
+          setPulseOpen(open);
+          if (!open && panelView === "mentor") {
+            closeMentorDetails();
+          }
+        }}
+      >
         <SheetContent
           side="right"
           className="w-[min(360px,calc(100vw-1rem))] gap-0 border-workspace-border bg-workspace-panel p-0 xl:hidden"

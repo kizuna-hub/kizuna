@@ -32,8 +32,8 @@ export function canOpenCycleStep(
 
 export function shouldRecommendMentor(state: AiWorkspaceState) {
   return (
+    state.decisionCycleLifecycle === "active" ||
     state.decisionCycle.evidenceSubmitted &&
     state.decisionCycle.reviewCompleted
   );
 }
-

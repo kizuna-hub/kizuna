@@ -57,8 +57,8 @@ function normalizeIntentText(value: string) {
   return value
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
-    .replace(/đ/g, "d")
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/đ/g, "d");
 }
 
 function includesAny(value: string, terms: string[]) {
@@ -70,6 +70,34 @@ export function detectAiWorkspaceIntent(
 ): AiWorkspaceIntent {
   const normalized = normalizeIntentText(message);
 
+  if (
+    includesAny(normalized, [
+      "huong thu nghiem nao khac",
+      "thu nghiem nao khac",
+      "phuong an thu nghiem",
+    ])
+  ) {
+    return "compare-experiments";
+  }
+  if (
+    includesAny(normalized, [
+      "diem yeu lon nhat",
+      "rui ro lon nhat",
+      "diem yeu cua thu nghiem",
+    ])
+  ) {
+    return "experiment-risk";
+  }
+  if (
+    includesAny(normalized, [
+      "metric nao",
+      "chi so nao",
+      "nhom control",
+      "control the nao",
+    ])
+  ) {
+    return "experiment-metrics";
+  }
   if (
     includesAny(normalized, [
       "review ket qua",
@@ -212,7 +240,17 @@ function sourceReferences(
     ...shared,
     {
       id: "source-activation-funnel",
-      label: "Funnel activation hiện tại",
+      label: "Dữ liệu funnel",
+      status: "verified",
+    },
+    {
+      id: "source-day-three-activation",
+      label: "Activation ngày thứ ba",
+      status: "verified",
+    },
+    {
+      id: "source-interview-batch-03",
+      label: "Nhóm phỏng vấn người dùng số 03",
       status: "inferred",
     },
   ];
@@ -327,6 +365,8 @@ function buildResponse(
 ): Omit<AiWorkspaceResponse, "chunks"> {
   const common = {
     intent,
+    responseKind: "conversation" as const,
+    lifecycle: "active" as const,
     proposedPatches: {},
     suggestedPrompts: getScenarioPrompts(input.activeScenarioId),
     sourceReferences: sourceReferences(intent),
@@ -337,6 +377,7 @@ function buildResponse(
     const analysis = materialAnalysis(input);
     return {
       ...common,
+      responseKind: "artifact_preview",
       assistantMessage:
         "Mình đã tách phần được tài liệu hỗ trợ khỏi phần vẫn chỉ là suy luận. Customer proof là khoảng trống cần xử lý trước.",
       structuredResponse: {
@@ -369,6 +410,7 @@ function buildResponse(
     };
     return {
       ...common,
+      responseKind: "artifact_preview",
       assistantMessage:
         "Phản biện của bạn đã được giữ lại. Mình không nâng traction thành dữ kiện xác minh cho tới khi có cohort và khoảng thời gian rõ.",
       structuredResponse: {
@@ -388,58 +430,77 @@ function buildResponse(
     return {
       ...common,
       assistantMessage:
-        "Điểm 54 không có nghĩa startup yếu. Nó cho biết phần vấn đề đã rõ hơn phần bằng chứng khách hàng và hành vi sử dụng lặp lại.",
-      structuredResponse: {
-        type: "readiness-change",
-        payload: input.currentState.readiness,
-      },
+        "Mức độ sẵn sàng hiện tại không phải là một phán quyết về startup. Điểm 61 cho thấy phần funnel và activation ngày thứ ba đã có cơ sở, trong khi retention tuần hai và phản hồi định tính vẫn chưa đủ để kết luận dài hạn.\n\nĐiểm số chỉ nên được dùng để xác định bằng chứng tiếp theo cần thu thập, không thay thế quyết định của founder.",
       proposedPatches: {},
       suggestedPrompts: [
         "Bằng chứng nào còn thiếu?",
         "Đề xuất hành động để tăng readiness",
-        "Mở chu kỳ quyết định",
+        "Điều gì còn chưa chắc chắn?",
       ],
     };
   }
 
-  if (intent === "suggest-action") {
+  if (
+    intent === "suggest-action" ||
+    intent === "compare-experiments" ||
+    intent === "create-decision-cycle"
+  ) {
     return {
       ...common,
+      responseKind: "action_proposal",
       assistantMessage:
-        "Hành động có giá trị nhất lúc này là một thử nghiệm onboarding nhỏ, đủ nhanh để cho biết activation có thực sự là điểm nghẽn hay không.",
+        intent === "compare-experiments"
+          ? "Có ba hướng hợp lý:\n\n1. Rút onboarding còn ba bước.\n2. Cho người dùng thấy kết quả mẫu trước khi hoàn tất setup.\n3. Cá nhân hóa onboarding theo mục tiêu sử dụng.\n\nVới dữ liệu hiện tại, hướng đầu tiên có chi phí thấp nhất và dễ đo tác động nhất."
+          : "Hành động có giá trị nhất lúc này là một thử nghiệm onboarding nhỏ, đủ nhanh để cho biết activation có thực sự là điểm nghẽn hay không.",
       structuredResponse: {
         type: "suggested-action",
         payload: {
-          title: "Thử nghiệm onboarding ba bước",
+          id: "proposal-onboarding-three-steps",
+          title:
+            "Thử onboarding ba bước trên 20% người dùng mới.",
           rationale:
             "Tập trung vào đoạn funnel đang giảm thay vì tiếp tục tăng traffic.",
           action:
             "Rollout cho 20% người dùng mới và đo activation trong bảy ngày.",
+          goal:
+            "Kiểm tra liệu luồng ngắn hơn có tăng activation trong 7 ngày hay không.",
+          expectedOutcome:
+            "Activation tăng ít nhất 15% trong 14 ngày.",
         },
       },
-      proposedPatches: { currentFocus: structuredClone(baselineFocus) },
+      proposedPatches: {},
       suggestedPrompts: [
-        "Tạo chu kỳ quyết định",
         "Bằng chứng nào sẽ thay đổi quyết định?",
-        "Giải thích mức độ sẵn sàng",
+        "Điểm yếu lớn nhất của thử nghiệm này là gì?",
+        "Thiết kế nhóm control thế nào?",
       ],
     };
   }
 
-  if (intent === "create-decision-cycle") {
+  if (intent === "experiment-risk") {
     return {
       ...common,
       assistantMessage:
-        "Mình đã chuẩn bị một chu kỳ năm bước với một mục tiêu, một chỉ số chính và tiêu chí review rõ ràng.",
-      structuredResponse: {
-        type: "decision-cycle",
-        payload: input.currentState.decisionCycle,
-      },
+        "Rủi ro lớn nhất là bạn có thể thấy activation tăng nhưng không biết chính xác bước nào tạo ra tác động.\n\nNếu thay quá nhiều nội dung cùng lúc, kết quả sẽ khó diễn giải.\n\nTôi khuyên bạn chỉ thay cấu trúc luồng, giữ nguyên nội dung và thông điệp trong phiên bản đầu tiên.",
       proposedPatches: {},
       suggestedPrompts: [
-        "Mở chu kỳ quyết định",
-        "Giải thích tiêu chí thành công",
-        "Bằng chứng nào còn thiếu?",
+        "Cần theo dõi metric nào?",
+        "Thiết kế nhóm control thế nào?",
+        "Có cần mentor review thử nghiệm này không?",
+      ],
+    };
+  }
+
+  if (intent === "experiment-metrics") {
+    return {
+      ...common,
+      assistantMessage:
+        "Theo dõi một metric chính là tỷ lệ người dùng chạm tới khoảnh khắc giá trị trong 7 ngày. Giữ thêm hai guardrail: tỷ lệ hoàn tất onboarding và retention ngày thứ 14.\n\nNhóm control nên giữ nguyên flow hiện tại; nhóm thử nghiệm chỉ thay cấu trúc còn ba bước để kết quả có thể diễn giải.",
+      proposedPatches: {},
+      suggestedPrompts: [
+        "Ngưỡng thành công nên đặt bao nhiêu?",
+        "Điều gì có thể làm sai lệch kết quả?",
+        "Có cần mentor review thử nghiệm này không?",
       ],
     };
   }
@@ -448,6 +509,7 @@ function buildResponse(
     const readiness = readinessAfterEvidence();
     return {
       ...common,
+      responseKind: "artifact_preview",
       assistantMessage:
         "Bằng chứng mới đã được gắn với chu kỳ. Readiness tăng 7 điểm vì tín hiệu hành vi đã rõ hơn, không phải vì có thêm một tệp.",
       structuredResponse: {
@@ -495,6 +557,7 @@ function buildResponse(
         : undefined;
     return {
       ...common,
+      responseKind: "artifact_preview",
       assistantMessage:
         input.currentState.decisionCycle.evidenceSubmitted
           ? "Kết quả đủ để học, nhưng chưa đủ để rollout rộng. Bước tiếp theo cần judgment về ngưỡng activation và rủi ro cohort."
@@ -541,6 +604,7 @@ function buildResponse(
     const eligible =
       (input.currentState.decisionCycle.evidenceSubmitted &&
         input.currentState.decisionCycle.reviewCompleted) ||
+      input.currentState.decisionCycleLifecycle === "active" ||
       input.activeScenarioId === "mentor";
     const existingMentor =
       input.currentState.mentorRecommendation;
@@ -556,10 +620,13 @@ function buildResponse(
         : null;
     return {
       ...common,
+      responseKind: mentor
+        ? "mentor_intervention"
+        : "conversation",
       assistantMessage: dismissedForCurrentCycle
         ? "Mình sẽ tiếp tục hỗ trợ bằng AI trong chu kỳ này và không lặp lại đề xuất cố vấn."
         : eligible
-          ? "Phân tích thêm bằng AI sẽ không làm giảm nhiều bất định còn lại. Một cố vấn product growth phù hợp hơn ở thời điểm này."
+          ? "AI có thể giúp bạn thiết kế cấu trúc thử nghiệm và xác định metric.\n\nTuy nhiên, quyết định về cách cân bằng onboarding ngắn với việc thu thập đủ dữ liệu người dùng cần kinh nghiệm product thực tế.\n\nMột cố vấn từng xử lý activation ở sản phẩm SaaS sẽ tạo giá trị tốt hơn ở bước này."
           : "Chưa cần cố vấn ở thời điểm này. Bạn vẫn có thể thu hẹp vấn đề bằng một thử nghiệm nhỏ và dữ liệu activation.",
       structuredResponse: {
         type: "mentor-recommendation",
@@ -570,9 +637,9 @@ function buildResponse(
         : {},
       suggestedPrompts: mentor
         ? [
-            "Vì sao cố vấn này phù hợp?",
-            "Kết quả kỳ vọng của phiên trao đổi là gì?",
-            "Để sau",
+            "Điểm nào cần mentor phản biện nhất?",
+            "Tôi cần chuẩn bị bằng chứng gì?",
+            "Câu hỏi quan trọng nhất cho cố vấn là gì?",
           ]
         : [
             "Đề xuất hành động nhỏ nhất tiếp theo",
@@ -607,11 +674,12 @@ function buildResponse(
     resolvedCustomerContext && asksAboutTargetCustomer
       ? "Mình đang dùng xác nhận mới nhất của founder làm context hiện tại. Các nguồn pitch deck mâu thuẫn vẫn được giữ trong lịch sử nhưng không âm thầm ghi đè quyết định này."
       : intent === "growth-stalled"
-      ? "Top-of-funnel vẫn ổn, nhưng activation giảm ngay sau onboarding. Đây là nơi nên tập trung trước khi tăng thêm traffic."
+      ? "Dữ liệu hiện tại cho thấy vấn đề không nằm ở lượng người dùng mới.\n\nTop-of-funnel vẫn ổn, nhưng nhiều người rời đi trước khi hoàn tất onboarding. Điều này khiến việc tăng acquisition lúc này có thể chỉ làm tăng số người rơi khỏi funnel.\n\nTôi nghĩ bạn nên ưu tiên activation trước khi tiếp tục mở rộng acquisition."
       : "Tín hiệu hiện tại cùng chỉ về một điểm: người dùng chưa chạm tới khoảnh khắc giá trị đủ sớm sau onboarding.";
 
   return {
     ...common,
+    responseKind: "insight",
     assistantMessage: growthMessage,
     structuredResponse: {
       type: "current-focus",
@@ -620,8 +688,8 @@ function buildResponse(
     proposedPatches: { currentFocus: focus },
     suggestedPrompts: [
       "Vì sao đây là điểm nghẽn quan trọng nhất?",
-      "Đề xuất hành động nhỏ nhất tiếp theo",
-      "Tạo chu kỳ quyết định",
+      "Điều gì còn chưa chắc chắn?",
+      "Có hướng thử nghiệm nào khác?",
     ],
   };
 }

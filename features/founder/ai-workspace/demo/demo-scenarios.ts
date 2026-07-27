@@ -1,5 +1,6 @@
 import { aiWorkspaceVi } from "../copy/vi";
 import type {
+  AssistantResponseKind,
   AiWorkspaceMessage,
   AiWorkspaceScenarioId,
   AiWorkspaceState,
@@ -36,6 +37,7 @@ export const sampleMaterials = [
 
 export const baselineFocus: CurrentFocus = {
   id: "activation-after-onboarding",
+  label: "Tối ưu activation sau onboarding",
   bottleneck:
     "Người dùng mới chưa chạm tới khoảnh khắc giá trị sau onboarding.",
   whyItMatters:
@@ -44,6 +46,49 @@ export const baselineFocus: CurrentFocus = {
     "Kiểm tra một onboarding ba bước với 20% người dùng mới.",
   sourceStatus: "inferred",
 };
+
+export const onboardingInitialFocus: CurrentFocus = {
+  id: "focus-not-established",
+  label: "Chưa xác định",
+  bottleneck: "Chưa xác định",
+  whyItMatters:
+    "Kizuna cần đối chiếu câu hỏi mới với funnel và bằng chứng hiện có trước khi đặt trọng tâm.",
+  nextAction: "Đặt câu hỏi về vấn đề tăng trưởng hiện tại.",
+  sourceStatus: "missing",
+};
+
+export const onboardingInitialEvidenceHealth: EvidenceHealthItem[] = [
+  {
+    id: "funnel-data",
+    label: "Dữ liệu funnel",
+    status: "verified",
+    detail: "Signup ổn định, đoạn rơi lớn nhất nằm trong onboarding.",
+  },
+  {
+    id: "day-three-activation",
+    label: "Activation ngày thứ ba",
+    status: "verified",
+    detail: "Cohort ngày thứ ba đã được đối chiếu với baseline.",
+  },
+  {
+    id: "interview-batch-03",
+    label: "Nhóm phỏng vấn người dùng số 03",
+    status: "verified",
+    detail: "Ba cuộc phỏng vấn gần nhất đã được tổng hợp.",
+  },
+  {
+    id: "week-two-retention",
+    label: "Retention tuần thứ hai",
+    status: "missing",
+    detail: "Chưa đủ thời gian để xác nhận hành vi lặp lại.",
+  },
+  {
+    id: "qualitative-onboarding",
+    label: "Phản hồi định tính về onboarding",
+    status: "missing",
+    detail: "Chưa có phản hồi đủ sâu về nguyên nhân bỏ dở.",
+  },
+];
 
 export const baselineReadiness: ReadinessState = {
   currentScore: 54,
@@ -88,6 +133,27 @@ export const baselineReadiness: ReadinessState = {
       explanation: "Chưa có cohort đủ dài để xác nhận hành vi lặp lại.",
     },
   ],
+};
+
+export const onboardingInitialReadiness: ReadinessState = {
+  ...structuredClone(baselineReadiness),
+  currentScore: 61,
+  previousScore: 54,
+  delta: 7,
+  label: "Đang tiến triển",
+  explanation:
+    "Ba nguồn đã xác minh giúp làm rõ funnel, nhưng retention tuần hai và phản hồi định tính vẫn còn thiếu.",
+  supportedBy: [
+    "Dữ liệu funnel",
+    "Activation ngày thứ ba",
+    "Nhóm phỏng vấn người dùng số 03",
+  ],
+  missingEvidence: [
+    "Retention tuần thứ hai",
+    "Phản hồi định tính về onboarding",
+  ],
+  unlockAction:
+    "Xác định điểm nghẽn trước khi tạo một chu kỳ thử nghiệm.",
 };
 
 export const baselineEvidenceHealth: EvidenceHealthItem[] = [
@@ -208,26 +274,26 @@ export const baselineDecisionCycle: DecisionCycleState = {
 };
 
 export const baselineMentorRecommendation: MentorRecommendation = {
-  id: "mentor-lan-nguyen",
-  name: "Lan Nguyen",
-  role: "Product Growth Advisor",
-  expertise: "Product growth · Activation · B2B SaaS",
+  id: "mentor-jessica-lin",
+  name: "Jessica Lin",
+  role: "Growth & Product Advisor",
+  expertise: "SaaS onboarding · Product-led growth · Activation · Retention",
   whyHumanNow:
-    "Bối cảnh và dữ liệu funnel đã đủ rõ. Blocker còn lại là chọn ngưỡng activation hợp lý và đọc trade-off của rollout.",
+    "Bạn đã xác định được blocker và action, nhưng cách thiết kế thử nghiệm cần domain judgment để tránh kết quả khó diễn giải.",
   whyThisMentor:
-    "Lan đã trực tiếp thiết kế onboarding và activation experiments cho sản phẩm SaaS giai đoạn đầu.",
+    "Jessica đã hỗ trợ bốn startup SaaS cải thiện activation và có kinh nghiệm thiết kế onboarding experiments cho sản phẩm B2B giai đoạn Seed.",
   expectedOutcome:
-    "Chốt tiêu chí dừng, ngưỡng thành công và cách đọc cohort trong một phiên 30 phút.",
+    "Chốt một thiết kế thử nghiệm activation có thể chạy trong 14 ngày.",
   matchRationale: [
     "Đúng blocker: activation sau onboarding",
-    "Đúng stage: Pilot / Người dùng sớm",
-    "Đã xử lý các rollout SaaS có dữ liệu cohort tương tự",
-    "Có lịch trao đổi trong 7 ngày tới",
+    "Đúng stage: Seed-stage B2B SaaS",
+    "Đã xử lý onboarding experiments có dữ liệu cohort tương tự",
+    "Từng hỗ trợ 4 startup SaaS cải thiện activation",
   ],
   expectedOutcomes: [
-    "Chọn ngưỡng activation đủ tin cậy",
-    "Xác định success metric cho cohort tiếp theo",
-    "Chốt hành động rollout trong 14 ngày",
+    "Chốt variant thử nghiệm",
+    "Chốt success metric",
+    "Xác định thời lượng chạy và bằng chứng cần thu thập",
   ],
   preparation: [
     {
@@ -256,7 +322,7 @@ export const baselineMentorRecommendation: MentorRecommendation = {
       completed: false,
     },
   ],
-  availability: "Có lịch trong 7 ngày tới",
+  availability: "10:00, Thứ Năm",
   alternatives: [
     {
       id: "mentor-minh-tran",
@@ -280,6 +346,11 @@ export const baselineMentorRecommendation: MentorRecommendation = {
 };
 
 const scenarioPrompts: Record<AiWorkspaceScenarioId, string[]> = {
+  "onboarding-case-study": [
+    "Tăng trưởng người dùng đang chững lại. Mình nên tập trung vào đâu?",
+    "Điều gì còn chưa chắc chắn?",
+    "Bằng chứng nào đang có sẵn?",
+  ],
   bottleneck: [
     "Vì sao đây là điểm nghẽn quan trọng nhất?",
     "Đề xuất hành động nhỏ nhất tiếp theo",
@@ -362,12 +433,24 @@ function assistantMessage(
   content: string,
   structuredResponse: AiWorkspaceMessage["structuredResponse"],
 ): AiWorkspaceMessage {
+  const responseKind: AssistantResponseKind =
+    structuredResponse?.type === "current-focus"
+      ? "insight"
+      : structuredResponse?.type === "mentor-recommendation"
+        ? "mentor_intervention"
+        : structuredResponse?.type === "suggested-action"
+          ? "action_proposal"
+          : structuredResponse?.type === "decision-cycle"
+            ? "state_confirmation"
+            : "artifact_preview";
   return {
     id,
     role: "assistant",
     content,
     createdAt: BASE_TIME,
     status: "complete",
+    responseKind,
+    responseLifecycle: "active",
     structuredResponse,
     sources: [
       {
@@ -381,7 +464,7 @@ function assistantMessage(
 
 export function createAiWorkspaceScenarioState(
   ventureId: string,
-  scenarioId: AiWorkspaceScenarioId = "long-running",
+  scenarioId: AiWorkspaceScenarioId = "onboarding-case-study",
 ): AiWorkspaceState {
   const base: AiWorkspaceState = {
     ventureId,
@@ -394,8 +477,21 @@ export function createAiWorkspaceScenarioState(
     currentFocus: structuredClone(baselineFocus),
     evidenceHealth: structuredClone(baselineEvidenceHealth),
     decisionCycle: structuredClone(baselineDecisionCycle),
+    decisionCycleLifecycle: "not_created",
     view: "conversation",
   };
+
+  if (scenarioId === "onboarding-case-study") {
+    return {
+      ...base,
+      readiness: structuredClone(onboardingInitialReadiness),
+      currentFocus: structuredClone(onboardingInitialFocus),
+      evidenceHealth: structuredClone(
+        onboardingInitialEvidenceHealth,
+      ),
+      messages: [],
+    };
+  }
 
   if (scenarioId === "materials") {
     const materialAnalysis = structuredClone(baselineMaterialAnalysis);
@@ -433,6 +529,7 @@ export function createAiWorkspaceScenarioState(
   if (scenarioId === "decision-cycle") {
     return {
       ...base,
+      decisionCycleLifecycle: "active",
       messages: [
         assistantMessage(
           "assistant-cycle-initial",
@@ -466,6 +563,7 @@ export function createAiWorkspaceScenarioState(
       ...base,
       readiness,
       decisionCycle,
+      decisionCycleLifecycle: "completed",
       mentorRecommendation: structuredClone(
         baselineMentorRecommendation,
       ),

@@ -1,6 +1,7 @@
 import type { VentureId } from "../../../venture/core";
 
 export type AiWorkspaceScenarioId =
+  | "onboarding-case-study"
   | "bottleneck"
   | "materials"
   | "readiness"
@@ -29,6 +30,9 @@ export type EvidenceSignalStatus =
 export type AiWorkspaceIntent =
   | "growth-stalled"
   | "find-bottleneck"
+  | "compare-experiments"
+  | "experiment-risk"
+  | "experiment-metrics"
   | "explain-readiness"
   | "analyze-materials"
   | "suggest-action"
@@ -46,6 +50,28 @@ export type AiGenerationStatus =
 
 export type AiWorkspaceView = "conversation" | "decision-cycle";
 
+export type AssistantResponseKind =
+  | "conversation"
+  | "insight"
+  | "action_proposal"
+  | "state_confirmation"
+  | "artifact_preview"
+  | "mentor_intervention"
+  | "warning"
+  | "error";
+
+export type AssistantResponseLifecycle =
+  | "active"
+  | "completed"
+  | "dismissed"
+  | "superseded"
+  | "failed";
+
+export type DecisionCycleLifecycle =
+  | "not_created"
+  | "active"
+  | "completed";
+
 export type DecisionCycleStepId =
   | "understand"
   | "decide"
@@ -61,6 +87,7 @@ export interface SourceReference {
 
 export interface CurrentFocus {
   id: string;
+  label?: string;
   bottleneck: string;
   whyItMatters: string;
   nextAction: string;
@@ -155,6 +182,18 @@ export interface MentorRecommendation {
   dismissReason?: MentorDismissReason;
 }
 
+export interface MentorSessionState {
+  id: string;
+  mentorId: string;
+  mentorName: string;
+  mentorRole: string;
+  goal: string;
+  scheduledAt: string;
+  displayTime: string;
+  status: "booked" | "external";
+  preparation: MentorPreparationItem[];
+}
+
 export interface DecisionCycleChecklistItem {
   id: string;
   label: string;
@@ -209,9 +248,12 @@ export type StructuredResponse =
   | {
       type: "suggested-action";
       payload: {
+        id: string;
         title: string;
         rationale: string;
         action: string;
+        goal: string;
+        expectedOutcome: string;
       };
     }
   | {
@@ -237,6 +279,8 @@ export interface AiWorkspaceMessage {
   content: string;
   createdAt: string;
   status: "complete" | "streaming" | "incomplete" | "failed";
+  responseKind?: AssistantResponseKind;
+  responseLifecycle?: AssistantResponseLifecycle;
   thinkingDurationSeconds?: number;
   structuredResponse?: StructuredResponse;
   sources?: SourceReference[];
@@ -255,7 +299,9 @@ export interface AiWorkspaceState {
   evidenceHealth: EvidenceHealthItem[];
   materialAnalysis?: MaterialAnalysis;
   decisionCycle: DecisionCycleState;
+  decisionCycleLifecycle: DecisionCycleLifecycle;
   mentorRecommendation?: MentorRecommendation;
+  mentorSession?: MentorSessionState;
   view: AiWorkspaceView;
   errorMessage?: string;
   lastRequest?: {
@@ -290,7 +336,9 @@ export interface AiWorkspaceStatePatch {
   evidenceHealth?: EvidenceHealthItem[];
   materialAnalysis?: MaterialAnalysis;
   decisionCycle?: DecisionCycleState;
+  decisionCycleLifecycle?: DecisionCycleLifecycle;
   mentorRecommendation?: MentorRecommendation;
+  mentorSession?: MentorSessionState;
 }
 
 export interface AiWorkspaceResponse {
@@ -298,7 +346,9 @@ export interface AiWorkspaceResponse {
   assistantMessage: string;
   chunks: string[];
   completionStatus?: "complete" | "incomplete";
-  structuredResponse: StructuredResponse;
+  structuredResponse?: StructuredResponse;
+  responseKind: AssistantResponseKind;
+  lifecycle: AssistantResponseLifecycle;
   proposedPatches: AiWorkspaceStatePatch;
   suggestedPrompts: string[];
   sourceReferences: SourceReference[];
@@ -399,6 +449,13 @@ export type AiWorkspaceAction =
   | {
       type: "complete-cycle-review";
       mentor: MentorRecommendation;
+    }
+  | {
+      type: "confirm-action-proposal";
+      messageId: string;
+    }
+  | {
+      type: "book-mentor";
     }
   | {
       type: "defer-mentor";

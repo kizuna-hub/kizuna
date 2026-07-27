@@ -22,6 +22,27 @@ function completeBefore(
     .filter((step) => current.includes(step) || step === orderedCycleSteps[nextIndex - 1]);
 }
 
+function createMentorSession(
+  state: AiWorkspaceState,
+  status: "booked" | "external",
+) {
+  const mentor = state.mentorRecommendation;
+  if (!mentor) return state.mentorSession;
+  return {
+    id: `session-${mentor.id}-${state.decisionCycle.id}`,
+    mentorId: mentor.id,
+    mentorName: mentor.name,
+    mentorRole: mentor.role,
+    goal: "Chốt thiết kế thử nghiệm activation.",
+    scheduledAt: "2026-07-30T03:00:00.000Z",
+    displayTime: "10:00, Thứ Năm",
+    status,
+    preparation: mentor.preparation.map((item) => ({
+      ...item,
+    })),
+  };
+}
+
 export function aiWorkspaceReducer(
   state: AiWorkspaceState,
   action: AiWorkspaceAction,
@@ -85,6 +106,11 @@ export function aiWorkspaceReducer(
               status: "stale" as const,
             }
           : currentMentor;
+      const lifecycleKinds = new Set([
+        "insight",
+        "action_proposal",
+        "mentor_intervention",
+      ]);
       return {
         ...state,
         ...action.response.proposedPatches,
@@ -97,11 +123,22 @@ export function aiWorkspaceReducer(
                   message.content ||
                   action.response.assistantMessage,
                 status: "complete" as const,
+                responseKind: action.response.responseKind,
+                responseLifecycle: action.response.lifecycle,
                 structuredResponse:
                   action.response.structuredResponse,
                 sources: action.response.sourceReferences,
               }
-            : message,
+            : message.role === "assistant" &&
+                message.responseKind ===
+                  action.response.responseKind &&
+                message.responseLifecycle === "active" &&
+                lifecycleKinds.has(action.response.responseKind)
+              ? {
+                  ...message,
+                  responseLifecycle: "superseded" as const,
+                }
+              : message,
         ),
         generationStatus: "idle",
         errorMessage: undefined,
@@ -117,6 +154,7 @@ export function aiWorkspaceReducer(
             ? {
                 ...message,
                 status: "incomplete" as const,
+                responseLifecycle: "failed" as const,
               }
             : message,
         ),
@@ -349,6 +387,7 @@ export function aiWorkspaceReducer(
     case "complete-cycle-review":
       return {
         ...state,
+        decisionCycleLifecycle: "completed",
         mentorRecommendation: action.mentor,
         decisionCycle: {
           ...state.decisionCycle,
@@ -360,6 +399,27 @@ export function aiWorkspaceReducer(
         },
       };
 
+    case "confirm-action-proposal": {
+      if (state.decisionCycleLifecycle !== "not_created") {
+        return state;
+      }
+      return {
+        ...state,
+        decisionCycleLifecycle: "active",
+        view: "decision-cycle",
+        messages: state.messages.map((message) =>
+          message.id === action.messageId &&
+          message.role === "assistant" &&
+          message.responseKind === "action_proposal"
+            ? {
+                ...message,
+                responseLifecycle: "completed" as const,
+              }
+            : message,
+        ),
+      };
+    }
+
     case "defer-mentor":
       return state.mentorRecommendation
         ? {
@@ -369,20 +429,111 @@ export function aiWorkspaceReducer(
               status: "deferred",
               dismissReason: action.reason ?? "not_now",
             },
+            messages: state.messages.map((message) =>
+              message.role === "assistant" &&
+              message.responseKind ===
+                "mentor_intervention" &&
+              message.responseLifecycle === "active"
+                ? {
+                    ...message,
+                    responseLifecycle: "dismissed" as const,
+                  }
+                : message,
+            ),
           }
         : state;
 
+    case "book-mentor": {
+      if (
+        !state.mentorRecommendation ||
+        state.mentorRecommendation.status === "booked"
+      ) {
+        return state;
+      }
+      return {
+        ...state,
+        mentorRecommendation: {
+          ...state.mentorRecommendation,
+          status: "booked",
+          dismissReason: undefined,
+        },
+        mentorSession:
+          state.mentorSession ??
+          createMentorSession(state, "booked"),
+        messages: state.messages.map((message) =>
+          message.role === "assistant" &&
+          message.responseKind === "mentor_intervention" &&
+          message.responseLifecycle === "active"
+            ? {
+                ...message,
+                responseLifecycle: "completed" as const,
+              }
+            : message,
+        ),
+      };
+    }
+
     case "set-mentor-status":
-      return state.mentorRecommendation
-        ? {
-            ...state,
-            mentorRecommendation: {
-              ...state.mentorRecommendation,
-              status: action.status,
-              dismissReason: undefined,
-            },
-          }
-        : state;
+      if (!state.mentorRecommendation) return state;
+      if (action.status === "booked") {
+        if (state.mentorRecommendation.status === "booked") {
+          return state;
+        }
+        return {
+          ...state,
+          mentorRecommendation: {
+            ...state.mentorRecommendation,
+            status: "booked",
+            dismissReason: undefined,
+          },
+          mentorSession:
+            state.mentorSession ??
+            createMentorSession(state, "booked"),
+          messages: state.messages.map((message) =>
+            message.role === "assistant" &&
+            message.responseKind ===
+              "mentor_intervention" &&
+            message.responseLifecycle === "active"
+              ? {
+                  ...message,
+                  responseLifecycle: "completed" as const,
+                }
+              : message,
+          ),
+        };
+      }
+      if (action.status === "external") {
+        return {
+          ...state,
+          mentorRecommendation: {
+            ...state.mentorRecommendation,
+            status: "external",
+            dismissReason: undefined,
+          },
+          mentorSession:
+            state.mentorSession ??
+            createMentorSession(state, "external"),
+          messages: state.messages.map((message) =>
+            message.role === "assistant" &&
+            message.responseKind ===
+              "mentor_intervention" &&
+            message.responseLifecycle === "active"
+              ? {
+                  ...message,
+                  responseLifecycle: "completed" as const,
+                }
+              : message,
+          ),
+        };
+      }
+      return {
+        ...state,
+        mentorRecommendation: {
+          ...state.mentorRecommendation,
+          status: action.status,
+          dismissReason: undefined,
+        },
+      };
 
     case "toggle-mentor-preparation":
       return state.mentorRecommendation

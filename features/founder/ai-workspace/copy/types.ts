@@ -66,6 +66,19 @@ export interface AiWorkspaceCopy {
     analyzeSelected: string;
   };
   response: {
+    insightDetected: string;
+    viewEvidence: string;
+    actionProposal: string;
+    editProposal: string;
+    cycleCreated: string;
+    currentStep: string;
+    artifactCompleted: string;
+    openAnalysis: string;
+    superseded: string;
+    dismissed: string;
+    sourceSummary: (total: number, verified: number) => string;
+    mentorBooked: (name: string) => string;
+    ownMentorPreparation: string;
     currentFocus: string;
     bottleneck: string;
     whyItMatters: string;
@@ -107,6 +120,11 @@ export interface AiWorkspaceCopy {
     humanInput: string;
     noMentor: string;
     cycleProgress: string;
+    focusUnknown: string;
+    noActiveCycle: string;
+    activeCycle: string;
+    cycleStep: string;
+    action: string;
   };
   mentor: {
     panelTitle: string;
@@ -134,6 +152,9 @@ export interface AiWorkspaceCopy {
     sessionPreparation: string;
     preparationProgress: string;
     bookingConfirmed: string;
+    bookingTime: string;
+    sessionGoal: string;
+    openSessionBrief: string;
     externalPreparation: string;
     refreshRecommendation: string;
     staleExplanation: string;

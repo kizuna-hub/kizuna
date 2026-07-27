@@ -49,6 +49,7 @@ import type {
 } from "../types/long-run-workspace.types";
 
 const legacyScenarioIds = new Set<AiWorkspaceScenarioId>([
+  "onboarding-case-study",
   "bottleneck",
   "materials",
   "readiness",
@@ -236,10 +237,13 @@ export function useAiWorkspace(ventureId: string) {
     );
     const persisted = envelope.sessions[ventureId];
     const restoredAi = restoreAiSession(ventureId, persisted);
-    const restoredLongRun = restoreLongRunSession(
-      ventureId,
-      persisted,
-    );
+    const restoredLongRun = persisted
+      ? restoreLongRunSession(ventureId, persisted)
+      : createScenarioLongRunState(
+          ventureId,
+          restoredAi.activeScenarioId,
+          restoredAi,
+        );
     const activeMessages =
       restoredLongRun.messagesByConversation[
         restoredLongRun.activeConversationId
@@ -438,6 +442,8 @@ export function useAiWorkspace(ventureId: string) {
             content: "",
             createdAt: new Date().toISOString(),
             status: "streaming",
+            responseKind: response.responseKind,
+            responseLifecycle: response.lifecycle,
             thinkingDurationSeconds:
               THINKING_DURATION_SECONDS,
           },
@@ -840,7 +846,11 @@ export function useAiWorkspace(ventureId: string) {
       JSON.stringify(envelope),
     );
     const aiState = createAiWorkspaceScenarioState(ventureId);
-    const longRunState = createLongRunDemoState(ventureId);
+    const longRunState = createScenarioLongRunState(
+      ventureId,
+      aiState.activeScenarioId,
+      aiState,
+    );
     dispatch({
       type: "hydrate",
       state: {
@@ -987,6 +997,11 @@ export function useAiWorkspace(ventureId: string) {
         type: "complete-cycle-review",
         mentor: structuredClone(baselineMentorRecommendation),
       }),
+    confirmActionProposal: (messageId: string) =>
+      dispatch({
+        type: "confirm-action-proposal",
+        messageId,
+      }),
     deferMentor: (reason?: MentorDismissReason) =>
       dispatch({ type: "defer-mentor", reason }),
     saveMentor: () =>
@@ -994,11 +1009,7 @@ export function useAiWorkspace(ventureId: string) {
         type: "set-mentor-status",
         status: "saved",
       }),
-    bookMentor: () =>
-      dispatch({
-        type: "set-mentor-status",
-        status: "booked",
-      }),
+    bookMentor: () => dispatch({ type: "book-mentor" }),
     useOwnMentor: () =>
       dispatch({
         type: "set-mentor-status",

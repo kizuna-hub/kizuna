@@ -283,6 +283,7 @@ export const FounderAiWorkspaceWithVenture = React.memo(
             setJumpMessageId(undefined)
           }
           overlayOpen={searchOpen || artifactOpen}
+          onOpenArtifact={openArtifact}
         />
 
         <VentureSearchDialog

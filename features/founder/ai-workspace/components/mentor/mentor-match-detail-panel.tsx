@@ -32,6 +32,7 @@ import type { AiWorkspaceCopy } from "../../copy/types";
 import type {
   MentorDismissReason,
   MentorRecommendation,
+  MentorSessionState,
 } from "../../types/ai-workspace.types";
 
 function getStatusLabel(
@@ -54,6 +55,7 @@ function getStatusLabel(
 
 export function MentorMatchDetailPanel({
   mentor,
+  session,
   copy,
   onBack,
   onBook,
@@ -64,6 +66,7 @@ export function MentorMatchDetailPanel({
   onRefresh,
 }: {
   mentor: MentorRecommendation;
+  session?: MentorSessionState;
   copy: AiWorkspaceCopy;
   onBack: () => void;
   onBook: () => void;
@@ -74,6 +77,8 @@ export function MentorMatchDetailPanel({
   onRefresh: () => void;
 }) {
   const [alternativesOpen, setAlternativesOpen] =
+    React.useState(false);
+  const [briefExpanded, setBriefExpanded] =
     React.useState(false);
   const preparation = mentor.preparation ?? [];
   const completedPreparation = preparation.filter(
@@ -181,6 +186,47 @@ export function MentorMatchDetailPanel({
                   : copy.mentor.externalPreparation}
               </p>
             </div>
+            <dl className="mt-3 space-y-2">
+              <div>
+                <dt className="workspace-eyebrow text-workspace-muted-text">
+                  {copy.mentor.bookingTime}
+                </dt>
+                <dd className="mt-0.5 workspace-meta text-ink">
+                  {session?.displayTime ??
+                    mentor.availability}
+                </dd>
+              </div>
+              <div>
+                <dt className="workspace-eyebrow text-workspace-muted-text">
+                  {copy.mentor.sessionGoal}
+                </dt>
+                <dd className="mt-0.5 workspace-meta text-ink">
+                  {session?.goal ?? mentor.expectedOutcome}
+                </dd>
+              </div>
+            </dl>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="mt-3 w-full"
+              onClick={() =>
+                setBriefExpanded((current) => !current)
+              }
+              aria-expanded={briefExpanded}
+            >
+              {copy.mentor.openSessionBrief}
+            </Button>
+            {briefExpanded ? (
+              <ul className="mt-3 space-y-1.5 border-t border-workspace-border pt-3 workspace-meta text-ink">
+                {expectedOutcomes.map((outcome) => (
+                  <li key={outcome} className="flex gap-2">
+                    <Check className="mt-0.5 size-3.5 shrink-0 text-workspace-success" />
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </section>
         ) : null}
 

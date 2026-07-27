@@ -11,11 +11,18 @@ import {
   detectAiWorkspaceIntent,
   MockAiWorkspaceError,
 } from "../demo/mock-ai-engine";
-import type { AiWorkspaceInput } from "../types/ai-workspace.types";
+import type {
+  AiWorkspaceInput,
+  AiWorkspaceResponse,
+  StructuredResponse,
+} from "../types/ai-workspace.types";
 
 const intentCases = [
   ["Tăng trưởng người dùng đang chững lại", "growth-stalled"],
   ["Điểm nghẽn hiện tại là gì?", "find-bottleneck"],
+  ["Có hướng thử nghiệm nào khác?", "compare-experiments"],
+  ["Điểm yếu lớn nhất của thử nghiệm này là gì?", "experiment-risk"],
+  ["Cần theo dõi metric nào?", "experiment-metrics"],
   ["Vì sao readiness đang thấp?", "explain-readiness"],
   ["Phân tích PitchDeck.pdf", "analyze-materials"],
   ["Đề xuất hành động tiếp theo", "suggest-action"],
@@ -28,7 +35,8 @@ const intentCases = [
 
 function createInput(
   message: string,
-  scenarioId: AiWorkspaceInput["activeScenarioId"] = "bottleneck",
+  scenarioId: AiWorkspaceInput["activeScenarioId"] =
+    "onboarding-case-study",
   retryAttempt = 0,
 ): AiWorkspaceInput {
   const currentState = createAiWorkspaceScenarioState(
@@ -46,26 +54,105 @@ function createInput(
   };
 }
 
+function requireStructured(
+  response: AiWorkspaceResponse,
+): StructuredResponse {
+  assert.ok(
+    response.structuredResponse,
+    "Expected a structured response",
+  );
+  return response.structuredResponse;
+}
+
 test("keyword mapping recognizes all required AI workspace intents", () => {
   for (const [message, expected] of intentCases) {
     assert.equal(detectAiWorkspaceIntent(message), expected);
   }
 });
 
-test("mock AI engine is deterministic for the same input", async () => {
+test("the onboarding case study starts from the required founder baseline", () => {
+  const state = createAiWorkspaceScenarioState(
+    "venture-kizuna-hub",
+    "onboarding-case-study",
+  );
+
+  assert.equal(state.readiness.currentScore, 61);
+  assert.equal(state.readiness.delta, 7);
+  assert.equal(state.currentFocus.label, "Chưa xác định");
+  assert.equal(
+    state.evidenceHealth.filter(
+      (item) => item.status === "verified",
+    ).length,
+    3,
+  );
+  assert.equal(
+    state.evidenceHealth.filter(
+      (item) => item.status === "missing",
+    ).length,
+    2,
+  );
+  assert.equal(state.decisionCycleLifecycle, "not_created");
+  assert.equal(state.mentorRecommendation, undefined);
+});
+
+test("mock AI engine is deterministic and returns a compact insight for stalled growth", async () => {
   const engine = createMockAiWorkspaceEngine({
     timing: "instant",
   });
   const input = createInput(
-    "Tăng trưởng người dùng đang chững lại",
+    "Tăng trưởng người dùng đang chững lại. Tôi nên tập trung vào đâu?",
   );
 
   const first = await engine.respond(input);
   const second = await engine.respond(input);
 
   assert.deepEqual(first, second);
-  assert.equal(first.structuredResponse.type, "current-focus");
+  assert.equal(first.responseKind, "insight");
+  assert.equal(first.lifecycle, "active");
   assert.equal(first.simulatedLatencyMs, 650);
+  assert.equal(first.sourceReferences.length, 4);
+  assert.match(first.assistantMessage, /Top-of-funnel vẫn ổn/i);
+  assert.equal(requireStructured(first).type, "current-focus");
+});
+
+test("experiment alternatives become an action proposal without duplicating the CTA in prompts", async () => {
+  const response = await createMockAiWorkspaceEngine({
+    timing: "instant",
+  }).respond(createInput("Có hướng thử nghiệm nào khác?"));
+
+  assert.equal(response.responseKind, "action_proposal");
+  assert.match(response.assistantMessage, /1\. Rút onboarding/i);
+  assert.equal(
+    requireStructured(response).type,
+    "suggested-action",
+  );
+  assert.equal(
+    response.suggestedPrompts.some((prompt) =>
+      /tạo|mở chu kỳ quyết định/i.test(prompt),
+    ),
+    false,
+  );
+});
+
+test("experiment risk and metric follow-ups stay conversational", async () => {
+  const engine = createMockAiWorkspaceEngine({
+    timing: "instant",
+  });
+  const risk = await engine.respond(
+    createInput(
+      "Điểm yếu lớn nhất của thử nghiệm này là gì?",
+    ),
+  );
+  const metrics = await engine.respond(
+    createInput("Cần theo dõi metric nào?"),
+  );
+
+  assert.equal(risk.responseKind, "conversation");
+  assert.equal(risk.structuredResponse, undefined);
+  assert.match(risk.assistantMessage, /Rủi ro lớn nhất/i);
+  assert.equal(metrics.responseKind, "conversation");
+  assert.equal(metrics.structuredResponse, undefined);
+  assert.match(metrics.assistantMessage, /metric chính/i);
 });
 
 test("material analysis uses selected metadata without reading file content", async () => {
@@ -85,17 +172,18 @@ test("material analysis uses selected metadata without reading file content", as
   ];
 
   const response = await engine.respond(input);
+  const structured = requireStructured(response);
 
-  assert.equal(response.structuredResponse.type, "material-analysis");
-  if (response.structuredResponse.type !== "material-analysis") {
+  assert.equal(response.responseKind, "artifact_preview");
+  assert.equal(structured.type, "material-analysis");
+  if (structured.type !== "material-analysis") {
     assert.fail("Expected material analysis response");
   }
-  assert.deepEqual(
-    response.structuredResponse.payload.fileNames,
-    ["PitchDeck.pdf"],
-  );
+  assert.deepEqual(structured.payload.fileNames, [
+    "PitchDeck.pdf",
+  ]);
   assert.equal(
-    response.structuredResponse.payload.findings.find(
+    structured.payload.findings.find(
       (finding) => finding.id === "customer-proof",
     )?.status,
     "missing",
@@ -103,14 +191,16 @@ test("material analysis uses selected metadata without reading file content", as
 });
 
 test("evidence submission produces an explainable +7 readiness patch", async () => {
-  const engine = createMockAiWorkspaceEngine({
+  const response = await createMockAiWorkspaceEngine({
     timing: "instant",
-  });
-  const response = await engine.respond(
+  }).respond(
     createInput("Nộp bằng chứng mới", "decision-cycle"),
   );
 
-  assert.equal(response.structuredResponse.type, "evidence-review");
+  assert.equal(
+    requireStructured(response).type,
+    "evidence-review",
+  );
   assert.equal(response.proposedPatches.readiness?.currentScore, 61);
   assert.equal(response.proposedPatches.readiness?.delta, 7);
   assert.match(
@@ -119,33 +209,39 @@ test("evidence submission produces an explainable +7 readiness patch", async () 
   );
 });
 
-test("mentor recommendation remains gated until evidence exists", async () => {
+test("mentor intervention is gated, then recommends Jessica after a cycle is active", async () => {
   const engine = createMockAiWorkspaceEngine({
     timing: "instant",
   });
   const notReady = await engine.respond(
     createInput("Đề xuất cố vấn phù hợp"),
   );
-  assert.equal(
-    notReady.structuredResponse.type === "mentor-recommendation"
-      ? notReady.structuredResponse.payload
-      : undefined,
-    null,
-  );
+  const notReadyStructured = requireStructured(notReady);
+  assert.equal(notReady.responseKind, "conversation");
+  assert.equal(notReadyStructured.type, "mentor-recommendation");
+  if (notReadyStructured.type === "mentor-recommendation") {
+    assert.equal(notReadyStructured.payload, null);
+  }
 
   const readyInput = createInput(
     "Đề xuất cố vấn phù hợp",
-    "decision-cycle",
+    "onboarding-case-study",
   );
-  readyInput.currentState.decisionCycle.evidenceSubmitted = true;
-  readyInput.currentState.decisionCycle.reviewCompleted = true;
+  readyInput.currentState.decisionCycleLifecycle = "active";
   const ready = await engine.respond(readyInput);
+  const readyStructured = requireStructured(ready);
 
-  assert.equal(ready.structuredResponse.type, "mentor-recommendation");
-  if (ready.structuredResponse.type !== "mentor-recommendation") {
+  assert.equal(ready.responseKind, "mentor_intervention");
+  assert.equal(readyStructured.type, "mentor-recommendation");
+  if (readyStructured.type !== "mentor-recommendation") {
     assert.fail("Expected mentor response");
   }
-  assert.equal(ready.structuredResponse.payload?.name, "Lan Nguyen");
+  assert.equal(readyStructured.payload?.name, "Jessica Lin");
+  assert.match(ready.assistantMessage, /kinh nghiệm product thực tế/i);
+  assert.equal(
+    ready.suggestedPrompts.includes("Tiếp tục với AI"),
+    false,
+  );
 });
 
 test("dismissed mentor is not recommended again in the same decision cycle", async () => {
@@ -165,39 +261,26 @@ test("dismissed mentor is not recommended again in the same decision cycle", asy
   };
 
   const response = await engine.respond(input);
+  const structured = requireStructured(response);
 
-  assert.equal(response.structuredResponse.type, "mentor-recommendation");
-  if (response.structuredResponse.type !== "mentor-recommendation") {
-    assert.fail("Expected mentor response");
+  assert.equal(response.responseKind, "conversation");
+  assert.equal(structured.type, "mentor-recommendation");
+  if (structured.type === "mentor-recommendation") {
+    assert.equal(structured.payload, null);
   }
-  assert.equal(response.structuredResponse.payload, null);
   assert.match(response.assistantMessage, /không lặp lại/i);
-
-  const reviewInput = createInput(
-    "Review kết quả hiện tại",
-    "decision-cycle",
-  );
-  reviewInput.currentState.decisionCycle.evidenceSubmitted = true;
-  reviewInput.currentState.mentorRecommendation =
-    structuredClone(input.currentState.mentorRecommendation);
-  const reviewResponse = await engine.respond(reviewInput);
-  assert.equal(
-    reviewResponse.proposedPatches.mentorRecommendation?.status,
-    "deferred",
-  );
 });
 
 test("reviewing submitted evidence completes the cycle and unlocks one mentor", async () => {
-  const engine = createMockAiWorkspaceEngine({
-    timing: "instant",
-  });
   const input = createInput(
     "Review kết quả hiện tại",
     "decision-cycle",
   );
   input.currentState.decisionCycle.evidenceSubmitted = true;
 
-  const response = await engine.respond(input);
+  const response = await createMockAiWorkspaceEngine({
+    timing: "instant",
+  }).respond(input);
 
   assert.equal(
     response.proposedPatches.decisionCycle?.reviewCompleted,
@@ -205,7 +288,7 @@ test("reviewing submitted evidence completes the cycle and unlocks one mentor", 
   );
   assert.equal(
     response.proposedPatches.mentorRecommendation?.name,
-    "Lan Nguyen",
+    "Jessica Lin",
   );
 });
 
@@ -227,7 +310,7 @@ test("error scenario preserves deterministic retry recovery", async () => {
     ...firstAttempt,
     retryAttempt: 1,
   });
-  assert.equal(retry.structuredResponse.type, "current-focus");
+  assert.equal(requireStructured(retry).type, "current-focus");
 });
 
 test("partial response preserves text and never proposes venture patches", async () => {
@@ -252,9 +335,6 @@ test("partial response preserves text and never proposes venture patches", async
 });
 
 test("resolved canonical memory guides later mock recommendations", async () => {
-  const engine = createMockAiWorkspaceEngine({
-    timing: "instant",
-  });
   const input = createInput(
     "Khách hàng mục tiêu hiện tại là ai?",
     "context-conflict",
@@ -266,13 +346,14 @@ test("resolved canonical memory guides later mock recommendations", async () => 
     excludedSourceIds: ["memory-target-student"],
   };
 
-  const response = await engine.respond(input);
+  const response = await createMockAiWorkspaceEngine({
+    timing: "instant",
+  }).respond(input);
+  const structured = requireStructured(response);
+
   assert.match(response.assistantMessage, /founder/i);
-  assert.equal(response.structuredResponse.type, "current-focus");
-  if (response.structuredResponse.type === "current-focus") {
-    assert.equal(
-      response.structuredResponse.payload.sourceStatus,
-      "verified",
-    );
+  assert.equal(structured.type, "current-focus");
+  if (structured.type === "current-focus") {
+    assert.equal(structured.payload.sourceStatus, "verified");
   }
 });

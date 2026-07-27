@@ -32,6 +32,7 @@ export function ConversationWorkspaceView({
   onCloseSearch,
   onDismissTopicDrift,
   onOpenMentor,
+  onOpenArtifact,
 }: {
   workspace: AiWorkspaceController;
   generating: boolean;
@@ -49,6 +50,9 @@ export function ConversationWorkspaceView({
   onCloseSearch: () => void;
   onDismissTopicDrift: () => void;
   onOpenMentor: () => void;
+  onOpenArtifact: (
+    surface: "documents" | "timeline",
+  ) => void;
 }) {
   const copy = aiWorkspaceVi;
   const { state, longRun } = workspace;
@@ -124,8 +128,8 @@ export function ConversationWorkspaceView({
         onSendPrompt={(prompt) =>
           void workspace.sendMessage(prompt)
         }
-        onConfirmInterpretation={
-          workspace.confirmInterpretation
+        onConfirmActionProposal={
+          workspace.confirmActionProposal
         }
         onRetry={() => void workspace.retryLastRequest()}
         onEditFailedMessage={workspace.editFailedMessage}
@@ -134,6 +138,7 @@ export function ConversationWorkspaceView({
         }
         onOpenMentor={onOpenMentor}
         onDeferMentor={workspace.deferMentor}
+        onOpenArtifact={onOpenArtifact}
       />
 
       <div className="mx-auto w-full max-w-3xl px-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-3 sm:px-2">

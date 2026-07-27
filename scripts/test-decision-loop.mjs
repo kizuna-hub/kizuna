@@ -22,6 +22,7 @@ const testSources = [
   "features/founder/entry/tests/venture-setup-state.test.ts",
   "features/founder/ai-workspace/tests/mock-ai-engine.test.ts",
   "features/founder/ai-workspace/tests/ai-workspace-reducer.test.ts",
+  "features/founder/ai-workspace/tests/onboarding-case-study.test.ts",
   "features/founder/ai-workspace/tests/sidebar-persistence.test.ts",
   "features/founder/ai-workspace/tests/long-run-workspace.test.ts",
   "features/founder/ai-workspace/tests/venture-search-and-context.test.ts",

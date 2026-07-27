@@ -16,6 +16,7 @@ export const aiWorkspaceVi: AiWorkspaceCopy = {
     createProject: "Tạo dự án",
   },
   scenarios: {
+    "onboarding-case-study": "Onboarding activation · Hội thoại trước",
     bottleneck: "Tìm điểm nghẽn",
     materials: "Phân tích tài liệu",
     readiness: "Giải thích mức sẵn sàng",
@@ -55,8 +56,8 @@ export const aiWorkspaceVi: AiWorkspaceCopy = {
     removeAttachment: "Bỏ tài liệu",
     attachmentLimit: "PDF, DOCX, PPTX · tối đa 3 tệp",
     typing: "Kizuna đang xem lại bối cảnh…",
-    thinkingTitle: "Thinking",
-    thoughtFor: "Thought for {seconds} seconds",
+    thinkingTitle: "Đang suy nghĩ",
+    thoughtFor: "Đã suy nghĩ trong {seconds} giây",
     thinkingTasks: {
       understandRequest: "Làm rõ điều bạn đang cần",
       reviewContext: "Đối chiếu Venture Memory và bối cảnh hiện tại",
@@ -78,6 +79,22 @@ export const aiWorkspaceVi: AiWorkspaceCopy = {
     analyzeSelected: "Phân tích tài liệu đã chọn",
   },
   response: {
+    insightDetected: "Điểm nghẽn được phát hiện",
+    viewEvidence: "Xem bằng chứng",
+    actionProposal: "Hành động đề xuất",
+    editProposal: "Chỉnh đề xuất",
+    cycleCreated: "Đã tạo chu kỳ quyết định",
+    currentStep: "Bước hiện tại",
+    artifactCompleted: "Đã hoàn tất",
+    openAnalysis: "Mở bản phân tích",
+    superseded: "Kết luận này đã được thay thế bởi một phân tích mới hơn.",
+    dismissed: "Đề xuất này đã được bỏ qua.",
+    sourceSummary: (total, verified) =>
+      `Dựa trên ${total} nguồn · ${verified} nguồn đã xác minh`,
+    mentorBooked: (name) =>
+      `Đã đặt lịch trao đổi với ${name}`,
+    ownMentorPreparation:
+      "Đã mở phần chuẩn bị với cố vấn hiện tại",
     currentFocus: "Trọng tâm hiện tại",
     bottleneck: "Điểm nghẽn",
     whyItMatters: "Vì sao điều này quan trọng",
@@ -120,6 +137,11 @@ export const aiWorkspaceVi: AiWorkspaceCopy = {
     noMentor:
       "AI vẫn có thể giúp bạn thu hẹp vấn đề trước khi cần thêm góc nhìn bên ngoài.",
     cycleProgress: "Tiến độ chu kỳ",
+    focusUnknown: "Chưa xác định",
+    noActiveCycle: "Chưa có chu kỳ quyết định đang chạy",
+    activeCycle: "Chu kỳ đang chạy",
+    cycleStep: "Bước",
+    action: "Hành động",
   },
   mentor: {
     panelTitle: "Cố vấn phù hợp với quyết định này",
@@ -148,6 +170,9 @@ export const aiWorkspaceVi: AiWorkspaceCopy = {
     preparationProgress: "mục đã hoàn tất",
     bookingConfirmed:
       "Phiên demo đã được ghi nhận. Hoàn thiện brief trước khi trao đổi.",
+    bookingTime: "Thời gian",
+    sessionGoal: "Mục tiêu",
+    openSessionBrief: "Mở brief phiên",
     externalPreparation:
       "Kizuna sẽ giúp chuẩn bị context, câu hỏi và bằng chứng cho cố vấn hiện tại của bạn.",
     refreshRecommendation: "Phân tích lại cố vấn phù hợp",

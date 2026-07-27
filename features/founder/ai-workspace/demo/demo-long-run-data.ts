@@ -25,6 +25,10 @@ function message(
     content,
     createdAt,
     status: "complete",
+    responseKind:
+      role === "assistant" ? "conversation" : undefined,
+    responseLifecycle:
+      role === "assistant" ? "completed" : undefined,
   };
 }
 
