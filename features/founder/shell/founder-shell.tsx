@@ -411,6 +411,7 @@ export function FounderShell({
   navigationScope = "auto",
   contentClassName,
   contentWidth = "wide",
+  edgeToEdgeDesktop = false,
   collapsible = false,
   renderSidebar,
 }: {
@@ -419,6 +420,7 @@ export function FounderShell({
   navigationScope?: "auto" | "global";
   contentClassName?: string;
   contentWidth?: "wide" | "focused" | "fluid";
+  edgeToEdgeDesktop?: boolean;
   collapsible?: boolean;
   renderSidebar?: (
     props: FounderShellSidebarRenderProps,
@@ -517,7 +519,12 @@ export function FounderShell({
           </Sheet>
         </div>
 
-        <main className="min-w-0 flex-1 px-4 py-5 md:px-5 lg:px-6">
+        <main
+          className={cn(
+            "min-w-0 flex-1 px-4 py-5 md:px-5 lg:px-6",
+            edgeToEdgeDesktop && "xl:px-0",
+          )}
+        >
           <div
             className={cn(
               "mx-auto w-full",

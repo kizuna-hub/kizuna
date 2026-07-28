@@ -23,16 +23,24 @@ export function FounderAiWorkspaceScreen({
     setLastVisitedVenturePath,
   } = useDemoWorkspace();
   const venture = getVentureById(state, ventureId);
+  const resolvedVentureId = venture?.id;
+  const ventureStatus = venture?.status;
 
   React.useEffect(() => {
-    if (!venture || venture.status === "archived") return;
-    setActiveVenture(venture.id);
-    setLastVisitedVenturePath(venture.id, pathname);
+    if (
+      !resolvedVentureId ||
+      ventureStatus === "archived"
+    ) {
+      return;
+    }
+    setActiveVenture(resolvedVentureId);
+    setLastVisitedVenturePath(resolvedVentureId, pathname);
   }, [
     pathname,
+    resolvedVentureId,
     setActiveVenture,
     setLastVisitedVenturePath,
-    venture,
+    ventureStatus,
   ]);
 
   if (!venture || venture.status === "archived") {

@@ -200,6 +200,7 @@ export const FounderAiWorkspaceWithVenture = React.memo(
         ventureId={ventureId}
         navigationScope="global"
         contentWidth="fluid"
+        edgeToEdgeDesktop
         collapsible
         renderSidebar={(sidebarProps) => (
           <WorkspaceSidebar
@@ -227,6 +228,9 @@ export const FounderAiWorkspaceWithVenture = React.memo(
             }
             onDeleteConversation={
               workspace.deleteConversation
+            }
+            onOpenConversationInPanel={
+              workspace.openConversationInPanel
             }
           />
         )}
