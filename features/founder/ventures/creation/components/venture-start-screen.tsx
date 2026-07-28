@@ -12,9 +12,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FounderShell } from "@/features/founder/shell/founder-shell";
 import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
-import type {
-  VentureCreationIntent,
-} from "@/features/founder/venture-foundation/types";
+import type { VentureCreationIntent } from "@/features/founder/venture-foundation/types";
+import {
+  completeDocumentOnboarding,
+  DocumentAnalysisScreen,
+  DocumentUploadForm,
+  persistDocumentOnboardingTransaction,
+  type StartupDocumentInput,
+  type VentureAnalysisResult,
+} from "@/features/founder/ventures/document-onboarding";
 import { Link, useRouter } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +34,7 @@ const methods: Array<{
     id: "analyze-materials",
     title: "Phân tích tài liệu startup",
     description:
-      "Bắt đầu từ pitch deck, business plan hoặc brief hiện có.",
+      "Bắt đầu từ Pitch Deck hoặc Business Plan hiện có.",
     icon: FileSearch,
   },
   {
@@ -49,58 +55,158 @@ const methods: Array<{
 
 export function VentureStartScreen() {
   const router = useRouter();
-  const { createDemoVenture, updateVentureSetup } =
-    useDemoWorkspace();
+  const {
+    state,
+    createDemoVenture,
+    replaceDemoState,
+  } = useDemoWorkspace();
   const [intent, setIntent] =
     React.useState<VentureCreationIntent>(
       "conversational-setup",
     );
   const [name, setName] = React.useState("");
-  const [file, setFile] = React.useState<File>();
+  const [documents, setDocuments] = React.useState<
+    StartupDocumentInput[]
+  >([]);
+  const [analysisRunId, setAnalysisRunId] =
+    React.useState<string>();
   const [error, setError] = React.useState("");
   const [creating, setCreating] = React.useState(false);
-  const requestIdRef = React.useRef(
-    `create-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-  );
+  const [workspaceError, setWorkspaceError] =
+    React.useState<string>();
+  const requestIdsRef = React.useRef<
+    Partial<Record<VentureCreationIntent, string>>
+  >({});
+  const analysisActiveRef = React.useRef(false);
+
+  const requestIdFor = (creationIntent: VentureCreationIntent) => {
+    if (!requestIdsRef.current[creationIntent]) {
+      requestIdsRef.current[creationIntent] =
+        `create-${creationIntent}-${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2)}`;
+    }
+    return requestIdsRef.current[creationIntent]!;
+  };
 
   const createDraft = () => {
     const trimmedName = name.trim();
     if (!trimmedName) {
-      setError("Nhập tên venture để tạo draft.");
+      setError("Nhập tên venture để tiếp tục.");
       return;
     }
     if (creating) return;
     setCreating(true);
-
     const ventureId = createDemoVenture({
-      requestId: requestIdRef.current,
+      requestId: requestIdFor(intent),
       creationIntent: intent,
       name: trimmedName,
       oneLineDescription:
-        "Context đang được hoàn thiện trong Kizuna.",
+        intent === "empty-venture"
+          ? "Context sẽ được bổ sung trong Kizuna."
+          : "Kizuna sẽ cùng founder làm rõ context bằng hội thoại.",
       stage: "idea",
       currentPhase: "venture-context",
-      initialSetupStepId:
-        intent === "analyze-materials" ? "materials" : "problem",
+      initialSetupStepId: "problem",
     });
-
-    if (file) {
-      updateVentureSetup(ventureId, {
-        materials: [
-          {
-            id: `material-${file.name
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")}`,
-            name: file.name,
-            size: file.size,
-            type: file.type || "application/octet-stream",
-          },
-        ],
-      });
-    }
-
     router.push(`/founder/projects/${ventureId}/setup`);
   };
+
+  const beginAnalysis = () => {
+    if (
+      documents.length === 0 ||
+      analysisRunId ||
+      analysisActiveRef.current
+    ) {
+      return;
+    }
+    analysisActiveRef.current = true;
+    setWorkspaceError(undefined);
+    setError("");
+    setAnalysisRunId(
+      `analysis-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2)}`,
+    );
+  };
+
+  const enterWorkspace = (
+    analysisResult: VentureAnalysisResult,
+  ) => {
+    if (creating) return;
+    setCreating(true);
+    setWorkspaceError(undefined);
+
+    try {
+      const orchestration = completeDocumentOnboarding(
+        state,
+        {
+          analysisRunId: analysisResult.runId,
+          ventureContext: analysisResult.detectedContext,
+          analysisResult,
+          sourceDocuments:
+            analysisResult.sourceDocuments,
+        },
+      );
+      persistDocumentOnboardingTransaction(
+        window.localStorage,
+        orchestration,
+      );
+      replaceDemoState(orchestration.state);
+      router.push(orchestration.workspacePath);
+    } catch (initializationError) {
+      setCreating(false);
+      setWorkspaceError(
+        initializationError instanceof Error
+          ? initializationError.message
+          : "Hãy thử lại sau ít phút.",
+      );
+    }
+  };
+
+  if (analysisRunId) {
+    return (
+      <FounderShell contentWidth="wide">
+        <DocumentAnalysisScreen
+          ventureName={name}
+          documents={documents}
+          initialRunId={analysisRunId}
+          enteringWorkspace={creating}
+          workspaceError={workspaceError}
+          onEnterWorkspace={enterWorkspace}
+          onReviewFiles={() => {
+            analysisActiveRef.current = false;
+            setCreating(false);
+            setWorkspaceError(undefined);
+            setAnalysisRunId(undefined);
+          }}
+          onContinueConversation={() => {
+            analysisActiveRef.current = false;
+            setCreating(false);
+            setWorkspaceError(undefined);
+            setAnalysisRunId(undefined);
+            setIntent("conversational-setup");
+            if (!name.trim()) setName("CampusFlow");
+          }}
+        />
+      </FounderShell>
+    );
+  }
+
+  const modeCopy = {
+    "conversational-setup": {
+      heading: "Bắt đầu bằng một cuộc hội thoại",
+      description:
+        "Tạo venture draft, sau đó Kizuna sẽ hỏi lần lượt về vấn đề, người dùng và mục tiêu đầu tiên.",
+      cta: "Bắt đầu trò chuyện",
+    },
+    "empty-venture": {
+      heading: "Tạo một workspace trống",
+      description:
+        "Chỉ cần tên venture. Bạn có thể bổ sung toàn bộ context sau.",
+      cta: "Tạo workspace trống",
+    },
+  } as const;
 
   return (
     <FounderShell contentWidth="focused">
@@ -113,8 +219,9 @@ export function VentureStartScreen() {
             Bạn muốn bắt đầu như thế nào?
           </h1>
           <p className="mt-1.5 max-w-2xl workspace-body text-workspace-muted-text">
-            Chọn một cách để Kizuna tạo đúng context ban đầu. Bạn có
-            thể chỉnh lại mọi thông tin trước khi xác nhận.
+            Chọn một cách để Kizuna tạo đúng context ban đầu.
+            Bạn vẫn có thể chỉnh lại mọi thông tin trước khi
+            xác nhận.
           </p>
         </header>
 
@@ -135,7 +242,7 @@ export function VentureStartScreen() {
                 }}
                 aria-pressed={selected}
                 className={cn(
-                  "min-h-44 rounded-xl border bg-workspace-panel p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40",
+                  "min-h-44 rounded-xl border bg-workspace-panel p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40 motion-reduce:transition-none",
                   selected
                     ? "border-primary bg-workspace-selected"
                     : "border-workspace-border hover:bg-workspace-row-hover",
@@ -155,72 +262,79 @@ export function VentureStartScreen() {
           })}
         </section>
 
-        <section className="rounded-xl border border-workspace-border bg-workspace-panel p-4">
-          <label className="block">
-            <span className="workspace-supporting font-medium text-ink">
-              Tên venture
-            </span>
-            <Input
-              value={name}
-              onChange={(event) => {
-                setName(event.target.value);
-                setError("");
-              }}
-              maxLength={80}
-              placeholder="Ví dụ: Nova Labs"
-              className="mt-2 h-11 border-workspace-border bg-workspace-elevated"
-              aria-invalid={Boolean(error)}
-            />
-          </label>
-
-          {intent === "analyze-materials" ? (
-            <label className="mt-4 block">
+        {intent === "analyze-materials" ? (
+          <DocumentUploadForm
+            ventureName={name}
+            documents={documents}
+            analyzing={false}
+            onVentureNameChange={(value) => {
+              setName(value);
+              setError("");
+            }}
+            onDocumentsChange={setDocuments}
+            onAnalyze={beginAnalysis}
+          />
+        ) : (
+          <section className="rounded-xl border border-workspace-border bg-workspace-panel p-4 sm:p-5">
+            <h2 className="workspace-section-title text-ink">
+              {modeCopy[intent].heading}
+            </h2>
+            <p className="mt-1.5 workspace-supporting text-workspace-muted-text">
+              {modeCopy[intent].description}
+            </p>
+            <label className="mt-5 block max-w-2xl">
               <span className="workspace-supporting font-medium text-ink">
-                Tài liệu đầu tiên (tuỳ chọn)
+                Tên venture
               </span>
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx,.ppt,.pptx,.txt"
-                onChange={(event) =>
-                  setFile(event.target.files?.[0])
+              <Input
+                value={name}
+                onChange={(event) => {
+                  setName(event.target.value);
+                  setError("");
+                }}
+                maxLength={80}
+                placeholder="Ví dụ: CampusFlow"
+                className="mt-2 h-11 border-workspace-border bg-workspace-elevated"
+                aria-invalid={Boolean(error)}
+                aria-describedby={
+                  error ? "venture-name-error" : undefined
                 }
-                className="mt-2 block w-full workspace-supporting text-workspace-muted-text file:mr-3 file:rounded-md file:border file:border-workspace-border file:bg-workspace-elevated file:px-3 file:py-2 file:text-ink"
               />
             </label>
-          ) : null}
 
-          {error ? (
-            <p className="mt-2 workspace-meta text-destructive" role="alert">
-              {error}
-            </p>
-          ) : null}
+            {error ? (
+              <p
+                id="venture-name-error"
+                className="mt-2 workspace-meta text-workspace-danger"
+                role="alert"
+              >
+                {error}
+              </p>
+            ) : null}
 
-          <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
-            <Button
-              asChild
-              variant="ghost"
-              className="h-11 workspace-control-text"
-            >
-              <Link href="/founder/home">Huỷ</Link>
-            </Button>
-            <Button
-              type="button"
-              onClick={createDraft}
-              disabled={creating}
-              className="h-11 px-5 workspace-control-text"
-            >
-              {creating ? "Đang tạo…" : "Tạo venture draft"}
-              <ArrowRight className="size-4" />
-            </Button>
-          </div>
-        </section>
-
-        <p className="workspace-meta text-workspace-muted-text">
-          Đây là flow demo. Tên file được lưu cục bộ; nội dung file
-          không được tải lên backend.
-        </p>
+            <div className="mt-5 flex flex-col-reverse gap-2 border-t border-workspace-border pt-4 sm:flex-row sm:justify-between">
+              <Button
+                asChild
+                variant="ghost"
+                className="h-11 workspace-control-text"
+              >
+                <Link href="/founder/home">Hủy</Link>
+              </Button>
+              <Button
+                type="button"
+                onClick={createDraft}
+                disabled={creating}
+                className="h-11 px-5 workspace-control-text"
+              >
+                {creating
+                  ? "Đang tạo…"
+                  : modeCopy[intent].cta}
+                <ArrowRight className="size-4" />
+              </Button>
+            </div>
+          </section>
+        )}
       </div>
     </FounderShell>
   );
 }
-

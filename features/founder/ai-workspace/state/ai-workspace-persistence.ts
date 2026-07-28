@@ -9,10 +9,16 @@ import type {
   AiWorkspaceState,
 } from "../types/ai-workspace.types";
 import type { LongRunWorkspaceState } from "../types/long-run-workspace.types";
+import type { WorkspaceLayoutState } from "../types/workspace-layout.types";
+import type { WorkspaceOnboardingState } from "../types/workspace-onboarding.types";
+import {
+  createWorkspaceLayoutState,
+  restoreWorkspaceLayout,
+} from "./workspace-layout-reducer";
 
 export const AI_WORKSPACE_STORAGE_KEY =
   "kizuna-founder-ai-workspace-demo-v1";
-export const AI_WORKSPACE_STORAGE_VERSION = 5;
+export const AI_WORKSPACE_STORAGE_VERSION = 7;
 
 export type PersistedAiWorkspaceSession = Pick<
   AiWorkspaceState,
@@ -29,6 +35,8 @@ export type PersistedAiWorkspaceSession = Pick<
   | "selectedModel"
 > & {
   longRun?: LongRunWorkspaceState;
+  layout?: WorkspaceLayoutState;
+  onboarding?: WorkspaceOnboardingState;
 };
 
 export type PersistedAiWorkspaceEnvelope = {
@@ -73,7 +81,7 @@ export function parseAiWorkspaceEnvelope(
     if (
       !isRecord(parsed) ||
       !isRecord(parsed.sessions) ||
-      ![1, 2, 3, 4, AI_WORKSPACE_STORAGE_VERSION].includes(
+      ![1, 2, 3, 4, 5, 6, AI_WORKSPACE_STORAGE_VERSION].includes(
         parsed.version as number,
       )
     ) {
@@ -94,6 +102,11 @@ export function parseAiWorkspaceEnvelope(
 export function toPersistedSession(
   state: AiWorkspaceState,
   longRun: LongRunWorkspaceState,
+  layout: WorkspaceLayoutState = createWorkspaceLayoutState(),
+  onboarding: WorkspaceOnboardingState = {
+    source: "conversation",
+    initialAnalysisPaneShown: true,
+  },
 ): PersistedAiWorkspaceSession {
   return {
     activeScenarioId: state.activeScenarioId,
@@ -108,6 +121,8 @@ export function toPersistedSession(
     mentorConnectionRequest: state.mentorConnectionRequest,
     selectedModel: state.selectedModel,
     longRun,
+    layout,
+    onboarding,
   };
 }
 
@@ -129,6 +144,16 @@ export function restoreAiSession(
     !isRecord(persisted.decisionCycle)
   ) {
     return initial;
+  }
+  if (
+    persisted.readiness.assessment?.ventureName !==
+    "CampusFlow"
+  ) {
+    return {
+      ...initial,
+      selectedModel:
+        persisted.selectedModel ?? initial.selectedModel,
+    };
   }
   return {
     ...initial,
@@ -216,6 +241,20 @@ export function restoreLongRunSession(
   ventureId: string,
   persisted?: PersistedAiWorkspaceSession,
 ) {
+  if (
+    persisted &&
+    persisted.readiness.assessment?.ventureName !==
+    "CampusFlow"
+  ) {
+    const fresh = createLongRunDemoState(ventureId);
+    return {
+      ...fresh,
+      messagesByConversation: {
+        ...fresh.messagesByConversation,
+        [fresh.activeConversationId]: [],
+      },
+    };
+  }
   const candidate = persisted?.longRun;
   if (
     !candidate ||
@@ -246,6 +285,8 @@ export function restoreLongRunSession(
       };
   return {
     ...restored,
+    attachmentsByConversation:
+      restored.attachmentsByConversation ?? {},
     messagesByConversation: Object.fromEntries(
       Object.entries(restored.messagesByConversation).map(
         ([conversationId, messages]) => [
@@ -254,5 +295,65 @@ export function restoreLongRunSession(
         ],
       ),
     ),
+  };
+}
+
+export function restoreWorkspaceLayoutSession(
+  persisted?: PersistedAiWorkspaceSession,
+) {
+  return restoreWorkspaceLayout(persisted?.layout);
+}
+
+export function restoreWorkspaceOnboardingSession(
+  persisted?: PersistedAiWorkspaceSession,
+): WorkspaceOnboardingState {
+  const candidate = persisted?.onboarding;
+  if (
+    !candidate ||
+    !["document_analysis", "conversation", "empty"].includes(
+      candidate.source,
+    )
+  ) {
+    return {
+      source: "conversation",
+      initialAnalysisPaneShown: true,
+    };
+  }
+  return {
+    source: candidate.source,
+    analysisRunId:
+      typeof candidate.analysisRunId === "string"
+        ? candidate.analysisRunId
+        : undefined,
+    initialAnalysisPaneShown:
+      candidate.initialAnalysisPaneShown === true,
+  };
+}
+
+export function resolveInitialAnalysisPaneReveal(
+  persisted?: PersistedAiWorkspaceSession,
+) {
+  const onboarding =
+    restoreWorkspaceOnboardingSession(persisted);
+  const layout = restoreWorkspaceLayoutSession(persisted);
+  const shouldReveal =
+    onboarding.source === "document_analysis" &&
+    !onboarding.initialAnalysisPaneShown;
+
+  return {
+    shouldReveal,
+    onboarding: shouldReveal
+      ? {
+          ...onboarding,
+          initialAnalysisPaneShown: true,
+        }
+      : onboarding,
+    layout: shouldReveal
+      ? {
+          ...layout,
+          secondaryPaneMode: "analysis" as const,
+          analysisTab: "overview" as const,
+        }
+      : layout,
   };
 }

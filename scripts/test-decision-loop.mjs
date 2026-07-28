@@ -20,6 +20,9 @@ const testSources = [
   "features/founder/entry/tests/adaptive-entry-resolver.test.ts",
   "features/founder/entry/tests/deep-link-resolver.test.ts",
   "features/founder/entry/tests/venture-setup-state.test.ts",
+  "features/founder/ventures/document-onboarding/tests/document-upload-flow.test.ts",
+  "features/founder/ventures/document-onboarding/tests/document-analysis-flow.test.ts",
+  "features/founder/ventures/document-onboarding/tests/document-onboarding-orchestrator.test.ts",
   "features/founder/ai-workspace/tests/mock-ai-engine.test.ts",
   "features/founder/ai-workspace/tests/ai-workspace-reducer.test.ts",
   "features/founder/ai-workspace/tests/onboarding-case-study.test.ts",
@@ -27,6 +30,7 @@ const testSources = [
   "features/founder/ai-workspace/tests/long-run-workspace.test.ts",
   "features/founder/ai-workspace/tests/venture-search-and-context.test.ts",
   "features/founder/ai-workspace/tests/explainable-readiness.test.ts",
+  "features/founder/ai-workspace/tests/workspace-layout.test.ts",
 ];
 
 const outputDirectory = mkdtempSync(

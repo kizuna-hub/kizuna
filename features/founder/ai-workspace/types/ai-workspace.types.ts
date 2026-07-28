@@ -260,6 +260,21 @@ export interface ReadinessEvidencePayload {
   projectedDelta: [number, number];
 }
 
+export interface DocumentOnboardingAnalysisPayload {
+  readinessScore: number;
+  stageLabel: string;
+  strongestCriterion: {
+    label: string;
+    score: number;
+  };
+  biggestGap: {
+    label: string;
+    score: number;
+  };
+  documentCount: number;
+  evidenceCount: number;
+}
+
 export interface MentorSessionState {
   id: string;
   mentorId: string;
@@ -365,6 +380,10 @@ export type StructuredResponse =
   | {
       type: "readiness-evidence";
       payload: ReadinessEvidencePayload;
+    }
+  | {
+      type: "document-onboarding-analysis";
+      payload: DocumentOnboardingAnalysisPayload;
     };
 
 export interface AiWorkspaceMessage {
@@ -424,6 +443,7 @@ export interface AiWorkspaceInput {
     requestId: string;
     conversationId: string;
     stateVersion: number;
+    surface: "main" | "panel";
   };
 }
 
@@ -501,6 +521,10 @@ export type AiWorkspaceAction =
   | {
       type: "replace-messages";
       messages: AiWorkspaceMessage[];
+    }
+  | {
+      type: "set-suggested-prompts";
+      prompts: string[];
     }
   | {
       type: "cancel-request";

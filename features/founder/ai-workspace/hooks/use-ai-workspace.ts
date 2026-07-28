@@ -8,6 +8,7 @@ import {
   AI_WORKSPACE_STORAGE_KEY,
   AI_WORKSPACE_STORAGE_VERSION,
   parseAiWorkspaceEnvelope,
+  resolveInitialAnalysisPaneReveal,
   restoreAiSession,
   restoreLongRunSession,
   toPersistedSession,
@@ -19,8 +20,13 @@ import {
   longRunWorkspaceReducer,
 } from "../state/long-run-workspace-reducer";
 import {
+  createWorkspaceLayoutState,
+  workspaceLayoutReducer,
+} from "../state/workspace-layout-reducer";
+import {
   baselineMentorRecommendation,
   createAiWorkspaceScenarioState,
+  getScenarioPrompts,
   sampleMaterials,
 } from "../demo/demo-scenarios";
 import { createLongRunDemoState } from "../demo/demo-long-run-data";
@@ -47,6 +53,7 @@ import type {
   VentureSearchFilters,
   VentureSearchResult,
 } from "../types/long-run-workspace.types";
+import type { WorkspaceOnboardingState } from "../types/workspace-onboarding.types";
 
 const legacyScenarioIds = new Set<AiWorkspaceScenarioId>([
   "onboarding-case-study",
@@ -174,6 +181,18 @@ export function useAiWorkspace(ventureId: string) {
     ventureId,
     createLongRunDemoState,
   );
+  const [layout, dispatchLayout] = React.useReducer(
+    workspaceLayoutReducer,
+    undefined,
+    createWorkspaceLayoutState,
+  );
+  const [onboarding, setOnboarding] =
+    React.useState<WorkspaceOnboardingState>({
+      source: "conversation",
+      initialAnalysisPaneShown: true,
+    });
+  const [panelGenerating, setPanelGenerating] =
+    React.useState(false);
   const [hydrated, setHydrated] = React.useState(false);
   const [selectedContextSourceIds, setSelectedContextSourceIds] =
     React.useState<string[]>([]);
@@ -183,11 +202,17 @@ export function useAiWorkspace(ventureId: string) {
   const requestSequence = React.useRef(0);
   const abortControllerRef =
     React.useRef<AbortController | null>(null);
+  const panelAbortControllerRef =
+    React.useRef<AbortController | null>(null);
+  const conversationCreationRef = React.useRef<
+    Partial<Record<"main" | "panel", { id: string; at: number }>>
+  >({});
   const activeRequestRef = React.useRef<ScopedAiRequest>({
     requestId: "idle",
     ventureId,
     conversationId: longRun.activeConversationId,
     stateVersion: longRun.stateVersion,
+    surface: "main",
   });
   const engine = React.useMemo(
     () => createMockAiWorkspaceEngine(),
@@ -244,6 +269,8 @@ export function useAiWorkspace(ventureId: string) {
           restoredAi.activeScenarioId,
           restoredAi,
         );
+    const presentation =
+      resolveInitialAnalysisPaneReveal(persisted);
     const activeMessages =
       restoredLongRun.messagesByConversation[
         restoredLongRun.activeConversationId
@@ -256,11 +283,17 @@ export function useAiWorkspace(ventureId: string) {
       type: "hydrate",
       state: restoredLongRun,
     });
+    dispatchLayout({
+      type: "hydrate",
+      state: presentation.layout,
+    });
+    setOnboarding(presentation.onboarding);
     activeRequestRef.current = {
       requestId: "idle",
       ventureId,
       conversationId: restoredLongRun.activeConversationId,
       stateVersion: restoredLongRun.stateVersion,
+      surface: "main",
     };
     setSelectedContextSourceIds([]);
     setHydrated(true);
@@ -302,16 +335,26 @@ export function useAiWorkspace(ventureId: string) {
     envelope.sessions[ventureId] = toPersistedSession(
       state,
       snapshot,
+      layout,
+      onboarding,
     );
     window.localStorage.setItem(
       AI_WORKSPACE_STORAGE_KEY,
       JSON.stringify(envelope),
     );
-  }, [hydrated, longRun, state, ventureId]);
+  }, [
+    hydrated,
+    layout,
+    longRun,
+    onboarding,
+    state,
+    ventureId,
+  ]);
 
   React.useEffect(
     () => () => {
       abortControllerRef.current?.abort();
+      panelAbortControllerRef.current?.abort();
       requestSequence.current += 1;
       activeRequestRef.current = {
         ...activeRequestRef.current,
@@ -352,6 +395,7 @@ export function useAiWorkspace(ventureId: string) {
         ventureId,
         conversationId,
         stateVersion: currentLongRun.stateVersion,
+        surface: "main",
       };
       const abortController = new AbortController();
       abortControllerRef.current = abortController;
@@ -425,6 +469,7 @@ export function useAiWorkspace(ventureId: string) {
             requestId: scope.requestId,
             conversationId,
             stateVersion: scope.stateVersion,
+            surface: "main",
           },
         });
         if (!isCurrent()) return;
@@ -773,10 +818,22 @@ export function useAiWorkspace(ventureId: string) {
   );
 
   const createConversation = React.useCallback(
-    (title = "Cuộc trò chuyện mới") => {
-      invalidateActiveRequest();
-      const current = longRunRef.current;
-      const id = `conversation-${current.stateVersion + 1}`;
+    (
+      title = "Cuộc trò chuyện mới",
+      options: { activate?: boolean } = {},
+    ) => {
+      const surface =
+        options.activate === false ? "panel" : "main";
+      const now = Date.now();
+      const recent = conversationCreationRef.current[surface];
+      if (recent && now - recent.at < 350) {
+        return recent.id;
+      }
+      if (options.activate !== false) {
+        invalidateActiveRequest();
+      }
+      const id = `conversation-${now}-${messageSequence.current + 1}`;
+      conversationCreationRef.current[surface] = { id, at: now };
       const session: ConversationSession = {
         id,
         ventureId,
@@ -793,7 +850,7 @@ export function useAiWorkspace(ventureId: string) {
           id: `assistant-${id}`,
           role: "assistant",
           content:
-            "Cuộc trò chuyện mới đã sẵn sàng. Context quan trọng vẫn được lấy từ Venture Memory thay vì sao chép toàn bộ lịch sử chat.",
+            "Cuộc trò chuyện mới đã sẵn sàng. Kizuna vẫn dùng context đã xác nhận của CampusFlow mà không sao chép toàn bộ lịch sử chat.",
           createdAt: new Date().toISOString(),
           status: "complete",
         },
@@ -802,11 +859,185 @@ export function useAiWorkspace(ventureId: string) {
         type: "create-conversation",
         session,
         messages,
+        activate: options.activate,
       });
-      dispatch({ type: "replace-messages", messages });
-      setSelectedContextSourceIds([]);
+      if (options.activate !== false) {
+        dispatch({ type: "replace-messages", messages });
+        dispatch({
+          type: "set-suggested-prompts",
+          prompts: getScenarioPrompts("onboarding-case-study"),
+        });
+        setSelectedContextSourceIds([]);
+      }
+      return id;
     },
     [invalidateActiveRequest, ventureId],
+  );
+
+  const openConversationInPanel = React.useCallback(
+    (conversationId: string) => {
+      const exists = longRunRef.current.sessions.some(
+        (session) =>
+          session.id === conversationId && !session.isArchived,
+      );
+      if (!exists) return;
+      if (
+        layout.panelConversationId &&
+        layout.panelConversationId !== conversationId
+      ) {
+        panelAbortControllerRef.current?.abort();
+        setPanelGenerating(false);
+      }
+      dispatchLayout({
+        type: "open-panel-chat",
+        conversationId,
+      });
+    },
+    [layout.panelConversationId],
+  );
+
+  const openSplitChat = React.useCallback(() => {
+    const currentPanelId =
+      layout.panelConversationId &&
+      longRunRef.current.sessions.some(
+        (session) =>
+          session.id === layout.panelConversationId &&
+          !session.isArchived,
+      )
+        ? layout.panelConversationId
+        : createConversation("Chat song song", {
+            activate: false,
+          });
+    if (!currentPanelId) return;
+    dispatchLayout({
+      type: "open-panel-chat",
+      conversationId: currentPanelId,
+    });
+  }, [createConversation, layout.panelConversationId]);
+
+  const setSecondaryPaneWidth = React.useCallback(
+    (width: number) => {
+      dispatchLayout({
+        type: "set-secondary-pane-width",
+        width,
+      });
+    },
+    [],
+  );
+
+  const sendPanelMessage = React.useCallback(
+    async (messageText: string) => {
+      const conversationId = layout.panelConversationId;
+      const trimmed = messageText.trim();
+      if (!conversationId || !trimmed || panelGenerating) return;
+
+      const currentLongRun = longRunRef.current;
+      const currentState = stateRef.current;
+      const existingMessages =
+        currentLongRun.messagesByConversation[conversationId] ?? [];
+      const founderMessage: AiWorkspaceMessage = {
+        id: nextMessageId("panel-founder"),
+        role: "founder",
+        content: trimmed,
+        createdAt: new Date().toISOString(),
+        status: "complete",
+      };
+      const controller = new AbortController();
+      const thinkingStartedAt = window.performance.now();
+      panelAbortControllerRef.current?.abort();
+      panelAbortControllerRef.current = controller;
+      setPanelGenerating(true);
+      dispatchLongRun({
+        type: "set-draft",
+        conversationId,
+        draft: "",
+      });
+      dispatchLongRun({
+        type: "sync-messages",
+        conversationId,
+        messages: [...existingMessages, founderMessage],
+      });
+
+      try {
+        const response = await engine.respond({
+          message: trimmed,
+          ventureId,
+          conversationHistory: [
+            ...existingMessages,
+            founderMessage,
+          ],
+          activeScenarioId: currentState.activeScenarioId,
+          currentState,
+          attachedMaterialIds: (
+            currentLongRun.attachmentsByConversation[
+              conversationId
+            ] ?? []
+          ).map((attachment) => attachment.id),
+          retryAttempt: 0,
+          modelId: currentState.selectedModel,
+          signal: controller.signal,
+          requestScope: {
+            requestId: `panel-${Date.now()}`,
+            conversationId,
+            stateVersion: currentLongRun.stateVersion,
+            surface: "panel",
+          },
+        });
+        await waitForMinimumThinking(
+          thinkingStartedAt,
+          controller.signal,
+        );
+        if (controller.signal.aborted) return;
+        const assistantMessage: AiWorkspaceMessage = {
+          id: nextMessageId("panel-assistant"),
+          role: "assistant",
+          content: response.assistantMessage,
+          createdAt: new Date().toISOString(),
+          status: "complete",
+          responseKind: "conversation",
+          responseLifecycle: response.lifecycle,
+          sources: response.sourceReferences,
+          thinkingDurationSeconds: THINKING_DURATION_SECONDS,
+        };
+        dispatchLongRun({
+          type: "sync-messages",
+          conversationId,
+          messages: [
+            ...existingMessages,
+            founderMessage,
+            assistantMessage,
+          ],
+        });
+      } catch {
+        if (!controller.signal.aborted) {
+          dispatchLongRun({
+            type: "sync-messages",
+            conversationId,
+            messages: [
+              ...existingMessages,
+              founderMessage,
+              {
+                id: nextMessageId("panel-assistant"),
+                role: "assistant",
+                content:
+                  "Kizuna chưa thể hoàn tất phản hồi trong panel này. Bản nháp và cuộc trò chuyện chính vẫn được giữ nguyên.",
+                createdAt: new Date().toISOString(),
+                status: "failed",
+              },
+            ],
+          });
+        }
+      } finally {
+        if (!controller.signal.aborted) setPanelGenerating(false);
+      }
+    },
+    [
+      engine,
+      layout.panelConversationId,
+      nextMessageId,
+      panelGenerating,
+      ventureId,
+    ],
   );
 
   const archiveConversation = React.useCallback(
@@ -855,6 +1086,12 @@ export function useAiWorkspace(ventureId: string) {
 
       invalidateActiveRequest();
 
+      if (layout.panelConversationId === conversationId) {
+        panelAbortControllerRef.current?.abort();
+        setPanelGenerating(false);
+        dispatchLayout({ type: "close-secondary-pane" });
+      }
+
       if (!next) {
         createConversation();
       }
@@ -873,7 +1110,11 @@ export function useAiWorkspace(ventureId: string) {
         setSelectedContextSourceIds([]);
       }
     },
-    [createConversation, invalidateActiveRequest],
+    [
+      createConversation,
+      invalidateActiveRequest,
+      layout.panelConversationId,
+    ],
   );
 
   const resetDemo = React.useCallback(() => {
@@ -975,6 +1216,13 @@ export function useAiWorkspace(ventureId: string) {
       (session) =>
         session.id === longRun.activeConversationId,
     ) ?? longRun.sessions[0];
+  const panelConversation = layout.panelConversationId
+    ? longRun.sessions.find(
+        (session) =>
+          session.id === layout.panelConversationId &&
+          !session.isArchived,
+      )
+    : undefined;
   const activeSummary = longRun.summaries.find(
     (summary) =>
       summary.conversationId ===
@@ -994,9 +1242,27 @@ export function useAiWorkspace(ventureId: string) {
   return {
     state,
     longRun,
+    layout,
+    onboarding,
     hydrated,
     activeSession,
     activeSummary,
+    panelConversation,
+    panelMessages: panelConversation
+      ? getVisibleConversationMessages(
+          longRun,
+          panelConversation.id,
+        )
+      : [],
+    panelDraft: panelConversation
+      ? (longRun.draftsByConversation[panelConversation.id] ?? "")
+      : "",
+    panelAttachments: panelConversation
+      ? (longRun.attachmentsByConversation[
+          panelConversation.id
+        ] ?? [])
+      : [],
+    panelGenerating,
     groupedSessions,
     visibleMessages: getVisibleConversationMessages(longRun),
     hasOlderMessages:
@@ -1086,11 +1352,11 @@ export function useAiWorkspace(ventureId: string) {
           mentorId: mentor.id,
           mentorName: mentor.name,
           goal:
-            "Thiết kế pilot activation 14 ngày có tín hiệu sử dụng lặp lại.",
+            "Thiết kế pilot 14 ngày cho CampusFlow.",
           context:
-            "Nova Labs · Prototype · B2B SaaS · Activation 18% · Retention tuần 2 là 7%.",
+            "CampusFlow · Prototype · 3 student founders · 12 interviews · 5 prototype testers · 2 câu lạc bộ quan tâm pilot.",
           message:
-            "Chào Jessica, tôi muốn trao đổi về cách thiết kế pilot activation 14 ngày và tiêu chí sử dụng lặp lại cho Nova Labs.",
+            "Chào anh Quân,\n\nCampusFlow là một venture do nhóm sinh viên phát triển, giúp câu lạc bộ onboarding và hỗ trợ thành viên mới.\n\nBọn em đã phỏng vấn 12 người, test prototype với 5 người và có 2 câu lạc bộ quan tâm tới pilot. Bọn em cần hỗ trợ để thiết kế một pilot 14 ngày với phạm vi, metric và cách thu thập evidence rõ ràng.\n\nKết quả mong muốn: chốt phạm vi pilot, chọn success metric và xác định evidence cần thu thập.",
           status: "draft",
         },
       });
@@ -1101,10 +1367,10 @@ export function useAiWorkspace(ventureId: string) {
       dispatch({
         type: "verify-readiness-evidence",
         criterionIds: [
-          "customer_evidence",
-          "solution_validation",
-          "traction_and_business_model",
-          "decision_and_execution",
+          "customer_discovery_and_evidence",
+          "prototype_and_learning",
+          "market_signal_and_commitment",
+          "experiment_and_execution_discipline",
         ],
       }),
     disputeReadinessContribution: (contributionId: string) =>
@@ -1121,6 +1387,75 @@ export function useAiWorkspace(ventureId: string) {
       }),
     switchConversation,
     createConversation,
+    openConversationInPanel,
+    openSplitChat,
+    sendPanelMessage,
+    closeSecondaryPane: () =>
+      dispatchLayout({ type: "close-secondary-pane" }),
+    openAnalysis: (
+      tab?: "overview" | "readiness" | "mentor",
+    ) => dispatchLayout({ type: "open-analysis", tab }),
+    openEvidence: (
+      view?: "by_document" | "by_criterion",
+    ) => dispatchLayout({ type: "open-evidence", view }),
+    setAnalysisTab: (
+      tab: "overview" | "readiness" | "mentor",
+    ) => dispatchLayout({ type: "set-analysis-tab", tab }),
+    setEvidenceView: (
+      view: "by_document" | "by_criterion",
+    ) => dispatchLayout({ type: "set-evidence-view", view }),
+    setSelectedDocument: (documentId?: string) =>
+      dispatchLayout({ type: "select-document", documentId }),
+    setSelectedCriterion: (criterionId?: string) =>
+      dispatchLayout({ type: "select-criterion", criterionId }),
+    setSecondaryPaneWidth,
+    setPanelDraft: (draft: string) => {
+      const conversationId = layout.panelConversationId;
+      if (!conversationId) return;
+      dispatchLongRun({
+        type: "set-draft",
+        conversationId,
+        draft,
+      });
+    },
+    addPanelLocalFiles: (files: FileList | null) => {
+      const conversationId = layout.panelConversationId;
+      if (!conversationId || !files) return;
+      const current =
+        longRunRef.current.attachmentsByConversation[
+          conversationId
+        ] ?? [];
+      const additions: MockAttachment[] = Array.from(files)
+        .slice(0, Math.max(0, 3 - current.length))
+        .map((file, index) => ({
+          id: `panel-local-${Date.now()}-${index}`,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          origin: "local",
+          status: "ready",
+        }));
+      dispatchLongRun({
+        type: "set-attachments",
+        conversationId,
+        attachments: [...current, ...additions],
+      });
+    },
+    removePanelAttachment: (attachmentId: string) => {
+      const conversationId = layout.panelConversationId;
+      if (!conversationId) return;
+      dispatchLongRun({
+        type: "set-attachments",
+        conversationId,
+        attachments: (
+          longRunRef.current.attachmentsByConversation[
+            conversationId
+          ] ?? []
+        ).filter(
+          (attachment) => attachment.id !== attachmentId,
+        ),
+      });
+    },
     renameConversation: (
       conversationId: string,
       title: string,

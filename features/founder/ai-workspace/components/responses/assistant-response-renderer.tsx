@@ -8,6 +8,7 @@ import { ActionProposalCard } from "./action-proposal-card";
 import { ArtifactPreviewCard } from "./artifact-preview-card";
 import { CompactInsightBlock } from "./compact-insight-block";
 import { ConfirmedStateRow } from "./confirmed-state-row";
+import { DocumentOnboardingAnalysisCard } from "./document-onboarding-analysis-card";
 import { MentorInterventionCard } from "./mentor-intervention-card";
 import { NextActionPlanCard } from "./next-action-plan-card";
 import { PitchDeckReviewCard } from "./pitch-deck-review-card";
@@ -116,12 +117,30 @@ export function AssistantResponseRenderer({
       ) : null;
 
     case "artifact_preview":
+      if (
+        structured?.type ===
+        "document-onboarding-analysis"
+      ) {
+        return (
+          <DocumentOnboardingAnalysisCard
+            analysis={structured.payload}
+            onOpenAnalysis={() => onOpenReadiness()}
+            onOpenEvidence={() =>
+              onOpenReadiness(
+                "problem_and_user_understanding",
+              )
+            }
+          />
+        );
+      }
       if (structured?.type === "pitch-deck-review") {
         return (
           <PitchDeckReviewCard
             review={structured.payload}
             onOpenSources={() =>
-              onOpenReadiness("customer_evidence")
+              onOpenReadiness(
+                "customer_discovery_and_evidence",
+              )
             }
           />
         );
@@ -132,7 +151,7 @@ export function AssistantResponseRenderer({
             diagnosis={structured.payload}
             onOpenReadiness={() =>
               onOpenReadiness(
-                "traction_and_business_model",
+                "market_signal_and_commitment",
               )
             }
           />
