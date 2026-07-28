@@ -8,7 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 import type { AiWorkspaceCopy } from "../../copy/types";
-import type { MockAttachment } from "../../types/ai-workspace.types";
+import type {
+  AiModelId,
+  MockAttachment,
+} from "../../types/ai-workspace.types";
+import { AiModelSelector } from "./ai-model-selector";
 import { AttachmentPicker } from "./attachment-picker";
 import { SuggestedPrompts } from "./suggested-prompts";
 
@@ -64,6 +68,8 @@ export function ChatComposer({
   onRemoveAttachment,
   value: controlledValue,
   onValueChange,
+  selectedModel,
+  onModelChange,
 }: {
   prompts: string[];
   attachments: MockAttachment[];
@@ -75,6 +81,8 @@ export function ChatComposer({
   onRemoveAttachment: (attachmentId: string) => void;
   value?: string;
   onValueChange?: (value: string) => void;
+  selectedModel: AiModelId;
+  onModelChange: (modelId: AiModelId) => void;
 }) {
   const [internalValue, setInternalValue] = React.useState("");
   const [listening, setListening] = React.useState(false);
@@ -233,6 +241,11 @@ export function ChatComposer({
           disabled={disabled}
           rows={1}
           className="max-h-36 min-h-10 resize-none border-0 bg-transparent px-2 py-2.5 workspace-input-text shadow-none focus-visible:ring-0"
+        />
+        <AiModelSelector
+          value={selectedModel}
+          disabled={disabled}
+          onValueChange={onModelChange}
         />
         <Button
           type="button"

@@ -78,14 +78,22 @@ export function MentorInterventionCard({
           />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="workspace-eyebrow text-primary">
-            {copy.response.mentorRecommendation}
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="workspace-eyebrow text-primary">
+              {copy.response.mentorRecommendation}
+            </p>
+            <span className="rounded-full bg-workspace-success-soft px-2 py-0.5 font-tabular workspace-eyebrow text-workspace-success">
+              {mentor.matchScore}% phù hợp
+            </span>
+          </div>
           <h3 className="mt-1 workspace-card-title text-ink">
             {mentor.name}
           </h3>
           <p className="mt-0.5 workspace-meta text-workspace-muted-text">
             {mentor.role}
+          </p>
+          <p className="mt-1 workspace-meta text-primary">
+            {mentor.expertise}
           </p>
         </div>
       </div>

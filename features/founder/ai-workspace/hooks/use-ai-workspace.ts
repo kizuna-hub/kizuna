@@ -409,6 +409,7 @@ export function useAiWorkspace(ventureId: string) {
             (attachment) => attachment.id,
           ),
           retryAttempt,
+          modelId: currentAiState.selectedModel,
           signal: abortController.signal,
           contextSummary: {
             confirmedMemory:
@@ -835,6 +836,46 @@ export function useAiWorkspace(ventureId: string) {
     [invalidateActiveRequest],
   );
 
+  const deleteConversation = React.useCallback(
+    (conversationId: string) => {
+      const current = longRunRef.current;
+      if (
+        !current.sessions.some(
+          (session) => session.id === conversationId,
+        )
+      ) {
+        return;
+      }
+
+      const next = current.sessions.find(
+        (session) =>
+          session.id !== conversationId &&
+          !session.isArchived,
+      );
+
+      invalidateActiveRequest();
+
+      if (!next) {
+        createConversation();
+      }
+
+      dispatchLongRun({
+        type: "delete-conversation",
+        conversationId,
+      });
+
+      if (current.activeConversationId === conversationId && next) {
+        dispatch({
+          type: "replace-messages",
+          messages:
+            current.messagesByConversation[next.id] ?? [],
+        });
+        setSelectedContextSourceIds([]);
+      }
+    },
+    [createConversation, invalidateActiveRequest],
+  );
+
   const resetDemo = React.useCallback(() => {
     invalidateActiveRequest();
     const envelope = parseAiWorkspaceEnvelope(
@@ -1033,6 +1074,51 @@ export function useAiWorkspace(ventureId: string) {
               ?.recommendationVersion ?? 0) + 1,
         },
       }),
+    setAiModel: (modelId: AiWorkspaceState["selectedModel"]) =>
+      dispatch({ type: "set-ai-model", modelId }),
+    createMentorConnection: () => {
+      const mentor = stateRef.current.mentorRecommendation;
+      if (!mentor) return;
+      dispatch({
+        type: "create-mentor-connection",
+        request: {
+          id: `connection-${mentor.id}`,
+          mentorId: mentor.id,
+          mentorName: mentor.name,
+          goal:
+            "Thiết kế pilot activation 14 ngày có tín hiệu sử dụng lặp lại.",
+          context:
+            "Nova Labs · Prototype · B2B SaaS · Activation 18% · Retention tuần 2 là 7%.",
+          message:
+            "Chào Jessica, tôi muốn trao đổi về cách thiết kế pilot activation 14 ngày và tiêu chí sử dụng lặp lại cho Nova Labs.",
+          status: "draft",
+        },
+      });
+    },
+    sendMentorConnection: () =>
+      dispatch({ type: "send-mentor-connection" }),
+    verifyReadinessEvidence: () =>
+      dispatch({
+        type: "verify-readiness-evidence",
+        criterionIds: [
+          "customer_evidence",
+          "solution_validation",
+          "traction_and_business_model",
+          "decision_and_execution",
+        ],
+      }),
+    disputeReadinessContribution: (contributionId: string) =>
+      dispatch({
+        type: "dispute-readiness-contribution",
+        contributionId,
+      }),
+    activateDecisionCycle: () =>
+      dispatch({ type: "activate-decision-cycle" }),
+    confirmReadinessContribution: (contributionId: string) =>
+      dispatch({
+        type: "confirm-readiness-contribution",
+        contributionId,
+      }),
     switchConversation,
     createConversation,
     renameConversation: (
@@ -1044,6 +1130,7 @@ export function useAiWorkspace(ventureId: string) {
         conversationId,
         title,
       }),
+    deleteConversation,
     toggleConversationPin: (conversationId: string) =>
       dispatchLongRun({
         type: "toggle-conversation-pin",

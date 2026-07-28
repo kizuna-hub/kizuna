@@ -155,7 +155,7 @@ test("experiment risk and metric follow-ups stay conversational", async () => {
   assert.match(metrics.assistantMessage, /metric chính/i);
 });
 
-test("material analysis uses selected metadata without reading file content", async () => {
+test("pitch deck analysis returns a deterministic improvement preview without reading file content", async () => {
   const engine = createMockAiWorkspaceEngine({
     timing: "instant",
   });
@@ -175,18 +175,18 @@ test("material analysis uses selected metadata without reading file content", as
   const structured = requireStructured(response);
 
   assert.equal(response.responseKind, "artifact_preview");
-  assert.equal(structured.type, "material-analysis");
-  if (structured.type !== "material-analysis") {
-    assert.fail("Expected material analysis response");
+  assert.equal(structured.type, "pitch-deck-review");
+  if (structured.type !== "pitch-deck-review") {
+    assert.fail("Expected pitch deck review response");
   }
-  assert.deepEqual(structured.payload.fileNames, [
-    "PitchDeck.pdf",
-  ]);
-  assert.equal(
-    structured.payload.findings.find(
-      (finding) => finding.id === "customer-proof",
-    )?.status,
-    "missing",
+  assert.equal(structured.payload.weaknesses.length, 3);
+  assert.deepEqual(
+    structured.payload.projectedReadiness.verifiedEvidenceRange,
+    [66, 68],
+  );
+  assert.deepEqual(
+    response.proposedPatches.materialAnalysis?.fileNames,
+    ["PitchDeck.pdf"],
   );
 });
 
@@ -209,42 +209,30 @@ test("evidence submission produces an explainable +7 readiness patch", async () 
   );
 });
 
-test("mentor intervention is gated, then recommends Jessica after a cycle is active", async () => {
+test("direct mentor requests recommend Jessica without requiring a decision cycle", async () => {
   const engine = createMockAiWorkspaceEngine({
     timing: "instant",
   });
-  const notReady = await engine.respond(
+  const direct = await engine.respond(
     createInput("Đề xuất cố vấn phù hợp"),
   );
-  const notReadyStructured = requireStructured(notReady);
-  assert.equal(notReady.responseKind, "conversation");
-  assert.equal(notReadyStructured.type, "mentor-recommendation");
-  if (notReadyStructured.type === "mentor-recommendation") {
-    assert.equal(notReadyStructured.payload, null);
-  }
+  const directStructured = requireStructured(direct);
 
-  const readyInput = createInput(
-    "Đề xuất cố vấn phù hợp",
-    "onboarding-case-study",
-  );
-  readyInput.currentState.decisionCycleLifecycle = "active";
-  const ready = await engine.respond(readyInput);
-  const readyStructured = requireStructured(ready);
-
-  assert.equal(ready.responseKind, "mentor_intervention");
-  assert.equal(readyStructured.type, "mentor-recommendation");
-  if (readyStructured.type !== "mentor-recommendation") {
+  assert.equal(direct.responseKind, "mentor_intervention");
+  assert.equal(directStructured.type, "mentor-recommendation");
+  if (directStructured.type !== "mentor-recommendation") {
     assert.fail("Expected mentor response");
   }
-  assert.equal(readyStructured.payload?.name, "Jessica Lin");
-  assert.match(ready.assistantMessage, /kinh nghiệm product thực tế/i);
+  assert.equal(directStructured.payload?.name, "Jessica Lin");
+  assert.equal(directStructured.payload?.matchScore, 92);
+  assert.match(direct.assistantMessage, /không cần tạo Decision Cycle/i);
   assert.equal(
-    ready.suggestedPrompts.includes("Tiếp tục với AI"),
+    direct.suggestedPrompts.includes("Tiếp tục với AI"),
     false,
   );
 });
 
-test("dismissed mentor is not recommended again in the same decision cycle", async () => {
+test("an explicit mentor request can reopen a previously deferred recommendation", async () => {
   const engine = createMockAiWorkspaceEngine({
     timing: "instant",
   });
@@ -263,12 +251,13 @@ test("dismissed mentor is not recommended again in the same decision cycle", asy
   const response = await engine.respond(input);
   const structured = requireStructured(response);
 
-  assert.equal(response.responseKind, "conversation");
+  assert.equal(response.responseKind, "mentor_intervention");
   assert.equal(structured.type, "mentor-recommendation");
   if (structured.type === "mentor-recommendation") {
-    assert.equal(structured.payload, null);
+    assert.equal(structured.payload?.name, "Jessica Lin");
+    assert.equal(structured.payload?.status, "recommended");
   }
-  assert.match(response.assistantMessage, /không lặp lại/i);
+  assert.match(response.assistantMessage, /92%/i);
 });
 
 test("reviewing submitted evidence completes the cycle and unlocks one mentor", async () => {

@@ -3,6 +3,10 @@ import type {
   AiWorkspaceState,
   DecisionCycleStepId,
 } from "../types/ai-workspace.types";
+import {
+  calculateOverallReadiness,
+  disputeContribution,
+} from "../readiness/services/readiness-calculator";
 
 const orderedCycleSteps: DecisionCycleStepId[] = [
   "understand",
@@ -560,5 +564,249 @@ export function aiWorkspaceReducer(
         ...state,
         mentorRecommendation: action.mentor,
       };
+
+    case "set-ai-model":
+      return {
+        ...state,
+        selectedModel: action.modelId,
+      };
+
+    case "create-mentor-connection":
+      if (state.mentorConnectionRequest) return state;
+      return {
+        ...state,
+        mentorConnectionRequest: action.request,
+      };
+
+    case "send-mentor-connection":
+      if (
+        !state.mentorConnectionRequest ||
+        state.mentorConnectionRequest.status === "sent"
+      ) {
+        return state;
+      }
+      return {
+        ...state,
+        mentorConnectionRequest: {
+          ...state.mentorConnectionRequest,
+          status: "sent",
+          sentAt: new Date().toISOString(),
+        },
+      };
+
+    case "verify-readiness-evidence": {
+      const currentAssessment = state.readiness.assessment;
+      if (
+        currentAssessment.criteria.some((criterion) =>
+          criterion.contributions.some((contribution) =>
+            contribution.id.startsWith(
+              "analytics-treatment-",
+            ),
+          ),
+        )
+      ) {
+        return state;
+      }
+      const scoreChanges: Partial<
+        Record<
+          (typeof currentAssessment.criteria)[number]["id"],
+          number
+        >
+      > = {
+        customer_evidence: 58,
+        solution_validation: 61,
+        traction_and_business_model: 54,
+        decision_and_execution: 74,
+      };
+      const criteria = currentAssessment.criteria.map(
+        (criterion) => {
+          const nextScore = scoreChanges[criterion.id];
+          if (
+            nextScore === undefined ||
+            !action.criterionIds.includes(criterion.id)
+          ) {
+            return criterion;
+          }
+          return {
+            ...criterion,
+            score: nextScore,
+            delta: nextScore - criterion.score,
+            confidence:
+              criterion.id === "solution_validation"
+                ? ("high" as const)
+                : criterion.confidence,
+            contributions: [
+              {
+                id: `analytics-treatment-${criterion.id}`,
+                criterionId: criterion.id,
+                type: "positive" as const,
+                status: "verified" as const,
+                title: "Kết quả treatment đã được xác minh",
+                interpretation:
+                  "Treatment đạt activation 22% so với 18% ở control trên mẫu 186 người dùng.",
+                confidence: "high" as const,
+                contributionPoints: nextScore - criterion.score,
+                source: {
+                  fileName: "AnalyticsSnapshot-May.json",
+                  section: "activation_experiment",
+                  quote:
+                    '"treatment": 0.22, "control": 0.18, "sample": 186',
+                },
+                observedAt: new Date().toISOString(),
+                freshnessDays: 0,
+                dedupeKey: `analytics-treatment-22-${criterion.id}`,
+                canonical: true,
+              },
+              ...criterion.contributions,
+            ],
+          };
+        },
+      );
+      const nextScore = calculateOverallReadiness(criteria);
+      const nextAssessment = {
+        ...currentAssessment,
+        criteria,
+        previousScore: currentAssessment.overallScore,
+        overallScore: nextScore,
+        delta: nextScore - currentAssessment.overallScore,
+        updatedAt: new Date().toISOString(),
+        history: [
+          {
+            id: "readiness-61-66-activation-verified",
+            type: "increase" as const,
+            previousScore: currentAssessment.overallScore,
+            nextScore,
+            delta: nextScore - currentAssessment.overallScore,
+            reason:
+              "Analytics xác minh treatment activation 22% so với 18% ở control trên mẫu 186 người dùng.",
+            occurredAt: new Date().toISOString(),
+            rubricVersion: currentAssessment.rubricVersion,
+            evidenceIds: action.criterionIds.map(
+              (criterionId) =>
+                `analytics-treatment-${criterionId}`,
+            ),
+          },
+          ...currentAssessment.history,
+        ],
+      };
+      return {
+        ...state,
+        readiness: {
+          ...state.readiness,
+          currentScore: nextScore,
+          previousScore: currentAssessment.overallScore,
+          delta: nextScore - currentAssessment.overallScore,
+          label: nextAssessment.label,
+          explanation:
+            "Kết quả thử nghiệm activation đã được analytics xác minh và cập nhật vào điểm canonical.",
+          assessment: nextAssessment,
+          breakdown: state.readiness.breakdown.map((dimension) => {
+            const mappedId =
+              dimension.id === "customer-evidence"
+                ? "customer_evidence"
+                : dimension.id === "execution"
+                  ? "decision_and_execution"
+                  : undefined;
+            const criterion = criteria.find(
+              (item) => item.id === mappedId,
+            );
+            return criterion
+              ? { ...dimension, score: criterion.score }
+              : dimension;
+          }),
+        },
+      };
+    }
+
+    case "dispute-readiness-contribution": {
+      const assessment = disputeContribution(
+        state.readiness.assessment,
+        action.contributionId,
+      );
+      return {
+        ...state,
+        readiness: {
+          ...state.readiness,
+          currentScore: assessment.overallScore,
+          previousScore: assessment.previousScore,
+          delta: assessment.delta,
+          assessment,
+          explanation:
+            "Một đóng góp đã bị loại vì founder đánh dấu cách diễn giải của AI không chính xác.",
+        },
+      };
+    }
+
+    case "activate-decision-cycle":
+      if (state.decisionCycleLifecycle !== "not_created") {
+        return {
+          ...state,
+          view: "decision-cycle",
+        };
+      }
+      return {
+        ...state,
+        decisionCycleLifecycle: "active",
+        view: "decision-cycle",
+      };
+
+    case "confirm-readiness-contribution": {
+      const currentAssessment = state.readiness.assessment;
+      const currentContribution =
+        currentAssessment.criteria
+          .flatMap((criterion) => criterion.contributions)
+          .find(
+            (contribution) =>
+              contribution.id === action.contributionId,
+          );
+      if (
+        !currentContribution ||
+        currentContribution.status === "verified"
+      ) {
+        return state;
+      }
+      const criteria = currentAssessment.criteria.map(
+        (criterion) => ({
+          ...criterion,
+          contributions: criterion.contributions.map(
+            (contribution) =>
+              contribution.id === action.contributionId
+                ? {
+                    ...contribution,
+                    status: "verified" as const,
+                    confidence: "high" as const,
+                    excluded: false,
+                  }
+                : contribution,
+          ),
+        }),
+      );
+      return {
+        ...state,
+        readiness: {
+          ...state.readiness,
+          assessment: {
+            ...currentAssessment,
+            criteria,
+            history: [
+              {
+                id: `history-confirmed-${action.contributionId}`,
+                type: "no_change",
+                previousScore: currentAssessment.overallScore,
+                nextScore: currentAssessment.overallScore,
+                delta: 0,
+                reason:
+                  "Founder xác nhận cách diễn giải của đóng góp; confidence được cập nhật nhưng điểm canonical không tự động thay đổi.",
+                occurredAt: new Date().toISOString(),
+                rubricVersion:
+                  currentAssessment.rubricVersion,
+                evidenceIds: [action.contributionId],
+              },
+              ...currentAssessment.history,
+            ],
+          },
+        },
+      };
+    }
   }
 }

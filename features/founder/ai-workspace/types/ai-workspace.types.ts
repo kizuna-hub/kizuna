@@ -1,4 +1,8 @@
 import type { VentureId } from "../../../venture/core";
+import type {
+  ExplainableReadinessAssessment,
+  ReadinessCriterionId,
+} from "../readiness/types/readiness.types";
 
 export type AiWorkspaceScenarioId =
   | "onboarding-case-study"
@@ -35,12 +39,18 @@ export type AiWorkspaceIntent =
   | "experiment-metrics"
   | "explain-readiness"
   | "analyze-materials"
+  | "assess-traction"
   | "suggest-action"
   | "create-decision-cycle"
   | "recommend-mentor"
   | "challenge-interpretation"
   | "submit-evidence"
   | "review-results";
+
+export type AiModelId =
+  | "kizuna-lite"
+  | "kizuna-max"
+  | "kizuna-wild";
 
 export type AiGenerationStatus =
   | "idle"
@@ -111,6 +121,7 @@ export interface ReadinessState {
   missingEvidence: string[];
   unlockAction: string;
   breakdown: ReadinessDimension[];
+  assessment: ExplainableReadinessAssessment;
 }
 
 export interface EvidenceHealthItem {
@@ -157,6 +168,9 @@ export interface MentorPreparationItem {
 export interface MentorAlternative {
   id: string;
   name: string;
+  role: string;
+  expertise: string;
+  matchScore: number;
   strength: string;
   tradeOff: string;
 }
@@ -166,6 +180,8 @@ export interface MentorRecommendation {
   name: string;
   role: string;
   expertise: string;
+  matchScore: number;
+  matchConfidence: "low" | "medium" | "high";
   whyHumanNow: string;
   whyThisMentor: string;
   expectedOutcome: string;
@@ -180,6 +196,68 @@ export interface MentorRecommendation {
   recommendationVersion: number;
   status: MentorRecommendationStatus;
   dismissReason?: MentorDismissReason;
+}
+
+export interface MentorConnectionRequest {
+  id: string;
+  mentorId: string;
+  mentorName: string;
+  goal: string;
+  context: string;
+  message: string;
+  status: "draft" | "sent" | "failed";
+  sentAt?: string;
+}
+
+export interface PitchDeckReviewPayload {
+  title: string;
+  summary: string;
+  weaknesses: Array<{
+    id: string;
+    title: string;
+    detail: string;
+    sourceLabel: string;
+  }>;
+  projectedReadiness: {
+    presentationOnly: number;
+    verifiedEvidenceRange: [number, number];
+    label: "Dự kiến · Chưa cập nhật điểm hiện tại";
+  };
+  actions: string[];
+}
+
+export interface NextActionPayload {
+  title: string;
+  priority: string;
+  durationDays: number;
+  participantCount: number;
+  primaryMetric: string;
+  successThreshold: string;
+  projectedDelta: [number, number];
+}
+
+export interface TractionDiagnosisPayload {
+  title: string;
+  metrics: Array<{
+    id: string;
+    label: string;
+    value: string;
+    assessment: "good" | "weak" | "very_weak";
+  }>;
+  diagnosis: string;
+  capScore: number;
+  scaleThresholds: string[];
+  projectedTraction: [number, number];
+  projectedReadiness: [number, number];
+}
+
+export interface ReadinessEvidencePayload {
+  title: string;
+  treatmentActivation: number;
+  controlActivation: number;
+  sampleSize: number;
+  status: "waiting" | "verified";
+  projectedDelta: [number, number];
 }
 
 export interface MentorSessionState {
@@ -271,6 +349,22 @@ export type StructuredResponse =
   | {
       type: "mentor-recommendation";
       payload: MentorRecommendation | null;
+    }
+  | {
+      type: "pitch-deck-review";
+      payload: PitchDeckReviewPayload;
+    }
+  | {
+      type: "next-action";
+      payload: NextActionPayload;
+    }
+  | {
+      type: "traction-diagnosis";
+      payload: TractionDiagnosisPayload;
+    }
+  | {
+      type: "readiness-evidence";
+      payload: ReadinessEvidencePayload;
     };
 
 export interface AiWorkspaceMessage {
@@ -302,6 +396,8 @@ export interface AiWorkspaceState {
   decisionCycleLifecycle: DecisionCycleLifecycle;
   mentorRecommendation?: MentorRecommendation;
   mentorSession?: MentorSessionState;
+  mentorConnectionRequest?: MentorConnectionRequest;
+  selectedModel: AiModelId;
   view: AiWorkspaceView;
   errorMessage?: string;
   lastRequest?: {
@@ -318,6 +414,7 @@ export interface AiWorkspaceInput {
   currentState: AiWorkspaceState;
   attachedMaterialIds: string[];
   retryAttempt: number;
+  modelId?: AiModelId;
   signal?: AbortSignal;
   contextSummary?: {
     confirmedMemory: string[];
@@ -339,6 +436,7 @@ export interface AiWorkspaceStatePatch {
   decisionCycleLifecycle?: DecisionCycleLifecycle;
   mentorRecommendation?: MentorRecommendation;
   mentorSession?: MentorSessionState;
+  mentorConnectionRequest?: MentorConnectionRequest;
 }
 
 export interface AiWorkspaceResponse {
@@ -475,4 +573,30 @@ export type AiWorkspaceAction =
   | {
       type: "refresh-mentor";
       mentor: MentorRecommendation;
+    }
+  | {
+      type: "set-ai-model";
+      modelId: AiModelId;
+    }
+  | {
+      type: "create-mentor-connection";
+      request: MentorConnectionRequest;
+    }
+  | {
+      type: "send-mentor-connection";
+    }
+  | {
+      type: "verify-readiness-evidence";
+      criterionIds: ReadinessCriterionId[];
+    }
+  | {
+      type: "dispute-readiness-contribution";
+      contributionId: string;
+    }
+  | {
+      type: "activate-decision-cycle";
+    }
+  | {
+      type: "confirm-readiness-contribution";
+      contributionId: string;
     };

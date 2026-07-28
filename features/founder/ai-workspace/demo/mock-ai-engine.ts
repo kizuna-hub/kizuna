@@ -72,6 +72,17 @@ export function detectAiWorkspaceIntent(
 
   if (
     includesAny(normalized, [
+      "treatment activation",
+      "control activation",
+      "mau 186",
+      "sample 186",
+    ])
+  ) {
+    return "submit-evidence";
+  }
+
+  if (
+    includesAny(normalized, [
       "huong thu nghiem nao khac",
       "thu nghiem nao khac",
       "phuong an thu nghiem",
@@ -170,6 +181,15 @@ export function detectAiWorkspaceIntent(
     ])
   ) {
     return "suggest-action";
+  }
+  if (
+    includesAny(normalized, [
+      "danh gia traction",
+      "traction hien tai",
+      "phan tich traction",
+    ])
+  ) {
+    return "assess-traction";
   }
   if (
     includesAny(normalized, [
@@ -370,10 +390,81 @@ function buildResponse(
     proposedPatches: {},
     suggestedPrompts: getScenarioPrompts(input.activeScenarioId),
     sourceReferences: sourceReferences(intent),
-    simulatedLatencyMs: 650,
+    simulatedLatencyMs:
+      !input.modelId
+        ? 650
+        : input.modelId === "kizuna-max"
+        ? 900
+        : input.modelId === "kizuna-wild"
+          ? 720
+          : 520,
   };
 
   if (intent === "analyze-materials") {
+    const normalized = normalizeIntentText(input.message);
+    if (
+      includesAny(normalized, [
+        "pitch deck",
+        "pitchdeck",
+        "cach cai thien",
+      ])
+    ) {
+      return {
+        ...common,
+        responseKind: "artifact_preview",
+        assistantMessage:
+          "Pitch deck hiện kể câu chuyện khá rõ về vấn đề và người dùng, nhưng ba tuyên bố quan trọng vẫn chưa đủ sức thuyết phục.\n\nĐiểm yếu lớn nhất không nằm ở cách trình bày mà ở khoảng cách giữa acquisition và bằng chứng giá trị lặp lại. Tôi sẽ giữ mọi mức tăng điểm dưới dạng dự kiến cho tới khi có dữ liệu được xác minh.",
+        structuredResponse: {
+          type: "pitch-deck-review",
+          payload: {
+            title: "Ba điểm cần cải thiện trong PitchDeck-v5",
+            summary:
+              "Ưu tiên thay các tuyên bố đẹp bằng bằng chứng có thể truy xuất và kiểm chứng.",
+            weaknesses: [
+              {
+                id: "traction-vanity",
+                title: "Traction đang là vanity metric",
+                detail:
+                  "1.243 lượt đăng ký là tín hiệu acquisition, chưa chứng minh activation hoặc retention.",
+                sourceLabel: "PitchDeck-v5.pdf · Trang 8",
+              },
+              {
+                id: "customer-proof-opinion",
+                title: "Customer proof mới là ý kiến",
+                detail:
+                  "8/10 người thấy hữu ích chưa chứng minh họ quay lại hoặc trả tiền.",
+                sourceLabel: "PitchDeck-v5.pdf · Trang 6",
+              },
+              {
+                id: "pricing-unvalidated",
+                title: "Pricing chưa được xác minh",
+                detail:
+                  "299 USD/tháng đang là giả định nội bộ, chưa có willingness to pay.",
+                sourceLabel: "PitchDeck-v5.pdf · Trang 11",
+              },
+            ],
+            projectedReadiness: {
+              presentationOnly: 62,
+              verifiedEvidenceRange: [66, 68],
+              label: "Dự kiến · Chưa cập nhật điểm hiện tại",
+            },
+            actions: [
+              "Thay số đăng ký bằng activation và retention theo cohort.",
+              "Bổ sung một case study trước–sau có nguồn.",
+              "Gắn pricing với pilot trả phí hoặc cam kết mua.",
+            ],
+          },
+        },
+        proposedPatches: {
+          materialAnalysis: materialAnalysis(input),
+        },
+        suggestedPrompts: [
+          "Tôi nên làm gì tiếp theo?",
+          "Đánh giá traction hiện tại",
+          "Mở bằng chứng khách hàng",
+        ],
+      };
+    }
     const analysis = materialAnalysis(input);
     return {
       ...common,
@@ -445,6 +536,33 @@ function buildResponse(
     intent === "compare-experiments" ||
     intent === "create-decision-cycle"
   ) {
+    if (intent === "suggest-action") {
+      return {
+        ...common,
+        responseKind: "action_proposal",
+        assistantMessage:
+          "Ưu tiên duy nhất lúc này là kiểm tra sử dụng lặp lại, không phải tăng thêm acquisition.\n\nHãy chạy pilot 14 ngày với 20 người đã hoàn tất onboarding. Metric chính là tỷ lệ tạo báo cáo lần thứ hai; ngưỡng thành công tối thiểu 25%. Nếu đạt, readiness dự kiến tăng 3–7 điểm, nhưng điểm canonical chỉ thay đổi sau khi dữ liệu được xác minh.",
+        structuredResponse: {
+          type: "next-action",
+          payload: {
+            title: "Pilot sử dụng lặp lại trong 14 ngày",
+            priority:
+              "Kiểm tra liệu người dùng có quay lại tạo báo cáo lần thứ hai.",
+            durationDays: 14,
+            participantCount: 20,
+            primaryMetric: "Tỷ lệ tạo báo cáo lần thứ hai",
+            successThreshold: "≥25%",
+            projectedDelta: [3, 7],
+          },
+        },
+        proposedPatches: {},
+        suggestedPrompts: [
+          "Điểm yếu lớn nhất của pilot này là gì?",
+          "Thiết kế nhóm control thế nào?",
+          "Tôi cần thu thập nguồn nào?",
+        ],
+      };
+    }
     return {
       ...common,
       responseKind: "action_proposal",
@@ -506,6 +624,39 @@ function buildResponse(
   }
 
   if (intent === "submit-evidence") {
+    const normalized = normalizeIntentText(input.message);
+    if (
+      includesAny(normalized, [
+        "treatment activation",
+        "control activation",
+        "mau 186",
+        "sample 186",
+      ])
+    ) {
+      return {
+        ...common,
+        responseKind: "artifact_preview",
+        assistantMessage:
+          "Tôi đã ghi nhận treatment activation 22%, control 18% trên mẫu 186 người dùng. Đây là bằng chứng mới đang chờ xác minh từ AnalyticsSnapshot-May.json.\n\nNếu nguồn khớp, readiness dự kiến tăng 3–6 điểm. Điểm canonical hiện vẫn là 61.",
+        structuredResponse: {
+          type: "readiness-evidence",
+          payload: {
+            title: "Kết quả activation đang chờ xác minh",
+            treatmentActivation: 22,
+            controlActivation: 18,
+            sampleSize: 186,
+            status: "waiting",
+            projectedDelta: [3, 6],
+          },
+        },
+        proposedPatches: {},
+        suggestedPrompts: [
+          "Nguồn nào sẽ được dùng để xác minh?",
+          "Điều gì có thể làm sai lệch kết quả?",
+          "Xem mức độ sẵn sàng",
+        ],
+      };
+    }
     const readiness = readinessAfterEvidence();
     return {
       ...common,
@@ -601,51 +752,84 @@ function buildResponse(
   }
 
   if (intent === "recommend-mentor") {
-    const eligible =
-      (input.currentState.decisionCycle.evidenceSubmitted &&
-        input.currentState.decisionCycle.reviewCompleted) ||
-      input.currentState.decisionCycleLifecycle === "active" ||
-      input.activeScenarioId === "mentor";
     const existingMentor =
       input.currentState.mentorRecommendation;
-    const dismissedForCurrentCycle =
-      existingMentor?.status === "deferred" &&
-      existingMentor.decisionCycleId ===
-        input.currentState.decisionCycle.id;
-    const mentor =
-      eligible && !dismissedForCurrentCycle
-        ? structuredClone(
-            existingMentor ?? baselineMentorRecommendation,
-          )
-        : null;
+    const mentor = structuredClone({
+      ...(existingMentor ?? baselineMentorRecommendation),
+      status: "recommended" as const,
+      dismissReason: undefined,
+    });
     return {
       ...common,
-      responseKind: mentor
-        ? "mentor_intervention"
-        : "conversation",
-      assistantMessage: dismissedForCurrentCycle
-        ? "Mình sẽ tiếp tục hỗ trợ bằng AI trong chu kỳ này và không lặp lại đề xuất cố vấn."
-        : eligible
-          ? "AI có thể giúp bạn thiết kế cấu trúc thử nghiệm và xác định metric.\n\nTuy nhiên, quyết định về cách cân bằng onboarding ngắn với việc thu thập đủ dữ liệu người dùng cần kinh nghiệm product thực tế.\n\nMột cố vấn từng xử lý activation ở sản phẩm SaaS sẽ tạo giá trị tốt hơn ở bước này."
-          : "Chưa cần cố vấn ở thời điểm này. Bạn vẫn có thể thu hẹp vấn đề bằng một thử nghiệm nhỏ và dữ liệu activation.",
+      responseKind: "mentor_intervention",
+      assistantMessage:
+        "Jessica Lin là lựa chọn phù hợp nhất với mức độ phù hợp 92% và độ tin cậy cao. Cô ấy có kinh nghiệm trực tiếp về onboarding, activation và retention cho B2B SaaS.\n\nBạn có thể kết nối ngay mà không cần tạo Decision Cycle. Hai lựa chọn thay thế vẫn được giữ để bạn so sánh trade-off.",
       structuredResponse: {
         type: "mentor-recommendation",
         payload: mentor,
       },
-      proposedPatches: mentor
-        ? { mentorRecommendation: mentor }
-        : {},
-      suggestedPrompts: mentor
-        ? [
-            "Điểm nào cần mentor phản biện nhất?",
-            "Tôi cần chuẩn bị bằng chứng gì?",
-            "Câu hỏi quan trọng nhất cho cố vấn là gì?",
-          ]
-        : [
-            "Đề xuất hành động nhỏ nhất tiếp theo",
-            "Mở chu kỳ quyết định",
-            "Bằng chứng nào còn thiếu?",
+      proposedPatches: { mentorRecommendation: mentor },
+      suggestedPrompts: [
+        "Điểm nào cần mentor phản biện nhất?",
+        "Tôi cần chuẩn bị bằng chứng gì?",
+        "Câu hỏi quan trọng nhất cho cố vấn là gì?",
+      ],
+    };
+  }
+
+  if (intent === "assess-traction") {
+    return {
+      ...common,
+      responseKind: "artifact_preview",
+      assistantMessage:
+        "Traction hiện chưa đủ khỏe để scale. Acquisition 1.243 là tín hiệu tốt, nhưng activation 18% và retention tuần 2 chỉ 7% cho thấy giá trị chưa lặp lại.\n\nTôi áp dụng cap 60/100 cho tiêu chí traction cho tới khi có bằng chứng sử dụng lặp lại. Chỉ nên cân nhắc scale khi activation đạt ít nhất 25% và retention tuần 2 đạt ít nhất 15%.",
+      structuredResponse: {
+        type: "traction-diagnosis",
+        payload: {
+          title: "Traction chưa đủ điều kiện để scale",
+          metrics: [
+            {
+              id: "acquisition",
+              label: "Acquisition",
+              value: "1.243 đăng ký",
+              assessment: "good",
+            },
+            {
+              id: "onboarding",
+              label: "Hoàn tất onboarding",
+              value: "76%",
+              assessment: "good",
+            },
+            {
+              id: "activation",
+              label: "Activation",
+              value: "18%",
+              assessment: "weak",
+            },
+            {
+              id: "retention",
+              label: "Retention tuần 2",
+              value: "7%",
+              assessment: "very_weak",
+            },
           ],
+          diagnosis:
+            "Đầu phễu có nhu cầu nhưng người dùng chưa quay lại đủ thường xuyên để chứng minh giá trị.",
+          capScore: 60,
+          scaleThresholds: [
+            "Activation ≥25%",
+            "Retention tuần 2 ≥15%",
+          ],
+          projectedTraction: [60, 66],
+          projectedReadiness: [65, 69],
+        },
+      },
+      proposedPatches: {},
+      suggestedPrompts: [
+        "Tôi nên làm gì tiếp theo?",
+        "Nguồn nào tạo ra cap 60?",
+        "Thiết kế pilot 14 ngày",
+      ],
     };
   }
 

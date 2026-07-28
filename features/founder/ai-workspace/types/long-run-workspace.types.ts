@@ -319,6 +319,7 @@ export type LongRunWorkspaceAction =
       conversationId: string;
       title: string;
     }
+  | { type: "delete-conversation"; conversationId: string }
   | { type: "toggle-conversation-pin"; conversationId: string }
   | { type: "archive-conversation"; conversationId: string }
   | {

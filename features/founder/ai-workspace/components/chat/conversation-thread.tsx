@@ -11,6 +11,7 @@ import type {
   AiWorkspaceMessage,
   AiWorkspaceState,
 } from "../../types/ai-workspace.types";
+import type { ReadinessCriterionId } from "../../readiness/types/readiness.types";
 import { ChatMessage } from "./chat-message";
 import { TypingIndicator } from "./typing-indicator";
 
@@ -26,6 +27,8 @@ export function ConversationThread({
   onOpenMentor,
   onDeferMentor,
   onOpenArtifact,
+  onOpenReadiness,
+  onVerifyReadinessEvidence,
   messages,
   searchQuery = "",
   activeMatchMessageId,
@@ -50,6 +53,8 @@ export function ConversationThread({
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
+  onOpenReadiness: (criterionId?: ReadinessCriterionId) => void;
+  onVerifyReadinessEvidence: () => void;
   messages?: AiWorkspaceMessage[];
   searchQuery?: string;
   activeMatchMessageId?: string;
@@ -232,6 +237,10 @@ export function ConversationThread({
             onOpenMentor={onOpenMentor}
             onDeferMentor={onDeferMentor}
             onOpenArtifact={onOpenArtifact}
+            onOpenReadiness={onOpenReadiness}
+            onVerifyReadinessEvidence={
+              onVerifyReadinessEvidence
+            }
           />
         ))}
 

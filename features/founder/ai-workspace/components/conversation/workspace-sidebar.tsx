@@ -42,8 +42,7 @@ export function WorkspaceSidebar({
   onOpenSurface,
   onSelectConversation,
   onRenameConversation,
-  onToggleConversationPin,
-  onArchiveConversation,
+  onDeleteConversation,
 }: {
   collapsed: boolean;
   onNavigate?: () => void;
@@ -62,8 +61,7 @@ export function WorkspaceSidebar({
     conversationId: string,
     title: string,
   ) => void;
-  onToggleConversationPin: (conversationId: string) => void;
-  onArchiveConversation: (conversationId: string) => void;
+  onDeleteConversation: (conversationId: string) => void;
 }) {
   const { state } = useDemoWorkspace();
   const user = getCurrentUser(state);
@@ -165,11 +163,8 @@ export function WorkspaceSidebar({
                     onRename={(title) =>
                       onRenameConversation(session.id, title)
                     }
-                    onTogglePin={() =>
-                      onToggleConversationPin(session.id)
-                    }
-                    onArchive={() =>
-                      onArchiveConversation(session.id)
+                    onDelete={() =>
+                      onDeleteConversation(session.id)
                     }
                   />
                 ))}

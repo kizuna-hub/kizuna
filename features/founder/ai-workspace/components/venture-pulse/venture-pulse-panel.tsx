@@ -10,18 +10,18 @@ import { Button } from "@/components/ui/button";
 import type { AiWorkspaceCopy } from "../../copy/types";
 import { getDecisionCycleProgress } from "../../state/ai-workspace-selectors";
 import type { AiWorkspaceState } from "../../types/ai-workspace.types";
-import { ReadinessRing } from "../shared/readiness-ring";
 import { StatusBadge } from "../shared/status-badge";
+import { ReadinessSummaryTrigger } from "../../readiness/components/readiness-summary-trigger";
 
 export function VenturePulsePanel({
   state,
   copy,
-  onExplainReadiness,
+  onOpenReadiness,
   onOpenCycle,
 }: {
   state: AiWorkspaceState;
   copy: AiWorkspaceCopy;
-  onExplainReadiness: () => void;
+  onOpenReadiness: () => void;
   onOpenCycle: () => void;
 }) {
   const progress = getDecisionCycleProgress(state);
@@ -54,34 +54,10 @@ export function VenturePulsePanel({
 
       <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
         <section className="border-b border-workspace-border p-4">
-          <div className="flex items-center gap-3">
-            <ReadinessRing
-              score={state.readiness.currentScore}
-              label={copy.pulse.readiness}
-              size="compact"
-            />
-            <div className="min-w-0">
-              <p className="workspace-eyebrow text-workspace-muted-text">
-                {copy.pulse.readiness}
-              </p>
-              <p className="mt-1 workspace-card-title text-ink">
-                {state.readiness.label}
-              </p>
-              <p className="mt-1 font-tabular workspace-meta text-workspace-success">
-                {state.readiness.delta > 0
-                  ? `+${state.readiness.delta}`
-                  : state.readiness.delta}{" "}
-                · {state.readiness.currentScore}/100
-              </p>
-              <button
-                type="button"
-                onClick={onExplainReadiness}
-                className="mt-2 text-left workspace-meta font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40"
-              >
-                {copy.pulse.explain}
-              </button>
-            </div>
-          </div>
+          <ReadinessSummaryTrigger
+            assessment={state.readiness.assessment}
+            onOpen={onOpenReadiness}
+          />
         </section>
 
         <section className="border-b border-workspace-border p-4">

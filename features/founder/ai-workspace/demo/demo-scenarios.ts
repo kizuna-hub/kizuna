@@ -1,4 +1,5 @@
 import { aiWorkspaceVi } from "../copy/vi";
+import { novaLabsReadinessAssessment } from "../readiness/demo/readiness-demo-data";
 import type {
   AssistantResponseKind,
   AiWorkspaceMessage,
@@ -91,10 +92,10 @@ export const onboardingInitialEvidenceHealth: EvidenceHealthItem[] = [
 ];
 
 export const baselineReadiness: ReadinessState = {
-  currentScore: 54,
+  currentScore: novaLabsReadinessAssessment.overallScore,
   previousScore: 54,
-  delta: 0,
-  label: "Đang hình thành",
+  delta: novaLabsReadinessAssessment.delta,
+  label: novaLabsReadinessAssessment.label,
   explanation:
     "Vấn đề đã rõ, nhưng bằng chứng khách hàng và tín hiệu sử dụng lặp lại vẫn còn mỏng.",
   supportedBy: [
@@ -133,6 +134,7 @@ export const baselineReadiness: ReadinessState = {
       explanation: "Chưa có cohort đủ dài để xác nhận hành vi lặp lại.",
     },
   ],
+  assessment: structuredClone(novaLabsReadinessAssessment),
 };
 
 export const onboardingInitialReadiness: ReadinessState = {
@@ -278,6 +280,8 @@ export const baselineMentorRecommendation: MentorRecommendation = {
   name: "Jessica Lin",
   role: "Growth & Product Advisor",
   expertise: "SaaS onboarding · Product-led growth · Activation · Retention",
+  matchScore: 92,
+  matchConfidence: "high",
   whyHumanNow:
     "Bạn đã xác định được blocker và action, nhưng cách thiết kế thử nghiệm cần domain judgment để tránh kết quả khó diễn giải.",
   whyThisMentor:
@@ -325,16 +329,22 @@ export const baselineMentorRecommendation: MentorRecommendation = {
   availability: "10:00, Thứ Năm",
   alternatives: [
     {
-      id: "mentor-minh-tran",
-      name: "Minh Tran",
-      strength: "B2B SaaS onboarding",
-      tradeOff: "Ít kinh nghiệm về PLG",
+      id: "mentor-arjun-patel",
+      name: "Arjun Patel",
+      role: "Product Strategy Advisor",
+      expertise: "Product strategy · B2B SaaS · Positioning",
+      matchScore: 84,
+      strength: "Chiến lược sản phẩm và định vị B2B SaaS",
+      tradeOff: "Ít chuyên sâu hơn về retention analytics",
     },
     {
-      id: "mentor-maya-chen",
-      name: "Maya Chen",
-      strength: "Product onboarding",
-      tradeOff: "Không chuyên activation pricing",
+      id: "mentor-maya-thompson",
+      name: "Maya Thompson",
+      role: "Growth Operations Advisor",
+      expertise: "Growth operations · Experiment systems",
+      matchScore: 79,
+      strength: "Xây hệ thống growth operations có kỷ luật",
+      tradeOff: "Phù hợp hơn khi venture đã có traction ổn định",
     },
   ],
   decisionCycleId: baselineDecisionCycle.id,
@@ -347,9 +357,10 @@ export const baselineMentorRecommendation: MentorRecommendation = {
 
 const scenarioPrompts: Record<AiWorkspaceScenarioId, string[]> = {
   "onboarding-case-study": [
-    "Tăng trưởng người dùng đang chững lại. Mình nên tập trung vào đâu?",
-    "Điều gì còn chưa chắc chắn?",
-    "Bằng chứng nào đang có sẵn?",
+    "Phân tích pitch deck và cách cải thiện",
+    "Tôi nên làm gì tiếp theo?",
+    "Đánh giá traction hiện tại",
+    "Tìm mentor phù hợp",
   ],
   bottleneck: [
     "Vì sao đây là điểm nghẽn quan trọng nhất?",
@@ -478,6 +489,7 @@ export function createAiWorkspaceScenarioState(
     evidenceHealth: structuredClone(baselineEvidenceHealth),
     decisionCycle: structuredClone(baselineDecisionCycle),
     decisionCycleLifecycle: "not_created",
+    selectedModel: "kizuna-lite",
     view: "conversation",
   };
 

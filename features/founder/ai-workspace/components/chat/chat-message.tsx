@@ -14,6 +14,7 @@ import type {
   AiWorkspaceMessage,
   AiWorkspaceState,
 } from "../../types/ai-workspace.types";
+import type { ReadinessCriterionId } from "../../readiness/types/readiness.types";
 import { AssistantResponseRenderer } from "../responses/assistant-response-renderer";
 import { ResponseSourceFooter } from "../responses/response-source-footer";
 
@@ -66,6 +67,8 @@ export function ChatMessage({
   onOpenMentor,
   onDeferMentor,
   onOpenArtifact,
+  onOpenReadiness,
+  onVerifyReadinessEvidence,
 }: {
   message: AiWorkspaceMessage;
   state: AiWorkspaceState;
@@ -85,6 +88,8 @@ export function ChatMessage({
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
+  onOpenReadiness: (criterionId?: ReadinessCriterionId) => void;
+  onVerifyReadinessEvidence: () => void;
 }) {
   const founder = message.role === "founder";
 
@@ -227,6 +232,10 @@ export function ChatMessage({
             onOpenMentor={onOpenMentor}
             onDeferMentor={onDeferMentor}
             onOpenArtifact={onOpenArtifact}
+            onOpenReadiness={onOpenReadiness}
+            onVerifyReadinessEvidence={
+              onVerifyReadinessEvidence
+            }
           />
         </div>
       ) : null}

@@ -225,11 +225,8 @@ export const FounderAiWorkspaceWithVenture = React.memo(
             onRenameConversation={
               workspace.renameConversation
             }
-            onToggleConversationPin={
-              workspace.toggleConversationPin
-            }
-            onArchiveConversation={
-              workspace.archiveConversation
+            onDeleteConversation={
+              workspace.deleteConversation
             }
           />
         )}

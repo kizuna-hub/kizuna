@@ -277,6 +277,7 @@ export const aiWorkspaceVi: AiWorkspaceCopy = {
       network: "Mạng lưới",
       conversationOptions: "Tùy chọn cuộc trò chuyện",
       rename: "Đổi tên",
+      deleteConversation: "Xóa đoạn chat",
       archive: "Lưu trữ",
       noConversations: "Chưa có cuộc trò chuyện",
       expand: "Mở rộng thanh bên",

@@ -10,6 +10,7 @@ import { aiWorkspaceVi } from "../../copy/vi";
 import { useAiWorkspace } from "../../hooks/use-ai-workspace";
 import { createPinReference } from "../../services/pin-reference";
 import type { AiWorkspaceMessage } from "../../types/ai-workspace.types";
+import type { ReadinessCriterionId } from "../../readiness/types/readiness.types";
 import { ConversationSearch } from "./conversation-search";
 import { TopicDriftSuggestion } from "./topic-drift-suggestion";
 
@@ -33,6 +34,7 @@ export function ConversationWorkspaceView({
   onDismissTopicDrift,
   onOpenMentor,
   onOpenArtifact,
+  onOpenReadiness,
 }: {
   workspace: AiWorkspaceController;
   generating: boolean;
@@ -53,6 +55,7 @@ export function ConversationWorkspaceView({
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
+  onOpenReadiness: (criterionId?: ReadinessCriterionId) => void;
 }) {
   const copy = aiWorkspaceVi;
   const { state, longRun } = workspace;
@@ -139,6 +142,10 @@ export function ConversationWorkspaceView({
         onOpenMentor={onOpenMentor}
         onDeferMentor={workspace.deferMentor}
         onOpenArtifact={onOpenArtifact}
+        onOpenReadiness={onOpenReadiness}
+        onVerifyReadinessEvidence={
+          workspace.verifyReadinessEvidence
+        }
       />
 
       <div className="mx-auto w-full max-w-3xl px-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-3 sm:px-2">
@@ -179,6 +186,8 @@ export function ConversationWorkspaceView({
           onSelectSample={workspace.addSampleAttachment}
           onSelectFiles={workspace.addLocalFiles}
           onRemoveAttachment={workspace.removeAttachment}
+          selectedModel={state.selectedModel}
+          onModelChange={workspace.setAiModel}
         />
       </div>
     </div>

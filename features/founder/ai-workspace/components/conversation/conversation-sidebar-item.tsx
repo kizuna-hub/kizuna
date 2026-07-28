@@ -2,13 +2,14 @@
 
 import React from "react";
 import {
-  Archive,
+  Check,
   MessageSquarePlus,
   MoreHorizontal,
   Pencil,
   Pin,
-  PinOff,
   Target,
+  Trash2,
+  X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,27 +31,32 @@ export function ConversationSidebarItem({
   copy,
   onSelect,
   onRename,
-  onTogglePin,
-  onArchive,
+  onDelete,
 }: {
   session: ConversationSession;
   active: boolean;
   copy: AiWorkspaceCopy["longRun"];
   onSelect: () => void;
   onRename: (title: string) => void;
-  onTogglePin: () => void;
-  onArchive: () => void;
+  onDelete: () => void;
 }) {
   const [editing, setEditing] = React.useState(false);
   const [title, setTitle] = React.useState(session.title);
 
+  const cancelEditing = () => {
+    setTitle(session.title);
+    setEditing(false);
+  };
+
   if (editing) {
     return (
       <form
-        className="flex items-center gap-1 px-1"
+        className="flex items-center gap-1 px-0.5"
         onSubmit={(event) => {
           event.preventDefault();
-          onRename(title);
+          const nextTitle = title.trim();
+          if (!nextTitle) return;
+          onRename(nextTitle);
           setEditing(false);
         }}
       >
@@ -59,10 +65,29 @@ export function ConversationSidebarItem({
           onChange={(event) => setTitle(event.target.value)}
           aria-label={copy.sidebar.rename}
           autoFocus
-          className="h-9 min-w-0 border-workspace-border bg-workspace-panel workspace-control-text"
+          maxLength={80}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") cancelEditing();
+          }}
+          className="h-9 min-w-0 flex-1 border-workspace-border bg-workspace-panel workspace-control-text"
         />
-        <Button type="submit" size="sm">
-          {copy.common.save}
+        <Button
+          type="submit"
+          size="icon-sm"
+          variant="ghost"
+          disabled={!title.trim()}
+          aria-label={copy.common.save}
+        >
+          <Check className="size-3.5" />
+        </Button>
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="ghost"
+          onClick={cancelEditing}
+          aria-label={copy.common.cancel}
+        >
+          <X className="size-3.5" />
         </Button>
       </form>
     );
@@ -108,25 +133,22 @@ export function ConversationSidebarItem({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="border-workspace-border bg-workspace-panel"
+          sideOffset={4}
+          className="z-dropdown min-w-44 rounded-xl border-workspace-border bg-workspace-elevated p-1.5 shadow-framer-edge"
         >
-          <DropdownMenuItem onSelect={() => setEditing(true)}>
-            <Pencil className="size-4" />
+          <DropdownMenuItem
+            onSelect={() => setEditing(true)}
+            className="h-9 rounded-lg workspace-control-text"
+          >
+            <Pencil className="size-3.5" />
             {copy.sidebar.rename}
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onTogglePin}>
-            {session.isPinned ? (
-              <PinOff className="size-4" />
-            ) : (
-              <Pin className="size-4" />
-            )}
-            {session.isPinned
-              ? copy.common.unpin
-              : copy.common.pin}
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onArchive}>
-            <Archive className="size-4" />
-            {copy.sidebar.archive}
+          <DropdownMenuItem
+            onSelect={onDelete}
+            className="h-9 rounded-lg workspace-control-text text-workspace-danger focus:bg-workspace-danger-soft focus:text-workspace-danger"
+          >
+            <Trash2 className="size-3.5" />
+            {copy.sidebar.deleteConversation}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

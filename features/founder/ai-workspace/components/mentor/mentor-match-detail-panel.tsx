@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   CalendarCheck2,
   Check,
+  CheckCircle2,
   ChevronDown,
   Clock3,
   RefreshCw,
@@ -31,6 +32,7 @@ import { cn } from "@/lib/utils";
 import type { AiWorkspaceCopy } from "../../copy/types";
 import type {
   MentorDismissReason,
+  MentorConnectionRequest,
   MentorRecommendation,
   MentorSessionState,
 } from "../../types/ai-workspace.types";
@@ -64,6 +66,9 @@ export function MentorMatchDetailPanel({
   onUseOwnMentor,
   onTogglePreparation,
   onRefresh,
+  connectionRequest,
+  onCreateConnection,
+  onSendConnection,
 }: {
   mentor: MentorRecommendation;
   session?: MentorSessionState;
@@ -75,6 +80,9 @@ export function MentorMatchDetailPanel({
   onUseOwnMentor: () => void;
   onTogglePreparation: (itemId: string) => void;
   onRefresh: () => void;
+  connectionRequest?: MentorConnectionRequest;
+  onCreateConnection: () => void;
+  onSendConnection: () => void;
 }) {
   const [alternativesOpen, setAlternativesOpen] =
     React.useState(false);
@@ -147,6 +155,9 @@ export function MentorMatchDetailPanel({
               </p>
               <p className="mt-1 workspace-meta text-primary">
                 {mentor.expertise}
+              </p>
+              <p className="mt-2 font-tabular workspace-meta font-medium text-workspace-success">
+                Phù hợp {mentor.matchScore}% · Độ tin cậy cao
               </p>
             </div>
           </div>
@@ -371,7 +382,13 @@ export function MentorMatchDetailPanel({
                         className="py-3"
                       >
                         <p className="workspace-card-title text-ink">
-                          {alternative.name}
+                          {alternative.name}{" "}
+                          <span className="font-tabular workspace-meta font-medium text-primary">
+                            {alternative.matchScore}%
+                          </span>
+                        </p>
+                        <p className="mt-0.5 workspace-meta text-workspace-muted-text">
+                          {alternative.role} · {alternative.expertise}
                         </p>
                         <dl className="mt-2 grid gap-2">
                           <div>
@@ -403,9 +420,60 @@ export function MentorMatchDetailPanel({
 
       {!stale && !preparationMode ? (
         <div className="space-y-2 border-t border-workspace-border p-3">
+          {connectionRequest?.status === "sent" ? (
+            <div
+              role="status"
+              className="flex items-start gap-2 rounded-lg border border-workspace-success/30 bg-workspace-success-soft p-3"
+            >
+              <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-workspace-success" />
+              <div>
+                <p className="workspace-supporting font-medium text-ink">
+                  Đã gửi yêu cầu kết nối
+                </p>
+                <p className="mt-1 workspace-meta text-workspace-muted-text">
+                  Jessica sẽ nhận mục tiêu và context của Nova Labs.
+                  Yêu cầu trùng sẽ không được tạo thêm.
+                </p>
+              </div>
+            </div>
+          ) : connectionRequest ? (
+            <div className="rounded-lg border border-primary-border bg-primary-soft p-3">
+              <p className="workspace-eyebrow text-primary">
+                Yêu cầu kết nối
+              </p>
+              <p className="mt-2 workspace-supporting font-medium text-ink">
+                {connectionRequest.goal}
+              </p>
+              <p className="mt-1 workspace-meta text-workspace-muted-text">
+                {connectionRequest.context}
+              </p>
+              <p className="mt-2 rounded-md border border-workspace-border bg-workspace-panel p-2 workspace-meta text-ink">
+                {connectionRequest.message}
+              </p>
+              <Button
+                type="button"
+                size="sm"
+                className="mt-3 w-full"
+                onClick={onSendConnection}
+              >
+                Gửi yêu cầu kết nối
+              </Button>
+            </div>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              className="w-full"
+              onClick={onCreateConnection}
+            >
+              <UserRoundCheck className="size-3.5" />
+              Kết nối với {mentor.name}
+            </Button>
+          )}
           <Button
             type="button"
             size="sm"
+            variant="outline"
             className="w-full"
             onClick={onBook}
           >

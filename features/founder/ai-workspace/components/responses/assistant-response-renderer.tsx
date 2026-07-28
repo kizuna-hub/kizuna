@@ -3,11 +3,16 @@ import type {
   AiWorkspaceMessage,
   AiWorkspaceState,
 } from "../../types/ai-workspace.types";
+import type { ReadinessCriterionId } from "../../readiness/types/readiness.types";
 import { ActionProposalCard } from "./action-proposal-card";
 import { ArtifactPreviewCard } from "./artifact-preview-card";
 import { CompactInsightBlock } from "./compact-insight-block";
 import { ConfirmedStateRow } from "./confirmed-state-row";
 import { MentorInterventionCard } from "./mentor-intervention-card";
+import { NextActionPlanCard } from "./next-action-plan-card";
+import { PitchDeckReviewCard } from "./pitch-deck-review-card";
+import { ReadinessEvidenceCard } from "./readiness-evidence-card";
+import { TractionDiagnosisCard } from "./traction-diagnosis-card";
 
 export function AssistantResponseRenderer({
   message,
@@ -19,6 +24,8 @@ export function AssistantResponseRenderer({
   onOpenMentor,
   onDeferMentor,
   onOpenArtifact,
+  onOpenReadiness,
+  onVerifyReadinessEvidence,
 }: {
   message: AiWorkspaceMessage;
   state: AiWorkspaceState;
@@ -31,6 +38,8 @@ export function AssistantResponseRenderer({
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
+  onOpenReadiness: (criterionId?: ReadinessCriterionId) => void;
+  onVerifyReadinessEvidence: () => void;
 }) {
   if (message.role !== "assistant") return null;
 
@@ -57,6 +66,19 @@ export function AssistantResponseRenderer({
       ) : null;
 
     case "action_proposal":
+      if (structured?.type === "next-action") {
+        return (
+          <NextActionPlanCard
+            plan={structured.payload}
+            lifecycle={lifecycle}
+            cycleLifecycle={state.decisionCycleLifecycle}
+            onConfirm={() =>
+              onConfirmActionProposal(message.id)
+            }
+            onOpenCycle={onOpenCycle}
+          />
+        );
+      }
       return structured?.type === "suggested-action" ? (
         <ActionProposalCard
           proposal={structured.payload}
@@ -94,6 +116,37 @@ export function AssistantResponseRenderer({
       ) : null;
 
     case "artifact_preview":
+      if (structured?.type === "pitch-deck-review") {
+        return (
+          <PitchDeckReviewCard
+            review={structured.payload}
+            onOpenSources={() =>
+              onOpenReadiness("customer_evidence")
+            }
+          />
+        );
+      }
+      if (structured?.type === "traction-diagnosis") {
+        return (
+          <TractionDiagnosisCard
+            diagnosis={structured.payload}
+            onOpenReadiness={() =>
+              onOpenReadiness(
+                "traction_and_business_model",
+              )
+            }
+          />
+        );
+      }
+      if (structured?.type === "readiness-evidence") {
+        return (
+          <ReadinessEvidenceCard
+            evidence={structured.payload}
+            canonicalScore={state.readiness.currentScore}
+            onVerify={onVerifyReadinessEvidence}
+          />
+        );
+      }
       if (structured?.type === "material-analysis") {
         return (
           <ArtifactPreviewCard

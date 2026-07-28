@@ -221,6 +221,7 @@ export interface AiWorkspaceCopy {
       network: string;
       conversationOptions: string;
       rename: string;
+      deleteConversation: string;
       archive: string;
       noConversations: string;
       expand: string;

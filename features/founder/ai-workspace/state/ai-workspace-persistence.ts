@@ -12,7 +12,7 @@ import type { LongRunWorkspaceState } from "../types/long-run-workspace.types";
 
 export const AI_WORKSPACE_STORAGE_KEY =
   "kizuna-founder-ai-workspace-demo-v1";
-export const AI_WORKSPACE_STORAGE_VERSION = 4;
+export const AI_WORKSPACE_STORAGE_VERSION = 5;
 
 export type PersistedAiWorkspaceSession = Pick<
   AiWorkspaceState,
@@ -25,6 +25,8 @@ export type PersistedAiWorkspaceSession = Pick<
   | "decisionCycleLifecycle"
   | "mentorRecommendation"
   | "mentorSession"
+  | "mentorConnectionRequest"
+  | "selectedModel"
 > & {
   longRun?: LongRunWorkspaceState;
 };
@@ -71,7 +73,7 @@ export function parseAiWorkspaceEnvelope(
     if (
       !isRecord(parsed) ||
       !isRecord(parsed.sessions) ||
-      ![1, 2, 3, AI_WORKSPACE_STORAGE_VERSION].includes(
+      ![1, 2, 3, 4, AI_WORKSPACE_STORAGE_VERSION].includes(
         parsed.version as number,
       )
     ) {
@@ -103,6 +105,8 @@ export function toPersistedSession(
     decisionCycleLifecycle: state.decisionCycleLifecycle,
     mentorRecommendation: state.mentorRecommendation,
     mentorSession: state.mentorSession,
+    mentorConnectionRequest: state.mentorConnectionRequest,
+    selectedModel: state.selectedModel,
     longRun,
   };
 }
@@ -128,7 +132,13 @@ export function restoreAiSession(
   }
   return {
     ...initial,
-    readiness: persisted.readiness,
+    readiness: {
+      ...initial.readiness,
+      ...persisted.readiness,
+      assessment:
+        persisted.readiness.assessment ??
+        initial.readiness.assessment,
+    },
     currentFocus: {
       ...initial.currentFocus,
       ...persisted.currentFocus,
@@ -167,6 +177,9 @@ export function restoreAiSession(
         }
       : undefined,
     mentorSession: persisted.mentorSession,
+    mentorConnectionRequest: persisted.mentorConnectionRequest,
+    selectedModel:
+      persisted.selectedModel ?? initial.selectedModel,
   };
 }
 

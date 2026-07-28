@@ -9,6 +9,15 @@ function bump(state: LongRunWorkspaceState) {
   return state.stateVersion + 1;
 }
 
+function omitConversationValue<T>(
+  values: Record<string, T>,
+  conversationId: string,
+) {
+  const next = { ...values };
+  delete next[conversationId];
+  return next;
+}
+
 function statusHistoryReason(status: VentureMemoryStatus) {
   if (status === "verified") return "Founder xác nhận là context hiện tại.";
   if (status === "disputed") return "Founder đánh dấu cần tiếp tục làm rõ.";
@@ -149,6 +158,54 @@ export function longRunWorkspaceReducer(
                 updatedAt: "2026-07-27T09:47:00.000Z",
               }
             : session,
+        ),
+      };
+    }
+
+    case "delete-conversation": {
+      if (
+        !state.sessions.some(
+          (session) => session.id === action.conversationId,
+        )
+      ) {
+        return state;
+      }
+
+      const sessions = state.sessions.filter(
+        (session) => session.id !== action.conversationId,
+      );
+      const nextActiveSession = sessions.find(
+        (session) => !session.isArchived,
+      );
+      const deletingActive =
+        state.activeConversationId === action.conversationId;
+
+      return {
+        ...state,
+        stateVersion: bump(state),
+        sessions,
+        activeConversationId: deletingActive
+          ? (nextActiveSession?.id ?? "")
+          : state.activeConversationId,
+        lastConversationId:
+          state.lastConversationId === action.conversationId
+            ? (nextActiveSession?.id ?? "")
+            : state.lastConversationId,
+        messagesByConversation: omitConversationValue(
+          state.messagesByConversation,
+          action.conversationId,
+        ),
+        draftsByConversation: omitConversationValue(
+          state.draftsByConversation,
+          action.conversationId,
+        ),
+        visibleMessageCountByConversation: omitConversationValue(
+          state.visibleMessageCountByConversation,
+          action.conversationId,
+        ),
+        scrollTopByConversation: omitConversationValue(
+          state.scrollTopByConversation,
+          action.conversationId,
         ),
       };
     }

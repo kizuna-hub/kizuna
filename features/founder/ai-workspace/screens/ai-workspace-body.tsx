@@ -19,6 +19,8 @@ import { VenturePulsePanel } from "../components/venture-pulse/venture-pulse-pan
 import { aiWorkspaceVi } from "../copy/vi";
 import { useAiWorkspace } from "../hooks/use-ai-workspace";
 import { useConversationSearchController } from "../hooks/use-conversation-search-controller";
+import { ReadinessDetailPanel } from "../readiness/components/readiness-detail-panel";
+import type { ReadinessCriterionId } from "../readiness/types/readiness.types";
 
 type AiWorkspaceController = ReturnType<typeof useAiWorkspace>;
 
@@ -41,8 +43,10 @@ export function AiWorkspaceBody({
 }) {
   const [pulseOpen, setPulseOpen] = React.useState(false);
   const [panelView, setPanelView] = React.useState<
-    "pulse" | "mentor"
+    "pulse" | "mentor" | "readiness"
   >("pulse");
+  const [readinessCriterionId, setReadinessCriterionId] =
+    React.useState<ReadinessCriterionId>();
   const [cycleReviewing, setCycleReviewing] =
     React.useState(false);
   const mentorTriggerRef = React.useRef<HTMLElement | null>(
@@ -64,10 +68,17 @@ export function AiWorkspaceBody({
     onJumpHandled,
   });
 
-  const showReadinessExplanation = () => {
-    workspace.setView("conversation");
-    setPulseOpen(false);
-    void workspace.sendMessage(copy.prompts.explainReadiness);
+  const showReadinessExplanation = (
+    criterionId?: ReadinessCriterionId,
+  ) => {
+    if (document.activeElement instanceof HTMLElement) {
+      mentorTriggerRef.current = document.activeElement;
+    }
+    setReadinessCriterionId(criterionId);
+    setPanelView("readiness");
+    if (window.matchMedia("(max-width: 1279px)").matches) {
+      setPulseOpen(true);
+    }
   };
 
   const openMentorDetails = () => {
@@ -88,23 +99,31 @@ export function AiWorkspaceBody({
     );
   }, []);
 
+  const closeContextualDetails = React.useCallback(() => {
+    setPanelView("pulse");
+    setReadinessCriterionId(undefined);
+    window.requestAnimationFrame(() =>
+      mentorTriggerRef.current?.focus(),
+    );
+  }, []);
+
   React.useEffect(() => {
-    if (panelView !== "mentor") return;
+    if (panelView === "pulse") return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       setPulseOpen(false);
-      closeMentorDetails();
+      closeContextualDetails();
     };
     window.addEventListener("keydown", onKeyDown);
     return () =>
       window.removeEventListener("keydown", onKeyDown);
-  }, [closeMentorDetails, panelView]);
+  }, [closeContextualDetails, panelView]);
 
   const pulse = (
     <VenturePulsePanel
       state={state}
       copy={copy}
-      onExplainReadiness={showReadinessExplanation}
+      onOpenReadiness={() => showReadinessExplanation()}
       onOpenCycle={() => {
         workspace.setView("decision-cycle");
         setPulseOpen(false);
@@ -112,7 +131,24 @@ export function AiWorkspaceBody({
     />
   );
   const contextualPanel =
-    panelView === "mentor" && state.mentorRecommendation ? (
+    panelView === "readiness" ? (
+      <ReadinessDetailPanel
+        assessment={state.readiness.assessment}
+        initialCriterionId={readinessCriterionId}
+        onClose={closeContextualDetails}
+        onCreateCycle={() => {
+          workspace.activateDecisionCycle();
+          setPulseOpen(false);
+          closeContextualDetails();
+        }}
+        onDisputeContribution={
+          workspace.disputeReadinessContribution
+        }
+        onConfirmContribution={
+          workspace.confirmReadinessContribution
+        }
+      />
+    ) : panelView === "mentor" && state.mentorRecommendation ? (
       <MentorMatchDetailPanel
         mentor={state.mentorRecommendation}
         session={state.mentorSession}
@@ -130,6 +166,9 @@ export function AiWorkspaceBody({
           workspace.toggleMentorPreparation
         }
         onRefresh={workspace.refreshMentor}
+        connectionRequest={state.mentorConnectionRequest}
+        onCreateConnection={workspace.createMentorConnection}
+        onSendConnection={workspace.sendMentorConnection}
       />
     ) : (
       pulse
@@ -161,7 +200,7 @@ export function AiWorkspaceBody({
           {copy.workspace.loading}
         </div>
       ) : (
-        <div className="grid min-h-0 flex-1 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-5">
+        <div className="grid min-h-0 flex-1 xl:grid-cols-[minmax(0,1fr)_minmax(420px,460px)] xl:gap-5">
           <section className="flex min-h-0 min-w-0 flex-col">
             {state.view === "conversation" ? (
               <ConversationWorkspaceView
@@ -205,7 +244,8 @@ export function AiWorkspaceBody({
                   search.setTopicDriftDismissed(true)
                 }
                 onOpenMentor={openMentorDetails}
-                onOpenArtifact={onOpenArtifact}
+                 onOpenArtifact={onOpenArtifact}
+                 onOpenReadiness={showReadinessExplanation}
               />
             ) : (
               <DecisionCycleCanvas
@@ -243,14 +283,14 @@ export function AiWorkspaceBody({
         open={pulseOpen}
         onOpenChange={(open) => {
           setPulseOpen(open);
-          if (!open && panelView === "mentor") {
-            closeMentorDetails();
+          if (!open && panelView !== "pulse") {
+            closeContextualDetails();
           }
         }}
       >
         <SheetContent
           side="right"
-          className="w-[min(360px,calc(100vw-1rem))] gap-0 border-workspace-border bg-workspace-panel p-0 xl:hidden"
+          className="w-[min(500px,calc(100vw-0.5rem))] gap-0 border-workspace-border bg-workspace-panel p-0 xl:hidden"
         >
           <SheetHeader className="sr-only">
             <SheetTitle>{copy.pulse.title}</SheetTitle>

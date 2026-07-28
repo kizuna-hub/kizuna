@@ -64,6 +64,49 @@ test("drafts remain isolated when switching conversations", () => {
   );
 });
 
+test("deleting a conversation removes its local chat state and selects the next session", () => {
+  const initial = createLongRunDemoState("venture-a");
+  const deletedConversationId = initial.activeConversationId;
+  const expectedNextSession = initial.sessions.find(
+    (session) =>
+      session.id !== deletedConversationId &&
+      !session.isArchived,
+  );
+
+  const next = longRunWorkspaceReducer(initial, {
+    type: "delete-conversation",
+    conversationId: deletedConversationId,
+  });
+
+  assert.ok(
+    !next.sessions.some(
+      (session) => session.id === deletedConversationId,
+    ),
+  );
+  assert.equal(
+    next.messagesByConversation[deletedConversationId],
+    undefined,
+  );
+  assert.equal(
+    next.draftsByConversation[deletedConversationId],
+    undefined,
+  );
+  assert.equal(
+    next.visibleMessageCountByConversation[
+      deletedConversationId
+    ],
+    undefined,
+  );
+  assert.equal(
+    next.scrollTopByConversation[deletedConversationId],
+    undefined,
+  );
+  assert.equal(
+    next.activeConversationId,
+    expectedNextSession?.id,
+  );
+});
+
 test("long-run state persists per venture and migrates a v1 envelope safely", () => {
   const ai = createAiWorkspaceScenarioState(
     "venture-a",
