@@ -4,6 +4,8 @@ import test from "node:test";
 import {
   archiveDemoVenture,
   createDemoVenture,
+  deleteDemoVenture,
+  duplicateDemoVenture,
   getActiveVenture,
   getFilteredVentures,
   getLastVisitedPathForVenture,
@@ -11,6 +13,7 @@ import {
   getSupportCoverageForVenture,
   getVentureOverviewData,
   resetDemoState,
+  renameDemoVenture,
   restoreDemoState,
   serializeDemoWorkspaceState,
   setActiveVenture,
@@ -39,6 +42,10 @@ test("active venture selection updates valid ventures only", () => {
 
   assert.equal(getActiveVenture(selected)?.id, "venture-caremind");
   assert.equal(invalid, selected);
+  assert.equal(
+    setActiveVenture(selected, "venture-caremind"),
+    selected,
+  );
 });
 
 test("invalid active venture falls back to last visited or first accessible", () => {
@@ -69,6 +76,14 @@ test("last visited venture path is validated and persisted", () => {
     "/founder/projects/venture-caremind/evidence",
   );
   assert.equal(rejected, updated);
+  assert.equal(
+    setLastVisitedVenturePath(
+      updated,
+      "venture-caremind",
+      "/founder/projects/venture-caremind/evidence",
+    ),
+    updated,
+  );
 });
 
 test("next action and support selectors reflect canonical scenarios", () => {
@@ -273,6 +288,65 @@ test("venture creation activates the new project and archive falls back", () => 
     "archived",
   );
   assert.equal(getActiveVenture(archived)?.id, "venture-kizuna-hub");
+});
+
+test("project card actions rename, duplicate, and delete without orphaning scoped state", () => {
+  const seed = createDemoWorkspaceSeed();
+  const original = seed.ventures.find(
+    (venture) => venture.id === "venture-kizuna-hub",
+  )!;
+  const renamed = renameDemoVenture(
+    seed,
+    original.id,
+    "Kizuna Studio",
+  );
+  const renamedVenture = renamed.ventures.find(
+    (venture) => venture.id === original.id,
+  );
+
+  assert.equal(renamedVenture?.name, "Kizuna Studio");
+  assert.equal(
+    renamedVenture?.setup?.status,
+    original.setup?.status,
+  );
+
+  const duplicated = duplicateDemoVenture(
+    renamed,
+    original.id,
+  );
+  assert.equal(
+    duplicated.state.ventures.some(
+      (venture) =>
+        venture.id === duplicated.ventureId &&
+        venture.name === "Kizuna Studio Copy",
+    ),
+    true,
+  );
+
+  const deleted = deleteDemoVenture(
+    duplicated.state,
+    duplicated.ventureId!,
+  );
+  assert.equal(
+    deleted.ventures.some(
+      (venture) => venture.id === duplicated.ventureId,
+    ),
+    false,
+  );
+  assert.equal(
+    deleted.decisions.some(
+      (decision) =>
+        decision.ventureId === duplicated.ventureId,
+    ),
+    false,
+  );
+  assert.equal(
+    deleted.baselines.some(
+      (baseline) =>
+        baseline.ventureId === duplicated.ventureId,
+    ),
+    false,
+  );
 });
 
 test("founder entry resolves zero, one, many, and archived continuity", () => {

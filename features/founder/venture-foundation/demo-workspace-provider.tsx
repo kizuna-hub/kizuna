@@ -10,6 +10,9 @@ import {
   archiveDemoVenture as archiveDemoVentureState,
   confirmDemoVentureSetup as confirmDemoVentureSetupState,
   createDemoVenture as createDemoVentureState,
+  deleteDemoVenture as deleteDemoVentureState,
+  duplicateDemoVenture as duplicateDemoVentureState,
+  renameDemoVenture as renameDemoVentureState,
   resetDemoState as createResetState,
   restoreDemoState as parseRestoredState,
   serializeDemoWorkspaceState,
@@ -47,6 +50,12 @@ type DemoWorkspaceContextValue = {
   ) => void;
   confirmVentureSetup: (ventureId: VentureId) => boolean;
   archiveDemoVenture: (ventureId: VentureId) => void;
+  duplicateDemoVenture: (ventureId: VentureId) => VentureId | undefined;
+  renameDemoVenture: (
+    ventureId: VentureId,
+    name: string,
+  ) => void;
+  deleteDemoVenture: (ventureId: VentureId) => void;
   replaceDemoState: (state: DemoWorkspaceState) => void;
   restoreDemoState: () => void;
   resetDemoState: () => void;
@@ -108,10 +117,12 @@ export function DemoWorkspaceProvider({
 
   const setActiveVenture = React.useCallback(
     (ventureId: VentureId) => {
+      const currentState = stateRef.current;
       const nextState = setActiveVentureState(
-        stateRef.current,
+        currentState,
         ventureId,
       );
+      if (nextState === currentState) return;
       stateRef.current = nextState;
       setState(nextState);
     },
@@ -120,11 +131,13 @@ export function DemoWorkspaceProvider({
 
   const setLastVisitedVenturePath = React.useCallback(
     (ventureId: VentureId, path: string) => {
+      const currentState = stateRef.current;
       const nextState = setLastVisitedVenturePathState(
-        stateRef.current,
+        currentState,
         ventureId,
         path,
       );
+      if (nextState === currentState) return;
       stateRef.current = nextState;
       setState(nextState);
     },
@@ -182,6 +195,44 @@ export function DemoWorkspaceProvider({
     [],
   );
 
+  const duplicateDemoVenture = React.useCallback(
+    (ventureId: VentureId) => {
+      const result = duplicateDemoVentureState(
+        stateRef.current,
+        ventureId,
+      );
+      stateRef.current = result.state;
+      setState(result.state);
+      return result.ventureId;
+    },
+    [],
+  );
+
+  const renameDemoVenture = React.useCallback(
+    (ventureId: VentureId, name: string) => {
+      const nextState = renameDemoVentureState(
+        stateRef.current,
+        ventureId,
+        name,
+      );
+      stateRef.current = nextState;
+      setState(nextState);
+    },
+    [],
+  );
+
+  const deleteDemoVenture = React.useCallback(
+    (ventureId: VentureId) => {
+      const nextState = deleteDemoVentureState(
+        stateRef.current,
+        ventureId,
+      );
+      stateRef.current = nextState;
+      setState(nextState);
+    },
+    [],
+  );
+
   const restoreDemoState = React.useCallback(() => {
     const stored = workspaceStorage.load();
     setState(parseRestoredState(stored));
@@ -226,6 +277,9 @@ export function DemoWorkspaceProvider({
       updateVentureSetup,
       confirmVentureSetup,
       archiveDemoVenture,
+      duplicateDemoVenture,
+      renameDemoVenture,
+      deleteDemoVenture,
       replaceDemoState,
       restoreDemoState,
       resetDemoState,
@@ -234,11 +288,14 @@ export function DemoWorkspaceProvider({
     }),
     [
       archiveDemoVenture,
+      deleteDemoVenture,
+      duplicateDemoVenture,
       createDemoVenture,
       confirmVentureSetup,
       decisionLoopRepository,
       hydrated,
       resetDemoState,
+      renameDemoVenture,
       restoreDemoState,
       replaceDemoState,
       setActiveVenture,

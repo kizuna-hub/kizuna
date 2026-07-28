@@ -24,6 +24,7 @@ import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 import { ProjectThumbnail } from "./project-thumbnail";
+import { ProjectCardActions } from "./project-card-actions";
 
 const projectStatusLabels: Record<Venture["status"], string> = {
   setup: "Setup",
@@ -60,6 +61,9 @@ export function ProjectCard({
 }) {
   const {
     state,
+    deleteDemoVenture,
+    duplicateDemoVenture,
+    renameDemoVenture,
     setActiveVenture,
     setLastVisitedVenturePath,
   } = useDemoWorkspace();
@@ -205,7 +209,7 @@ export function ProjectCard({
         href={projectDestination}
         aria-label={`${compactActionLabel} for ${venture.name}`}
         onClick={() => rememberDestination(projectDestination)}
-        className="block rounded-xl outline-none transition-transform duration-200 motion-reduce:transform-none lg:hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/50"
+        className="block rounded-lg outline-none transition-transform duration-200 motion-reduce:transform-none lg:hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/50"
       >
         <ProjectThumbnail
           venture={venture}
@@ -254,6 +258,19 @@ export function ProjectCard({
           <p className="mt-1 workspace-meta text-workspace-muted-text">
             {activityLabel}
           </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-0.5 opacity-100 transition-opacity motion-reduce:transition-none sm:pointer-events-none sm:opacity-0 sm:group-hover:pointer-events-auto sm:group-hover:opacity-100 sm:group-focus-within:pointer-events-auto sm:group-focus-within:opacity-100">
+          <ProjectCardActions
+            projectName={venture.name}
+            projectPath={projectDestination}
+            onDuplicate={() =>
+              duplicateDemoVenture(venture.id)
+            }
+            onRename={(name) =>
+              renameDemoVenture(venture.id, name)
+            }
+            onDelete={() => deleteDemoVenture(venture.id)}
+          />
         </div>
       </div>
     </article>

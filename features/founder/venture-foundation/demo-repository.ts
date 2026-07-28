@@ -667,6 +667,12 @@ export function setActiveVenture(
 ) {
   const venture = getVentureById(state, ventureId);
   if (!isAccessibleVenture(venture)) return state;
+  if (
+    state.currentUser.activeVentureId === ventureId &&
+    state.currentUser.lastVisitedVentureId === ventureId
+  ) {
+    return state;
+  }
 
   return {
     ...state,
@@ -686,6 +692,14 @@ export function setLastVisitedVenturePath(
   const venture = getVentureById(state, ventureId);
   if (!isAccessibleVenture(venture)) return state;
   if (!isValidVenturePath(path, ventureId)) return state;
+  if (
+    state.currentUser.activeVentureId === ventureId &&
+    state.currentUser.lastVisitedVentureId === ventureId &&
+    state.currentUser.lastVisitedPathByVenture?.[ventureId] ===
+      path
+  ) {
+    return state;
+  }
 
   return {
     ...state,
@@ -1153,6 +1167,164 @@ export function archiveDemoVenture(
       : state.currentUser;
 
   return { ...state, ventures, currentUser };
+}
+
+export function renameDemoVenture(
+  state: DemoWorkspaceState,
+  ventureId: VentureId,
+  name: string,
+) {
+  const nextName = name.trim();
+  const venture = getVentureById(state, ventureId);
+  if (
+    !venture ||
+    venture.status === "archived" ||
+    !nextName ||
+    nextName === venture.name
+  ) {
+    return state;
+  }
+
+  const updatedAt = new Date().toISOString();
+  return {
+    ...state,
+    ventures: state.ventures.map((item) =>
+      item.id === ventureId
+        ? {
+            ...item,
+            name: nextName,
+            slug: slugify(nextName),
+            lastUpdatedAt: updatedAt,
+            setup: item.setup
+              ? {
+                  ...item.setup,
+                  lastUpdatedAt: updatedAt,
+                }
+              : undefined,
+          }
+        : item,
+    ),
+  };
+}
+
+export function duplicateDemoVenture(
+  state: DemoWorkspaceState,
+  ventureId: VentureId,
+) {
+  const venture = getVentureById(state, ventureId);
+  if (!venture || venture.status === "archived") {
+    return { ventureId: undefined, state };
+  }
+
+  const duplicated = createDemoVenture(state, {
+    id: `venture-${venture.slug}-copy`,
+    requestId: `duplicate-${ventureId}-${Date.now()}`,
+    creationIntent: "empty-venture",
+    name: `${venture.name} Copy`,
+    oneLineDescription: venture.oneLineDescription,
+    stage: venture.stage,
+    tags: [...venture.tags],
+    currentPhase: "venture-context",
+    initialSetupStepId: "problem",
+  });
+  return duplicated;
+}
+
+export function deleteDemoVenture(
+  state: DemoWorkspaceState,
+  ventureId: VentureId,
+) {
+  const venture = getVentureById(state, ventureId);
+  if (!venture) return state;
+
+  const ventures = state.ventures.filter(
+    (item) => item.id !== ventureId,
+  );
+  const nextActive = ventures.find(
+    (item) => item.status !== "archived",
+  );
+  const lastVisitedPathByVenture = Object.fromEntries(
+    Object.entries(
+      state.currentUser.lastVisitedPathByVenture ?? {},
+    ).filter(([id]) => id !== ventureId),
+  );
+  const ventureCreationRequestMap = Object.fromEntries(
+    Object.entries(
+      state.uiPreferences.ventureCreationRequestMap ?? {},
+    ).filter(([, id]) => id !== ventureId),
+  );
+
+  return {
+    ...state,
+    ventures,
+    sources: state.sources.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    baselines: state.baselines.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    challengeScans: state.challengeScans.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    challengeItems: state.challengeItems.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    decisions: state.decisions.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    experiments: state.experiments.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    evidenceRequirements: state.evidenceRequirements.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    cycleTasks: state.cycleTasks.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    actionCycles: state.actionCycles.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    supportRelationships: state.supportRelationships.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    programs: state.programs.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    evidence: state.evidence.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    feedback: state.feedback.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    outcomes: state.outcomes.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    readinessDeltas: state.readinessDeltas.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    opportunities: state.opportunities.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    activities: state.activities.filter(
+      (item) => item.ventureId !== ventureId,
+    ),
+    currentUser: {
+      ...state.currentUser,
+      activeVentureId:
+        state.currentUser.activeVentureId === ventureId
+          ? nextActive?.id
+          : state.currentUser.activeVentureId,
+      lastVisitedVentureId:
+        state.currentUser.lastVisitedVentureId === ventureId
+          ? nextActive?.id
+          : state.currentUser.lastVisitedVentureId,
+      lastVisitedPathByVenture,
+    },
+    uiPreferences: {
+      ...state.uiPreferences,
+      ventureCreationRequestMap,
+    },
+  };
 }
 
 export const ventureStageLabels: Record<VentureStage, string> = {

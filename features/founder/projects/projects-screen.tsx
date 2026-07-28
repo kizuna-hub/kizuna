@@ -136,7 +136,10 @@ export function ProjectsScreen() {
   };
 
   return (
-    <FounderShell>
+    <FounderShell
+      contentWidth="fluid"
+      contentClassName="max-w-[1240px]"
+    >
       <div className="space-y-5">
         <header className="flex flex-col gap-3 border-b border-workspace-border pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -393,7 +396,7 @@ export function ProjectsScreen() {
                 <div
                   className={cn(
                     view === "grid"
-                      ? "grid gap-x-5 gap-y-6 sm:grid-cols-2 xl:grid-cols-3"
+                      ? "grid gap-x-4 gap-y-6 sm:grid-cols-2 xl:grid-cols-3"
                       : "space-y-3",
                   )}
                 >
