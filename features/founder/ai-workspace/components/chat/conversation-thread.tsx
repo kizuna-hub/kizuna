@@ -174,11 +174,11 @@ export function ConversationThread({
           queueScrollPositionSave(scrollTop);
         }
       }}
-      className="no-scrollbar min-h-0 flex-1 scroll-auto overflow-y-auto px-1 py-4 [overflow-anchor:none] sm:px-2"
+      className="no-scrollbar min-h-0 flex-1 scroll-auto overflow-y-auto px-4 py-4 [overflow-anchor:none]"
       aria-label={copy.chat.regionLabel}
       aria-live="polite"
     >
-      <div className="mx-auto w-full max-w-3xl space-y-5">
+      <div className="mx-auto w-full max-w-2xl space-y-5">
         {hasOlderMessages ? (
           <div className="flex justify-center">
             <Button

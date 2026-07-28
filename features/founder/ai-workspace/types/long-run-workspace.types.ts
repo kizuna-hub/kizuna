@@ -1,4 +1,7 @@
-import type { AiWorkspaceMessage } from "./ai-workspace.types";
+import type {
+  AiWorkspaceMessage,
+  MockAttachment,
+} from "./ai-workspace.types";
 
 export type ConversationCategory =
   | "general"
@@ -264,6 +267,7 @@ export interface ScopedAiRequest {
   ventureId: string;
   conversationId: string;
   stateVersion: number;
+  surface: "main" | "panel";
 }
 
 export interface ContextAssemblyInput {
@@ -295,6 +299,7 @@ export interface LongRunWorkspaceState {
   lastConversationId: string;
   messagesByConversation: Record<string, AiWorkspaceMessage[]>;
   draftsByConversation: Record<string, string>;
+  attachmentsByConversation: Record<string, MockAttachment[]>;
   visibleMessageCountByConversation: Record<string, number>;
   scrollTopByConversation: Record<string, number>;
   memory: VentureMemoryItem[];
@@ -313,6 +318,7 @@ export type LongRunWorkspaceAction =
       type: "create-conversation";
       session: ConversationSession;
       messages: AiWorkspaceMessage[];
+      activate?: boolean;
     }
   | {
       type: "rename-conversation";
@@ -331,6 +337,11 @@ export type LongRunWorkspaceAction =
       type: "sync-messages";
       conversationId: string;
       messages: AiWorkspaceMessage[];
+    }
+  | {
+      type: "set-attachments";
+      conversationId: string;
+      attachments: MockAttachment[];
     }
   | { type: "load-older"; conversationId: string }
   | {

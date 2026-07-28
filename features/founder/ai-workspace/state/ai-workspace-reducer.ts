@@ -37,7 +37,7 @@ function createMentorSession(
     mentorId: mentor.id,
     mentorName: mentor.name,
     mentorRole: mentor.role,
-    goal: "Chốt thiết kế thử nghiệm activation.",
+    goal: "Thiết kế pilot 14 ngày cho CampusFlow.",
     scheduledAt: "2026-07-30T03:00:00.000Z",
     displayTime: "10:00, Thứ Năm",
     status,
@@ -209,6 +209,12 @@ export function aiWorkspaceReducer(
         lastRequest: undefined,
       };
 
+    case "set-suggested-prompts":
+      return {
+        ...state,
+        suggestedPrompts: action.prompts,
+      };
+
     case "cancel-request":
       return {
         ...state,
@@ -317,22 +323,22 @@ export function aiWorkspaceReducer(
       }
       const readiness = {
         ...state.readiness,
-        currentScore: 61,
-        previousScore: 54,
-        delta: 7,
+        currentScore: 68,
+        previousScore: 65,
+        delta: 3,
         label: "Đang tiến triển",
         explanation:
-          "Dữ liệu thử nghiệm đã xác nhận activation là một phần của điểm nghẽn. Điểm tăng vì đã có tín hiệu hành vi, không phải chỉ vì một file được thêm vào.",
+          "Evidence pilot đã xác nhận repeat usage trong workflow thật. Điểm tăng vì có tín hiệu hành vi, không phải chỉ vì thêm một file.",
         supportedBy: [
           ...state.readiness.supportedBy,
-          "Cohort onboarding mới có activation cao hơn 11%",
+          "Ít nhất 3/5 thành viên quay lại dùng core flow",
         ],
         missingEvidence: [
-          "Cần thêm một cohort để kiểm tra tính lặp lại",
-          "Cần góc nhìn chuyên môn về ngưỡng rollout",
+          "Cần thêm một câu lạc bộ để kiểm tra tính lặp lại",
+          "Cần review phần việc vẫn xử lý ngoài CampusFlow",
         ],
         unlockAction:
-          "Review ngưỡng thành công với một chuyên gia product growth trước khi rollout rộng.",
+          "Review pilot learning trước khi mở rộng sang câu lạc bộ thứ hai.",
         breakdown: state.readiness.breakdown.map((dimension) =>
           dimension.id === "customer-evidence"
             ? {
@@ -399,7 +405,7 @@ export function aiWorkspaceReducer(
           completedSteps: [...orderedCycleSteps],
           reviewCompleted: true,
           reviewSummary:
-            "Activation tăng 11%, thấp hơn ngưỡng 15% nhưng đủ để xác nhận onboarding là một phần của điểm nghẽn.",
+            "Pilot đã tạo evidence về repeat usage; cần review trước khi mở rộng.",
         },
       };
 
@@ -613,10 +619,10 @@ export function aiWorkspaceReducer(
           number
         >
       > = {
-        customer_evidence: 58,
-        solution_validation: 61,
-        traction_and_business_model: 54,
-        decision_and_execution: 74,
+        customer_discovery_and_evidence: 67,
+        prototype_and_learning: 63,
+        market_signal_and_commitment: 52,
+        experiment_and_execution_discipline: 75,
       };
       const criteria = currentAssessment.criteria.map(
         (criterion) => {
@@ -632,7 +638,7 @@ export function aiWorkspaceReducer(
             score: nextScore,
             delta: nextScore - criterion.score,
             confidence:
-              criterion.id === "solution_validation"
+              criterion.id === "prototype_and_learning"
                 ? ("high" as const)
                 : criterion.confidence,
             contributions: [
@@ -703,9 +709,9 @@ export function aiWorkspaceReducer(
           breakdown: state.readiness.breakdown.map((dimension) => {
             const mappedId =
               dimension.id === "customer-evidence"
-                ? "customer_evidence"
+                ? "customer_discovery_and_evidence"
                 : dimension.id === "execution"
-                  ? "decision_and_execution"
+                  ? "experiment_and_execution_discipline"
                   : undefined;
             const criterion = criteria.find(
               (item) => item.id === mappedId,

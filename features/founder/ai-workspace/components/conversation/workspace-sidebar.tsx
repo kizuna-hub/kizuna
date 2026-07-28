@@ -43,6 +43,7 @@ export function WorkspaceSidebar({
   onSelectConversation,
   onRenameConversation,
   onDeleteConversation,
+  onOpenConversationInPanel,
 }: {
   collapsed: boolean;
   onNavigate?: () => void;
@@ -62,6 +63,9 @@ export function WorkspaceSidebar({
     title: string,
   ) => void;
   onDeleteConversation: (conversationId: string) => void;
+  onOpenConversationInPanel: (
+    conversationId: string,
+  ) => void;
 }) {
   const { state } = useDemoWorkspace();
   const user = getCurrentUser(state);
@@ -165,6 +169,9 @@ export function WorkspaceSidebar({
                     }
                     onDelete={() =>
                       onDeleteConversation(session.id)
+                    }
+                    onOpenInPanel={() =>
+                      onOpenConversationInPanel(session.id)
                     }
                   />
                 ))}

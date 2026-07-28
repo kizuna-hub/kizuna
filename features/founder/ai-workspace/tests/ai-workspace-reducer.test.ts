@@ -211,7 +211,10 @@ test("booking a mentor is idempotent and creates one compact session state", asy
     await respond(state, "Đề xuất cố vấn phù hợp"),
   );
 
-  assert.equal(state.mentorRecommendation?.name, "Jessica Lin");
+  assert.equal(
+    state.mentorRecommendation?.name,
+    "Trần Minh Quân",
+  );
   assert.equal(
     state.messages.at(-1)?.responseKind,
     "mentor_intervention",
@@ -292,7 +295,7 @@ test("decision cycle advances one step at a time and keeps completed summaries",
   ]);
 });
 
-test("evidence update changes readiness and review unlocks Jessica", () => {
+test("evidence update changes readiness and review unlocks the CampusFlow mentor", () => {
   let state = createAiWorkspaceScenarioState(
     "venture-kizuna-hub",
     "decision-cycle",
@@ -301,8 +304,8 @@ test("evidence update changes readiness and review unlocks Jessica", () => {
     type: "submit-cycle-evidence",
   });
 
-  assert.equal(state.readiness.currentScore, 61);
-  assert.equal(state.readiness.delta, 7);
+  assert.equal(state.readiness.currentScore, 68);
+  assert.equal(state.readiness.delta, 3);
   assert.equal(state.decisionCycle.currentStep, "review");
   assert.equal(state.decisionCycle.evidenceSubmitted, true);
   assert.ok(
@@ -317,7 +320,10 @@ test("evidence update changes readiness and review unlocks Jessica", () => {
   });
   assert.equal(state.decisionCycle.reviewCompleted, true);
   assert.equal(state.decisionCycleLifecycle, "completed");
-  assert.equal(state.mentorRecommendation?.name, "Jessica Lin");
+  assert.equal(
+    state.mentorRecommendation?.name,
+    "Trần Minh Quân",
+  );
 
   const preparationItem =
     state.mentorRecommendation?.preparation[3];

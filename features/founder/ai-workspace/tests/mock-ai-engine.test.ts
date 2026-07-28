@@ -76,8 +76,8 @@ test("the onboarding case study starts from the required founder baseline", () =
     "onboarding-case-study",
   );
 
-  assert.equal(state.readiness.currentScore, 61);
-  assert.equal(state.readiness.delta, 7);
+  assert.equal(state.readiness.currentScore, 65);
+  assert.equal(state.readiness.delta, 4);
   assert.equal(state.currentFocus.label, "Chưa xác định");
   assert.equal(
     state.evidenceHealth.filter(
@@ -182,15 +182,15 @@ test("pitch deck analysis returns a deterministic improvement preview without re
   assert.equal(structured.payload.weaknesses.length, 3);
   assert.deepEqual(
     structured.payload.projectedReadiness.verifiedEvidenceRange,
-    [66, 68],
+    [68, 71],
   );
   assert.deepEqual(
     response.proposedPatches.materialAnalysis?.fileNames,
-    ["PitchDeck.pdf"],
+    ["CampusFlow-PitchDeck-v2.pdf"],
   );
 });
 
-test("evidence submission produces an explainable +7 readiness patch", async () => {
+test("verified pilot evidence produces an explainable readiness patch", async () => {
   const response = await createMockAiWorkspaceEngine({
     timing: "instant",
   }).respond(
@@ -201,15 +201,15 @@ test("evidence submission produces an explainable +7 readiness patch", async () 
     requireStructured(response).type,
     "evidence-review",
   );
-  assert.equal(response.proposedPatches.readiness?.currentScore, 61);
-  assert.equal(response.proposedPatches.readiness?.delta, 7);
+  assert.equal(response.proposedPatches.readiness?.currentScore, 68);
+  assert.equal(response.proposedPatches.readiness?.delta, 3);
   assert.match(
     response.proposedPatches.readiness?.explanation ?? "",
     /không phải chỉ vì một file/i,
   );
 });
 
-test("direct mentor requests recommend Jessica without requiring a decision cycle", async () => {
+test("direct mentor requests recommend Trần Minh Quân without a multi-step gate", async () => {
   const engine = createMockAiWorkspaceEngine({
     timing: "instant",
   });
@@ -223,9 +223,12 @@ test("direct mentor requests recommend Jessica without requiring a decision cycl
   if (directStructured.type !== "mentor-recommendation") {
     assert.fail("Expected mentor response");
   }
-  assert.equal(directStructured.payload?.name, "Jessica Lin");
+  assert.equal(
+    directStructured.payload?.name,
+    "Trần Minh Quân",
+  );
   assert.equal(directStructured.payload?.matchScore, 92);
-  assert.match(direct.assistantMessage, /không cần tạo Decision Cycle/i);
+  assert.match(direct.assistantMessage, /không cần hỏi thêm nhiều bước/i);
   assert.equal(
     direct.suggestedPrompts.includes("Tiếp tục với AI"),
     false,
@@ -254,7 +257,7 @@ test("an explicit mentor request can reopen a previously deferred recommendation
   assert.equal(response.responseKind, "mentor_intervention");
   assert.equal(structured.type, "mentor-recommendation");
   if (structured.type === "mentor-recommendation") {
-    assert.equal(structured.payload?.name, "Jessica Lin");
+    assert.equal(structured.payload?.name, "Trần Minh Quân");
     assert.equal(structured.payload?.status, "recommended");
   }
   assert.match(response.assistantMessage, /92%/i);
@@ -277,7 +280,7 @@ test("reviewing submitted evidence completes the cycle and unlocks one mentor", 
   );
   assert.equal(
     response.proposedPatches.mentorRecommendation?.name,
-    "Jessica Lin",
+    "Trần Minh Quân",
   );
 });
 

@@ -5,6 +5,7 @@ import {
   Check,
   MessageSquarePlus,
   MoreHorizontal,
+  PanelRightOpen,
   Pencil,
   Pin,
   Target,
@@ -32,6 +33,7 @@ export function ConversationSidebarItem({
   onSelect,
   onRename,
   onDelete,
+  onOpenInPanel,
 }: {
   session: ConversationSession;
   active: boolean;
@@ -39,6 +41,7 @@ export function ConversationSidebarItem({
   onSelect: () => void;
   onRename: (title: string) => void;
   onDelete: () => void;
+  onOpenInPanel: () => void;
 }) {
   const [editing, setEditing] = React.useState(false);
   const [title, setTitle] = React.useState(session.title);
@@ -119,6 +122,20 @@ export function ConversationSidebarItem({
           <Pin className="size-3 shrink-0 text-primary" />
         ) : null}
       </button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        onClick={onOpenInPanel}
+        className={cn(
+          "opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none",
+          active && "opacity-70",
+        )}
+        aria-label={`Mở ${session.title} trong panel`}
+        title="Mở trong panel"
+      >
+        <PanelRightOpen className="size-3.5" />
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button

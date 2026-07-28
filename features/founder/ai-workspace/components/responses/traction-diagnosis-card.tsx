@@ -1,4 +1,4 @@
-import { ArrowRight, Gauge, LockKeyhole } from "lucide-react";
+import { ArrowRight, Gauge, Radar } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -56,10 +56,10 @@ export function TractionDiagnosisCard({
         ))}
       </div>
       <div className="mt-3 flex items-start gap-2 rounded-lg border border-workspace-warning/25 bg-workspace-warning-soft p-3">
-        <LockKeyhole className="mt-0.5 size-4 shrink-0 text-workspace-warning" />
+        <Radar className="mt-0.5 size-4 shrink-0 text-workspace-warning" />
         <div>
           <p className="workspace-supporting font-medium text-ink">
-            Cap traction: {diagnosis.capScore}/100
+            Kết luận: đủ điều kiện chạy pilot nhỏ
           </p>
           <p className="mt-1 workspace-meta text-workspace-muted-text">
             {diagnosis.scaleThresholds.join(" · ")}
@@ -67,7 +67,7 @@ export function TractionDiagnosisCard({
         </div>
       </div>
       <p className="mt-3 workspace-meta text-workspace-warning">
-        Dự kiến · Chưa cập nhật điểm hiện tại: traction{" "}
+        Dự kiến · Chưa cập nhật điểm hiện tại: tín hiệu thị trường{" "}
         {diagnosis.projectedTraction[0]}–
         {diagnosis.projectedTraction[1]} · readiness{" "}
         {diagnosis.projectedReadiness[0]}–
@@ -80,7 +80,7 @@ export function TractionDiagnosisCard({
         className="mt-3 w-full"
         onClick={onOpenReadiness}
       >
-        Xem tiêu chí traction
+        Xem evidence
         <ArrowRight className="size-3.5" />
       </Button>
     </section>

@@ -158,19 +158,18 @@ function createSessions(ventureId: string): ConversationSession[] {
     {
       id: "conversation-activation",
       ventureId,
-      title: "Phân tích onboarding activation",
-      category: "decision_cycle",
-      relatedDecisionCycleId: "cycle-onboarding-activation",
+      title: "Cuộc trò chuyện mới",
+      category: "general",
       createdAt: "2026-07-27T02:20:00.000Z",
       updatedAt: NOW,
-      isPinned: true,
+      isPinned: false,
       isArchived: false,
       summaryStatus: "draft",
     },
     {
       id: "conversation-pricing",
       ventureId,
-      title: "Xác thực willingness to pay",
+      title: "Tôi nên làm gì tiếp theo?",
       category: "decision_cycle",
       relatedDecisionCycleId: "cycle-pricing",
       createdAt: "2026-07-21T03:00:00.000Z",
@@ -182,7 +181,7 @@ function createSessions(ventureId: string): ConversationSession[] {
     {
       id: "conversation-pitch",
       ventureId,
-      title: "Phân tích Pitch Deck v5",
+      title: "Phân tích pitch deck",
       category: "material_analysis",
       relatedMaterialIds: ["material-pitch-v5"],
       createdAt: "2026-07-16T02:00:00.000Z",
@@ -194,7 +193,7 @@ function createSessions(ventureId: string): ConversationSession[] {
     {
       id: "conversation-mentor",
       ventureId,
-      title: "Chuẩn bị phiên mentor growth",
+      title: "Tìm mentor phù hợp",
       category: "mentor_preparation",
       createdAt: "2026-06-28T02:00:00.000Z",
       updatedAt: "2026-06-28T03:00:00.000Z",
@@ -205,7 +204,7 @@ function createSessions(ventureId: string): ConversationSession[] {
     {
       id: "conversation-opportunity",
       ventureId,
-      title: "Đánh giá chương trình LaunchPad",
+      title: "Đánh giá tín hiệu thị trường",
       category: "opportunity_review",
       createdAt: "2026-05-10T02:00:00.000Z",
       updatedAt: "2026-05-10T03:00:00.000Z",
@@ -871,6 +870,7 @@ export function createLongRunDemoState(
       "conversation-activation": "",
       "conversation-pricing": "So sánh gói 49 USD và 59 USD",
     },
+    attachmentsByConversation: {},
     visibleMessageCountByConversation: {
       "conversation-activation": 12,
       "conversation-pricing": 20,

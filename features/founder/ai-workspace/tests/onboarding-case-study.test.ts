@@ -53,7 +53,7 @@ function appendAssistant(
   });
 }
 
-test("Nova Labs onboarding flow moves from diagnosis to one booked mentor session", async () => {
+test("CampusFlow moves from diagnosis to one booked mentor session", async () => {
   let state = createAiWorkspaceScenarioState(
     "venture-kizuna-hub",
     "onboarding-case-study",
@@ -67,7 +67,7 @@ test("Nova Labs onboarding flow moves from diagnosis to one booked mentor sessio
   state = appendAssistant(state, "diagnosis", diagnosis);
   assert.equal(
     state.currentFocus.label,
-    "Tối ưu activation sau onboarding",
+    "Chuyển pilot interest thành pilot thật",
   );
 
   const alternatives = await ask(
@@ -103,7 +103,10 @@ test("Nova Labs onboarding flow moves from diagnosis to one booked mentor sessio
   );
   assert.equal(mentor.responseKind, "mentor_intervention");
   state = appendAssistant(state, "mentor", mentor);
-  assert.equal(state.mentorRecommendation?.name, "Jessica Lin");
+  assert.equal(
+    state.mentorRecommendation?.name,
+    "Trần Minh Quân",
+  );
 
   state = aiWorkspaceReducer(state, {
     type: "book-mentor",
@@ -111,7 +114,7 @@ test("Nova Labs onboarding flow moves from diagnosis to one booked mentor sessio
   assert.equal(state.mentorSession?.status, "booked");
   assert.equal(
     state.mentorSession?.goal,
-    "Chốt thiết kế thử nghiệm activation.",
+    "Thiết kế pilot 14 ngày cho CampusFlow.",
   );
   assert.equal(
     state.messages.at(-1)?.responseLifecycle,

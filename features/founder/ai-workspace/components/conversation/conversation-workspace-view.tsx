@@ -19,6 +19,7 @@ type AiWorkspaceController = ReturnType<typeof useAiWorkspace>;
 export function ConversationWorkspaceView({
   workspace,
   generating,
+  composerFocusKey,
   searchOpen,
   searchQuery,
   activeMatchIndex,
@@ -38,6 +39,7 @@ export function ConversationWorkspaceView({
 }: {
   workspace: AiWorkspaceController;
   generating: boolean;
+  composerFocusKey?: number;
   searchOpen: boolean;
   searchQuery: string;
   activeMatchIndex: number;
@@ -148,47 +150,50 @@ export function ConversationWorkspaceView({
         }
       />
 
-      <div className="mx-auto w-full max-w-3xl px-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-3 sm:px-2">
-        {workspace.selectedContextSourceIds.length > 0 ? (
-          <div className="mb-2 flex items-start gap-2 rounded-lg border border-primary-border bg-primary-soft p-2">
-            <Database className="mt-0.5 size-3.5 shrink-0 text-primary" />
-            <div className="min-w-0 flex-1">
-              <p className="workspace-meta font-medium text-ink">
-                {copy.longRun.conversation.contextSources}
-              </p>
-              <p className="workspace-meta text-workspace-muted-text">
-                {workspace.contextPreview.humanReadableSources.join(
-                  " · ",
-                )}
-              </p>
+      <div className="w-full px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+        <div className="mx-auto w-full max-w-2xl">
+          {workspace.selectedContextSourceIds.length > 0 ? (
+            <div className="mb-2 flex items-start gap-2 rounded-lg border border-primary-border bg-primary-soft p-2">
+              <Database className="mt-0.5 size-3.5 shrink-0 text-primary" />
+              <div className="min-w-0 flex-1">
+                <p className="workspace-meta font-medium text-ink">
+                  {copy.longRun.conversation.contextSources}
+                </p>
+                <p className="workspace-meta text-workspace-muted-text">
+                  {workspace.contextPreview.humanReadableSources.join(
+                    " · ",
+                  )}
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="ghost"
+                onClick={workspace.clearScopedContext}
+                aria-label={copy.longRun.common.close}
+              >
+                <X className="size-3.5" />
+              </Button>
             </div>
-            <Button
-              type="button"
-              size="icon-sm"
-              variant="ghost"
-              onClick={workspace.clearScopedContext}
-              aria-label={copy.longRun.common.close}
-            >
-              <X className="size-3.5" />
-            </Button>
-          </div>
-        ) : null}
-        <ChatComposer
-          value={workspace.draft}
-          onValueChange={workspace.setDraft}
-          prompts={state.suggestedPrompts}
-          attachments={state.attachments}
-          disabled={generating}
-          copy={copy}
-          onSend={(message) =>
-            void workspace.sendMessage(message)
-          }
-          onSelectSample={workspace.addSampleAttachment}
-          onSelectFiles={workspace.addLocalFiles}
-          onRemoveAttachment={workspace.removeAttachment}
-          selectedModel={state.selectedModel}
-          onModelChange={workspace.setAiModel}
-        />
+          ) : null}
+          <ChatComposer
+            focusRequestKey={composerFocusKey}
+            value={workspace.draft}
+            onValueChange={workspace.setDraft}
+            prompts={state.suggestedPrompts}
+            attachments={state.attachments}
+            disabled={generating}
+            copy={copy}
+            onSend={(message) =>
+              void workspace.sendMessage(message)
+            }
+            onSelectSample={workspace.addSampleAttachment}
+            onSelectFiles={workspace.addLocalFiles}
+            onRemoveAttachment={workspace.removeAttachment}
+            selectedModel={state.selectedModel}
+            onModelChange={workspace.setAiModel}
+          />
+        </div>
       </div>
     </div>
   );

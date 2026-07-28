@@ -431,7 +431,8 @@ export function MentorMatchDetailPanel({
                   Đã gửi yêu cầu kết nối
                 </p>
                 <p className="mt-1 workspace-meta text-workspace-muted-text">
-                  Jessica sẽ nhận mục tiêu và context của Nova Labs.
+                  {mentor.name} sẽ nhận mục tiêu và context của
+                  CampusFlow.
                   Yêu cầu trùng sẽ không được tạo thêm.
                 </p>
               </div>

@@ -8,6 +8,7 @@ export function isScopedRequestCurrent(
     expected.requestId === current.requestId &&
     expected.ventureId === current.ventureId &&
     expected.conversationId === current.conversationId &&
-    expected.stateVersion === current.stateVersion
+    expected.stateVersion === current.stateVersion &&
+    expected.surface === current.surface
   );
 }

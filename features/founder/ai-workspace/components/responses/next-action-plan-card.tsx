@@ -77,13 +77,23 @@ export function NextActionPlanCard({
         Dự kiến · Chưa cập nhật điểm hiện tại: +
         {plan.projectedDelta[0]}–{plan.projectedDelta[1]} điểm
       </p>
+      {created ? (
+        <p
+          role="status"
+          className="mt-3 flex items-center gap-2 rounded-lg border border-workspace-success/30 bg-workspace-success-soft p-2.5 workspace-meta text-ink"
+        >
+          <CheckCircle2 className="size-4 text-workspace-success" />
+          Đã tạo chu kỳ pilot. Readiness vẫn giữ nguyên 65/100 cho
+          tới khi evidence được xác minh.
+        </p>
+      ) : null}
       <Button
         type="button"
         size="sm"
         className="mt-3 w-full"
         onClick={created ? onOpenCycle : onConfirm}
       >
-        {created ? "Mở chu kỳ đã tạo" : "Tạo Decision Cycle"}
+        {created ? "Mở Decision Canvas" : "Tạo chu kỳ pilot"}
         <ArrowRight className="size-3.5" />
       </Button>
     </section>

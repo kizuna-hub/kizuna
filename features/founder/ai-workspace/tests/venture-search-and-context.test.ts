@@ -104,12 +104,20 @@ test("scoped request guard rejects another venture, conversation, request, or st
     ventureId: "venture-a",
     conversationId: "conversation-a",
     stateVersion: 3,
+    surface: "main" as const,
   };
   assert.equal(isScopedRequestCurrent(expected, expected), true);
   assert.equal(
     isScopedRequestCurrent(expected, {
       ...expected,
       ventureId: "venture-b",
+    }),
+    false,
+  );
+  assert.equal(
+    isScopedRequestCurrent(expected, {
+      ...expected,
+      surface: "panel",
     }),
     false,
   );

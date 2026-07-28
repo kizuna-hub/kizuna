@@ -304,7 +304,7 @@ test("duplicate evidence submission is idempotent", () => {
   assert.equal(submittedAgain, submitted);
   assert.equal(
     submittedAgain.readiness.supportedBy.filter((item) =>
-      item.includes("Cohort onboarding"),
+      item.includes("3/5 thành viên"),
     ).length,
     1,
   );

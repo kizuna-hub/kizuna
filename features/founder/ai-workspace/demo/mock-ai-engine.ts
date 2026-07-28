@@ -187,6 +187,9 @@ export function detectAiWorkspaceIntent(
       "danh gia traction",
       "traction hien tai",
       "phan tich traction",
+      "tin hieu thi truong",
+      "market signal",
+      "commitment",
     ])
   ) {
     return "assess-traction";
@@ -237,9 +240,14 @@ function sourceReferences(
     return [
       ...shared,
       {
-        id: "source-materials",
-        label: "Metadata của tài liệu demo",
-        status: "inferred",
+        id: "campusflow-pitch-deck-v2",
+        label: "CampusFlow-PitchDeck-v2.pdf",
+        status: "verified",
+      },
+      {
+        id: "campusflow-business-plan-v1",
+        label: "CampusFlow-BusinessPlan-v1.pdf",
+        status: "verified",
       },
     ];
   }
@@ -250,8 +258,8 @@ function sourceReferences(
     return [
       ...shared,
       {
-        id: "source-cycle-analytics",
-        label: "Analytics của chu kỳ onboarding",
+        id: "source-cycle-pilot",
+        label: "Evidence của pilot CampusFlow",
         status: "verified",
       },
     ];
@@ -259,18 +267,18 @@ function sourceReferences(
   return [
     ...shared,
     {
-      id: "source-activation-funnel",
-      label: "Dữ liệu funnel",
+      id: "source-campusflow-interviews",
+      label: "12 cuộc phỏng vấn CampusFlow",
       status: "verified",
     },
     {
-      id: "source-day-three-activation",
-      label: "Activation ngày thứ ba",
+      id: "source-campusflow-prototype",
+      label: "5 prototype testers",
       status: "verified",
     },
     {
-      id: "source-interview-batch-03",
-      label: "Nhóm phỏng vấn người dùng số 03",
+      id: "source-campusflow-pilot-interest",
+      label: "2 câu lạc bộ quan tâm tới pilot",
       status: "inferred",
     },
   ];
@@ -292,9 +300,9 @@ function materialAnalysis(input: AiWorkspaceInput): MaterialAnalysis {
 function readinessAfterEvidence(): ReadinessState {
   return {
     ...structuredClone(baselineReadiness),
-    currentScore: 61,
-    previousScore: 54,
-    delta: 7,
+    currentScore: 68,
+    previousScore: 65,
+    delta: 3,
     label: "Đang tiến triển",
     explanation:
       "Dữ liệu thử nghiệm đã xác nhận activation là một phần của điểm nghẽn. Điểm tăng vì đã có tín hiệu hành vi, không phải chỉ vì một file được thêm vào.",
@@ -413,45 +421,48 @@ function buildResponse(
         ...common,
         responseKind: "artifact_preview",
         assistantMessage:
-          "Pitch deck hiện kể câu chuyện khá rõ về vấn đề và người dùng, nhưng ba tuyên bố quan trọng vẫn chưa đủ sức thuyết phục.\n\nĐiểm yếu lớn nhất không nằm ở cách trình bày mà ở khoảng cách giữa acquisition và bằng chứng giá trị lặp lại. Tôi sẽ giữ mọi mức tăng điểm dưới dạng dự kiến cho tới khi có dữ liệu được xác minh.",
+          "Mình đã xem CampusFlow-PitchDeck-v2.\n\nDeck mô tả khá rõ vấn đề và nhóm người dùng mục tiêu. Điểm yếu không nằm ở việc slide chưa đẹp, mà ở chỗ một số claim vẫn chưa được hỗ trợ bởi evidence đủ mạnh.\n\nBa phần nên ưu tiên là tách góc nhìn của trưởng câu lạc bộ và thành viên mới, nêu rõ bài học sau prototype test, và chuyển pilot interest thành phạm vi cùng lịch cụ thể.",
         structuredResponse: {
           type: "pitch-deck-review",
           payload: {
-            title: "Ba điểm cần cải thiện trong PitchDeck-v5",
+            title: "3 điểm nên cải thiện trong CampusFlow Pitch Deck",
             summary:
-              "Ưu tiên thay các tuyên bố đẹp bằng bằng chứng có thể truy xuất và kiểm chứng.",
+              "Deck đã rõ vấn đề; phần cần nâng cấp là learning và mức độ commitment.",
             weaknesses: [
               {
-                id: "traction-vanity",
-                title: "Traction đang là vanity metric",
+                id: "mixed-user-groups",
+                title: "Customer discovery còn gộp nhiều nhóm user",
                 detail:
-                  "1.243 lượt đăng ký là tín hiệu acquisition, chưa chứng minh activation hoặc retention.",
-                sourceLabel: "PitchDeck-v5.pdf · Trang 8",
+                  "Cần tách insight của 6 trưởng CLB và 6 thành viên mới.",
+                sourceLabel:
+                  "CampusFlow-PitchDeck-v2.pdf · Trang 6",
               },
               {
-                id: "customer-proof-opinion",
-                title: "Customer proof mới là ý kiến",
+                id: "prototype-learning",
+                title: "Prototype chưa thể hiện bài học sau test",
                 detail:
-                  "8/10 người thấy hữu ích chưa chứng minh họ quay lại hoặc trả tiền.",
-                sourceLabel: "PitchDeck-v5.pdf · Trang 6",
+                  "4/5 hoàn thành flow và 3/5 quay lại, nhưng deck chưa nói team học và đổi gì.",
+                sourceLabel:
+                  "CampusFlow-PitchDeck-v2.pdf · Trang 8",
               },
               {
-                id: "pricing-unvalidated",
-                title: "Pricing chưa được xác minh",
+                id: "pilot-interest",
+                title: "Pilot interest chưa thành commitment rõ",
                 detail:
-                  "299 USD/tháng đang là giả định nội bộ, chưa có willingness to pay.",
-                sourceLabel: "PitchDeck-v5.pdf · Trang 11",
+                  "Hai CLB quan tâm nhưng chưa có lịch, phạm vi và owner.",
+                sourceLabel:
+                  "CampusFlow-BusinessPlan-v1.pdf · Trang 11",
               },
             ],
             projectedReadiness: {
-              presentationOnly: 62,
-              verifiedEvidenceRange: [66, 68],
+              presentationOnly: 66,
+              verifiedEvidenceRange: [68, 71],
               label: "Dự kiến · Chưa cập nhật điểm hiện tại",
             },
             actions: [
-              "Thay số đăng ký bằng activation và retention theo cohort.",
-              "Bổ sung một case study trước–sau có nguồn.",
-              "Gắn pricing với pilot trả phí hoặc cam kết mua.",
+              "Tách insight của trưởng CLB và thành viên mới.",
+              "Thêm learning sau test; Trình bày và material dự kiến 74 → 78.",
+              "Bổ sung pilot scope; customer discovery 62 → 67–70, prototype 58 → 63–66, market signal 45 → 52–57.",
             ],
           },
         },
@@ -520,8 +531,8 @@ function buildResponse(
   if (intent === "explain-readiness") {
     return {
       ...common,
-      assistantMessage:
-        "Mức độ sẵn sàng hiện tại không phải là một phán quyết về startup. Điểm 61 cho thấy phần funnel và activation ngày thứ ba đã có cơ sở, trong khi retention tuần hai và phản hồi định tính vẫn chưa đủ để kết luận dài hạn.\n\nĐiểm số chỉ nên được dùng để xác định bằng chứng tiếp theo cần thu thập, không thay thế quyết định của founder.",
+        assistantMessage:
+        "Mức độ sẵn sàng hiện tại là 65/100. Ở Prototype stage, Kizuna không yêu cầu doanh thu.\n\nĐiểm phản ánh mức độ CampusFlow sẵn sàng cho bước kiểm chứng tiếp theo, không phải đánh giá startup tốt hay kém. Khoảng trống lớn nhất là tín hiệu thị trường và commitment: 2 câu lạc bộ quan tâm nhưng chưa có usage trong workflow thật.",
       proposedPatches: {},
       suggestedPrompts: [
         "Bằng chứng nào còn thiếu?",
@@ -541,18 +552,19 @@ function buildResponse(
         ...common,
         responseKind: "action_proposal",
         assistantMessage:
-          "Ưu tiên duy nhất lúc này là kiểm tra sử dụng lặp lại, không phải tăng thêm acquisition.\n\nHãy chạy pilot 14 ngày với 20 người đã hoàn tất onboarding. Metric chính là tỷ lệ tạo báo cáo lần thứ hai; ngưỡng thành công tối thiểu 25%. Nếu đạt, readiness dự kiến tăng 3–7 điểm, nhưng điểm canonical chỉ thay đổi sau khi dữ liệu được xác minh.",
+          "CampusFlow đã có đủ customer discovery cho vòng đầu và prototype cũng đã được dùng thử.\n\nKhoảng trống lớn nhất là chưa biết sản phẩm có hoạt động trong workflow thật của một câu lạc bộ hay không. Việc có giá trị nhất là chuyển một pilot interest thành pilot 14 ngày với phạm vi rõ. Readiness hiện vẫn là 65 và chỉ thay đổi sau khi evidence được xác minh.",
         structuredResponse: {
           type: "next-action",
           payload: {
-            title: "Pilot sử dụng lặp lại trong 14 ngày",
+            title: "Chạy pilot 14 ngày với 1 câu lạc bộ",
             priority:
-              "Kiểm tra liệu người dùng có quay lại tạo báo cáo lần thứ hai.",
+              "Kiểm tra CampusFlow trong workflow thật của câu lạc bộ.",
             durationDays: 14,
-            participantCount: 20,
-            primaryMetric: "Tỷ lệ tạo báo cáo lần thứ hai",
-            successThreshold: "≥25%",
-            projectedDelta: [3, 7],
+            participantCount: 8,
+            primaryMetric:
+              "Số thành viên quay lại dùng core flow lần thứ hai",
+            successThreshold: "Ít nhất 3/5 thành viên quay lại",
+            projectedDelta: [3, 6],
           },
         },
         proposedPatches: {},
@@ -763,7 +775,7 @@ function buildResponse(
       ...common,
       responseKind: "mentor_intervention",
       assistantMessage:
-        "Jessica Lin là lựa chọn phù hợp nhất với mức độ phù hợp 92% và độ tin cậy cao. Cô ấy có kinh nghiệm trực tiếp về onboarding, activation và retention cho B2B SaaS.\n\nBạn có thể kết nối ngay mà không cần tạo Decision Cycle. Hai lựa chọn thay thế vẫn được giữ để bạn so sánh trade-off.",
+        "Mình đã có đủ context để matching mà không cần hỏi thêm nhiều bước.\n\nTrần Minh Quân là lựa chọn phù hợp nhất với mức độ phù hợp 92%. Anh có 10+ năm xây dựng sản phẩm số, đã hỗ trợ 28 early-stage teams và phù hợp trực tiếp với product validation, pilot design, community products và student startups.\n\nBạn có thể kết nối ngay; hai lựa chọn thay thế vẫn được giữ trong Analysis để so sánh trade-off.",
       structuredResponse: {
         type: "mentor-recommendation",
         payload: mentor,
@@ -782,46 +794,46 @@ function buildResponse(
       ...common,
       responseKind: "artifact_preview",
       assistantMessage:
-        "Traction hiện chưa đủ khỏe để scale. Acquisition 1.243 là tín hiệu tốt, nhưng activation 18% và retention tuần 2 chỉ 7% cho thấy giá trị chưa lặp lại.\n\nTôi áp dụng cap 60/100 cho tiêu chí traction cho tới khi có bằng chứng sử dụng lặp lại. Chỉ nên cân nhắc scale khi activation đạt ít nhất 25% và retention tuần 2 đạt ít nhất 15%.",
+        "Đây chưa phải traction theo nghĩa tăng trưởng sản phẩm, nhưng là tín hiệu thị trường ban đầu khá tốt đối với một venture ở Prototype stage.\n\nCampusFlow đã có 12 người chia sẻ workflow thật, 5 người dùng prototype, 3 người quay lại và 2 câu lạc bộ sẵn sàng trao đổi pilot. Điểm còn thiếu không phải doanh thu; cần xác nhận một câu lạc bộ thực sự đưa CampusFlow vào workflow.",
       structuredResponse: {
         type: "traction-diagnosis",
         payload: {
-          title: "Traction chưa đủ điều kiện để scale",
+          title: "Tín hiệu thị trường hiện tại",
           metrics: [
             {
-              id: "acquisition",
-              label: "Acquisition",
-              value: "1.243 đăng ký",
+              id: "conversations",
+              label: "Customer conversations",
+              value: "12 · Đủ cho vòng khám phá đầu tiên",
               assessment: "good",
             },
             {
-              id: "onboarding",
-              label: "Hoàn tất onboarding",
-              value: "76%",
+              id: "prototype-testers",
+              label: "Prototype testers",
+              value: "5 · Tín hiệu tích cực",
               assessment: "good",
             },
             {
-              id: "activation",
-              label: "Activation",
-              value: "18%",
+              id: "repeat-testers",
+              label: "Repeat testers",
+              value: "3 · Cần mở rộng",
               assessment: "weak",
             },
             {
-              id: "retention",
-              label: "Retention tuần 2",
-              value: "7%",
-              assessment: "very_weak",
+              id: "pilot-interest",
+              label: "Pilot interest",
+              value: "2 câu lạc bộ · Tín hiệu mạnh",
+              assessment: "good",
             },
           ],
           diagnosis:
-            "Đầu phễu có nhu cầu nhưng người dùng chưa quay lại đủ thường xuyên để chứng minh giá trị.",
-          capScore: 60,
+            "Đủ điều kiện chạy pilot nhỏ, chưa đủ để kết luận product-market fit. Revenue chưa được yêu cầu ở Prototype.",
+          capScore: 65,
           scaleThresholds: [
-            "Activation ≥25%",
-            "Retention tuần 2 ≥15%",
+            "Một pilot có phạm vi và lịch xác nhận",
+            "Ít nhất 3/5 thành viên quay lại core flow",
           ],
-          projectedTraction: [60, 66],
-          projectedReadiness: [65, 69],
+          projectedTraction: [51, 55],
+          projectedReadiness: [68, 71],
         },
       },
       proposedPatches: {},

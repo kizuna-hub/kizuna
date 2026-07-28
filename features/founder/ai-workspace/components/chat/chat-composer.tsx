@@ -70,6 +70,8 @@ export function ChatComposer({
   onValueChange,
   selectedModel,
   onModelChange,
+  idPrefix = "founder-ai",
+  focusRequestKey,
 }: {
   prompts: string[];
   attachments: MockAttachment[];
@@ -83,6 +85,8 @@ export function ChatComposer({
   onValueChange?: (value: string) => void;
   selectedModel: AiModelId;
   onModelChange: (modelId: AiModelId) => void;
+  idPrefix?: string;
+  focusRequestKey?: number;
 }) {
   const [internalValue, setInternalValue] = React.useState("");
   const [listening, setListening] = React.useState(false);
@@ -193,6 +197,16 @@ export function ChatComposer({
     [],
   );
 
+  React.useEffect(() => {
+    if (focusRequestKey === undefined) return;
+    window.requestAnimationFrame(() =>
+      textareaRef.current?.focus(),
+    );
+  }, [focusRequestKey]);
+
+  const messageInputId = `${idPrefix}-message`;
+  const voiceStatusId = `${idPrefix}-voice-status`;
+
   return (
     <div className="space-y-2.5">
       <SuggestedPrompts
@@ -210,7 +224,7 @@ export function ChatComposer({
         onRemove={onRemoveAttachment}
       />
       <div className="flex items-end gap-1 rounded-2xl border border-workspace-border bg-workspace-panel p-2 transition-colors focus-within:border-primary-border">
-        <label htmlFor="founder-ai-message" className="sr-only">
+        <label htmlFor={messageInputId} className="sr-only">
           {copy.chat.composerLabel}
         </label>
         <Button
@@ -228,7 +242,7 @@ export function ChatComposer({
         </Button>
         <Textarea
           ref={textareaRef}
-          id="founder-ai-message"
+          id={messageInputId}
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
@@ -261,7 +275,7 @@ export function ChatComposer({
           aria-label={copy.chat.voiceInput}
           aria-pressed={listening}
           aria-describedby={
-            voiceNotice ? "founder-ai-voice-status" : undefined
+            voiceNotice ? voiceStatusId : undefined
           }
         >
           <Mic className="size-4" />
@@ -281,7 +295,7 @@ export function ChatComposer({
       </div>
       {voiceNotice ? (
         <p
-          id="founder-ai-voice-status"
+          id={voiceStatusId}
           role="status"
           className="px-2 workspace-meta text-workspace-muted-text"
         >

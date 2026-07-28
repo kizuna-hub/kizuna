@@ -1,9 +1,7 @@
 import {
   AlertTriangle,
-  Bot,
   Pin,
   PinOff,
-  UserRound,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -110,75 +108,54 @@ export function ChatMessage({
     >
       <div
         className={cn(
-          "flex gap-2.5",
-          founder && "flex-row-reverse",
+          "min-w-0",
+          founder
+            ? "rounded-xl rounded-tr-sm bg-workspace-elevated px-3.5 py-2.5"
+            : "w-full",
         )}
       >
-        <span
-          className={cn(
-            "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border",
-            founder
-              ? "border-primary-border bg-primary-soft text-primary"
-              : "border-workspace-border bg-workspace-elevated text-ink",
-          )}
-        >
-          {founder ? (
-            <UserRound className="size-3.5" />
-          ) : (
-            <Bot className="size-3.5" />
-          )}
-        </span>
-        <div
-          className={cn(
-            "min-w-0",
-            founder
-              ? "rounded-xl rounded-tr-sm bg-workspace-elevated px-3.5 py-2.5"
-              : "flex-1",
-          )}
-        >
-          {!founder && message.thinkingDurationSeconds ? (
-            <p className="mb-2 flex items-center gap-1.5 workspace-meta font-medium text-workspace-muted-text">
-              <span
-                aria-hidden="true"
-                className="size-1.5 rounded-full bg-workspace-success"
-              />
-              {copy.chat.thoughtFor.replace(
-                "{seconds}",
-                String(message.thinkingDurationSeconds),
-              )}
-            </p>
-          ) : null}
-          <p className="whitespace-pre-wrap workspace-body text-ink">
-            {highlightText(message.content, searchQuery)}
+        {!founder && message.thinkingDurationSeconds ? (
+          <p className="mb-2 flex items-center gap-1.5 workspace-meta font-medium text-workspace-muted-text">
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-workspace-success"
+            />
+            {copy.chat.thoughtFor.replace(
+              "{seconds}",
+              String(message.thinkingDurationSeconds),
+            )}
           </p>
-          <div className="mt-1 flex items-center gap-1">
-            <time
-              dateTime={message.createdAt}
-              className="workspace-meta text-workspace-muted-text"
+        ) : null}
+        <p className="whitespace-pre-wrap workspace-body text-ink">
+          {highlightText(message.content, searchQuery)}
+        </p>
+        <div className="mt-1 flex items-center gap-1">
+          <time
+            dateTime={message.createdAt}
+            className="workspace-meta text-workspace-muted-text"
+          >
+            {formatTime(message.createdAt)}
+          </time>
+          {onTogglePin ? (
+            <Button
+              type="button"
+              size="icon-sm"
+              variant="ghost"
+              className="size-7"
+              onClick={onTogglePin}
+              aria-label={
+                pinned
+                  ? copy.longRun.common.unpin
+                  : copy.longRun.common.pin
+              }
             >
-              {formatTime(message.createdAt)}
-            </time>
-            {onTogglePin ? (
-              <Button
-                type="button"
-                size="icon-sm"
-                variant="ghost"
-                className="size-7"
-                onClick={onTogglePin}
-                aria-label={
-                  pinned
-                    ? copy.longRun.common.unpin
-                    : copy.longRun.common.pin
-                }
-              >
-                {pinned ? (
-                  <PinOff className="size-3" />
-                ) : (
-                  <Pin className="size-3" />
-                )}
-              </Button>
-            ) : null}
-          </div>
+              {pinned ? (
+                <PinOff className="size-3" />
+              ) : (
+                <Pin className="size-3" />
+              )}
+            </Button>
+          ) : null}
         </div>
       </div>
 
@@ -219,7 +196,7 @@ export function ChatMessage({
       message.status === "complete" &&
       message.responseKind !== "conversation" &&
       message.structuredResponse ? (
-        <div className="ml-9 mt-3">
+        <div className="mt-3">
           <AssistantResponseRenderer
             message={message}
             state={state}
@@ -243,7 +220,7 @@ export function ChatMessage({
       {!founder &&
       message.status === "complete" &&
       (message.sources?.length ?? 0) > 0 ? (
-        <div className="ml-9">
+        <div>
           <ResponseSourceFooter
             sources={message.sources ?? []}
             copy={copy}
@@ -252,7 +229,7 @@ export function ChatMessage({
       ) : null}
 
       {!founder && message.status === "incomplete" ? (
-        <p className="ml-9 mt-2 flex items-center gap-1.5 workspace-meta text-workspace-warning">
+        <p className="mt-2 flex items-center gap-1.5 workspace-meta text-workspace-warning">
           <AlertTriangle className="size-3.5" />
           {copy.chat.incompleteResponse}
         </p>

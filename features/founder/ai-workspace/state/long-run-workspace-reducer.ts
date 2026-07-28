@@ -128,8 +128,14 @@ export function longRunWorkspaceReducer(
         ...state,
         stateVersion: bump(state),
         sessions: [action.session, ...state.sessions],
-        activeConversationId: action.session.id,
-        lastConversationId: action.session.id,
+        activeConversationId:
+          action.activate === false
+            ? state.activeConversationId
+            : action.session.id,
+        lastConversationId:
+          action.activate === false
+            ? state.lastConversationId
+            : action.session.id,
         messagesByConversation: {
           ...state.messagesByConversation,
           [action.session.id]: action.messages,
@@ -137,6 +143,10 @@ export function longRunWorkspaceReducer(
         draftsByConversation: {
           ...state.draftsByConversation,
           [action.session.id]: "",
+        },
+        attachmentsByConversation: {
+          ...state.attachmentsByConversation,
+          [action.session.id]: [],
         },
         visibleMessageCountByConversation: {
           ...state.visibleMessageCountByConversation,
@@ -197,6 +207,10 @@ export function longRunWorkspaceReducer(
         ),
         draftsByConversation: omitConversationValue(
           state.draftsByConversation,
+          action.conversationId,
+        ),
+        attachmentsByConversation: omitConversationValue(
+          state.attachmentsByConversation,
           action.conversationId,
         ),
         visibleMessageCountByConversation: omitConversationValue(
@@ -291,6 +305,15 @@ export function longRunWorkspaceReducer(
         ),
       };
     }
+
+    case "set-attachments":
+      return {
+        ...state,
+        attachmentsByConversation: {
+          ...state.attachmentsByConversation,
+          [action.conversationId]: action.attachments,
+        },
+      };
 
     case "load-older":
       return {

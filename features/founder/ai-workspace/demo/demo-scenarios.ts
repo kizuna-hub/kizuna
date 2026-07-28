@@ -18,33 +18,27 @@ const BASE_TIME = "2026-07-27T02:00:00.000Z";
 export const sampleMaterials = [
   {
     id: "sample-pitch-deck",
-    name: "PitchDeck.pdf",
+    name: "CampusFlow-PitchDeck-v2.pdf",
     size: 2_840_000,
     type: "application/pdf",
   },
   {
     id: "sample-product-description",
-    name: "MoTaSanPham.docx",
-    size: 486_000,
-    type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  },
-  {
-    id: "sample-market-research",
-    name: "NghienCuuThiTruong.pptx",
-    size: 3_240_000,
-    type: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    name: "CampusFlow-BusinessPlan-v1.pdf",
+    size: 1_486_000,
+    type: "application/pdf",
   },
 ] as const;
 
 export const baselineFocus: CurrentFocus = {
-  id: "activation-after-onboarding",
-  label: "Tối ưu activation sau onboarding",
+  id: "campusflow-pilot-commitment",
+  label: "Chuyển pilot interest thành pilot thật",
   bottleneck:
-    "Người dùng mới chưa chạm tới khoảnh khắc giá trị sau onboarding.",
+    "CampusFlow chưa được dùng trong workflow thật của một câu lạc bộ.",
   whyItMatters:
-    "Top-of-funnel vẫn ổn, nhưng activation giảm khiến mọi nỗ lực tăng trưởng phía trên bị thất thoát.",
+    "Interview và prototype test đã đủ cho vòng đầu, nhưng chưa xác nhận repeat usage và commitment.",
   nextAction:
-    "Kiểm tra một onboarding ba bước với 20% người dùng mới.",
+    "Chạy pilot 14 ngày với 1 câu lạc bộ và 5–8 thành viên mới.",
   sourceStatus: "inferred",
 };
 
@@ -93,45 +87,45 @@ export const onboardingInitialEvidenceHealth: EvidenceHealthItem[] = [
 
 export const baselineReadiness: ReadinessState = {
   currentScore: novaLabsReadinessAssessment.overallScore,
-  previousScore: 54,
+  previousScore: 61,
   delta: novaLabsReadinessAssessment.delta,
   label: novaLabsReadinessAssessment.label,
   explanation:
-    "Vấn đề đã rõ, nhưng bằng chứng khách hàng và tín hiệu sử dụng lặp lại vẫn còn mỏng.",
+    "CampusFlow sẵn sàng cho một pilot nhỏ; tín hiệu thị trường và commitment vẫn là khoảng trống lớn nhất.",
   supportedBy: [
-    "Mô tả vấn đề nhất quán trong ba tài liệu",
-    "Dữ liệu funnel cho thấy activation giảm sau onboarding",
+    "12 cuộc phỏng vấn với hai nhóm người dùng",
+    "5 prototype testers, 4 hoàn thành core flow và 3 quay lại",
   ],
   missingEvidence: [
-    "Phản hồi của người dùng bỏ dở onboarding",
-    "Tín hiệu sử dụng lặp lại sau ngày thứ ba",
+    "Usage trong workflow thật của một câu lạc bộ",
+    "Pilot có lịch, phạm vi và owner xác nhận",
   ],
   unlockAction:
-    "Nộp kết quả thử nghiệm onboarding và ít nhất ba phản hồi người dùng.",
+    "Chạy pilot 14 ngày và xác minh ít nhất 3/5 thành viên quay lại.",
   breakdown: [
     {
       id: "problem-clarity",
-      label: "Độ rõ của vấn đề",
+      label: "Hiểu vấn đề và người dùng",
       score: 78,
       explanation: "Vấn đề và tác động đã được mô tả nhất quán.",
     },
     {
       id: "customer-evidence",
-      label: "Bằng chứng khách hàng",
-      score: 38,
-      explanation: "Chưa có đủ phản hồi trực tiếp từ người dùng bỏ dở.",
+      label: "Customer discovery và bằng chứng",
+      score: 62,
+      explanation: "Đã có 12 interviews, chưa có pilot evidence.",
     },
     {
       id: "execution",
-      label: "Tính nhất quán thực thi",
-      score: 52,
-      explanation: "Đã có kế hoạch, nhưng chưa hoàn tất một vòng đo lường.",
+      label: "Kỷ luật thử nghiệm",
+      score: 72,
+      explanation: "Đã hoàn thành hai cycle và sửa prototype theo feedback.",
     },
     {
       id: "repeat-usage",
-      label: "Sử dụng lặp lại",
-      score: 30,
-      explanation: "Chưa có cohort đủ dài để xác nhận hành vi lặp lại.",
+      label: "Tín hiệu thị trường",
+      score: 45,
+      explanation: "Hai câu lạc bộ quan tâm nhưng chưa có pilot xác nhận.",
     },
   ],
   assessment: structuredClone(novaLabsReadinessAssessment),
@@ -139,23 +133,23 @@ export const baselineReadiness: ReadinessState = {
 
 export const onboardingInitialReadiness: ReadinessState = {
   ...structuredClone(baselineReadiness),
-  currentScore: 61,
-  previousScore: 54,
-  delta: 7,
+  currentScore: 65,
+  previousScore: 61,
+  delta: 4,
   label: "Đang tiến triển",
   explanation:
-    "Ba nguồn đã xác minh giúp làm rõ funnel, nhưng retention tuần hai và phản hồi định tính vẫn còn thiếu.",
+    "CampusFlow đã có customer discovery và prototype test, nhưng chưa có pilot trong workflow thật.",
   supportedBy: [
-    "Dữ liệu funnel",
-    "Activation ngày thứ ba",
-    "Nhóm phỏng vấn người dùng số 03",
+    "12 cuộc phỏng vấn",
+    "5 người test prototype",
+    "2 câu lạc bộ quan tâm tới pilot",
   ],
   missingEvidence: [
-    "Retention tuần thứ hai",
-    "Phản hồi định tính về onboarding",
+    "Repeat usage trong workflow thật",
+    "Pilot scope được xác nhận",
   ],
   unlockAction:
-    "Xác định điểm nghẽn trước khi tạo một chu kỳ thử nghiệm.",
+    "Chạy pilot 14 ngày với một câu lạc bộ.",
 };
 
 export const baselineEvidenceHealth: EvidenceHealthItem[] = [
@@ -219,16 +213,17 @@ export const baselineMaterialAnalysis: MaterialAnalysis = {
 };
 
 export const baselineDecisionCycle: DecisionCycleState = {
-  id: "cycle-onboarding-activation",
-  title: "Kiểm chứng onboarding ngắn hơn",
+  id: "cycle-campusflow-pilot",
+  title: "Pilot CampusFlow trong 14 ngày",
   currentStep: "understand",
   completedSteps: [],
   goal:
-    "Kiểm tra liệu onboarding ngắn hơn có cải thiện activation hay không.",
+    "Kiểm tra CampusFlow có hoạt động trong workflow thật của một câu lạc bộ hay không.",
   chosenAction:
-    "Triển khai onboarding ba bước cho 20% người dùng mới.",
-  expectedOutcome: "Activation tăng ít nhất 15% trong 14 ngày.",
-  primaryMetric: "Activation rate trong 7 ngày",
+    "Mời 5–8 thành viên mới dùng CampusFlow trong 14 ngày.",
+  expectedOutcome:
+    "Ít nhất 3/5 thành viên quay lại dùng core flow.",
+  primaryMetric: "Tỷ lệ quay lại core flow lần thứ hai",
   checklist: [
     {
       id: "define-metric",
@@ -237,17 +232,17 @@ export const baselineDecisionCycle: DecisionCycleState = {
     },
     {
       id: "create-variant",
-      label: "Tạo onboarding variant",
+      label: "Xác nhận câu lạc bộ và nhóm 5–8 thành viên",
       completed: false,
     },
     {
       id: "rollout",
-      label: "Rollout cho 20% người dùng mới",
+      label: "Bắt đầu pilot 14 ngày",
       completed: false,
     },
     {
       id: "monitor",
-      label: "Theo dõi trong bảy ngày",
+      label: "Theo dõi repeat usage và phần việc ngoài CampusFlow",
       completed: false,
     },
   ],
@@ -276,23 +271,24 @@ export const baselineDecisionCycle: DecisionCycleState = {
 };
 
 export const baselineMentorRecommendation: MentorRecommendation = {
-  id: "mentor-jessica-lin",
-  name: "Jessica Lin",
-  role: "Growth & Product Advisor",
-  expertise: "SaaS onboarding · Product-led growth · Activation · Retention",
+  id: "mentor-tran-minh-quan",
+  name: "Trần Minh Quân",
+  role: "Product & Growth Mentor",
+  expertise:
+    "Product validation · Pilot design · Community products · Student startups",
   matchScore: 92,
   matchConfidence: "high",
   whyHumanNow:
-    "Bạn đã xác định được blocker và action, nhưng cách thiết kế thử nghiệm cần domain judgment để tránh kết quả khó diễn giải.",
+    "CampusFlow cần chuyển pilot interest thành một thử nghiệm có phạm vi, metric và owner rõ.",
   whyThisMentor:
-    "Jessica đã hỗ trợ bốn startup SaaS cải thiện activation và có kinh nghiệm thiết kế onboarding experiments cho sản phẩm B2B giai đoạn Seed.",
+    "Anh Quân có 10+ năm xây dựng sản phẩm số và đã hỗ trợ 28 early-stage teams chuyển prototype thành pilot đo được.",
   expectedOutcome:
-    "Chốt một thiết kế thử nghiệm activation có thể chạy trong 14 ngày.",
+    "Chốt phạm vi pilot 14 ngày, success metric và evidence cần thu thập.",
   matchRationale: [
-    "Đúng blocker: activation sau onboarding",
-    "Đúng stage: Seed-stage B2B SaaS",
-    "Đã xử lý onboarding experiments có dữ liệu cohort tương tự",
-    "Từng hỗ trợ 4 startup SaaS cải thiện activation",
+    "Đúng stage: student venture ở Prototype",
+    "Mạnh về product validation và pilot design",
+    "Có kinh nghiệm với community products",
+    "Đã hỗ trợ 28 early-stage teams",
   ],
   expectedOutcomes: [
     "Chốt variant thử nghiệm",
@@ -302,12 +298,12 @@ export const baselineMentorRecommendation: MentorRecommendation = {
   preparation: [
     {
       id: "mentor-prep-assumptions",
-      label: "Giả định về ngưỡng activation",
+      label: "Phạm vi pilot 14 ngày dự kiến",
       completed: true,
     },
     {
       id: "mentor-prep-funnel",
-      label: "Dữ liệu funnel onboarding hiện tại",
+      label: "Kết quả 12 interviews và 5 prototype tests",
       completed: true,
     },
     {
@@ -317,7 +313,7 @@ export const baselineMentorRecommendation: MentorRecommendation = {
     },
     {
       id: "mentor-prep-cohort",
-      label: "So sánh cohort thử nghiệm và baseline",
+      label: "Success metric ít nhất 3/5 quay lại",
       completed: false,
     },
     {
@@ -329,37 +325,37 @@ export const baselineMentorRecommendation: MentorRecommendation = {
   availability: "10:00, Thứ Năm",
   alternatives: [
     {
-      id: "mentor-arjun-patel",
-      name: "Arjun Patel",
-      role: "Product Strategy Advisor",
-      expertise: "Product strategy · B2B SaaS · Positioning",
+      id: "mentor-nguyen-hoang-long",
+      name: "Nguyễn Hoàng Long",
+      role: "Community Growth Mentor",
+      expertise: "Community operations · University programs",
       matchScore: 84,
-      strength: "Chiến lược sản phẩm và định vị B2B SaaS",
-      tradeOff: "Ít chuyên sâu hơn về retention analytics",
+      strength: "Community operations và university programs",
+      tradeOff: "Ít chuyên sâu hơn về product experiments",
     },
     {
-      id: "mentor-maya-thompson",
-      name: "Maya Thompson",
-      role: "Growth Operations Advisor",
-      expertise: "Growth operations · Experiment systems",
+      id: "mentor-pham-thu-ha",
+      name: "Phạm Thu Hà",
+      role: "Product Research Mentor",
+      expertise: "User research · Prototype validation",
       matchScore: 79,
-      strength: "Xây hệ thống growth operations có kỷ luật",
-      tradeOff: "Phù hợp hơn khi venture đã có traction ổn định",
+      strength: "User research và prototype validation",
+      tradeOff: "Ít kinh nghiệm hơn trong tổ chức pilot",
     },
   ],
   decisionCycleId: baselineDecisionCycle.id,
   blockerId: baselineFocus.id,
   scopeLabel:
-    "Activation sau onboarding · Chu kỳ Onboarding Activation",
+    "Pilot CampusFlow · Tín hiệu thị trường và commitment",
   recommendationVersion: 1,
   status: "recommended",
 };
 
 const scenarioPrompts: Record<AiWorkspaceScenarioId, string[]> = {
   "onboarding-case-study": [
-    "Phân tích pitch deck và cách cải thiện",
+    "Phân tích pitch deck",
     "Tôi nên làm gì tiếp theo?",
-    "Đánh giá traction hiện tại",
+    "Đánh giá tín hiệu thị trường",
     "Tìm mentor phù hợp",
   ],
   bottleneck: [
@@ -555,12 +551,12 @@ export function createAiWorkspaceScenarioState(
   if (scenarioId === "mentor") {
     const readiness: ReadinessState = {
       ...structuredClone(baselineReadiness),
-      currentScore: 61,
-      previousScore: 54,
-      delta: 7,
+      currentScore: 65,
+      previousScore: 61,
+      delta: 4,
       label: "Đủ bối cảnh để xin góc nhìn chuyên môn",
       explanation:
-        "Bằng chứng mới đã thu hẹp vấn đề. Quyết định còn lại cần kinh nghiệm đọc cohort và trade-off rollout.",
+        "Customer discovery và prototype test đã thu hẹp vấn đề. Quyết định còn lại cần kinh nghiệm thiết kế pilot có phạm vi.",
     };
     const decisionCycle: DecisionCycleState = {
       ...structuredClone(baselineDecisionCycle),
@@ -569,7 +565,7 @@ export function createAiWorkspaceScenarioState(
       evidenceSubmitted: true,
       reviewCompleted: true,
       reviewSummary:
-        "Activation tăng 11%, thấp hơn ngưỡng 15% nhưng đủ để xác nhận onboarding là một phần của điểm nghẽn.",
+        "CampusFlow đã sẵn sàng thiết kế pilot 14 ngày với một câu lạc bộ.",
     };
     return {
       ...base,
