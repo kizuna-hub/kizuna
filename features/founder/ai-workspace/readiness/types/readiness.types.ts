@@ -1,10 +1,10 @@
 export type ReadinessCriterionId =
-  | "problem_and_user"
-  | "customer_evidence"
-  | "solution_validation"
-  | "traction_and_business_model"
-  | "decision_and_execution"
-  | "team_capability"
+  | "problem_and_user_understanding"
+  | "customer_discovery_and_evidence"
+  | "prototype_and_learning"
+  | "market_signal_and_commitment"
+  | "experiment_and_execution_discipline"
+  | "team_capability_and_resource_access"
   | "communication_and_materials";
 
 export type ReadinessConfidence = "low" | "medium" | "high";

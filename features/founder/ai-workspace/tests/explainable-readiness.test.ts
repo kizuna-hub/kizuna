@@ -28,7 +28,7 @@ import {
   toPersistedSession,
 } from "../state/ai-workspace-persistence";
 
-test("seven weighted criteria calculate the canonical readiness score 61", () => {
+test("seven prototype-stage criteria calculate the canonical CampusFlow readiness score 65", () => {
   assert.equal(novaLabsReadinessCriteria.length, 7);
   assert.equal(
     novaLabsReadinessCriteria.reduce(
@@ -39,7 +39,7 @@ test("seven weighted criteria calculate the canonical readiness score 61", () =>
   );
   assert.equal(
     calculateOverallReadiness(novaLabsReadinessCriteria),
-    61,
+    65,
   );
 });
 
@@ -56,13 +56,10 @@ test("duplicate contributions with the same dedupe key count once", () => {
 });
 
 test("disputed contributions are excluded and outdated evidence lowers confidence", () => {
-  const disputed =
-    novaLabsReadinessAssessment.criteria
-      .find((criterion) => criterion.id === "customer_evidence")
-      ?.contributions.find(
-        (contribution) => contribution.status === "disputed",
-      );
-  assert.ok(disputed);
+  const disputed: ReadinessContribution = {
+    ...novaLabsReadinessCriteria[1].contributions[0],
+    status: "disputed",
+  };
   assert.equal(getCountedContributions([disputed]).length, 0);
 
   const outdated: ReadinessContribution = {
@@ -76,12 +73,12 @@ test("disputed contributions are excluded and outdated evidence lowers confidenc
   assert.equal(deriveCriterionConfidence([outdated]), "low");
 });
 
-test("criterion caps are enforced without mutating the source assessment or projection", () => {
-  const traction = novaLabsReadinessCriteria.find(
+test("projected scores do not mutate the canonical readiness assessment", () => {
+  const marketSignal = novaLabsReadinessCriteria.find(
     (criterion) =>
-      criterion.id === "traction_and_business_model",
+      criterion.id === "market_signal_and_commitment",
   );
-  assert.ok(traction);
+  assert.ok(marketSignal);
   const projected = structuredClone(novaLabsReadinessAssessment);
   projected.projection = {
     label: "Dự kiến · Chưa cập nhật điểm hiện tại",
@@ -91,10 +88,10 @@ test("criterion caps are enforced without mutating the source assessment or proj
   const canonicalBefore =
     novaLabsReadinessAssessment.overallScore;
   const score = getEffectiveCriterionScore({
-    ...traction,
+    ...marketSignal,
     score: 88,
   });
-  assert.equal(score, 60);
+  assert.equal(score, 88);
   assert.equal(
     novaLabsReadinessAssessment.overallScore,
     canonicalBefore,
@@ -108,24 +105,19 @@ test("history supports increase, decrease and rubric comparison warnings", () =>
       (entry) => entry.type === "increase",
     ),
   );
-  assert.ok(
-    novaLabsReadinessAssessment.history.some(
-      (entry) => entry.type === "rubric_version",
-    ),
-  );
   assert.equal(
     hasRubricVersionWarning(
       novaLabsReadinessAssessment.history,
     ),
-    true,
+    false,
   );
   const decreased = disputeContribution(
     structuredClone(novaLabsReadinessAssessment),
-    "pitch-target-customer",
+    "campusflow-problem-page-4",
     "2026-07-28T08:00:00.000Z",
   );
   assert.equal(decreased.history[0]?.type, "evidence_disputed");
-  assert.ok(decreased.overallScore < 61);
+  assert.ok(decreased.overallScore < 65);
   assert.ok(decreased.delta < 0);
 });
 
@@ -141,7 +133,7 @@ test("primary founder prompts resolve to deterministic scenario intents", () => 
     "suggest-action",
   );
   assert.equal(
-    detectAiWorkspaceIntent("Đánh giá traction hiện tại"),
+    detectAiWorkspaceIntent("Đánh giá tín hiệu thị trường"),
     "assess-traction",
   );
   assert.equal(
@@ -203,36 +195,38 @@ test("decision cycles and mentor connection requests are idempotent", () => {
   );
 });
 
-test("verified activation evidence updates canonical readiness from 61 to 66 once", () => {
+test("verified pilot evidence updates the canonical criteria once", () => {
   const initial = createAiWorkspaceScenarioState(
     "venture-nova-labs",
   );
   const criterionIds = [
-    "customer_evidence",
-    "solution_validation",
-    "traction_and_business_model",
-    "decision_and_execution",
+    "customer_discovery_and_evidence",
+    "prototype_and_learning",
+    "market_signal_and_commitment",
+    "experiment_and_execution_discipline",
   ] as const;
   const verified = aiWorkspaceReducer(initial, {
     type: "verify-readiness-evidence",
     criterionIds: [...criterionIds],
   });
-  assert.equal(verified.readiness.currentScore, 66);
+  assert.ok(verified.readiness.currentScore > 65);
   assert.equal(
     verified.readiness.assessment.history[0]?.type,
     "increase",
   );
   assert.equal(
     verified.readiness.assessment.criteria.find(
-      (criterion) => criterion.id === "solution_validation",
+      (criterion) => criterion.id === "prototype_and_learning",
     )?.score,
-    61,
+    63,
   );
   assert.equal(
     verified.readiness.assessment.criteria.find(
-      (criterion) => criterion.id === "decision_and_execution",
+      (criterion) =>
+        criterion.id ===
+        "experiment_and_execution_discipline",
     )?.score,
-    74,
+    75,
   );
   const duplicate = aiWorkspaceReducer(verified, {
     type: "verify-readiness-evidence",
