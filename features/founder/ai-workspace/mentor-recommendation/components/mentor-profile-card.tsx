@@ -34,6 +34,7 @@ export function MentorProfileCard({
   saved,
   connectionBrief,
   connectionRequest,
+  priority = false,
   onOpenDetails,
   onOpenConnection,
   onToggleSave,
@@ -42,6 +43,7 @@ export function MentorProfileCard({
   saved: boolean;
   connectionBrief?: MentorConnectionBrief;
   connectionRequest?: MentorConnectionRequest;
+  priority?: boolean;
   onOpenDetails: () => void;
   onOpenConnection: () => void;
   onToggleSave: () => void;
@@ -69,7 +71,7 @@ export function MentorProfileCard({
         <MentorProfileImage
           name={mentor.profile.name}
           src={mentor.profile.avatarSrc}
-          priority={mentor.fit.isPrimary}
+          priority={priority || mentor.fit.isPrimary}
           className="aspect-[4/3] w-full"
         />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3">

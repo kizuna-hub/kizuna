@@ -83,6 +83,7 @@ export function MentorRecommendationGrid({
               key={mentor.mentorId}
               mentor={mentor}
               saved={saved}
+              priority={true}
               connectionBrief={
                 connectionBriefs[mentor.mentorId]
               }
