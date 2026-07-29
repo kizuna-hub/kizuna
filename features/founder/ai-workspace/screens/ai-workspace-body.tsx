@@ -16,6 +16,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 
 import { ConversationWorkspaceView } from "../components/conversation/conversation-workspace-view";
@@ -159,7 +160,7 @@ export function AiWorkspaceBody({
         onDismissTopicDrift={() =>
           search.setTopicDriftDismissed(true)
         }
-        onOpenMentor={() => workspace.openAnalysis("mentor")}
+        onOpenMentor={workspace.openMentorFit}
         onOpenArtifact={onOpenArtifact}
         onOpenReadiness={openReadiness}
       />
@@ -483,9 +484,21 @@ export function AiWorkspaceBody({
               Phân tích, bằng chứng hoặc chat song song.
             </SheetDescription>
           </SheetHeader>
-          <SecondaryPane workspace={workspace} />
+          <SecondaryPane
+            workspace={workspace}
+            showClose={false}
+          />
         </SheetContent>
       </Sheet>
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          classNames: {
+            toast:
+              "border-workspace-border bg-workspace-elevated text-ink",
+          },
+        }}
+      />
     </div>
   );
 }

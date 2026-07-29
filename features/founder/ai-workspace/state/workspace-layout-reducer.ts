@@ -34,6 +34,8 @@ export function restoreWorkspaceLayout(
     "analysis",
     "evidence",
     "panel_chat",
+    "mentor_fit",
+    "mentor_connection",
   ].includes(candidate.secondaryPaneMode ?? "")
     ? candidate.secondaryPaneMode!
     : initial.secondaryPaneMode;
@@ -75,6 +77,20 @@ export function workspaceLayoutReducer(
         ...state,
         secondaryPaneMode: "evidence",
         evidenceView: action.view ?? state.evidenceView,
+      };
+    case "open-mentor-fit":
+      return {
+        ...state,
+        secondaryPaneMode: "mentor_fit",
+        secondaryPaneWidth: 42,
+        selectedMentorId: action.mentorId,
+      };
+    case "open-mentor-connection":
+      return {
+        ...state,
+        secondaryPaneMode: "mentor_connection",
+        secondaryPaneWidth: 42,
+        selectedMentorId: action.mentorId,
       };
     case "open-panel-chat":
       return {

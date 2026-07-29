@@ -2,7 +2,9 @@ export type SecondaryPaneMode =
   | "closed"
   | "analysis"
   | "evidence"
-  | "panel_chat";
+  | "panel_chat"
+  | "mentor_fit"
+  | "mentor_connection";
 
 export type AnalysisTab = "overview" | "readiness" | "mentor";
 
@@ -16,12 +18,15 @@ export interface WorkspaceLayoutState {
   selectedDocumentId?: string;
   selectedCriterionId?: string;
   panelConversationId?: string;
+  selectedMentorId?: string;
 }
 
 export type WorkspaceLayoutAction =
   | { type: "hydrate"; state: WorkspaceLayoutState }
   | { type: "open-analysis"; tab?: AnalysisTab }
   | { type: "open-evidence"; view?: EvidenceView }
+  | { type: "open-mentor-fit"; mentorId: string }
+  | { type: "open-mentor-connection"; mentorId: string }
   | {
       type: "open-panel-chat";
       conversationId: string;

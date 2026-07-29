@@ -53,7 +53,7 @@ export function ConversationWorkspaceView({
   onNextMatch: () => void;
   onCloseSearch: () => void;
   onDismissTopicDrift: () => void;
-  onOpenMentor: () => void;
+  onOpenMentor: (mentorId: string) => void;
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
@@ -142,7 +142,8 @@ export function ConversationWorkspaceView({
           workspace.deleteFailedMessage
         }
         onOpenMentor={onOpenMentor}
-        onDeferMentor={workspace.deferMentor}
+        onConnectMentor={workspace.openMentorConnection}
+        onToggleSaveMentor={workspace.toggleSaveMentor}
         onOpenArtifact={onOpenArtifact}
         onOpenReadiness={onOpenReadiness}
         onVerifyReadinessEvidence={

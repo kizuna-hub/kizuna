@@ -66,8 +66,9 @@ export function PanelChatView({
         }
         onConfirmActionProposal={() => undefined}
         onRetry={() => undefined}
-        onOpenMentor={() => workspace.openAnalysis("mentor")}
-        onDeferMentor={() => undefined}
+        onOpenMentor={workspace.openMentorFit}
+        onConnectMentor={workspace.openMentorConnection}
+        onToggleSaveMentor={workspace.toggleSaveMentor}
         onOpenArtifact={() => workspace.openEvidence()}
         onOpenReadiness={(criterionId) => {
           workspace.setSelectedCriterion(criterionId);

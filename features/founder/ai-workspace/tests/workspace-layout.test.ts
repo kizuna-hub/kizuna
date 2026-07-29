@@ -25,7 +25,31 @@ test("workspace exposes exactly one optional secondary pane mode", () => {
   assert.equal(evidence.secondaryPaneMode, "evidence");
   assert.equal(evidence.evidenceView, "by_criterion");
 
-  const panel = workspaceLayoutReducer(evidence, {
+  const mentorFit = workspaceLayoutReducer(evidence, {
+    type: "open-mentor-fit",
+    mentorId: "mentor-tran-minh-quan",
+  });
+  assert.equal(mentorFit.secondaryPaneMode, "mentor_fit");
+  assert.equal(
+    mentorFit.selectedMentorId,
+    "mentor-tran-minh-quan",
+  );
+
+  const mentorConnection = workspaceLayoutReducer(mentorFit, {
+    type: "open-mentor-connection",
+    mentorId: "mentor-tran-minh-quan",
+  });
+  assert.equal(
+    mentorConnection.secondaryPaneMode,
+    "mentor_connection",
+  );
+  assert.equal(mentorConnection.secondaryPaneWidth, 42);
+  assert.equal(
+    mentorConnection.selectedMentorId,
+    "mentor-tran-minh-quan",
+  );
+
+  const panel = workspaceLayoutReducer(mentorConnection, {
     type: "open-panel-chat",
     conversationId: "panel-chat",
   });

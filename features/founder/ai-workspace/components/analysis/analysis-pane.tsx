@@ -16,10 +16,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { aiWorkspaceVi } from "../../copy/vi";
 import type { useAiWorkspace } from "../../hooks/use-ai-workspace";
+import { MentorRecommendationGrid } from "../../mentor-recommendation/components/mentor-recommendation-grid";
 import type { AnalysisTab } from "../../types/workspace-layout.types";
-import { MentorMatchDetailPanel } from "../mentor/mentor-match-detail-panel";
 
 type Workspace = ReturnType<typeof useAiWorkspace>;
 
@@ -54,31 +53,6 @@ export function AnalysisPane({
   const unlock = assessment.criteria.reduce((weakest, item) =>
     item.score < weakest.score ? item : weakest,
   );
-
-  if (
-    selectedTab === "mentor" &&
-    workspace.state.mentorRecommendation
-  ) {
-    return (
-      <MentorMatchDetailPanel
-        mentor={workspace.state.mentorRecommendation}
-        session={workspace.state.mentorSession}
-        copy={aiWorkspaceVi}
-        onBack={() => workspace.setAnalysisTab("overview")}
-        onBook={workspace.bookMentor}
-        onSave={workspace.saveMentor}
-        onDismiss={workspace.deferMentor}
-        onUseOwnMentor={workspace.useOwnMentor}
-        onTogglePreparation={workspace.toggleMentorPreparation}
-        onRefresh={workspace.refreshMentor}
-        connectionRequest={
-          workspace.state.mentorConnectionRequest
-        }
-        onCreateConnection={workspace.createMentorConnection}
-        onSendConnection={workspace.sendMentorConnection}
-      />
-    );
-  }
 
   return (
     <aside
@@ -250,15 +224,34 @@ export function AnalysisPane({
 
         <TabsContent
           value="mentor"
-          className="m-0 flex min-h-0 items-center justify-center p-6"
+          className="no-scrollbar m-0 min-h-0 overflow-y-auto p-4"
         >
-          <div className="text-center">
+          {workspace.state.mentorRecommendation ? (
+            <MentorRecommendationGrid
+              recommendation={
+                workspace.state.mentorRecommendation
+              }
+              connectionBriefs={
+                workspace.state.mentorConnectionBriefs
+              }
+              connectionRequest={
+                workspace.state.mentorConnectionRequest
+              }
+              onOpenDetails={workspace.openMentorFit}
+              onOpenConnection={
+                workspace.openMentorConnection
+              }
+              onToggleSave={workspace.toggleSaveMentor}
+            />
+          ) : (
+            <div className="py-12 text-center">
             <UsersRound className="mx-auto size-6 text-primary" />
             <p className="mt-3 workspace-card-title text-ink">
               Mentor phù hợp sẽ xuất hiện sau khi Kizuna phân tích
               nhu cầu.
             </p>
-          </div>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </aside>
