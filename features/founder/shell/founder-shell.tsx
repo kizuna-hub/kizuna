@@ -170,9 +170,9 @@ function NavigationLink({
         active
           ? "border-primary-border bg-workspace-selected text-ink"
           : cn(
-              "border-transparent text-workspace-muted-text hover:border-workspace-border hover:bg-workspace-row-hover hover:text-ink",
-              subdued && "text-workspace-muted-text/75",
-            ),
+            "border-transparent text-workspace-muted-text hover:border-workspace-border hover:bg-workspace-row-hover hover:text-ink",
+            subdued && "text-workspace-muted-text/75",
+          ),
       )}
     >
       {active ? (
@@ -438,9 +438,9 @@ export function FounderShell({
     Boolean(state.uiPreferences.founderSidebarCollapsed);
   const toggleCollapsed = collapsible
     ? () =>
-        updateUiPreferences({
-          founderSidebarCollapsed: !collapsed,
-        })
+      updateUiPreferences({
+        founderSidebarCollapsed: !collapsed,
+      })
     : undefined;
   const compactCustomSidebar = collapsed && Boolean(renderSidebar);
 
@@ -450,7 +450,7 @@ export function FounderShell({
         className={cn(
           "fixed inset-y-2 left-2 z-header hidden overflow-hidden rounded-2xl border border-workspace-border bg-workspace-sidebar lg:block",
           hydrated &&
-            "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+          "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
           collapsed ? "w-[68px]" : "w-[248px]",
         )}
       >
@@ -474,7 +474,7 @@ export function FounderShell({
         className={cn(
           "flex min-h-[100dvh] min-w-0 flex-col",
           hydrated &&
-            "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+          "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
           collapsed ? "lg:pl-[84px]" : "lg:pl-[264px]",
         )}
       >
