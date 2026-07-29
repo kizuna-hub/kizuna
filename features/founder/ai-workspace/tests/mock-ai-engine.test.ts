@@ -28,6 +28,10 @@ const intentCases = [
   ["Đề xuất hành động tiếp theo", "suggest-action"],
   ["Tạo chu kỳ quyết định", "create-decision-cycle"],
   ["Tôi có cần cố vấn không?", "recommend-mentor"],
+  ["Ai có thể giúp mình?", "recommend-mentor"],
+  ["Mentor cho pilot", "recommend-mentor"],
+  ["Mentor product validation", "recommend-mentor"],
+  ["Mentor cho student startup", "recommend-mentor"],
   ["Tôi muốn phản biện cách AI hiểu startup", "challenge-interpretation"],
   ["Nộp bằng chứng mới", "submit-evidence"],
   ["Review kết quả hiện tại", "review-results"],
@@ -209,7 +213,7 @@ test("verified pilot evidence produces an explainable readiness patch", async ()
   );
 });
 
-test("direct mentor requests recommend Trần Minh Quân without a multi-step gate", async () => {
+test("direct mentor requests return the canonical outcome-based mentor grid", async () => {
   const engine = createMockAiWorkspaceEngine({
     timing: "instant",
   });
@@ -218,17 +222,33 @@ test("direct mentor requests recommend Trần Minh Quân without a multi-step ga
   );
   const directStructured = requireStructured(direct);
 
-  assert.equal(direct.responseKind, "mentor_intervention");
-  assert.equal(directStructured.type, "mentor-recommendation");
-  if (directStructured.type !== "mentor-recommendation") {
+  assert.equal(
+    direct.responseKind,
+    "mentor_recommendation_grid",
+  );
+  assert.equal(
+    directStructured.type,
+    "mentor-recommendation-grid",
+  );
+  if (
+    directStructured.type !== "mentor-recommendation-grid"
+  ) {
     assert.fail("Expected mentor response");
   }
   assert.equal(
-    directStructured.payload?.name,
+    directStructured.payload.mentors[0].profile.name,
     "Trần Minh Quân",
   );
-  assert.equal(directStructured.payload?.matchScore, 92);
-  assert.match(direct.assistantMessage, /không cần hỏi thêm nhiều bước/i);
+  assert.equal(
+    directStructured.payload.mentors[0].fit.score,
+    92,
+  );
+  assert.equal(directStructured.payload.mentors.length, 3);
+  assert.match(
+    direct.assistantMessage,
+    /những outcome khác nhau/i,
+  );
+  assert.doesNotMatch(direct.assistantMessage, /trade-off/i);
   assert.equal(
     direct.suggestedPrompts.includes("Tiếp tục với AI"),
     false,
@@ -248,19 +268,26 @@ test("an explicit mentor request can reopen a previously deferred recommendation
   input.currentState.mentorRecommendation = {
     ...structuredClone(baselineMentorRecommendation),
     status: "deferred",
-    dismissReason: "try_first",
   };
 
   const response = await engine.respond(input);
   const structured = requireStructured(response);
 
-  assert.equal(response.responseKind, "mentor_intervention");
-  assert.equal(structured.type, "mentor-recommendation");
-  if (structured.type === "mentor-recommendation") {
-    assert.equal(structured.payload?.name, "Trần Minh Quân");
-    assert.equal(structured.payload?.status, "recommended");
+  assert.equal(
+    response.responseKind,
+    "mentor_recommendation_grid",
+  );
+  assert.equal(structured.type, "mentor-recommendation-grid");
+  if (structured.type === "mentor-recommendation-grid") {
+    assert.equal(
+      structured.payload.mentors[0].profile.name,
+      "Trần Minh Quân",
+    );
   }
-  assert.match(response.assistantMessage, /92%/i);
+  assert.equal(
+    response.proposedPatches.mentorRecommendation?.status,
+    "recommended",
+  );
 });
 
 test("reviewing submitted evidence completes the cycle and unlocks one mentor", async () => {
@@ -279,7 +306,8 @@ test("reviewing submitted evidence completes the cycle and unlocks one mentor", 
     true,
   );
   assert.equal(
-    response.proposedPatches.mentorRecommendation?.name,
+    response.proposedPatches.mentorRecommendation?.payload
+      .mentors[0].profile.name,
     "Trần Minh Quân",
   );
 });

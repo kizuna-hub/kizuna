@@ -1,4 +1,5 @@
 import { aiWorkspaceVi } from "../copy/vi";
+import { createCampusFlowMentorRecommendation } from "../mentor-recommendation/demo/campusflow-mentor-recommendations";
 import { novaLabsReadinessAssessment } from "../readiness/demo/readiness-demo-data";
 import type {
   AssistantResponseKind,
@@ -9,7 +10,6 @@ import type {
   DecisionCycleState,
   EvidenceHealthItem,
   MaterialAnalysis,
-  MentorRecommendation,
   ReadinessState,
 } from "../types/ai-workspace.types";
 
@@ -270,86 +270,12 @@ export const baselineDecisionCycle: DecisionCycleState = {
   reviewCompleted: false,
 };
 
-export const baselineMentorRecommendation: MentorRecommendation = {
-  id: "mentor-tran-minh-quan",
-  name: "Trần Minh Quân",
-  role: "Product & Growth Mentor",
-  expertise:
-    "Product validation · Pilot design · Community products · Student startups",
-  matchScore: 92,
-  matchConfidence: "high",
-  whyHumanNow:
-    "CampusFlow cần chuyển pilot interest thành một thử nghiệm có phạm vi, metric và owner rõ.",
-  whyThisMentor:
-    "Anh Quân có 10+ năm xây dựng sản phẩm số và đã hỗ trợ 28 early-stage teams chuyển prototype thành pilot đo được.",
-  expectedOutcome:
-    "Chốt phạm vi pilot 14 ngày, success metric và evidence cần thu thập.",
-  matchRationale: [
-    "Đúng stage: student venture ở Prototype",
-    "Mạnh về product validation và pilot design",
-    "Có kinh nghiệm với community products",
-    "Đã hỗ trợ 28 early-stage teams",
-  ],
-  expectedOutcomes: [
-    "Chốt variant thử nghiệm",
-    "Chốt success metric",
-    "Xác định thời lượng chạy và bằng chứng cần thu thập",
-  ],
-  preparation: [
-    {
-      id: "mentor-prep-assumptions",
-      label: "Phạm vi pilot 14 ngày dự kiến",
-      completed: true,
-    },
-    {
-      id: "mentor-prep-funnel",
-      label: "Kết quả 12 interviews và 5 prototype tests",
-      completed: true,
-    },
-    {
-      id: "mentor-prep-interviews",
-      label: "Bằng chứng phỏng vấn người dùng",
-      completed: true,
-    },
-    {
-      id: "mentor-prep-cohort",
-      label: "Success metric ít nhất 3/5 quay lại",
-      completed: false,
-    },
-    {
-      id: "mentor-prep-questions",
-      label: "Ba câu hỏi cần cố vấn phản biện",
-      completed: false,
-    },
-  ],
-  availability: "10:00, Thứ Năm",
-  alternatives: [
-    {
-      id: "mentor-nguyen-hoang-long",
-      name: "Nguyễn Hoàng Long",
-      role: "Community Growth Mentor",
-      expertise: "Community operations · University programs",
-      matchScore: 84,
-      strength: "Community operations và university programs",
-      tradeOff: "Ít chuyên sâu hơn về product experiments",
-    },
-    {
-      id: "mentor-pham-thu-ha",
-      name: "Phạm Thu Hà",
-      role: "Product Research Mentor",
-      expertise: "User research · Prototype validation",
-      matchScore: 79,
-      strength: "User research và prototype validation",
-      tradeOff: "Ít kinh nghiệm hơn trong tổ chức pilot",
-    },
-  ],
-  decisionCycleId: baselineDecisionCycle.id,
-  blockerId: baselineFocus.id,
-  scopeLabel:
-    "Pilot CampusFlow · Tín hiệu thị trường và commitment",
-  recommendationVersion: 1,
-  status: "recommended",
-};
+export const baselineMentorRecommendation =
+  createCampusFlowMentorRecommendation(
+    "venture-campusflow",
+    baselineDecisionCycle.id,
+    baselineFocus.id,
+  );
 
 const scenarioPrompts: Record<AiWorkspaceScenarioId, string[]> = {
   "onboarding-case-study": [
@@ -443,8 +369,9 @@ function assistantMessage(
   const responseKind: AssistantResponseKind =
     structuredResponse?.type === "current-focus"
       ? "insight"
-      : structuredResponse?.type === "mentor-recommendation"
-        ? "mentor_intervention"
+      : structuredResponse?.type ===
+          "mentor-recommendation-grid"
+        ? "mentor_recommendation_grid"
         : structuredResponse?.type === "suggested-action"
           ? "action_proposal"
           : structuredResponse?.type === "decision-cycle"
@@ -485,6 +412,12 @@ export function createAiWorkspaceScenarioState(
     evidenceHealth: structuredClone(baselineEvidenceHealth),
     decisionCycle: structuredClone(baselineDecisionCycle),
     decisionCycleLifecycle: "not_created",
+    mentorConnectionBriefs: {},
+    mentorConnectionOperation: {
+      generationStatus: "idle",
+      saveStatus: "idle",
+      sendStatus: "idle",
+    },
     selectedModel: "kizuna-lite",
     view: "conversation",
   };
@@ -549,6 +482,12 @@ export function createAiWorkspaceScenarioState(
   }
 
   if (scenarioId === "mentor") {
+    const mentorRecommendation =
+      createCampusFlowMentorRecommendation(
+        ventureId,
+        baselineDecisionCycle.id,
+        baselineFocus.id,
+      );
     const readiness: ReadinessState = {
       ...structuredClone(baselineReadiness),
       currentScore: 65,
@@ -572,16 +511,16 @@ export function createAiWorkspaceScenarioState(
       readiness,
       decisionCycle,
       decisionCycleLifecycle: "completed",
-      mentorRecommendation: structuredClone(
-        baselineMentorRecommendation,
-      ),
+      mentorRecommendation,
       messages: [
         assistantMessage(
           "assistant-mentor-initial",
-          "Phân tích thêm bằng AI sẽ không làm giảm nhiều bất định còn lại. Đây là lúc một góc nhìn chuyên môn có giá trị.",
+          "Mình tìm được ba mentor phù hợp với những outcome khác nhau mà CampusFlow có thể cần ở giai đoạn hiện tại.\n\nAnh Quân phù hợp nhất nếu team muốn chốt thiết kế pilot. Chị Hà phù hợp với việc đào sâu customer discovery và học từ prototype. Anh Long có kinh nghiệm triển khai chương trình trong cộng đồng sinh viên và câu lạc bộ.\n\nDựa trên blocker hiện tại, mình ưu tiên anh Quân.",
           {
-            type: "mentor-recommendation",
-            payload: structuredClone(baselineMentorRecommendation),
+            type: "mentor-recommendation-grid",
+            payload: structuredClone(
+              mentorRecommendation.payload,
+            ),
           },
         ),
       ],

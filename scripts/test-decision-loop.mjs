@@ -31,6 +31,9 @@ const testSources = [
   "features/founder/ai-workspace/tests/venture-search-and-context.test.ts",
   "features/founder/ai-workspace/tests/explainable-readiness.test.ts",
   "features/founder/ai-workspace/tests/workspace-layout.test.ts",
+  "features/founder/ai-workspace/mentor-connection/tests/mentor-connection-brief.test.ts",
+  "features/founder/ai-workspace/mentor-connection/tests/mentor-connection-repository.test.ts",
+  "features/founder/ai-workspace/mentor-recommendation/tests/mentor-recommendation.test.ts",
 ];
 
 const outputDirectory = mkdtempSync(

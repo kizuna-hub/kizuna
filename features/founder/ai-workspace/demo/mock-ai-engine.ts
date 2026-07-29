@@ -2,10 +2,10 @@ import {
   baselineDecisionCycle,
   baselineFocus,
   baselineMaterialAnalysis,
-  baselineMentorRecommendation,
   baselineReadiness,
   getScenarioPrompts,
 } from "./demo-scenarios";
+import { createCampusFlowMentorRecommendation } from "../mentor-recommendation/demo/campusflow-mentor-recommendations";
 import type {
   AiWorkspaceEngine,
   AiWorkspaceInput,
@@ -150,6 +150,10 @@ export function detectAiWorkspaceIntent(
       "co van",
       "mentor",
       "chuyen gia",
+      "ai co the giup minh",
+      "nguoi nao co the giup",
+      "product validation",
+      "student startup",
     ])
   ) {
     return "recommend-mentor";
@@ -745,7 +749,11 @@ function buildResponse(
               input.currentState.mentorRecommendation
                 ?.decisionCycleId === reviewedCycle.id
                 ? input.currentState.mentorRecommendation
-                : baselineMentorRecommendation,
+                : createCampusFlowMentorRecommendation(
+                    input.ventureId,
+                    reviewedCycle.id,
+                    input.currentState.currentFocus.id,
+                  ),
             )
           : undefined,
       },
@@ -766,19 +774,30 @@ function buildResponse(
   if (intent === "recommend-mentor") {
     const existingMentor =
       input.currentState.mentorRecommendation;
-    const mentor = structuredClone({
-      ...(existingMentor ?? baselineMentorRecommendation),
+    const mentor = {
+      ...(existingMentor ??
+        createCampusFlowMentorRecommendation(
+          input.ventureId,
+          input.currentState.decisionCycle.id,
+          input.currentState.currentFocus.id,
+        )),
       status: "recommended" as const,
-      dismissReason: undefined,
-    });
+      payload:
+        existingMentor?.payload ??
+        createCampusFlowMentorRecommendation(
+          input.ventureId,
+          input.currentState.decisionCycle.id,
+          input.currentState.currentFocus.id,
+        ).payload,
+    };
     return {
       ...common,
-      responseKind: "mentor_intervention",
+      responseKind: "mentor_recommendation_grid",
       assistantMessage:
-        "Mình đã có đủ context để matching mà không cần hỏi thêm nhiều bước.\n\nTrần Minh Quân là lựa chọn phù hợp nhất với mức độ phù hợp 92%. Anh có 10+ năm xây dựng sản phẩm số, đã hỗ trợ 28 early-stage teams và phù hợp trực tiếp với product validation, pilot design, community products và student startups.\n\nBạn có thể kết nối ngay; hai lựa chọn thay thế vẫn được giữ trong Analysis để so sánh trade-off.",
+        "Mình tìm được ba mentor phù hợp với những outcome khác nhau mà CampusFlow có thể cần ở giai đoạn hiện tại.\n\nAnh Quân phù hợp nhất nếu team muốn chốt thiết kế pilot. Chị Hà phù hợp với việc đào sâu customer discovery và học từ prototype. Anh Long có kinh nghiệm triển khai chương trình trong cộng đồng sinh viên và câu lạc bộ.\n\nDựa trên blocker hiện tại, mình ưu tiên anh Quân.",
       structuredResponse: {
-        type: "mentor-recommendation",
-        payload: mentor,
+        type: "mentor-recommendation-grid",
+        payload: mentor.payload,
       },
       proposedPatches: { mentorRecommendation: mentor },
       suggestedPrompts: [

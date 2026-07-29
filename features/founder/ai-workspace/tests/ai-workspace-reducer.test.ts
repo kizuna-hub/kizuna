@@ -212,12 +212,13 @@ test("booking a mentor is idempotent and creates one compact session state", asy
   );
 
   assert.equal(
-    state.mentorRecommendation?.name,
+    state.mentorRecommendation?.payload.mentors[0].profile
+      .name,
     "Trần Minh Quân",
   );
   assert.equal(
     state.messages.at(-1)?.responseKind,
-    "mentor_intervention",
+    "mentor_recommendation_grid",
   );
 
   state = aiWorkspaceReducer(state, {
@@ -226,7 +227,7 @@ test("booking a mentor is idempotent and creates one compact session state", asy
   const firstSession = state.mentorSession;
 
   assert.equal(state.mentorRecommendation?.status, "booked");
-  assert.equal(firstSession?.displayTime, "10:00, Thứ Năm");
+  assert.equal(firstSession?.displayTime, "Thứ Năm · 10:00");
   assert.equal(
     state.messages.at(-1)?.responseLifecycle,
     "completed",
@@ -256,10 +257,6 @@ test("deferring a mentor dismisses the intervention for the current cycle", asyn
   });
 
   assert.equal(state.mentorRecommendation?.status, "deferred");
-  assert.equal(
-    state.mentorRecommendation?.dismissReason,
-    "try_first",
-  );
   assert.equal(
     state.messages.at(-1)?.responseLifecycle,
     "dismissed",
@@ -321,20 +318,29 @@ test("evidence update changes readiness and review unlocks the CampusFlow mentor
   assert.equal(state.decisionCycle.reviewCompleted, true);
   assert.equal(state.decisionCycleLifecycle, "completed");
   assert.equal(
-    state.mentorRecommendation?.name,
+    state.mentorRecommendation?.payload.mentors[0].profile
+      .name,
     "Trần Minh Quân",
   );
 
-  const preparationItem =
-    state.mentorRecommendation?.preparation[3];
-  assert.ok(preparationItem);
+  const alternativeMentorId =
+    state.mentorRecommendation?.payload.mentors[1].mentorId;
+  assert.ok(alternativeMentorId);
   state = aiWorkspaceReducer(state, {
-    type: "toggle-mentor-preparation",
-    itemId: preparationItem.id,
+    type: "select-mentor",
+    mentorId: alternativeMentorId,
   });
   assert.equal(
-    state.mentorRecommendation?.preparation[3]?.completed,
-    true,
+    state.mentorRecommendation?.selectedMentorId,
+    alternativeMentorId,
+  );
+  state = aiWorkspaceReducer(state, {
+    type: "toggle-save-mentor",
+    mentorId: alternativeMentorId,
+  });
+  assert.deepEqual(
+    state.mentorRecommendation?.savedMentorIds,
+    [alternativeMentorId],
   );
 });
 

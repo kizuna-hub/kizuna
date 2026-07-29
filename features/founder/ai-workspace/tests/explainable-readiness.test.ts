@@ -17,10 +17,7 @@ import type { ReadinessContribution } from "../readiness/types/readiness.types";
 import {
   detectAiWorkspaceIntent,
 } from "../demo/mock-ai-engine";
-import {
-  baselineMentorRecommendation,
-  createAiWorkspaceScenarioState,
-} from "../demo/demo-scenarios";
+import { createAiWorkspaceScenarioState } from "../demo/demo-scenarios";
 import { createLongRunDemoState } from "../demo/demo-long-run-data";
 import { aiWorkspaceReducer } from "../state/ai-workspace-reducer";
 import {
@@ -142,7 +139,7 @@ test("primary founder prompts resolve to deterministic scenario intents", () => 
   );
 });
 
-test("decision cycles and mentor connection requests are idempotent", () => {
+test("decision cycles are idempotent", () => {
   const initial = createAiWorkspaceScenarioState(
     "venture-nova-labs",
   );
@@ -155,44 +152,6 @@ test("decision cycles and mentor connection requests are idempotent", () => {
   assert.equal(activeAgain.decisionCycleLifecycle, "active");
   assert.equal(activeAgain.decisionCycle.id, active.decisionCycle.id);
 
-  const withMentor = {
-    ...activeAgain,
-    mentorRecommendation: structuredClone(
-      baselineMentorRecommendation,
-    ),
-  };
-  const request = {
-    id: "connection-mentor-jessica-lin",
-    mentorId: "mentor-jessica-lin",
-    mentorName: "Jessica Lin",
-    goal: "Review activation pilot",
-    context: "Nova Labs",
-    message: "Xin chào Jessica",
-    status: "draft" as const,
-  };
-  const created = aiWorkspaceReducer(withMentor, {
-    type: "create-mentor-connection",
-    request,
-  });
-  const duplicate = aiWorkspaceReducer(created, {
-    type: "create-mentor-connection",
-    request: { ...request, id: "duplicate-request" },
-  });
-  assert.equal(
-    duplicate.mentorConnectionRequest?.id,
-    request.id,
-  );
-  const sent = aiWorkspaceReducer(duplicate, {
-    type: "send-mentor-connection",
-  });
-  const sentAgain = aiWorkspaceReducer(sent, {
-    type: "send-mentor-connection",
-  });
-  assert.equal(sentAgain.mentorConnectionRequest?.status, "sent");
-  assert.equal(
-    sentAgain.mentorConnectionRequest?.id,
-    request.id,
-  );
 });
 
 test("verified pilot evidence updates the canonical criteria once", () => {

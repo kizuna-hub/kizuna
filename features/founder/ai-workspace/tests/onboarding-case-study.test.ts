@@ -101,10 +101,14 @@ test("CampusFlow moves from diagnosis to one booked mentor session", async () =>
     state,
     "Có cần mentor review thử nghiệm này không?",
   );
-  assert.equal(mentor.responseKind, "mentor_intervention");
+  assert.equal(
+    mentor.responseKind,
+    "mentor_recommendation_grid",
+  );
   state = appendAssistant(state, "mentor", mentor);
   assert.equal(
-    state.mentorRecommendation?.name,
+    state.mentorRecommendation?.payload.mentors[0].profile
+      .name,
     "Trần Minh Quân",
   );
 
