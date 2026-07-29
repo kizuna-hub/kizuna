@@ -450,7 +450,7 @@ export function FounderShell({
         className={cn(
           "fixed inset-y-2 left-2 z-header hidden overflow-hidden rounded-2xl border border-workspace-border bg-workspace-sidebar lg:block",
           hydrated &&
-          "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+          "transition-[width] duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
           collapsed ? "w-[68px]" : "w-[248px]",
         )}
       >
@@ -474,7 +474,7 @@ export function FounderShell({
         className={cn(
           "flex min-h-[100dvh] min-w-0 flex-col",
           hydrated &&
-          "transition-all duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+          "transition-[padding] duration-[300ms] ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
           collapsed ? "lg:pl-[84px]" : "lg:pl-[264px]",
         )}
       >

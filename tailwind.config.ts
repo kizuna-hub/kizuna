@@ -234,12 +234,12 @@ const config = {
          * framer-edge — retained name for Kizuna level-2 elevation.
          * Use for: floating cards, modal tiles, pill buttons.
          */
-        'framer-edge': '0 0.5px 0 0 rgba(247,245,242,0.08) inset, 0 10px 30px 0 rgba(0,0,0,0.30)',
+        'framer-edge': '0 0.5px 0 0 rgba(247,245,242,0.08) inset, 0 10px 30px 0 var(--shadow-framer-base)',
 
         /**
          * framer-edge-lifted — Hover state of framer-edge.
          */
-        'framer-edge-lifted': '0 0.5px 0 0 rgba(247,245,242,0.14) inset, 0 16px 48px 0 rgba(0,0,0,0.50)',
+        'framer-edge-lifted': '0 0.5px 0 0 rgba(247,245,242,0.14) inset, 0 16px 48px 0 var(--shadow-framer-lifted)',
 
         /**
          * framer-focus — retained name for the Kizuna Clay focus ring.

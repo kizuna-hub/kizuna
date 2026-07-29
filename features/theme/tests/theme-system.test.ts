@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import test from "node:test";
 
 import {
@@ -307,4 +309,21 @@ test("initialization script is generated from the canonical registry", () => {
   for (const theme of ACCENT_THEMES) {
     assert.match(source, new RegExp(`"${theme.id}"`));
   }
+});
+
+test("theme menu keeps the required desktop and mobile interaction contract", () => {
+  const source = readFileSync(
+    resolve("features/theme/components/theme-menu.tsx"),
+    "utf8",
+  );
+
+  assert.match(source, /<Popover/);
+  assert.match(source, /<Sheet/);
+  assert.match(source, /Sáng/);
+  assert.match(source, /Tối/);
+  assert.match(source, /Hệ thống/);
+  assert.match(source, /ACCENT_THEMES\.map/);
+  assert.match(source, /previewLabel/);
+  assert.match(source, /<Check/);
+  assert.doesNotMatch(source, />\s*(?:Save|Lưu)\s*</);
 });

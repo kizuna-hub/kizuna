@@ -2,7 +2,10 @@
 
 import * as React from "react";
 
-import { DEFAULT_THEME_PREFERENCE } from "../config/theme-defaults";
+import {
+  DEFAULT_THEME_PREFERENCE,
+  THEME_STORAGE_KEY,
+} from "../config/theme-defaults";
 import {
   getBrowserThemeStorage,
   loadThemePreference,
@@ -20,7 +23,6 @@ import type {
   ThemePreference,
   ThemeRuntimeState,
 } from "../types/theme.types";
-import { THEME_STORAGE_KEY } from "../config/theme-defaults";
 
 interface ThemeContextValue extends ThemeRuntimeState {
   setAppearance: (appearance: AppearanceMode) => void;

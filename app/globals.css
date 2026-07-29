@@ -21,35 +21,35 @@
      KIZUNA COLOR PALETTE — QUIET CONVICTION
      ══════════════════════════════════════════════════════════════════ */
 
-  /* Root brand tokens */
-  --color-canvas: #0B0A09;
-  /* near-pure black — dominant bg */
-  --color-surface-1: #151311;
-  /* charcoal — pricing cards, secondary buttons */
-  --color-surface-2: #1E1B18;
-  --color-surface-3: #262320;
-  /* charcoal+ — featured card, selected tab */
+  /* Root brand tokens (Light Mode) */
+  --color-canvas: #F7F6F3;
+  /* neutral light — dominant bg */
+  --color-surface-1: #FCFBF8;
+  /* cards, secondary buttons, panels */
+  --color-surface-2: #F0EFEB;
+  --color-surface-3: #E8E6E1;
+  /* selected tab, featured card */
 
-  /* Ink (text on dark) */
-  --color-ink: #F7F5F2;
+  /* Ink (text on light) */
+  --color-ink: #252422;
   /* primary text */
-  --color-ink-muted: #A39D96;
+  --color-ink-muted: #716D67;
   /* secondary/meta text */
 
   /* Legacy compatibility alias; new code uses primary/ring/workspace tokens. */
   --color-accent-blue: var(--color-primary);
 
   /* Borders */
-  --color-hairline: #2B2825;
+  --color-hairline: #DDDAD4;
   /* standard 1px dark border */
-  --color-hairline-soft: #1D1B19;
+  --color-hairline-soft: #E8E5DF;
   /* subtle section divider */
 
   /* Inverse surfaces */
-  --color-inverse-canvas: #F7F5F2;
-  /* warm off-white inverse surface */
-  --color-inverse-ink: #0E0A09;
-  /* dark text on inverse surface */
+  --color-inverse-canvas: #252422;
+  /* warm dark inverse surface */
+  --color-inverse-ink: #FCFBF8;
+  /* light text on inverse surface */
   --color-on-primary: #FFFFFF;
   /* Filled Clay actions always use white text. */
 
@@ -272,7 +272,27 @@
    BASE LAYER
    ═══════════════════════════════════════════════════════════════════ */
 @layer base {
+  .dark {
+    --color-canvas: #0B0A09;
+    --color-surface-1: #151311;
+    --color-surface-2: #1E1B18;
+    --color-surface-3: #262320;
+    --color-ink: #F7F5F2;
+    --color-ink-muted: #A39D96;
+    --color-hairline: #2B2825;
+    --color-hairline-soft: #1D1B19;
+    --color-inverse-canvas: #F7F5F2;
+    --color-inverse-ink: #0E0A09;
+    
+    --shadow-framer-base: rgba(0, 0, 0, 0.40);
+    --shadow-framer-lifted: rgba(0, 0, 0, 0.60);
+  }
+
   :root {
+    --selection: rgba(204, 120, 92, 0.28);
+    --shadow-framer-base: rgba(0, 0, 0, 0.08);
+    --shadow-framer-lifted: rgba(0, 0, 0, 0.16);
+
     /* Workspace semantic tokens */
     --workspace-background: var(--color-canvas);
     --workspace-sidebar-background: var(--color-surface-1);
@@ -325,16 +345,16 @@
 
   html[data-appearance='light'] {
     color-scheme: light;
-    --color-canvas: #F5F0E8;
-    --color-surface-1: #FFFCF7;
-    --color-surface-2: #EEE8DE;
-    --color-surface-3: #E5DDD1;
-    --color-ink: #211F1C;
-    --color-ink-muted: #706A62;
-    --color-hairline: #D9D1C6;
-    --color-hairline-soft: #E9E3D9;
-    --color-inverse-canvas: #211F1C;
-    --color-inverse-ink: #F7F5F2;
+    --color-canvas: #F7F6F3;
+    --color-surface-1: #FCFBF8;
+    --color-surface-2: #F0EFEB;
+    --color-surface-3: #E8E6E1;
+    --color-ink: #252422;
+    --color-ink-muted: #716D67;
+    --color-hairline: #DDDAD4;
+    --color-hairline-soft: #E8E5DF;
+    --color-inverse-canvas: #252422;
+    --color-inverse-ink: #FCFBF8;
     --color-destructive: #B9473F;
     --color-destructive-foreground: #FFFFFF;
     --color-semantic-success: #36775A;
@@ -527,14 +547,14 @@
   .shadow-framer-edge {
     box-shadow:
       0 0.5px 0 0 rgba(247, 245, 242, 0.08) inset,
-      0 10px 30px 0 rgba(0, 0, 0, 0.30);
+      0 10px 30px 0 var(--shadow-framer-base);
   }
 
   /* Hover lift variant for floating actions. */
   .shadow-framer-edge-lifted {
     box-shadow:
       0 0.5px 0 0 rgba(247, 245, 242, 0.14) inset,
-      0 16px 48px 0 rgba(0, 0, 0, 0.50);
+      0 16px 48px 0 var(--shadow-framer-lifted);
   }
 
   /* ── Kizuna focus ring ─────────────────────────────────────────── */

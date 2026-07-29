@@ -114,7 +114,7 @@ function ThemeMenuPanel() {
                 key={theme.id}
                 value={theme.id}
                 aria-label={theme.label}
-                className="h-9 w-full justify-between rounded-lg border border-transparent px-2 text-foreground hover:border-border hover:bg-muted data-[state=on]:border-primary-border data-[state=on]:bg-primary-muted"
+                className="h-9 w-full justify-between rounded-lg border border-transparent px-2 text-foreground hover:border-border hover:bg-muted data-[state=on]:border-primary-border data-[state=on]:bg-primary-muted data-[state=on]:text-foreground"
               >
                 <span className="flex items-center gap-2.5">
                   <span
@@ -148,43 +148,46 @@ function ThemeMenuPanel() {
   );
 }
 
-function ThemeMenuButton({
-  collapsed,
-  showLabel,
-  open,
-}: {
+interface ThemeMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   collapsed: boolean;
   showLabel: boolean;
   open: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label="Giao diện và màu sắc"
-      className={cn(
-        "flex min-h-9 items-center rounded-lg text-workspace-muted-text transition-colors hover:bg-workspace-row-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40",
-        collapsed
-          ? "size-8 justify-center"
-          : showLabel
-            ? "w-full justify-between gap-2 px-2.5"
-            : "size-8 justify-center",
-        open && "bg-workspace-selected text-primary-text",
-      )}
-    >
-      <span className="flex items-center gap-2">
-        <Palette className="size-4" aria-hidden="true" />
-        {showLabel && !collapsed ? (
-          <span className="workspace-control-text font-medium">
-            Giao diện và màu sắc
-          </span>
-        ) : null}
-      </span>
-      {showLabel && !collapsed ? (
-        <span className="size-2 rounded-full bg-primary" />
-      ) : null}
-    </button>
-  );
 }
+
+const ThemeMenuButton = React.forwardRef<HTMLButtonElement, ThemeMenuButtonProps>(
+  ({ collapsed, showLabel, open, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        aria-label="Giao diện và màu sắc"
+        className={cn(
+          "flex min-h-9 items-center rounded-lg text-workspace-muted-text transition-colors hover:bg-workspace-row-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40",
+          collapsed
+            ? "size-8 justify-center"
+            : showLabel
+              ? "w-full justify-between gap-2 px-2.5"
+              : "size-8 justify-center",
+          open && "bg-workspace-selected text-primary-text",
+        )}
+        {...props}
+      >
+        <span className="flex items-center gap-2">
+          <Palette className="size-4" aria-hidden="true" />
+          {showLabel && !collapsed ? (
+            <span className="workspace-control-text font-medium">
+              Giao diện và màu sắc
+            </span>
+          ) : null}
+        </span>
+        {showLabel && !collapsed ? (
+          <span className="size-2 rounded-full bg-primary" />
+        ) : null}
+      </button>
+    );
+  },
+);
+ThemeMenuButton.displayName = "ThemeMenuButton";
 
 export function ThemeMenu({
   collapsed = false,

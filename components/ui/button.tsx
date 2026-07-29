@@ -46,7 +46,7 @@ const buttonVariants = cva(
          * Primary action — Kizuna Clay with white on-primary text.
          */
         default:
-          'bg-primary-action text-on-primary shadow-framer-edge hover:bg-primary-action-hover hover:shadow-framer-edge-lifted hover:-translate-y-0.5 active:bg-primary-action-active active:scale-[0.97]',
+          'bg-primary-action text-[var(--color-on-primary)] shadow-framer-edge hover:bg-primary-action-hover hover:shadow-framer-edge-lifted hover:-translate-y-0.5 active:bg-primary-action-active active:scale-[0.97]',
 
         /**
          * button-secondary — Charcoal pill.
