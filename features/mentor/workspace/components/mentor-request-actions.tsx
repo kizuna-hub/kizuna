@@ -1,14 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Check,
-  Mail,
-  MessageCircleMore,
-  Phone,
-  Send,
-  UserRoundCheck,
-} from "lucide-react";
+import { Check } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -21,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   RadioGroup,
@@ -31,7 +23,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 import { canonicalMentorPersona } from "../demo/mentor-workspace-demo-data";
-import { validateMentorContact } from "../services/mentor-workspace-repository";
 import { useMentorWorkspace } from "../state/mentor-workspace-provider";
 import type {
   MentorConnectionRequest,
@@ -40,36 +31,7 @@ import type {
   MentorMeetingPreference,
   MentorMoreContextTopic,
 } from "../types/mentor-workspace.types";
-import {
-  contactMethodLabels,
-  meetingPreferenceLabels,
-} from "./mentor-workspace-labels";
 
-const contactOptions: Array<{
-  value: MentorContactMethod;
-  icon: typeof Phone;
-}> = [
-  { value: "zalo", icon: MessageCircleMore },
-  { value: "phone", icon: Phone },
-  { value: "email", icon: Mail },
-  { value: "messenger", icon: Send },
-  { value: "mentor_will_contact", icon: UserRoundCheck },
-];
-
-const meetingOptions: MentorMeetingPreference[] = [
-  "google_meet",
-  "in_person",
-  "coordinate_later",
-];
-
-const messageTemplates = {
-  friendly: (ventureName: string) =>
-    `Anh đã xem brief của ${ventureName}. Em liên hệ với anh qua Zalo để mình thống nhất lịch và cùng trao đổi kỹ hơn nhé.`,
-  professional: (ventureName: string) =>
-    `Tôi đã xem yêu cầu hỗ trợ của ${ventureName} và đồng ý kết nối. Bạn có thể liên hệ với tôi qua kênh bên dưới để thống nhất thời gian trao đổi.`,
-  proactive: () =>
-    "Anh đã xem context của team và đồng ý hỗ trợ. Anh sẽ chủ động liên hệ với em để thống nhất lịch trao đổi nhé.",
-};
 
 const bottomSheetClass =
   "max-sm:bottom-0 max-sm:left-0 max-sm:top-auto max-sm:max-h-[92dvh] max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:overflow-y-auto max-sm:rounded-b-none max-sm:rounded-t-2xl";
@@ -85,50 +47,21 @@ export function MentorAcceptanceDialog({
 }) {
   const {
     accept,
-    contactPreference,
     mutationPending,
   } = useMentorWorkspace();
-  const [message, setMessage] = React.useState(
-    messageTemplates.friendly(request.venture.name),
-  );
-  const [contactMethod, setContactMethod] =
-    React.useState<MentorContactMethod>(
-      contactPreference?.preferredChannel ?? "zalo",
-    );
-  const [contactValue, setContactValue] = React.useState(
-    contactPreference?.contactValue ?? "",
-  );
-  const [meetingPreference, setMeetingPreference] =
-    React.useState<MentorMeetingPreference>(
-      "coordinate_later",
-    );
-  const [saveAsDefault, setSaveAsDefault] =
-    React.useState(true);
+  const [message, setMessage] = React.useState("");
   const [submitError, setSubmitError] =
     React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!open) return;
-    setMessage(
-      contactPreference?.defaultAcceptanceMessage ??
-        messageTemplates.friendly(request.venture.name),
-    );
-    setContactMethod(
-      contactPreference?.preferredChannel ?? "zalo",
-    );
-    setContactValue(contactPreference?.contactValue ?? "");
-    setMeetingPreference("coordinate_later");
+    setMessage("");
     setSubmitError(null);
-  }, [contactPreference, open, request.venture.name]);
+  }, [open]);
 
-  const validation = validateMentorContact(
-    contactMethod,
-    contactValue,
-  );
   const canSubmit =
     message.trim().length > 0 &&
     message.length <= 500 &&
-    validation.valid &&
     !mutationPending &&
     request.status !== "cancelled" &&
     request.status !== "accepted";
@@ -144,10 +77,10 @@ export function MentorAcceptanceDialog({
         requestId: request.id,
         mentorId: canonicalMentorPersona.id,
         message,
-        contactMethod,
-        contactValue,
-        meetingPreference,
-        saveAsDefault,
+        contactMethod: "mentor_will_contact",
+        contactValue: "",
+        meetingPreference: "coordinate_later",
+        saveAsDefault: false,
       });
       toast.success("Đã chấp nhận yêu cầu kết nối.");
       onOpenChange(false);
@@ -212,51 +145,6 @@ export function MentorAcceptanceDialog({
                   {message.length}/500
                 </span>
               </div>
-              <div
-                className="flex flex-wrap gap-2"
-                aria-label="Mẫu lời nhắn"
-              >
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    setMessage(
-                      messageTemplates.friendly(
-                        request.venture.name,
-                      ),
-                    )
-                  }
-                >
-                  Thân thiện
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    setMessage(
-                      messageTemplates.professional(
-                        request.venture.name,
-                      ),
-                    )
-                  }
-                >
-                  Chuyên nghiệp
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setMessage(messageTemplates.proactive());
-                    setContactMethod("mentor_will_contact");
-                    setContactValue("");
-                  }}
-                >
-                  Tôi sẽ chủ động liên hệ
-                </Button>
-              </div>
               <Textarea
                 id="mentor-acceptance-message"
                 value={message}
@@ -265,128 +153,10 @@ export function MentorAcceptanceDialog({
                 }
                 rows={5}
                 maxLength={520}
-                className="min-h-28 border-workspace-border bg-workspace-background"
+                className="min-h-28 mt-4 border-workspace-border bg-workspace-background"
+                placeholder="Nhập lời nhắn cho founder..."
               />
             </div>
-
-            <fieldset className="space-y-3">
-              <legend className="workspace-card-title">
-                Founder có thể liên hệ với tôi qua
-              </legend>
-              <RadioGroup
-                value={contactMethod}
-                onValueChange={(value) => {
-                  const nextMethod =
-                    value as MentorContactMethod;
-                  setContactMethod(nextMethod);
-                  if (nextMethod === "mentor_will_contact") {
-                    setContactValue("");
-                    setMessage(messageTemplates.proactive());
-                  }
-                }}
-                className="grid gap-2 sm:grid-cols-2"
-              >
-                {contactOptions.map((option) => {
-                  const Icon = option.icon;
-                  return (
-                    <Label
-                      key={option.value}
-                      htmlFor={`contact-${option.value}`}
-                      className={cn(
-                        "flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-workspace-border bg-workspace-background px-3 py-2 text-sm",
-                        contactMethod === option.value &&
-                          "border-primary-border bg-primary-soft",
-                      )}
-                    >
-                      <RadioGroupItem
-                        id={`contact-${option.value}`}
-                        value={option.value}
-                      />
-                      <Icon
-                        className="size-4 text-workspace-muted-text"
-                        aria-hidden="true"
-                      />
-                      {contactMethodLabels[option.value]}
-                    </Label>
-                  );
-                })}
-              </RadioGroup>
-              {contactMethod !== "mentor_will_contact" ? (
-                <div className="space-y-2">
-                  <Label htmlFor="mentor-contact-value">
-                    {contactMethodLabels[contactMethod]}
-                  </Label>
-                  <Input
-                    id="mentor-contact-value"
-                    value={contactValue}
-                    onChange={(event) =>
-                      setContactValue(event.target.value)
-                    }
-                    placeholder={
-                      contactMethod === "email"
-                        ? "mentor@example.com"
-                        : contactMethod === "messenger"
-                          ? "facebook.com/minhquan"
-                          : "09xxxxxxxx"
-                    }
-                    aria-invalid={!validation.valid}
-                    className="border-workspace-border bg-workspace-background"
-                  />
-                  {!validation.valid && contactValue ? (
-                    <p className="workspace-meta text-workspace-danger">
-                      {validation.message}
-                    </p>
-                  ) : null}
-                </div>
-              ) : null}
-              <Label className="flex cursor-pointer items-start gap-3 text-sm">
-                <Checkbox
-                  checked={saveAsDefault}
-                  onCheckedChange={(checked) =>
-                    setSaveAsDefault(checked === true)
-                  }
-                />
-                <span>
-                  Dùng kênh này cho các request sau
-                  <span className="mt-1 block workspace-meta text-workspace-muted-text">
-                    Chỉ lưu sau khi bạn chấp nhận thành công.
-                  </span>
-                </span>
-              </Label>
-            </fieldset>
-
-            <fieldset className="space-y-3">
-              <legend className="workspace-card-title">
-                Hình thức ưu tiên
-              </legend>
-              <RadioGroup
-                value={meetingPreference}
-                onValueChange={(value) =>
-                  setMeetingPreference(
-                    value as MentorMeetingPreference,
-                  )
-                }
-                className="grid gap-2 sm:grid-cols-3"
-              >
-                {meetingOptions.map((option) => (
-                  <Label
-                    key={option}
-                    htmlFor={`meeting-${option}`}
-                    className={cn(
-                      "flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-workspace-border bg-workspace-background px-3 py-2 text-sm",
-                      meetingPreference === option &&
-                        "border-primary-border bg-primary-soft",
-                    )}
-                  >
-                    <RadioGroupItem
-                      id={`meeting-${option}`}
-                      value={option}
-                    />
-                    {meetingPreferenceLabels[option]}
-                  </Label>
-                ))}
-              </RadioGroup>
-            </fieldset>
 
             {submitError ? (
               <p

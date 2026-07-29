@@ -151,7 +151,7 @@ export function MentorRequestsScreen() {
     ) ?? null;
 
   return (
-    <div className="mx-auto w-full max-w-[96rem] px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
+    <div className="mx-auto w-full max-w-[88rem] px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-workspace-border pb-5">
         <div>
           <h1 className="workspace-page-title">
@@ -184,7 +184,7 @@ export function MentorRequestsScreen() {
               className={cn(
                 "shrink-0 rounded-xl",
                 filter === item.value &&
-                  "bg-workspace-selected text-foreground",
+                  "bg-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] text-[var(--color-primary)]",
               )}
             >
               {item.value === "all" ? (
@@ -277,7 +277,6 @@ export function MentorRequestsScreen() {
                     setSelectedRequestId(request.id)
                   }
                   onAccept={() => setAcceptRequest(request)}
-                  onDecline={() => setDeclineRequest(request)}
                 />
               ))}
             </div>

@@ -78,6 +78,7 @@ export interface MentorVenture {
   stage: MentorRequestStage;
   teamSummary: string;
   productSummary: string;
+  tags?: string[];
 }
 
 export interface MentorRequestBrief {

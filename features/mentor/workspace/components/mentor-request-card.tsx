@@ -31,13 +31,11 @@ export function MentorRequestCard({
   primary = false,
   onOpenBrief,
   onAccept,
-  onDecline,
 }: {
   request: MentorConnectionRequest;
   primary?: boolean;
   onOpenBrief: () => void;
   onAccept: () => void;
-  onDecline: () => void;
 }) {
   const unavailable =
     request.status === "cancelled" ||
@@ -107,6 +105,12 @@ export function MentorRequestCard({
                 {request.founder.institution}
               </span>
             ) : null}
+            {request.venture.tags?.map((tag) => (
+              <span key={tag} className="flex items-center gap-1.5">
+                <span className="text-workspace-muted-text" aria-hidden="true">·</span>
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
 
@@ -203,17 +207,6 @@ export function MentorRequestCard({
                 <ArrowRight />
               </Link>
             </Button>
-            {!unavailable ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={onDecline}
-                className="text-workspace-muted-text"
-              >
-                Bỏ qua
-              </Button>
-            ) : null}
           </div>
         </div>
       </div>

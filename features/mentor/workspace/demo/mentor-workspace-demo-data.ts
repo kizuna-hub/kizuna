@@ -52,6 +52,7 @@ export function createCampusFlowMentorRequest(
       teamSummary: "3 student founders",
       productSummary:
         "Nền tảng giúp các câu lạc bộ đại học onboarding, hỗ trợ và theo dõi thành viên mới.",
+      tags: ["EdTech", "B2B", "SaaS"],
     },
     brief: {
       currentChallenge:
@@ -111,6 +112,7 @@ export function createSecondaryMentorRequests(): MentorConnectionRequest[] {
         teamSummary: "2 student founders",
         productSummary:
           "Công cụ giúp sinh viên năm nhất hình thành và duy trì nhóm học tập.",
+        tags: ["EdTech", "Productivity"],
       },
       brief: {
         currentChallenge:
@@ -160,6 +162,7 @@ export function createSecondaryMentorRequests(): MentorConnectionRequest[] {
         teamSummary: "4 thành viên",
         productSummary:
           "Ứng dụng giúp sinh viên theo dõi và cải thiện thói quen tiêu dùng bền vững.",
+        tags: ["GreenTech", "B2C", "Mobile"],
       },
       brief: {
         currentChallenge:
@@ -215,6 +218,7 @@ export function createSecondaryMentorRequests(): MentorConnectionRequest[] {
         teamSummary: "3 thành viên",
         productSummary:
           "Không gian thực hành giúp sinh viên biến ý tưởng thành thử nghiệm có evidence.",
+        tags: ["EdTech", "Community"],
       },
       brief: {
         currentChallenge:
