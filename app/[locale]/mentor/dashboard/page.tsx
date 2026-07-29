@@ -1,7 +1,10 @@
-'use client';
+import { redirect } from "next/navigation";
 
-import MentorDashboard from '@/components/mentor/mentor-dashboard';
-
-export default function Page() {
-    return <MentorDashboard />;
+export default async function MentorDashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/mentor/dashboard/requests`);
 }

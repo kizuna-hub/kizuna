@@ -34,6 +34,7 @@ const testSources = [
   "features/founder/ai-workspace/mentor-connection/tests/mentor-connection-brief.test.ts",
   "features/founder/ai-workspace/mentor-connection/tests/mentor-connection-repository.test.ts",
   "features/founder/ai-workspace/mentor-recommendation/tests/mentor-recommendation.test.ts",
+  "features/mentor/workspace/tests/mentor-workspace-repository.test.ts",
 ];
 
 const outputDirectory = mkdtempSync(
