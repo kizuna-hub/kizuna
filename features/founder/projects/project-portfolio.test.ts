@@ -74,7 +74,7 @@ test("project portfolio sort and activity copy are deterministic", () => {
   );
   assert.equal(
     formatProjectActivity(ventures[0].lastUpdatedAt, referenceTime),
-    "Edited 7 days ago",
+    "Sửa 7 ngày trước",
   );
 });
 

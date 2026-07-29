@@ -20,7 +20,7 @@ export function MentorConnectionFooter({
   onSend: () => void;
 }) {
   return (
-    <footer className="sticky bottom-0 shrink-0 border-t border-workspace-border bg-workspace-panel p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <footer className="absolute bottom-0 left-0 right-0 z-10 shrink-0 border-t border-workspace-border bg-workspace-panel p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
       <div className="flex flex-wrap items-center gap-2">
         <Button
           type="button"

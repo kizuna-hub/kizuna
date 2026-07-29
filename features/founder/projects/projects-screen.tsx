@@ -49,10 +49,10 @@ import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 const projectStatusLabels: Record<VentureStatus, string> = {
-  setup: "Setup",
-  active: "Active",
-  paused: "Paused",
-  archived: "Archived",
+  setup: "Khởi tạo",
+  active: "Đang hoạt động",
+  paused: "Tạm dừng",
+  archived: "Đã lưu trữ",
 };
 
 const selectContentClassName =
@@ -144,13 +144,13 @@ export function ProjectsScreen() {
         <header className="flex flex-col gap-3 border-b border-workspace-border pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="workspace-eyebrow text-primary">
-              Project portfolio
+              Danh mục dự án
             </p>
             <h1 className="mt-1.5 workspace-page-title text-ink">
-              Projects
+              Dự án
             </h1>
             <p className="mt-1.5 max-w-2xl workspace-body text-workspace-muted-text">
-              Find a venture and continue from its latest work.
+              Tìm dự án và tiếp tục công việc của bạn.
             </p>
           </div>
           <Button
@@ -160,7 +160,7 @@ export function ProjectsScreen() {
           >
             <Link href="/founder/projects/new">
               <Plus className="size-3.5" />
-              Create project
+              Tạo dự án
             </Link>
           </Button>
         </header>
@@ -170,8 +170,7 @@ export function ProjectsScreen() {
             role="status"
             className="rounded-xl border border-workspace-warning/30 bg-workspace-warning-soft px-4 py-3 text-body-framer-sm text-ink"
           >
-            The previously active project is archived. Choose an active
-            project to continue.
+            Dự án trước đó đã được lưu trữ. Vui lòng chọn một dự án đang hoạt động để tiếp tục.
           </div>
         ) : null}
 
@@ -181,7 +180,7 @@ export function ProjectsScreen() {
         >
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-[minmax(240px,1fr)_160px_160px_142px_auto]">
             <label className="relative min-w-0 sm:col-span-2 xl:col-span-1">
-              <span className="sr-only">Search projects</span>
+              <span className="sr-only">Tìm kiếm dự án</span>
               <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-workspace-muted-text" />
               <Input
                 value={query}
@@ -190,13 +189,13 @@ export function ProjectsScreen() {
                     projectsQuery: event.target.value,
                   })
                 }
-                placeholder="Search projects..."
+                placeholder="Tìm kiếm dự án..."
                 className="workspace-input-text h-11 border-workspace-border bg-workspace-panel pl-10 pr-10 lg:h-9"
               />
               {query ? (
                 <button
                   type="button"
-                  aria-label="Clear project search"
+                  aria-label="Xóa tìm kiếm dự án"
                   onClick={() =>
                     updateUiPreferences({ projectsQuery: "" })
                   }
@@ -216,7 +215,7 @@ export function ProjectsScreen() {
               }
             >
               <SelectTrigger
-                aria-label="Sort projects"
+                aria-label="Sắp xếp dự án"
                 className="workspace-input-text h-11 w-full border-workspace-border bg-workspace-panel px-3 text-ink shadow-none hover:bg-workspace-row-hover lg:h-9"
               >
                 <SortDesc className="size-4 text-workspace-muted-text" />
@@ -230,13 +229,13 @@ export function ProjectsScreen() {
                   value="last-edited"
                   className={selectItemClassName}
                 >
-                  Last edited
+                  Chỉnh sửa gần nhất
                 </SelectItem>
                 <SelectItem
                   value="name"
                   className={selectItemClassName}
                 >
-                  Name A–Z
+                  Tên A–Z
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -252,7 +251,7 @@ export function ProjectsScreen() {
               }
             >
               <SelectTrigger
-                aria-label="Filter projects by stage"
+                aria-label="Lọc dự án theo giai đoạn"
                 className="workspace-input-text h-11 w-full border-workspace-border bg-workspace-panel px-3 text-ink shadow-none hover:bg-workspace-row-hover lg:h-9"
               >
                 <SlidersHorizontal className="size-4 text-workspace-muted-text" />
@@ -266,7 +265,7 @@ export function ProjectsScreen() {
                   value="all"
                   className={selectItemClassName}
                 >
-                  All stages
+                  Tất cả giai đoạn
                 </SelectItem>
                 {stages.map((stageValue) => (
                   <SelectItem
@@ -291,7 +290,7 @@ export function ProjectsScreen() {
               }
             >
               <SelectTrigger
-                aria-label="Filter projects by status"
+                aria-label="Lọc dự án theo trạng thái"
                 className="workspace-input-text h-11 w-full border-workspace-border bg-workspace-panel px-3 text-ink shadow-none hover:bg-workspace-row-hover lg:h-9"
               >
                 <SelectValue />
@@ -304,7 +303,7 @@ export function ProjectsScreen() {
                   value="all"
                   className={selectItemClassName}
                 >
-                  Any status
+                  Mọi trạng thái
                 </SelectItem>
                 {statuses.map((statusValue) => (
                   <SelectItem
@@ -322,22 +321,22 @@ export function ProjectsScreen() {
               type="single"
               value={view}
               onValueChange={updateView}
-              aria-label="Project layout"
+              aria-label="Giao diện dự án"
               variant="outline"
               className="h-11 w-full border-workspace-border bg-workspace-panel p-0.5 shadow-none sm:w-auto lg:h-9"
             >
               <ToggleGroupItem
                 value="grid"
-                aria-label="Grid view"
-                title="Grid view"
+                aria-label="Chế độ xem lưới"
+                title="Chế độ xem lưới"
                 className="h-full min-w-11 border-0 text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink data-[state=on]:bg-workspace-selected data-[state=on]:text-primary lg:min-w-9"
               >
                 <Grid2X2 className="size-4" />
               </ToggleGroupItem>
               <ToggleGroupItem
                 value="list"
-                aria-label="List view"
-                title="List view"
+                aria-label="Chế độ xem danh sách"
+                title="Chế độ xem danh sách"
                 className="h-full min-w-11 border-0 text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink data-[state=on]:bg-workspace-selected data-[state=on]:text-primary lg:min-w-9"
               >
                 <List className="size-4" />
@@ -350,14 +349,9 @@ export function ProjectsScreen() {
               className="workspace-meta text-workspace-muted-text"
               aria-live="polite"
             >
-              {visibleVentures.length}{" "}
-              {visibleVentures.length === 1 ? "project" : "projects"}
+              {visibleVentures.length} dự án
               {activeFilterCount
-                ? ` · ${activeFilterCount} ${
-                    activeFilterCount === 1
-                      ? "filter"
-                      : "filters"
-                  } active`
+                ? ` · ${activeFilterCount} bộ lọc đang bật`
                 : ""}
             </p>
             {activeFilterCount ? (
@@ -369,7 +363,7 @@ export function ProjectsScreen() {
                 className="h-8 px-3 workspace-control-text"
               >
                 <X className="size-3.5" />
-                Clear filters
+                Xóa bộ lọc
               </Button>
             ) : null}
           </div>
@@ -419,13 +413,13 @@ export function ProjectsScreen() {
           <section className="rounded-xl border border-workspace-border bg-workspace-panel p-6 text-center">
             <h2 className="workspace-card-title text-ink">
               {ventures.length
-                ? "No projects match these filters"
-                : "Create your first project"}
+                ? "Không có dự án nào phù hợp với bộ lọc"
+                : "Tạo dự án đầu tiên của bạn"}
             </h2>
             <p className="mx-auto mt-2 max-w-lg workspace-supporting text-workspace-muted-text">
               {ventures.length
-                ? "Clear the filters or try a broader search."
-                : "Add the minimum venture context, then open a decision-led workspace."}
+                ? "Xóa các bộ lọc hoặc thử tìm kiếm với từ khóa khác."
+                : "Cung cấp một số thông tin cơ bản về dự án để bắt đầu làm việc."}
             </p>
             {ventures.length ? (
               <Button
@@ -433,12 +427,12 @@ export function ProjectsScreen() {
                 className="mt-5"
                 onClick={clearFilters}
               >
-                Clear filters
+                Xóa bộ lọc
               </Button>
             ) : (
               <Button asChild className="mt-5">
                 <Link href="/founder/projects/new">
-                  Create project
+                  Tạo dự án
                 </Link>
               </Button>
             )}

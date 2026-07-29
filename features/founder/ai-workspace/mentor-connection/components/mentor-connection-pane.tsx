@@ -157,14 +157,14 @@ export function MentorConnectionPane({
   }
 
   return (
-    <aside className="flex h-full min-h-0 flex-col bg-workspace-panel">
+    <aside className="relative flex h-full min-h-0 flex-col bg-workspace-panel">
       <MentorConnectionHeader
         showClose={showClose}
         onClose={workspace.closeSecondaryPane}
       />
 
       <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
-        <div className="space-y-4 p-4 pb-6">
+        <div className="space-y-4 p-4 pb-40">
           <MentorSummary mentor={brief.mentorSnapshot} />
 
           {stale ? (

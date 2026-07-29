@@ -26,9 +26,9 @@ export function getProjectCardDestination(
 }
 
 const groupLabels: Record<ProjectActivityGroupId, string> = {
-  "last-14-days": "Active in the last 14 days",
-  "last-60-days": "Active in the last 60 days",
-  older: "Older projects",
+  "last-14-days": "Hoạt động trong 14 ngày qua",
+  "last-60-days": "Hoạt động trong 60 ngày qua",
+  older: "Dự án cũ",
 };
 
 function getTimestamp(value: string) {
@@ -114,19 +114,15 @@ export function formatProjectActivity(
     ),
   );
 
-  if (ageInDays === 0) return "Edited today";
-  if (ageInDays === 1) return "Edited yesterday";
-  if (ageInDays < 30) return `Edited ${ageInDays} days ago`;
+  if (ageInDays === 0) return "Sửa hôm nay";
+  if (ageInDays === 1) return "Sửa hôm qua";
+  if (ageInDays < 30) return `Sửa ${ageInDays} ngày trước`;
 
   const ageInMonths = Math.max(1, Math.floor(ageInDays / 30));
   if (ageInMonths < 12) {
-    return `Edited ${ageInMonths} ${
-      ageInMonths === 1 ? "month" : "months"
-    } ago`;
+    return `Sửa ${ageInMonths} tháng trước`;
   }
 
   const ageInYears = Math.max(1, Math.floor(ageInMonths / 12));
-  return `Edited ${ageInYears} ${
-    ageInYears === 1 ? "year" : "years"
-  } ago`;
+  return `Sửa ${ageInYears} năm trước`;
 }
