@@ -63,7 +63,8 @@ export function ChatMessage({
   onEditFailedMessage,
   onDeleteFailedMessage,
   onOpenMentor,
-  onDeferMentor,
+  onConnectMentor,
+  onToggleSaveMentor,
   onOpenArtifact,
   onOpenReadiness,
   onVerifyReadinessEvidence,
@@ -81,8 +82,9 @@ export function ChatMessage({
   onRetry: () => void;
   onEditFailedMessage?: () => void;
   onDeleteFailedMessage?: () => void;
-  onOpenMentor: () => void;
-  onDeferMentor: () => void;
+  onOpenMentor: (mentorId: string) => void;
+  onConnectMentor: (mentorId: string) => void;
+  onToggleSaveMentor: (mentorId: string) => void;
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
@@ -207,7 +209,8 @@ export function ChatMessage({
               onConfirmActionProposal
             }
             onOpenMentor={onOpenMentor}
-            onDeferMentor={onDeferMentor}
+            onConnectMentor={onConnectMentor}
+            onToggleSaveMentor={onToggleSaveMentor}
             onOpenArtifact={onOpenArtifact}
             onOpenReadiness={onOpenReadiness}
             onVerifyReadinessEvidence={

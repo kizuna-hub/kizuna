@@ -24,17 +24,38 @@ import {
   workspaceLayoutReducer,
 } from "../state/workspace-layout-reducer";
 import {
-  baselineMentorRecommendation,
   createAiWorkspaceScenarioState,
   getScenarioPrompts,
   sampleMaterials,
 } from "../demo/demo-scenarios";
+import { createCampusFlowMentorRecommendation } from "../mentor-recommendation/demo/campusflow-mentor-recommendations";
+import { selectMentorMatch } from "../mentor-recommendation/state/mentor-recommendation-selectors";
 import { createLongRunDemoState } from "../demo/demo-long-run-data";
 import {
   createMockAiWorkspaceEngine,
   MockAiWorkspaceError,
 } from "../demo/mock-ai-engine";
 import { createMockVentureSearchService } from "../demo/mock-venture-search-service";
+import {
+  campusFlowMentorEvidence,
+  campusFlowMentorVentureContext,
+} from "../mentor-connection/demo/campusflow-mentor-connection-data";
+import {
+  createMentorContextFingerprint,
+  createMockMentorConnectionBriefGenerator,
+} from "../mentor-connection/services/mock-mentor-connection-brief-generator";
+import { createMockMentorConnectionRepository } from "../mentor-connection/services/mock-mentor-connection-repository";
+import {
+  refreshMentorConnectionBrief,
+  toggleMentorBriefContext,
+  toggleMentorBriefDocument,
+  toggleMentorBriefEvidence,
+  updateMentorBriefSection,
+} from "../mentor-connection/state/mentor-connection-state";
+import type {
+  MentorConnectionBriefSectionId,
+  MentorShareableContext,
+} from "../mentor-connection/types/mentor-connection.types";
 import type {
   AiWorkspaceMessage,
   AiWorkspaceScenarioId,
@@ -204,6 +225,11 @@ export function useAiWorkspace(ventureId: string) {
     React.useRef<AbortController | null>(null);
   const panelAbortControllerRef =
     React.useRef<AbortController | null>(null);
+  const mentorConnectionGenerationRef =
+    React.useRef<Promise<void> | null>(null);
+  const mentorConnectionSendRef =
+    React.useRef<Promise<void> | null>(null);
+  const mentorTimestampSequenceRef = React.useRef(0);
   const conversationCreationRef = React.useRef<
     Partial<Record<"main" | "panel", { id: string; at: number }>>
   >({});
@@ -226,6 +252,26 @@ export function useAiWorkspace(ventureId: string) {
   const contextService = React.useMemo(
     () =>
       createContextAssemblyService(() => longRunRef.current),
+    [],
+  );
+  const mentorConnectionGenerator = React.useMemo(
+    () => createMockMentorConnectionBriefGenerator(),
+    [],
+  );
+  const mentorConnectionRepository = React.useMemo(
+    () =>
+      createMockMentorConnectionRepository({
+        getDraft: (_ventureId, mentorId) =>
+          stateRef.current.mentorConnectionBriefs[mentorId],
+        getRequest: (requestedVentureId, mentorId) => {
+          const request =
+            stateRef.current.mentorConnectionRequest;
+          return request?.ventureId === requestedVentureId &&
+            request.mentorId === mentorId
+            ? request
+            : undefined;
+        },
+      }),
     [],
   );
 
@@ -378,6 +424,196 @@ export function useAiWorkspace(ventureId: string) {
     };
     dispatch({ type: "cancel-request" });
   }, []);
+
+  const nextMentorTimestamp = React.useCallback(() => {
+    mentorTimestampSequenceRef.current += 1;
+    const minute = 16 + mentorTimestampSequenceRef.current;
+    return `2026-07-29T03:${String(minute).padStart(2, "0")}:00.000Z`;
+  }, []);
+
+  const buildMentorConnectionInput = React.useCallback(
+    (clarification?: string, mentorId?: string) => {
+      const current = stateRef.current;
+      const mentor = selectMentorMatch(
+        current.mentorRecommendation,
+        mentorId ??
+          current.mentorConnectionOperation.activeMentorId,
+      );
+      if (!mentor) return null;
+      const currentSummary = longRunRef.current.summaries.find(
+        (summary) =>
+          summary.conversationId ===
+          longRunRef.current.activeConversationId,
+      );
+      return {
+        ventureId,
+        mentor,
+        canonicalVentureContext:
+          campusFlowMentorVentureContext,
+        currentFocus: current.currentFocus,
+        readiness: current.readiness,
+        activeDecisionCycle:
+          current.decisionCycleLifecycle === "active"
+            ? current.decisionCycle
+            : undefined,
+        verifiedEvidence: structuredClone(
+          campusFlowMentorEvidence,
+        ),
+        relevantConversationSummary: currentSummary?.sections
+          .flatMap((section) => section.items)
+          .slice(0, 4)
+          .join(" "),
+        clarification,
+      };
+    },
+    [ventureId],
+  );
+
+  const generateMentorConnectionBrief =
+    React.useCallback(
+      async ({
+        clarification,
+        preserveExisting,
+        mentorId,
+      }: {
+        clarification?: string;
+        preserveExisting?: boolean;
+        mentorId?: string;
+      } = {}) => {
+        const input =
+          buildMentorConnectionInput(
+            clarification,
+            mentorId,
+          );
+        if (!input) return;
+        dispatch({
+          type: "mentor-connection-operation",
+          patch: {
+            activeMentorId: input.mentor.mentorId,
+            generationStatus: "working",
+            errorMessage: undefined,
+            clarification: undefined,
+          },
+        });
+        try {
+          const result =
+            await mentorConnectionGenerator.generate(input);
+          if (
+            result.missingRequiredContext.includes(
+              "connection_goal",
+            ) &&
+            !clarification
+          ) {
+            dispatch({
+              type: "mentor-connection-operation",
+              patch: {
+                generationStatus: "idle",
+                clarification: {
+                  kind: "goal",
+                  prompt:
+                    "Sau phiên này, bạn muốn chốt điều gì nhất?",
+                },
+              },
+            });
+            return;
+          }
+          if (
+            result.missingRequiredContext.includes(
+              "venture_summary",
+            ) &&
+            !clarification
+          ) {
+            dispatch({
+              type: "mentor-connection-operation",
+              patch: {
+                generationStatus: "idle",
+                clarification: {
+                  kind: "empty_venture",
+                  prompt:
+                    "Mentor cần giúp bạn về việc gì? Mô tả trong một hoặc hai câu.",
+                },
+              },
+            });
+            return;
+          }
+          const existing =
+            stateRef.current.mentorConnectionBriefs[
+              input.mentor.mentorId
+            ];
+          const brief =
+            preserveExisting && existing
+              ? refreshMentorConnectionBrief(
+                  existing,
+                  result.brief,
+                )
+              : result.brief;
+          dispatch({
+            type: "set-mentor-connection-brief",
+            brief,
+          });
+          dispatch({
+            type: "mentor-connection-operation",
+            patch: {
+              generationStatus: "success",
+              clarification: undefined,
+            },
+          });
+        } catch {
+          dispatch({
+            type: "mentor-connection-operation",
+            patch: {
+              generationStatus: "error",
+              errorMessage:
+                "Kizuna chưa thể chuẩn bị yêu cầu kết nối.",
+            },
+          });
+        }
+      },
+      [buildMentorConnectionInput, mentorConnectionGenerator],
+    );
+
+  const openMentorConnection = React.useCallback(
+    (mentorId?: string) => {
+      const mentor = selectMentorMatch(
+        stateRef.current.mentorRecommendation,
+        mentorId,
+      );
+      if (!mentor) return;
+      dispatch({
+        type: "select-mentor",
+        mentorId: mentor.mentorId,
+      });
+      dispatchLayout({
+        type: "open-mentor-connection",
+        mentorId: mentor.mentorId,
+      });
+      dispatch({
+        type: "mentor-connection-operation",
+        patch: {
+          activeMentorId: mentor.mentorId,
+          errorMessage: undefined,
+        },
+      });
+      if (
+        stateRef.current.mentorConnectionBriefs[
+        mentor.mentorId
+        ] ||
+        stateRef.current.mentorConnectionRequest?.mentorId ===
+          mentor.mentorId
+      ) {
+        return;
+      }
+      if (mentorConnectionGenerationRef.current) return;
+      const operation = generateMentorConnectionBrief({
+        mentorId: mentor.mentorId,
+      });
+      mentorConnectionGenerationRef.current = operation;
+      void operation.finally(() => {
+        mentorConnectionGenerationRef.current = null;
+      });
+    },
+    [generateMentorConnectionBrief],
+  );
 
   const executeResponse = React.useCallback(
     async (
@@ -1239,6 +1475,262 @@ export function useAiWorkspace(ventureId: string) {
     [],
   );
 
+  const activeMentorId =
+    state.mentorConnectionOperation.activeMentorId ??
+    state.mentorRecommendation?.selectedMentorId;
+  const mentorConnectionBrief = activeMentorId
+    ? state.mentorConnectionBriefs[activeMentorId]
+    : undefined;
+
+  const getActiveMentorBrief = () => {
+    const mentorId =
+      stateRef.current.mentorConnectionOperation.activeMentorId ??
+      stateRef.current.mentorRecommendation?.selectedMentorId;
+    return mentorId
+      ? stateRef.current.mentorConnectionBriefs[mentorId]
+      : undefined;
+  };
+
+  const updateMentorConnectionSection = (
+    sectionId: MentorConnectionBriefSectionId,
+    content: string,
+    checklistItems?: string[],
+  ) => {
+    const brief = getActiveMentorBrief();
+    if (!brief) return;
+    dispatch({
+      type: "set-mentor-connection-brief",
+      brief: updateMentorBriefSection(
+        brief,
+        sectionId,
+        { content, checklistItems },
+        nextMentorTimestamp(),
+      ),
+    });
+  };
+
+  const toggleMentorConnectionContext = (
+    context: MentorShareableContext,
+  ) => {
+    const brief = getActiveMentorBrief();
+    if (!brief) return;
+    dispatch({
+      type: "set-mentor-connection-brief",
+      brief: toggleMentorBriefContext(
+        brief,
+        context,
+        nextMentorTimestamp(),
+      ),
+    });
+  };
+
+  const toggleMentorConnectionEvidence = (
+    evidenceId: string,
+  ) => {
+    const brief = getActiveMentorBrief();
+    if (!brief) return;
+    dispatch({
+      type: "set-mentor-connection-brief",
+      brief: toggleMentorBriefEvidence(
+        brief,
+        evidenceId,
+        nextMentorTimestamp(),
+      ),
+    });
+  };
+
+  const toggleMentorConnectionDocument = (
+    documentId: string,
+  ) => {
+    const brief = getActiveMentorBrief();
+    if (!brief) return;
+    dispatch({
+      type: "set-mentor-connection-brief",
+      brief: toggleMentorBriefDocument(
+        brief,
+        documentId,
+        nextMentorTimestamp(),
+      ),
+    });
+  };
+
+  const saveMentorConnectionDraft = async () => {
+    const brief = getActiveMentorBrief();
+    if (!brief) return;
+    dispatch({
+      type: "mentor-connection-operation",
+      patch: {
+        saveStatus: "working",
+        errorMessage: undefined,
+      },
+    });
+    try {
+      const saved =
+        await mentorConnectionRepository.saveDraft(brief);
+      dispatch({
+        type: "set-mentor-connection-brief",
+        brief: saved,
+      });
+      dispatch({
+        type: "mentor-connection-operation",
+        patch: { saveStatus: "success" },
+      });
+    } catch {
+      dispatch({
+        type: "mentor-connection-operation",
+        patch: {
+          saveStatus: "error",
+          errorMessage: "Chưa thể lưu nháp.",
+        },
+      });
+    }
+  };
+
+  const sendMentorConnection = () => {
+    if (mentorConnectionSendRef.current) {
+      return mentorConnectionSendRef.current;
+    }
+    const operation = (async () => {
+      const brief = getActiveMentorBrief();
+      if (!brief) return;
+      const existing =
+        stateRef.current.mentorConnectionRequest;
+      if (
+        existing?.ventureId === brief.ventureId &&
+        existing.mentorId === brief.mentorId
+      ) {
+        dispatch({
+          type: "mentor-connection-operation",
+          patch: {
+            sendStatus: "success",
+            errorMessage: undefined,
+          },
+        });
+        return;
+      }
+      dispatch({
+        type: "set-mentor-connection-brief",
+        brief: {
+          ...brief,
+          status: "sending",
+          errorMessage: undefined,
+        },
+      });
+      dispatch({
+        type: "mentor-connection-operation",
+        patch: {
+          sendStatus: "working",
+          errorMessage: undefined,
+        },
+      });
+      try {
+        const request =
+          await mentorConnectionRepository.sendRequest({
+            brief,
+          });
+        dispatch({
+          type: "set-mentor-connection-request",
+          request,
+        });
+        dispatch({
+          type: "mentor-connection-operation",
+          patch: { sendStatus: "success" },
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Chưa thể gửi yêu cầu lúc này.";
+        dispatch({
+          type: "set-mentor-connection-brief",
+          brief: {
+            ...brief,
+            status: "failed",
+            errorMessage: message,
+          },
+        });
+        dispatch({
+          type: "mentor-connection-operation",
+          patch: {
+            sendStatus: "error",
+            errorMessage: message,
+          },
+        });
+      }
+    })();
+    mentorConnectionSendRef.current = operation;
+    void operation.finally(() => {
+      mentorConnectionSendRef.current = null;
+    });
+    return operation;
+  };
+
+  const refreshMentorConnection = () => {
+    if (mentorConnectionGenerationRef.current) return;
+    const operation = generateMentorConnectionBrief({
+      preserveExisting: true,
+    });
+    mentorConnectionGenerationRef.current = operation;
+    void operation.finally(() => {
+      mentorConnectionGenerationRef.current = null;
+    });
+  };
+
+  const keepMentorConnectionDraft = () => {
+    const brief = getActiveMentorBrief();
+    const input = buildMentorConnectionInput();
+    if (!brief || !input) return;
+    dispatch({
+      type: "set-mentor-connection-brief",
+      brief: {
+        ...brief,
+        contextFingerprint:
+          createMentorContextFingerprint(input),
+        updatedAt: nextMentorTimestamp(),
+      },
+    });
+  };
+
+  const answerMentorConnectionClarification = (
+    clarification: string,
+  ) => {
+    if (mentorConnectionGenerationRef.current) return;
+    const operation = generateMentorConnectionBrief({
+      clarification,
+    });
+    mentorConnectionGenerationRef.current = operation;
+    void operation.finally(() => {
+      mentorConnectionGenerationRef.current = null;
+    });
+  };
+
+  const closeSecondaryPane = React.useCallback(() => {
+    const mentorId = layout.selectedMentorId;
+    dispatchLayout({ type: "close-secondary-pane" });
+    if (!mentorId) return;
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLElement>(
+          `[data-mentor-fit-trigger="${mentorId}"]`,
+        )
+        ?.focus();
+    });
+  }, [layout.selectedMentorId]);
+
+  React.useEffect(() => {
+    if (layout.secondaryPaneMode !== "mentor_fit") return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) {
+        return;
+      }
+      event.preventDefault();
+      closeSecondaryPane();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () =>
+      document.removeEventListener("keydown", handleEscape);
+  }, [closeSecondaryPane, layout.secondaryPaneMode]);
+
   return {
     state,
     longRun,
@@ -1263,6 +1755,7 @@ export function useAiWorkspace(ventureId: string) {
         ] ?? [])
       : [],
     panelGenerating,
+    mentorConnectionBrief,
     groupedSessions,
     visibleMessages: getVisibleConversationMessages(longRun),
     hasOlderMessages:
@@ -1302,7 +1795,11 @@ export function useAiWorkspace(ventureId: string) {
     completeCycleReview: () =>
       dispatch({
         type: "complete-cycle-review",
-        mentor: structuredClone(baselineMentorRecommendation),
+        mentor: createCampusFlowMentorRecommendation(
+          ventureId,
+          state.decisionCycle.id,
+          state.currentFocus.id,
+        ),
       }),
     confirmActionProposal: (messageId: string) =>
       dispatch({
@@ -1311,10 +1808,20 @@ export function useAiWorkspace(ventureId: string) {
       }),
     deferMentor: (reason?: MentorDismissReason) =>
       dispatch({ type: "defer-mentor", reason }),
-    saveMentor: () =>
+    saveMentor: () => {
+      const mentorId =
+        state.mentorRecommendation?.selectedMentorId;
+      if (mentorId) {
+        dispatch({
+          type: "toggle-save-mentor",
+          mentorId,
+        });
+      }
+    },
+    toggleSaveMentor: (mentorId: string) =>
       dispatch({
-        type: "set-mentor-status",
-        status: "saved",
+        type: "toggle-save-mentor",
+        mentorId,
       }),
     bookMentor: () => dispatch({ type: "book-mentor" }),
     useOwnMentor: () =>
@@ -1331,10 +1838,13 @@ export function useAiWorkspace(ventureId: string) {
       dispatch({
         type: "refresh-mentor",
         mentor: {
-          ...structuredClone(baselineMentorRecommendation),
-          decisionCycleId: state.decisionCycle.id,
-          blockerId: state.currentFocus.id,
-          scopeLabel: `${state.currentFocus.bottleneck} · ${state.decisionCycle.title}`,
+          ...createCampusFlowMentorRecommendation(
+            ventureId,
+            state.decisionCycle.id,
+            state.currentFocus.id,
+          ),
+          savedMentorIds:
+            state.mentorRecommendation?.savedMentorIds ?? [],
           recommendationVersion:
             (state.mentorRecommendation
               ?.recommendationVersion ?? 0) + 1,
@@ -1342,27 +1852,25 @@ export function useAiWorkspace(ventureId: string) {
       }),
     setAiModel: (modelId: AiWorkspaceState["selectedModel"]) =>
       dispatch({ type: "set-ai-model", modelId }),
-    createMentorConnection: () => {
-      const mentor = stateRef.current.mentorRecommendation;
-      if (!mentor) return;
-      dispatch({
-        type: "create-mentor-connection",
-        request: {
-          id: `connection-${mentor.id}`,
-          mentorId: mentor.id,
-          mentorName: mentor.name,
-          goal:
-            "Thiết kế pilot 14 ngày cho CampusFlow.",
-          context:
-            "CampusFlow · Prototype · 3 student founders · 12 interviews · 5 prototype testers · 2 câu lạc bộ quan tâm pilot.",
-          message:
-            "Chào anh Quân,\n\nCampusFlow là một venture do nhóm sinh viên phát triển, giúp câu lạc bộ onboarding và hỗ trợ thành viên mới.\n\nBọn em đã phỏng vấn 12 người, test prototype với 5 người và có 2 câu lạc bộ quan tâm tới pilot. Bọn em cần hỗ trợ để thiết kế một pilot 14 ngày với phạm vi, metric và cách thu thập evidence rõ ràng.\n\nKết quả mong muốn: chốt phạm vi pilot, chọn success metric và xác định evidence cần thu thập.",
-          status: "draft",
-        },
+    openMentorFit: (mentorId: string) => {
+      dispatch({ type: "select-mentor", mentorId });
+      dispatchLayout({
+        type: "open-mentor-fit",
+        mentorId,
       });
     },
-    sendMentorConnection: () =>
-      dispatch({ type: "send-mentor-connection" }),
+    openMentorConnection,
+    updateMentorConnectionSection,
+    toggleMentorConnectionContext,
+    toggleMentorConnectionEvidence,
+    toggleMentorConnectionDocument,
+    saveMentorConnectionDraft,
+    sendMentorConnection,
+    refreshMentorConnection,
+    keepMentorConnectionDraft,
+    retryMentorConnectionGeneration:
+      generateMentorConnectionBrief,
+    answerMentorConnectionClarification,
     verifyReadinessEvidence: () =>
       dispatch({
         type: "verify-readiness-evidence",
@@ -1390,8 +1898,7 @@ export function useAiWorkspace(ventureId: string) {
     openConversationInPanel,
     openSplitChat,
     sendPanelMessage,
-    closeSecondaryPane: () =>
-      dispatchLayout({ type: "close-secondary-pane" }),
+    closeSecondaryPane,
     openAnalysis: (
       tab?: "overview" | "readiness" | "mentor",
     ) => dispatchLayout({ type: "open-analysis", tab }),

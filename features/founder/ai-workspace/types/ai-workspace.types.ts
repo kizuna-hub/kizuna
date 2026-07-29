@@ -3,6 +3,27 @@ import type {
   ExplainableReadinessAssessment,
   ReadinessCriterionId,
 } from "../readiness/types/readiness.types";
+import type {
+  MentorConnectionBrief,
+  MentorConnectionOperationState,
+  MentorConnectionRequest,
+} from "../mentor-connection/types/mentor-connection.types";
+import type {
+  MentorRecommendationGridPayload,
+  MentorRecommendationState,
+} from "../mentor-recommendation/types/mentor-recommendation.types";
+
+export type {
+  MentorConnectionBrief,
+  MentorConnectionRequest,
+} from "../mentor-connection/types/mentor-connection.types";
+export type {
+  MentorAvailabilityStatus,
+  MentorMatch,
+  MentorPricing,
+  MentorRecommendationGridPayload,
+  MentorRecommendationState,
+} from "../mentor-recommendation/types/mentor-recommendation.types";
 
 export type AiWorkspaceScenarioId =
   | "onboarding-case-study"
@@ -66,6 +87,7 @@ export type AssistantResponseKind =
   | "action_proposal"
   | "state_confirmation"
   | "artifact_preview"
+  | "mentor_recommendation_grid"
   | "mentor_intervention"
   | "warning"
   | "error";
@@ -145,14 +167,6 @@ export interface MaterialAnalysis {
   interpretationStatus: "pending" | "confirmed" | "disputed";
 }
 
-export type MentorRecommendationStatus =
-  | "recommended"
-  | "saved"
-  | "booked"
-  | "deferred"
-  | "external"
-  | "stale";
-
 export type MentorDismissReason =
   | "not_now"
   | "not_fit"
@@ -165,49 +179,7 @@ export interface MentorPreparationItem {
   completed: boolean;
 }
 
-export interface MentorAlternative {
-  id: string;
-  name: string;
-  role: string;
-  expertise: string;
-  matchScore: number;
-  strength: string;
-  tradeOff: string;
-}
-
-export interface MentorRecommendation {
-  id: string;
-  name: string;
-  role: string;
-  expertise: string;
-  matchScore: number;
-  matchConfidence: "low" | "medium" | "high";
-  whyHumanNow: string;
-  whyThisMentor: string;
-  expectedOutcome: string;
-  matchRationale: string[];
-  expectedOutcomes: string[];
-  preparation: MentorPreparationItem[];
-  availability: string;
-  alternatives: MentorAlternative[];
-  decisionCycleId: string;
-  blockerId: string;
-  scopeLabel: string;
-  recommendationVersion: number;
-  status: MentorRecommendationStatus;
-  dismissReason?: MentorDismissReason;
-}
-
-export interface MentorConnectionRequest {
-  id: string;
-  mentorId: string;
-  mentorName: string;
-  goal: string;
-  context: string;
-  message: string;
-  status: "draft" | "sent" | "failed";
-  sentAt?: string;
-}
+export type MentorRecommendation = MentorRecommendationState;
 
 export interface PitchDeckReviewPayload {
   title: string;
@@ -363,7 +335,11 @@ export type StructuredResponse =
     }
   | {
       type: "mentor-recommendation";
-      payload: MentorRecommendation | null;
+      payload: MentorRecommendationGridPayload | null;
+    }
+  | {
+      type: "mentor-recommendation-grid";
+      payload: MentorRecommendationGridPayload;
     }
   | {
       type: "pitch-deck-review";
@@ -415,6 +391,11 @@ export interface AiWorkspaceState {
   decisionCycleLifecycle: DecisionCycleLifecycle;
   mentorRecommendation?: MentorRecommendation;
   mentorSession?: MentorSessionState;
+  mentorConnectionBriefs: Record<
+    string,
+    MentorConnectionBrief
+  >;
+  mentorConnectionOperation: MentorConnectionOperationState;
   mentorConnectionRequest?: MentorConnectionRequest;
   selectedModel: AiModelId;
   view: AiWorkspaceView;
@@ -586,8 +567,8 @@ export type AiWorkspaceAction =
   | {
       type: "set-mentor-status";
       status: Extract<
-        MentorRecommendationStatus,
-        "recommended" | "saved" | "booked" | "external"
+        MentorRecommendationState["status"],
+        "recommended" | "booked" | "external"
       >;
     }
   | {
@@ -599,15 +580,28 @@ export type AiWorkspaceAction =
       mentor: MentorRecommendation;
     }
   | {
+      type: "select-mentor";
+      mentorId: string;
+    }
+  | {
+      type: "toggle-save-mentor";
+      mentorId: string;
+    }
+  | {
       type: "set-ai-model";
       modelId: AiModelId;
     }
   | {
-      type: "create-mentor-connection";
-      request: MentorConnectionRequest;
+      type: "mentor-connection-operation";
+      patch: Partial<MentorConnectionOperationState>;
     }
   | {
-      type: "send-mentor-connection";
+      type: "set-mentor-connection-brief";
+      brief: MentorConnectionBrief;
+    }
+  | {
+      type: "set-mentor-connection-request";
+      request: MentorConnectionRequest;
     }
   | {
       type: "verify-readiness-evidence";

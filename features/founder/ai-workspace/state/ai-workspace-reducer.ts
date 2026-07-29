@@ -7,6 +7,7 @@ import {
   calculateOverallReadiness,
   disputeContribution,
 } from "../readiness/services/readiness-calculator";
+import { selectMentorMatch } from "../mentor-recommendation/state/mentor-recommendation-selectors";
 
 const orderedCycleSteps: DecisionCycleStepId[] = [
   "understand",
@@ -30,20 +31,35 @@ function createMentorSession(
   state: AiWorkspaceState,
   status: "booked" | "external",
 ) {
-  const mentor = state.mentorRecommendation;
+  const mentor = selectMentorMatch(state.mentorRecommendation);
   if (!mentor) return state.mentorSession;
   return {
-    id: `session-${mentor.id}-${state.decisionCycle.id}`,
-    mentorId: mentor.id,
-    mentorName: mentor.name,
-    mentorRole: mentor.role,
+    id: `session-${mentor.mentorId}-${state.decisionCycle.id}`,
+    mentorId: mentor.mentorId,
+    mentorName: mentor.profile.name,
+    mentorRole: `${mentor.profile.role} · ${mentor.profile.organization}`,
     goal: "Thiết kế pilot 14 ngày cho CampusFlow.",
     scheduledAt: "2026-07-30T03:00:00.000Z",
-    displayTime: "10:00, Thứ Năm",
+    displayTime:
+      mentor.availability.nextSlots[0] ?? "Sẽ xác nhận sau",
     status,
-    preparation: mentor.preparation.map((item) => ({
-      ...item,
-    })),
+    preparation: [
+      {
+        id: "mentor-prep-scope",
+        label: "Phạm vi hỗ trợ mong muốn",
+        completed: true,
+      },
+      {
+        id: "mentor-prep-evidence",
+        label: "Bằng chứng cần chia sẻ",
+        completed: true,
+      },
+      {
+        id: "mentor-prep-questions",
+        label: "Ba câu hỏi cần mentor phản biện",
+        completed: false,
+      },
+    ],
   };
 }
 
@@ -113,6 +129,7 @@ export function aiWorkspaceReducer(
       const lifecycleKinds = new Set([
         "insight",
         "action_proposal",
+        "mentor_recommendation_grid",
         "mentor_intervention",
       ]);
       return {
@@ -437,12 +454,11 @@ export function aiWorkspaceReducer(
             mentorRecommendation: {
               ...state.mentorRecommendation,
               status: "deferred",
-              dismissReason: action.reason ?? "not_now",
             },
             messages: state.messages.map((message) =>
               message.role === "assistant" &&
               message.responseKind ===
-                "mentor_intervention" &&
+                "mentor_recommendation_grid" &&
               message.responseLifecycle === "active"
                 ? {
                     ...message,
@@ -465,14 +481,14 @@ export function aiWorkspaceReducer(
         mentorRecommendation: {
           ...state.mentorRecommendation,
           status: "booked",
-          dismissReason: undefined,
         },
         mentorSession:
           state.mentorSession ??
           createMentorSession(state, "booked"),
         messages: state.messages.map((message) =>
           message.role === "assistant" &&
-          message.responseKind === "mentor_intervention" &&
+          message.responseKind ===
+            "mentor_recommendation_grid" &&
           message.responseLifecycle === "active"
             ? {
                 ...message,
@@ -494,7 +510,6 @@ export function aiWorkspaceReducer(
           mentorRecommendation: {
             ...state.mentorRecommendation,
             status: "booked",
-            dismissReason: undefined,
           },
           mentorSession:
             state.mentorSession ??
@@ -502,7 +517,7 @@ export function aiWorkspaceReducer(
           messages: state.messages.map((message) =>
             message.role === "assistant" &&
             message.responseKind ===
-              "mentor_intervention" &&
+              "mentor_recommendation_grid" &&
             message.responseLifecycle === "active"
               ? {
                   ...message,
@@ -518,7 +533,6 @@ export function aiWorkspaceReducer(
           mentorRecommendation: {
             ...state.mentorRecommendation,
             status: "external",
-            dismissReason: undefined,
           },
           mentorSession:
             state.mentorSession ??
@@ -526,7 +540,7 @@ export function aiWorkspaceReducer(
           messages: state.messages.map((message) =>
             message.role === "assistant" &&
             message.responseKind ===
-              "mentor_intervention" &&
+              "mentor_recommendation_grid" &&
             message.responseLifecycle === "active"
               ? {
                   ...message,
@@ -541,18 +555,17 @@ export function aiWorkspaceReducer(
         mentorRecommendation: {
           ...state.mentorRecommendation,
           status: action.status,
-          dismissReason: undefined,
         },
       };
 
     case "toggle-mentor-preparation":
-      return state.mentorRecommendation
+      return state.mentorSession
         ? {
             ...state,
-            mentorRecommendation: {
-              ...state.mentorRecommendation,
+            mentorSession: {
+              ...state.mentorSession,
               preparation:
-                (state.mentorRecommendation.preparation ?? []).map(
+                state.mentorSession.preparation.map(
                   (item) =>
                     item.id === action.itemId
                       ? {
@@ -571,32 +584,90 @@ export function aiWorkspaceReducer(
         mentorRecommendation: action.mentor,
       };
 
+    case "select-mentor":
+      if (
+        !state.mentorRecommendation ||
+        !state.mentorRecommendation.payload?.mentors?.some(
+          (mentor) => mentor.mentorId === action.mentorId,
+        )
+      ) {
+        return state;
+      }
+      return {
+        ...state,
+        mentorRecommendation: {
+          ...state.mentorRecommendation,
+          selectedMentorId: action.mentorId,
+        },
+      };
+
+    case "toggle-save-mentor":
+      if (
+        !state.mentorRecommendation ||
+        !state.mentorRecommendation.payload?.mentors?.some(
+          (mentor) => mentor.mentorId === action.mentorId,
+        )
+      ) {
+        return state;
+      }
+      return {
+        ...state,
+        mentorRecommendation: {
+          ...state.mentorRecommendation,
+          savedMentorIds:
+            state.mentorRecommendation.savedMentorIds?.includes(
+              action.mentorId,
+            )
+              ? state.mentorRecommendation.savedMentorIds.filter(
+                  (mentorId) => mentorId !== action.mentorId,
+                )
+              : [
+                  ...(state.mentorRecommendation.savedMentorIds ??
+                    []),
+                  action.mentorId,
+                ],
+        },
+      };
+
     case "set-ai-model":
       return {
         ...state,
         selectedModel: action.modelId,
       };
 
-    case "create-mentor-connection":
-      if (state.mentorConnectionRequest) return state;
+    case "mentor-connection-operation":
       return {
         ...state,
-        mentorConnectionRequest: action.request,
+        mentorConnectionOperation: {
+          ...state.mentorConnectionOperation,
+          ...action.patch,
+        },
       };
 
-    case "send-mentor-connection":
+    case "set-mentor-connection-brief":
+      return {
+        ...state,
+        mentorConnectionBriefs: {
+          ...state.mentorConnectionBriefs,
+          [action.brief.mentorId]: action.brief,
+        },
+      };
+
+    case "set-mentor-connection-request":
       if (
-        !state.mentorConnectionRequest ||
-        state.mentorConnectionRequest.status === "sent"
+        state.mentorConnectionRequest?.ventureId ===
+          action.request.ventureId &&
+        state.mentorConnectionRequest.mentorId ===
+          action.request.mentorId
       ) {
         return state;
       }
       return {
         ...state,
-        mentorConnectionRequest: {
-          ...state.mentorConnectionRequest,
-          status: "sent",
-          sentAt: new Date().toISOString(),
+        mentorConnectionRequest: action.request,
+        mentorConnectionBriefs: {
+          ...state.mentorConnectionBriefs,
+          [action.request.mentorId]: action.request.brief,
         },
       };
 

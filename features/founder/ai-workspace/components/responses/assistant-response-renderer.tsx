@@ -9,7 +9,7 @@ import { ArtifactPreviewCard } from "./artifact-preview-card";
 import { CompactInsightBlock } from "./compact-insight-block";
 import { ConfirmedStateRow } from "./confirmed-state-row";
 import { DocumentOnboardingAnalysisCard } from "./document-onboarding-analysis-card";
-import { MentorInterventionCard } from "./mentor-intervention-card";
+import { MentorRecommendationGrid } from "../../mentor-recommendation/components/mentor-recommendation-grid";
 import { NextActionPlanCard } from "./next-action-plan-card";
 import { PitchDeckReviewCard } from "./pitch-deck-review-card";
 import { ReadinessEvidenceCard } from "./readiness-evidence-card";
@@ -23,7 +23,8 @@ export function AssistantResponseRenderer({
   onSendPrompt,
   onConfirmActionProposal,
   onOpenMentor,
-  onDeferMentor,
+  onConnectMentor,
+  onToggleSaveMentor,
   onOpenArtifact,
   onOpenReadiness,
   onVerifyReadinessEvidence,
@@ -34,8 +35,9 @@ export function AssistantResponseRenderer({
   onOpenCycle: () => void;
   onSendPrompt: (prompt: string) => void;
   onConfirmActionProposal: (messageId: string) => void;
-  onOpenMentor: () => void;
-  onDeferMentor: () => void;
+  onOpenMentor: (mentorId: string) => void;
+  onConnectMentor: (mentorId: string) => void;
+  onToggleSaveMentor: (mentorId: string) => void;
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
@@ -213,19 +215,19 @@ export function AssistantResponseRenderer({
       }
       return null;
 
+    case "mentor_recommendation_grid":
     case "mentor_intervention":
       return structured?.type ===
-        "mentor-recommendation" ? (
-        <MentorInterventionCard
-          mentor={
-            state.mentorRecommendation ??
-            structured.payload
-          }
-          session={state.mentorSession}
-          lifecycle={lifecycle}
-          copy={copy}
+          "mentor-recommendation-grid" ||
+        structured?.type === "mentor-recommendation" ? (
+        <MentorRecommendationGrid
+          recommendation={state.mentorRecommendation}
+          fallbackPayload={structured.payload ?? undefined}
+          connectionBriefs={state.mentorConnectionBriefs}
+          connectionRequest={state.mentorConnectionRequest}
           onOpenDetails={onOpenMentor}
-          onContinueWithAi={onDeferMentor}
+          onOpenConnection={onConnectMentor}
+          onToggleSave={onToggleSaveMentor}
         />
       ) : null;
 

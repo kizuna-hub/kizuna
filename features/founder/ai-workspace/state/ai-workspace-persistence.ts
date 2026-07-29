@@ -1,8 +1,8 @@
 import { createLongRunDemoState } from "../demo/demo-long-run-data";
 import {
-  baselineMentorRecommendation,
   createAiWorkspaceScenarioState,
 } from "../demo/demo-scenarios";
+import { createCampusFlowMentorRecommendation } from "../mentor-recommendation/demo/campusflow-mentor-recommendations";
 import type {
   AiWorkspaceMessage,
   AiWorkspaceScenarioId,
@@ -18,7 +18,7 @@ import {
 
 export const AI_WORKSPACE_STORAGE_KEY =
   "kizuna-founder-ai-workspace-demo-v1";
-export const AI_WORKSPACE_STORAGE_VERSION = 7;
+export const AI_WORKSPACE_STORAGE_VERSION = 9;
 
 export type PersistedAiWorkspaceSession = Pick<
   AiWorkspaceState,
@@ -31,6 +31,8 @@ export type PersistedAiWorkspaceSession = Pick<
   | "decisionCycleLifecycle"
   | "mentorRecommendation"
   | "mentorSession"
+  | "mentorConnectionBriefs"
+  | "mentorConnectionOperation"
   | "mentorConnectionRequest"
   | "selectedModel"
 > & {
@@ -46,6 +48,63 @@ export type PersistedAiWorkspaceEnvelope = {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+function restoreMentorRecommendation(
+  ventureId: string,
+  persisted: unknown,
+  initial: AiWorkspaceState,
+) {
+  if (!isRecord(persisted)) return undefined;
+
+  const fresh = createCampusFlowMentorRecommendation(
+    ventureId,
+    initial.decisionCycle.id,
+    initial.currentFocus.id,
+  );
+  const mentorIds = new Set(
+    fresh.payload.mentors.map((mentor) => mentor.mentorId),
+  );
+  const selectedMentorId =
+    typeof persisted.selectedMentorId === "string" &&
+    mentorIds.has(persisted.selectedMentorId)
+      ? persisted.selectedMentorId
+      : typeof persisted.id === "string" &&
+          mentorIds.has(persisted.id)
+        ? persisted.id
+        : fresh.selectedMentorId;
+  const savedMentorIds = Array.isArray(persisted.savedMentorIds)
+    ? persisted.savedMentorIds.filter(
+        (mentorId): mentorId is string =>
+          typeof mentorId === "string" &&
+          mentorIds.has(mentorId),
+      )
+    : persisted.status === "saved"
+      ? [selectedMentorId]
+      : [];
+  const persistedStatus = persisted.status;
+  const status =
+    typeof persistedStatus === "string" &&
+    [
+      "recommended",
+      "booked",
+      "deferred",
+      "external",
+      "stale",
+    ].includes(persistedStatus)
+      ? (persistedStatus as typeof fresh.status)
+      : fresh.status;
+
+  return {
+    ...fresh,
+    selectedMentorId,
+    savedMentorIds,
+    status,
+    recommendationVersion:
+      typeof persisted.recommendationVersion === "number"
+        ? persisted.recommendationVersion
+        : fresh.recommendationVersion,
+  };
 }
 
 export const scenarioIds = new Set<AiWorkspaceScenarioId>([
@@ -81,7 +140,17 @@ export function parseAiWorkspaceEnvelope(
     if (
       !isRecord(parsed) ||
       !isRecord(parsed.sessions) ||
-      ![1, 2, 3, 4, 5, 6, AI_WORKSPACE_STORAGE_VERSION].includes(
+      ![
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        AI_WORKSPACE_STORAGE_VERSION,
+      ].includes(
         parsed.version as number,
       )
     ) {
@@ -118,6 +187,8 @@ export function toPersistedSession(
     decisionCycleLifecycle: state.decisionCycleLifecycle,
     mentorRecommendation: state.mentorRecommendation,
     mentorSession: state.mentorSession,
+    mentorConnectionBriefs: state.mentorConnectionBriefs,
+    mentorConnectionOperation: state.mentorConnectionOperation,
     mentorConnectionRequest: state.mentorConnectionRequest,
     selectedModel: state.selectedModel,
     longRun,
@@ -129,7 +200,7 @@ export function toPersistedSession(
 export function restoreAiSession(
   ventureId: string,
   persisted?: PersistedAiWorkspaceSession,
-) {
+): AiWorkspaceState {
   if (!persisted || !scenarioIds.has(persisted.activeScenarioId)) {
     return createAiWorkspaceScenarioState(ventureId);
   }
@@ -175,34 +246,30 @@ export function restoreAiSession(
     decisionCycleLifecycle:
       persisted.decisionCycleLifecycle ??
       initial.decisionCycleLifecycle,
-    mentorRecommendation: persisted.mentorRecommendation
-      ? {
-          ...structuredClone(baselineMentorRecommendation),
-          ...persisted.mentorRecommendation,
-          preparation:
-            persisted.mentorRecommendation.preparation ??
-            structuredClone(
-              baselineMentorRecommendation.preparation,
-            ),
-          matchRationale:
-            persisted.mentorRecommendation.matchRationale ??
-            structuredClone(
-              baselineMentorRecommendation.matchRationale,
-            ),
-          expectedOutcomes:
-            persisted.mentorRecommendation.expectedOutcomes ??
-            structuredClone(
-              baselineMentorRecommendation.expectedOutcomes,
-            ),
-          alternatives:
-            persisted.mentorRecommendation.alternatives ??
-            structuredClone(
-              baselineMentorRecommendation.alternatives,
-            ),
-        }
-      : undefined,
+    mentorRecommendation: restoreMentorRecommendation(
+      ventureId,
+      persisted.mentorRecommendation,
+      initial,
+    ),
     mentorSession: persisted.mentorSession,
-    mentorConnectionRequest: persisted.mentorConnectionRequest,
+    mentorConnectionBriefs: isRecord(
+      persisted.mentorConnectionBriefs,
+    )
+      ? persisted.mentorConnectionBriefs
+      : {},
+    mentorConnectionOperation: {
+      generationStatus: "idle",
+      saveStatus: "idle",
+      sendStatus: "idle",
+      activeMentorId:
+        persisted.mentorConnectionOperation?.activeMentorId,
+    },
+    mentorConnectionRequest:
+      persisted.mentorConnectionRequest &&
+      "ventureId" in persisted.mentorConnectionRequest &&
+      "brief" in persisted.mentorConnectionRequest
+        ? persisted.mentorConnectionRequest
+        : undefined,
     selectedModel:
       persisted.selectedModel ?? initial.selectedModel,
   };
@@ -217,8 +284,10 @@ function migrateAssistantMessage(
     (message.structuredResponse?.type === "current-focus"
       ? "insight"
       : message.structuredResponse?.type ===
-          "mentor-recommendation"
-        ? "mentor_intervention"
+            "mentor-recommendation-grid" ||
+          message.structuredResponse?.type ===
+            "mentor-recommendation"
+        ? "mentor_recommendation_grid"
         : message.structuredResponse?.type ===
             "suggested-action"
           ? "action_proposal"

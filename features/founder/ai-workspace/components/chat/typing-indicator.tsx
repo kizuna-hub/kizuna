@@ -35,10 +35,13 @@ function getThinkingSteps({
   }
   if (
     normalizedPrompt.includes("co van") ||
-    normalizedPrompt.includes("mentor")
+    normalizedPrompt.includes("mentor") ||
+    normalizedPrompt.includes("ai co the giup") ||
+    normalizedPrompt.includes("product validation") ||
+    normalizedPrompt.includes("student startup")
   ) {
     return [
-      copy.thinkingTasks.reviewEvidence,
+      "Đang đối chiếu nhu cầu hiện tại với chuyên môn của mentor…",
       copy.thinkingTasks.evaluateMentorNeed,
       copy.thinkingTasks.composeResponse,
     ];

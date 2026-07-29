@@ -25,7 +25,8 @@ export function ConversationThread({
   onEditFailedMessage,
   onDeleteFailedMessage,
   onOpenMentor,
-  onDeferMentor,
+  onConnectMentor,
+  onToggleSaveMentor,
   onOpenArtifact,
   onOpenReadiness,
   onVerifyReadinessEvidence,
@@ -48,8 +49,9 @@ export function ConversationThread({
   onRetry: () => void;
   onEditFailedMessage?: (messageId: string) => void;
   onDeleteFailedMessage?: (messageId: string) => void;
-  onOpenMentor: () => void;
-  onDeferMentor: () => void;
+  onOpenMentor: (mentorId: string) => void;
+  onConnectMentor: (mentorId: string) => void;
+  onToggleSaveMentor: (mentorId: string) => void;
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
@@ -178,7 +180,7 @@ export function ConversationThread({
       aria-label={copy.chat.regionLabel}
       aria-live="polite"
     >
-      <div className="mx-auto w-full max-w-2xl space-y-5">
+      <div className="mx-auto w-full max-w-4xl space-y-5">
         {hasOlderMessages ? (
           <div className="flex justify-center">
             <Button
@@ -235,7 +237,8 @@ export function ConversationThread({
                 : undefined
             }
             onOpenMentor={onOpenMentor}
-            onDeferMentor={onDeferMentor}
+            onConnectMentor={onConnectMentor}
+            onToggleSaveMentor={onToggleSaveMentor}
             onOpenArtifact={onOpenArtifact}
             onOpenReadiness={onOpenReadiness}
             onVerifyReadinessEvidence={
