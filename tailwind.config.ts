@@ -58,6 +58,12 @@ const config = {
         // ── Semantic ───────────────────────────────────────────────────
         'semantic-success': 'var(--color-semantic-success)',
         'semantic-warning': 'var(--color-semantic-warning)',
+        'semantic-info': 'var(--color-semantic-info)',
+        'semantic-verified': 'var(--color-semantic-verified)',
+        'semantic-pending': 'var(--color-semantic-pending)',
+        'confidence-high': 'var(--color-confidence-high)',
+        'confidence-medium': 'var(--color-confidence-medium)',
+        'confidence-low': 'var(--color-confidence-low)',
 
         // ── Shadcn/Tailwind semantic aliases ──────────────────────────
         background: 'var(--color-background)',
@@ -76,7 +82,11 @@ const config = {
           hover: 'var(--color-primary-hover)',
           active: 'var(--color-primary-active)',
           soft: 'var(--color-primary-soft)',
+          muted: 'var(--color-primary-muted)',
+          'muted-hover': 'var(--color-primary-muted-hover)',
+          'muted-foreground': 'var(--color-primary-muted-foreground)',
           border: 'var(--color-primary-border)',
+          text: 'var(--color-primary-text)',
         },
         'primary-action': {
           DEFAULT: 'var(--color-primary-action)',
@@ -102,6 +112,7 @@ const config = {
         border: 'var(--color-border)',
         input: 'var(--color-input)',
         ring: 'var(--color-ring)',
+        overlay: 'var(--color-overlay)',
 
         // ── Kizuna aliases ────────────────────────────────────────────
         'kizuna-primary': 'var(--color-kizuna-primary)',
@@ -234,7 +245,7 @@ const config = {
          * framer-focus — retained name for the Kizuna Clay focus ring.
          * ONLY for focused inputs and selected option indicators.
          */
-        'framer-focus': '0 0 0 1px rgba(204,120,92,0.20)',
+        'framer-focus': '0 0 0 1px color-mix(in srgb, var(--color-ring) 28%, transparent)',
 
         // Generic dark shadows (neutral)
         'sm': '0 1px 3px rgba(0,0,0,0.20)',

@@ -7,6 +7,8 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { DemoWorkspaceProvider } from '@/features/founder/venture-foundation/demo-workspace-provider'
+import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeInitializationScript } from '@/features/theme/scripts/theme-initialization-script'
 
 const geistSans = Geist({
   subsets: ['latin', 'latin-ext'],
@@ -50,13 +52,26 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable}`} data-scroll-behavior="smooth">
-      <body className="font-body bg-canvas text-ink antialiased min-h-screen">
-        <NextIntlClientProvider messages={messages}>
-          <DemoWorkspaceProvider>
-            {children}
-          </DemoWorkspaceProvider>
-        </NextIntlClientProvider>
+    <html
+      lang={locale}
+      className={`${geistSans.variable} ${geistMono.variable} dark`}
+      data-appearance="dark"
+      data-appearance-preference="dark"
+      data-accent="kizuna"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
+      <head>
+        <ThemeInitializationScript />
+      </head>
+      <body className="min-h-screen bg-background font-body text-foreground antialiased">
+        <ThemeProvider>
+          <NextIntlClientProvider messages={messages}>
+            <DemoWorkspaceProvider>
+              {children}
+            </DemoWorkspaceProvider>
+          </NextIntlClientProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

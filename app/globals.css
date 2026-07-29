@@ -56,6 +56,12 @@
   /* Semantic status (only use where semantically correct, never decorative) */
   --color-semantic-success: #78B69A;
   --color-semantic-warning: #D6A35F;
+  --color-semantic-info: #72ADD0;
+  --color-semantic-verified: #78B69A;
+  --color-semantic-pending: #D6A35F;
+  --color-confidence-high: #78B69A;
+  --color-confidence-medium: #D6A35F;
+  --color-confidence-low: #E66B61;
 
   /* Gradient spotlight card base anchors
      These are solid single colors; full gradients live in @layer utilities below. */
@@ -75,7 +81,11 @@
   --color-primary-hover: #D98A70;
   --color-primary-active: #B9674F;
   --color-primary-soft: #2A1A15;
+  --color-primary-muted: #2A1A15;
+  --color-primary-muted-hover: #36221B;
+  --color-primary-muted-foreground: #F0B39E;
   --color-primary-border: #704233;
+  --color-primary-text: #E8A18A;
   --color-primary-action: #B65B44;
   --color-primary-action-hover: #A9533D;
   --color-primary-action-active: #944833;
@@ -91,6 +101,7 @@
   --color-border: var(--color-hairline);
   --color-input: var(--color-surface-1);
   --color-ring: var(--color-primary);
+  --color-overlay: rgba(11, 10, 9, 0.72);
 
   /* Kizuna brand aliases */
   --color-kizuna-primary: var(--color-primary);
@@ -274,17 +285,67 @@
     --workspace-focus-ring: var(--color-primary);
     --workspace-muted-text: var(--color-ink-muted);
     --workspace-success: var(--color-semantic-success);
-    --workspace-success-soft: rgba(120, 182, 154, 0.12);
+    --workspace-success-soft: color-mix(in srgb, var(--color-semantic-success) 12%, transparent);
     --workspace-warning: var(--color-semantic-warning);
-    --workspace-warning-soft: rgba(214, 163, 95, 0.12);
+    --workspace-warning-soft: color-mix(in srgb, var(--color-semantic-warning) 12%, transparent);
     --workspace-danger: var(--color-destructive);
-    --workspace-danger-soft: rgba(230, 107, 97, 0.12);
+    --workspace-danger-soft: color-mix(in srgb, var(--color-destructive) 12%, transparent);
 
     /* Legacy gradient definitions retained for existing compatibility. */
     --gradient-violet: linear-gradient(135deg, #4A00E0 0%, #6a4cf5 100%);
     --gradient-magenta: linear-gradient(135deg, #FF007F 0%, #d44df0 100%);
     --gradient-orange: linear-gradient(135deg, #FF4B2B 0%, #ff7a3d 100%);
     --gradient-coral: linear-gradient(135deg, #FF7E5F 0%, #ff5577 100%);
+  }
+
+  html[data-appearance='dark'] {
+    color-scheme: dark;
+    --color-canvas: #0B0A09;
+    --color-surface-1: #151311;
+    --color-surface-2: #1E1B18;
+    --color-surface-3: #262320;
+    --color-ink: #F7F5F2;
+    --color-ink-muted: #A39D96;
+    --color-hairline: #2B2825;
+    --color-hairline-soft: #1D1B19;
+    --color-inverse-canvas: #F7F5F2;
+    --color-inverse-ink: #0E0A09;
+    --color-destructive: #E66B61;
+    --color-destructive-foreground: #0E0A09;
+    --color-semantic-success: #78B69A;
+    --color-semantic-warning: #D6A35F;
+    --color-semantic-info: #72ADD0;
+    --color-semantic-verified: #78B69A;
+    --color-semantic-pending: #D6A35F;
+    --color-confidence-high: #78B69A;
+    --color-confidence-medium: #D6A35F;
+    --color-confidence-low: #E66B61;
+    --color-overlay: rgba(11, 10, 9, 0.72);
+  }
+
+  html[data-appearance='light'] {
+    color-scheme: light;
+    --color-canvas: #F5F0E8;
+    --color-surface-1: #FFFCF7;
+    --color-surface-2: #EEE8DE;
+    --color-surface-3: #E5DDD1;
+    --color-ink: #211F1C;
+    --color-ink-muted: #706A62;
+    --color-hairline: #D9D1C6;
+    --color-hairline-soft: #E9E3D9;
+    --color-inverse-canvas: #211F1C;
+    --color-inverse-ink: #F7F5F2;
+    --color-destructive: #B9473F;
+    --color-destructive-foreground: #FFFFFF;
+    --color-semantic-success: #36775A;
+    --color-semantic-warning: #9A641D;
+    --color-semantic-info: #326B90;
+    --color-semantic-verified: #36775A;
+    --color-semantic-pending: #9A641D;
+    --color-confidence-high: #36775A;
+    --color-confidence-medium: #9A641D;
+    --color-confidence-low: #B9473F;
+    --color-overlay: rgba(33, 31, 28, 0.42);
   }
 
   /* Universal border reset to the canonical hairline token. */
@@ -299,7 +360,7 @@
   }
 
   body {
-    @apply bg-canvas text-ink antialiased;
+    @apply bg-background text-foreground antialiased;
     min-height: 100%;
     font-family: var(--font-body);
     font-feature-settings:
@@ -312,11 +373,22 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Text selection — Kizuna Clay tint. */
+  /* Text selection follows the selected accent without changing status colors. */
   ::selection {
-    background-color: rgba(204, 120, 92, 0.28);
-    color: #F7F5F2;
+    background-color: var(--selection);
+    color: var(--color-foreground);
   }
+}
+
+.theme-transitioning,
+.theme-transitioning * {
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    fill 160ms ease,
+    stroke 160ms ease,
+    box-shadow 160ms ease;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -467,7 +539,7 @@
 
   /* ── Kizuna focus ring ─────────────────────────────────────────── */
   .shadow-framer-focus {
-    box-shadow: 0 0 0 1px rgba(204, 120, 92, 0.20);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ring) 28%, transparent);
   }
 
   /* ── Legacy gradient spotlight compatibility ───────────────────── */

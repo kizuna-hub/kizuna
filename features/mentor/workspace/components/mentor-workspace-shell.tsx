@@ -21,6 +21,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeMenu } from "@/features/theme/components/theme-menu";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -227,6 +228,10 @@ function SidebarContent({
         <MentorNavigation onNavigate={onNavigate} />
         <div className="mt-auto pt-4">
           <MentorProfileSummary />
+          <ThemeMenu
+            showLabel
+            className="mt-2 rounded-xl border border-workspace-border bg-workspace-panel p-1"
+          />
         </div>
       </div>
     </>
