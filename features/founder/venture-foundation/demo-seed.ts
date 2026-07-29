@@ -1,5 +1,5 @@
 import type { DemoWorkspaceState } from "./types";
-import { createDecisionLoopSeedCollections } from "../../venture/decision-loop/infrastructure";
+import { createDecisionLoopSeedCollections } from "../../venture/decision-loop/infrastructure/mock/decision-loop-seed";
 
 export const DEMO_WORKSPACE_STORAGE_VERSION = 2;
 export const DEMO_WORKSPACE_STORAGE_KEY =

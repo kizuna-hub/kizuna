@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { FounderShell } from "@/features/founder/shell/founder-shell";
 import { getVentureById } from "@/features/founder/venture-foundation/demo-repository";
 import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
+import { useDemoDecisionLoopRepository } from "@/features/founder/venture-foundation/use-demo-decision-loop-repository";
 import { Link, usePathname } from "@/i18n/routing";
 
 import type { VentureId } from "../../core";
@@ -54,9 +55,10 @@ export function CycleScreen({
   ventureId: VentureId;
 }) {
   const pathname = usePathname();
+  const decisionLoopRepository =
+    useDemoDecisionLoopRepository();
   const {
     state,
-    decisionLoopRepository,
     setActiveVenture,
     setLastVisitedVenturePath,
   } = useDemoWorkspace();

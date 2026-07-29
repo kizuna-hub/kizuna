@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { FounderShell } from "@/features/founder/shell/founder-shell";
 import { getVentureById } from "@/features/founder/venture-foundation/demo-repository";
 import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
+import { useDemoDecisionLoopRepository } from "@/features/founder/venture-foundation/use-demo-decision-loop-repository";
 import { baselineFieldKeys, baselineFieldLabels, getBaselineCompleteness, getCurrentBaseline, getSourcesForVenture, type DecisionLoopOperationResult } from "../application";
 import { Link, usePathname } from "@/i18n/routing";
 import { BaselineFieldEditor } from "./components/baseline-field-editor";
@@ -30,9 +31,10 @@ export function ContextScreen({
   ventureId: VentureId;
 }) {
   const pathname = usePathname();
+  const decisionLoopRepository =
+    useDemoDecisionLoopRepository();
   const {
     state,
-    decisionLoopRepository,
     setActiveVenture,
     setLastVisitedVenturePath,
   } = useDemoWorkspace();

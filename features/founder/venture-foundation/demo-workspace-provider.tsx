@@ -2,9 +2,7 @@
 
 import React from "react";
 
-import { createBrowserWorkspaceStorage } from "@/features/venture/core/infrastructure";
-import type { DecisionLoopRepository } from "@/features/venture/decision-loop";
-import { createMockDecisionLoopRepository } from "@/features/venture/decision-loop/infrastructure";
+import { createBrowserWorkspaceStorage } from "@/features/venture/core/infrastructure/mock/browser-workspace-storage";
 
 import {
   archiveDemoVenture as archiveDemoVentureState,
@@ -62,7 +60,6 @@ type DemoWorkspaceContextValue = {
   updateUiPreferences: (
     preferences: Partial<WorkspaceUiPreferences>,
   ) => void;
-  decisionLoopRepository: DecisionLoopRepository;
 };
 
 const DemoWorkspaceContext =
@@ -87,18 +84,6 @@ export function DemoWorkspaceProvider({
       }),
     [],
   );
-  const decisionLoopRepository =
-    React.useMemo<DecisionLoopRepository>(
-      () =>
-        createMockDecisionLoopRepository({
-          read: () => stateRef.current,
-          commit: (nextState) => {
-            stateRef.current = nextState;
-            setState(nextState);
-          },
-        }),
-      [],
-    );
 
   React.useEffect(() => {
     const stored = workspaceStorage.load();
@@ -284,7 +269,6 @@ export function DemoWorkspaceProvider({
       restoreDemoState,
       resetDemoState,
       updateUiPreferences,
-      decisionLoopRepository,
     }),
     [
       archiveDemoVenture,
@@ -292,7 +276,6 @@ export function DemoWorkspaceProvider({
       duplicateDemoVenture,
       createDemoVenture,
       confirmVentureSetup,
-      decisionLoopRepository,
       hydrated,
       resetDemoState,
       renameDemoVenture,

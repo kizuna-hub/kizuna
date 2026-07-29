@@ -6,10 +6,10 @@ import {
   getExperimentForVenture,
   getEvidenceRequirementsForExperiment,
   getCycleTasksForExperiment,
-  getDecisionLoopNextAction,
-  getReviewSummary,
-  isDecisionLoopCollectionItem,
-} from "../../venture/decision-loop/application";
+} from "../../venture/decision-loop/application/queries/cycle-queries";
+import { getReviewSummary } from "../../venture/decision-loop/application/queries/review-queries";
+import { isDecisionLoopCollectionItem } from "../../venture/decision-loop/application/queries/source-and-baseline-queries";
+import { getDecisionLoopNextAction } from "../../venture/decision-loop/application/services/next-action-derivation";
 import type {
   ActionCycle,
   BaselineField,

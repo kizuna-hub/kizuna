@@ -6,7 +6,6 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
-import { DemoWorkspaceProvider } from '@/features/founder/venture-foundation/demo-workspace-provider'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeInitializationScript } from '@/features/theme/scripts/theme-initialization-script'
 
@@ -67,9 +66,7 @@ export default async function RootLayout({
       <body className="min-h-screen bg-background font-body text-foreground antialiased">
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
-            <DemoWorkspaceProvider>
-              {children}
-            </DemoWorkspaceProvider>
+            {children}
           </NextIntlClientProvider>
         </ThemeProvider>
         <Analytics />

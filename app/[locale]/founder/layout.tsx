@@ -1,10 +1,13 @@
-import { FounderEntryScreen } from "@/features/founder/projects/founder-entry-screen";
 import { DemoWorkspaceProvider } from "@/features/founder/venture-foundation/demo-workspace-provider";
 
-export default function Home() {
+export default function FounderLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <DemoWorkspaceProvider>
-      <FounderEntryScreen />
+      {children}
     </DemoWorkspaceProvider>
   );
 }

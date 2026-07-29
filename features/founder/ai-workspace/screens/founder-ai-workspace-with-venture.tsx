@@ -1,20 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import React from "react";
 import { AlertCircle, CalendarClock } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { MentorSessionBrief } from "@/features/founder/mentor-sessions/components/mentor-session-brief";
 import { getMentorPreparationSession } from "@/features/founder/mentor-sessions/demo/mentor-session-data";
 import { FounderShell } from "@/features/founder/shell/founder-shell";
 
 import { WorkspaceSidebar } from "../components/conversation/workspace-sidebar";
-import {
-  LongRunArtifactSheet,
-  type LongRunSurface,
-} from "../components/long-run-artifact-sheet";
-import { VentureSearchDialog } from "../components/search/venture-search-dialog";
+import type { LongRunSurface } from "../components/long-run-artifact-sheet";
 import { aiWorkspaceVi } from "../copy/vi";
 import { useAiWorkspace } from "../hooks/use-ai-workspace";
 import {
@@ -23,6 +19,30 @@ import {
 } from "../services/pin-reference";
 import type { VentureSearchResult } from "../types/long-run-workspace.types";
 import { AiWorkspaceBody } from "./ai-workspace-body";
+
+const LongRunArtifactSheet = dynamic(
+  () =>
+    import("../components/long-run-artifact-sheet").then(
+      (module) => module.LongRunArtifactSheet,
+    ),
+  { ssr: false },
+);
+
+const VentureSearchDialog = dynamic(
+  () =>
+    import("../components/search/venture-search-dialog").then(
+      (module) => module.VentureSearchDialog,
+    ),
+  { ssr: false },
+);
+
+const MentorSessionBrief = dynamic(
+  () =>
+    import(
+      "@/features/founder/mentor-sessions/components/mentor-session-brief"
+    ).then((module) => module.MentorSessionBrief),
+  { ssr: false },
+);
 
 export const FounderAiWorkspaceWithVenture = React.memo(
   function FounderAiWorkspaceWithVenture({
