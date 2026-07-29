@@ -621,3 +621,14 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Prevent layout shift on dropdowns/modals ────────────────────── */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Override Radix/react-remove-scroll inline styles unconditionally */
+html body {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
