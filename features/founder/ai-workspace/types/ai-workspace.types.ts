@@ -59,6 +59,7 @@ export type AiWorkspaceIntent =
   | "experiment-risk"
   | "experiment-metrics"
   | "explain-readiness"
+  | "explain-readiness-dimension"
   | "analyze-materials"
   | "assess-traction"
   | "suggest-action"

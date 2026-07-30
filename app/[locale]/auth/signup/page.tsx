@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { AuthPage } from "@/features/auth/auth-page";
+import { DemoAuthEntryPage } from "@/features/auth/components/demo-auth-entry-page";
 
 export const metadata: Metadata = {
   title: "Sign up | Kizuna Hub",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function SignupPage() {
-  return <AuthPage mode="signup" />;
+  return <DemoAuthEntryPage mode="signup" />;
 }

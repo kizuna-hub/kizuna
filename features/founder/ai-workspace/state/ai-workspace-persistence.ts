@@ -189,7 +189,9 @@ export function toPersistedSession(
     mentorSession: state.mentorSession,
     mentorConnectionBriefs: state.mentorConnectionBriefs,
     mentorConnectionOperation: state.mentorConnectionOperation,
-    mentorConnectionRequest: state.mentorConnectionRequest,
+    // The cross-role demo domain owns the canonical request. This
+    // session keeps only brief/view state and derives request status.
+    mentorConnectionRequest: undefined,
     selectedModel: state.selectedModel,
     longRun,
     layout,

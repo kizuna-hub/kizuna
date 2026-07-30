@@ -6,6 +6,7 @@ import {
   CalendarDays,
   ChevronRight,
   Inbox,
+  LogOut,
   Menu,
   Settings,
   ShieldCheck,
@@ -22,7 +23,8 @@ import {
 } from "@/components/ui/sheet";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeMenu } from "@/features/theme/components/theme-menu";
-import { Link, usePathname } from "@/i18n/routing";
+import { useDemoAuth } from "@/features/auth/state/demo-auth-provider";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 import { canonicalMentorPersona } from "../demo/mentor-workspace-demo-data";
@@ -219,6 +221,8 @@ function SidebarContent({
 }: {
   onNavigate?: () => void;
 }) {
+  const { logout } = useDemoAuth();
+  const router = useRouter();
   return (
     <>
       <div className="pb-2 pt-3 px-3">
@@ -232,6 +236,18 @@ function SidebarContent({
             showLabel
             className="mt-2 rounded-xl border border-workspace-border bg-workspace-panel p-1"
           />
+          <button
+            type="button"
+            onClick={async () => {
+              await logout();
+              router.replace("/auth/login");
+              onNavigate?.();
+            }}
+            className="mt-2 flex min-h-10 w-full items-center gap-2.5 rounded-xl border border-workspace-border bg-workspace-panel px-3 text-sm text-workspace-muted-text transition-colors hover:bg-workspace-row-hover hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40"
+          >
+            <LogOut className="size-4" aria-hidden="true" />
+            Đăng xuất
+          </button>
         </div>
       </div>
     </>

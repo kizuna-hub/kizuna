@@ -2,9 +2,10 @@
 
 import * as React from "react";
 
-import { createBrowserWorkspaceStorage } from "@/features/venture/core/infrastructure";
+import { createBrowserDemoDomainRepository } from "@/features/demo-domain/services/demo-domain-repository";
+import { trackProductEvent } from "@/features/demo-domain/services/product-analytics";
 
-import { createMockMentorWorkspaceRepository } from "../services/mentor-workspace-repository";
+import { createSharedMentorWorkspaceRepository } from "../services/shared-mentor-workspace-repository";
 import type {
   AcceptMentorRequestInput,
   DeclineMentorRequestInput,
@@ -14,9 +15,6 @@ import type {
   MentorRequestSort,
   RequestMoreContextInput,
 } from "../types/mentor-workspace.types";
-
-const MENTOR_WORKSPACE_STORAGE_KEY =
-  "kizuna:mentor-workspace:mvp:v1";
 
 interface MentorWorkspaceContextValue {
   requests: MentorConnectionRequest[];
@@ -75,13 +73,17 @@ export function MentorWorkspaceProvider({
   const [sort, setSort] =
     React.useState<MentorRequestSort>("newest");
 
-  const repository = React.useMemo(() => {
-    const storage = createBrowserWorkspaceStorage({
-      currentKey: MENTOR_WORKSPACE_STORAGE_KEY,
-      getStorage: () => window.localStorage,
-    });
-    return createMockMentorWorkspaceRepository({ storage });
-  }, []);
+  const domainRepository = React.useMemo(
+    () => createBrowserDemoDomainRepository(),
+    [],
+  );
+  const repository = React.useMemo(
+    () =>
+      createSharedMentorWorkspaceRepository({
+        domain: domainRepository,
+      }),
+    [domainRepository],
+  );
 
   const refresh = React.useCallback(async () => {
     setLoading(true);
@@ -105,6 +107,16 @@ export function MentorWorkspaceProvider({
     void refresh();
   }, [refresh]);
 
+  React.useEffect(() => {
+    const unsubscribe = domainRepository.subscribe(() => {
+      void refresh();
+    });
+    return () => {
+      unsubscribe();
+      domainRepository.destroy();
+    };
+  }, [domainRepository, refresh]);
+
   const replaceRequest = React.useCallback(
     (nextRequest: MentorConnectionRequest) => {
       setRequests((current) =>
@@ -127,6 +139,9 @@ export function MentorWorkspaceProvider({
       const nextRequest =
         await repository.markRequestViewed(requestId);
       replaceRequest(nextRequest);
+      trackProductEvent("mentor_request_opened", {
+        requestId,
+      });
     },
     [replaceRequest, repository, requests],
   );
@@ -152,8 +167,16 @@ export function MentorWorkspaceProvider({
   );
 
   const accept = React.useCallback(
-    (input: AcceptMentorRequestInput) =>
-      runMutation(() => repository.acceptRequest(input)),
+    async (input: AcceptMentorRequestInput) => {
+      const accepted = await runMutation(() =>
+        repository.acceptRequest(input),
+      );
+      trackProductEvent("mentor_request_accepted", {
+        requestId: input.requestId,
+        mentorId: input.mentorId,
+      });
+      return accepted;
+    },
     [repository, runMutation],
   );
 

@@ -22,11 +22,18 @@ import type {
   StartupDocumentInput,
   VentureAnalysisResult,
 } from "../types/venture-analysis.types";
+import {
+  serializeCampusFlowDomainBootstrap,
+  type CampusFlowDomainBootstrap,
+} from "../../../../demo-domain/services/demo-domain-repository";
+import { DEMO_DOMAIN_STORAGE_KEY } from "../../../../demo-domain/seed/demo-domain-seed";
+import { trackProductEvent } from "../../../../demo-domain/services/product-analytics";
 
 export interface DocumentOnboardingOrchestrationResult
   extends CompleteDocumentOnboardingResult {
   state: DemoWorkspaceState;
   aiWorkspaceBootstrap: DocumentAnalysisWorkspaceBootstrap;
+  demoDomainBootstrap: CampusFlowDomainBootstrap;
 }
 
 export interface DocumentOnboardingStorage {
@@ -310,10 +317,66 @@ export function completeDocumentOnboarding(
       evidence: input.analysisResult.evidence,
     });
   const workspacePath = `/founder/projects/${created.ventureId}/workspace?conversation=${aiWorkspaceBootstrap.conversationId}`;
+  const demoDomainBootstrap: CampusFlowDomainBootstrap = {
+    venture: {
+      id: created.ventureId,
+      ownerId: "founder-nguyen-tuan-ngoc",
+      name: input.ventureContext.name,
+      stage: "prototype",
+      teamSummary: input.ventureContext.team,
+      productSummary: input.ventureContext.productSummary,
+      tags: ["EdTech", "B2B", "SaaS"],
+      documentIds: input.sourceDocuments.map((item) => item.id),
+      evidenceIds: input.analysisResult.evidence.map(
+        (item) => item.id,
+      ),
+      readiness: {
+        overallScore: input.analysisResult.readiness.score,
+        strongestDimension: {
+          id: "problem_and_user_understanding",
+          label:
+            input.analysisResult.readiness.strongestCriterion.label,
+          score:
+            input.analysisResult.readiness.strongestCriterion.score,
+        },
+        biggestGap: {
+          id: "market_signal_and_commitment",
+          label: input.analysisResult.readiness.biggestGap.label,
+          score: input.analysisResult.readiness.biggestGap.score,
+        },
+      },
+      canonicalQuestionIds: [],
+      updatedAt: createdAt,
+    },
+    documents: input.sourceDocuments.map((document) => ({
+      id: document.id,
+      name: document.name,
+      type:
+        document.extension === "pptx"
+          ? "pptx"
+          : document.extension === "docx"
+            ? "docx"
+            : "pdf",
+      selectedPageLabels: input.analysisResult.evidence
+        .filter(
+          (evidence) =>
+            evidence.documentRole === document.role,
+        )
+        .map((evidence) => `Trang ${evidence.page}`),
+      available: true,
+    })),
+    evidence: input.analysisResult.evidence.map((evidence) => ({
+      id: evidence.id,
+      label: evidence.supports[0] ?? "Bằng chứng tài liệu",
+      value: evidence.quote,
+      sourceLabel: `${evidence.fileName} · Trang ${evidence.page}`,
+    })),
+  };
 
   return {
     state: canonicalState,
     aiWorkspaceBootstrap,
+    demoDomainBootstrap,
     ventureId: created.ventureId,
     conversationId: aiWorkspaceBootstrap.conversationId,
     workspacePath,
@@ -330,12 +393,19 @@ export function persistDocumentOnboardingTransaction(
   const previousAiWorkspace = storage.getItem(
     AI_WORKSPACE_STORAGE_KEY,
   );
+  const previousDemoDomain = storage.getItem(
+    DEMO_DOMAIN_STORAGE_KEY,
+  );
   const nextWorkspace = serializeDemoWorkspaceState(
     result.state,
   );
   const nextAiWorkspace = serializeAiWorkspaceBootstrap(
     previousAiWorkspace,
     result.aiWorkspaceBootstrap,
+  );
+  const nextDemoDomain = serializeCampusFlowDomainBootstrap(
+    previousDemoDomain,
+    result.demoDomainBootstrap,
   );
 
   try {
@@ -347,6 +417,15 @@ export function persistDocumentOnboardingTransaction(
       AI_WORKSPACE_STORAGE_KEY,
       nextAiWorkspace,
     );
+    storage.setItem(DEMO_DOMAIN_STORAGE_KEY, nextDemoDomain);
+    trackProductEvent("venture_created", {
+      ventureId: result.ventureId,
+    });
+    trackProductEvent("analysis_completed", {
+      ventureId: result.ventureId,
+      readinessScore:
+        result.demoDomainBootstrap.venture.readiness.overallScore,
+    });
   } catch (error) {
     if (previousWorkspace === null) {
       storage.removeItem(DEMO_WORKSPACE_STORAGE_KEY);
@@ -362,6 +441,14 @@ export function persistDocumentOnboardingTransaction(
       storage.setItem(
         AI_WORKSPACE_STORAGE_KEY,
         previousAiWorkspace,
+      );
+    }
+    if (previousDemoDomain === null) {
+      storage.removeItem(DEMO_DOMAIN_STORAGE_KEY);
+    } else {
+      storage.setItem(
+        DEMO_DOMAIN_STORAGE_KEY,
+        previousDemoDomain,
       );
     }
     throw error;

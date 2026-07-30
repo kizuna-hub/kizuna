@@ -172,7 +172,7 @@ export function ProjectCardActions({
             onSelect={() => setDeleteOpen(true)}
           >
             <Trash2 className="size-4" />
-            Delete project
+            Xóa dự án
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -224,23 +224,25 @@ export function ProjectCardActions({
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
       >
-        <AlertDialogContent className="border-workspace-border bg-workspace-elevated text-ink shadow-framer-edge">
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Delete “{projectName}”?
+        <AlertDialogContent className="gap-3 rounded-xl border-workspace-border bg-workspace-elevated p-4 text-ink shadow-framer-edge sm:max-w-sm">
+          <AlertDialogHeader className="gap-1.5">
+            <AlertDialogTitle className="text-base">
+              Xóa “{projectName}”?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-workspace-muted-text">
-              This project and its related demo data will be
-              removed from this workspace. This cannot be undone.
+            <AlertDialogDescription className="text-xs leading-5 text-workspace-muted-text">
+              Dự án này và dữ liệu demo liên quan sẽ bị xóa khỏi
+              workspace. Hành động này không thể hoàn tác.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogFooter className="mt-1">
+            <AlertDialogCancel className="h-9 px-4 text-xs">
+              Hủy
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={onDelete}
-              className="bg-destructive text-ink hover:bg-destructive/90"
+              className="h-9 px-4 text-xs"
             >
-              Delete project
+              Xóa dự án
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

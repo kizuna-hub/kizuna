@@ -104,6 +104,24 @@ export interface MentorConnectionRequest {
   brief: MentorConnectionBrief;
   status: "pending" | "accepted" | "declined";
   sentAt: string;
+  acceptance?: {
+    id: string;
+    requestId: string;
+    mentorId: string;
+    message: string;
+    contactMethod:
+      | "zalo"
+      | "phone"
+      | "email"
+      | "messenger"
+      | "mentor_will_contact";
+    contactValue?: string;
+    meetingPreference:
+      | "google_meet"
+      | "in_person"
+      | "coordinate_later";
+    acceptedAt: string;
+  };
 }
 
 export interface VentureContextForMentorConnection {

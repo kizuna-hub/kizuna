@@ -33,6 +33,8 @@ import { selectMentorMatch } from "../mentor-recommendation/state/mentor-recomme
 import { createLongRunDemoState } from "../demo/demo-long-run-data";
 import {
   createMockAiWorkspaceEngine,
+  detectAiWorkspaceIntent,
+  getCanonicalQuestionId,
   MockAiWorkspaceError,
 } from "../demo/mock-ai-engine";
 import { createMockVentureSearchService } from "../demo/mock-venture-search-service";
@@ -45,6 +47,13 @@ import {
   createMockMentorConnectionBriefGenerator,
 } from "../mentor-connection/services/mock-mentor-connection-brief-generator";
 import { createMockMentorConnectionRepository } from "../mentor-connection/services/mock-mentor-connection-repository";
+import {
+  createSharedConnectionBriefSnapshot,
+  toFounderConnectionRequest,
+} from "../mentor-connection/services/shared-demo-mentor-connection";
+import { createBrowserDemoDomainRepository } from "@/features/demo-domain/services/demo-domain-repository";
+import type { DemoDomainRepository } from "@/features/demo-domain/types/demo-domain.types";
+import { trackProductEvent } from "@/features/demo-domain/services/product-analytics";
 import {
   refreshMentorConnectionBrief,
   toggleMentorBriefContext,
@@ -229,6 +238,8 @@ export function useAiWorkspace(ventureId: string) {
     React.useRef<Promise<void> | null>(null);
   const mentorConnectionSendRef =
     React.useRef<Promise<void> | null>(null);
+  const sharedDemoRepositoryRef =
+    React.useRef<DemoDomainRepository | null>(null);
   const mentorTimestampSequenceRef = React.useRef(0);
   const conversationCreationRef = React.useRef<
     Partial<Record<"main" | "panel", { id: string; at: number }>>
@@ -278,6 +289,81 @@ export function useAiWorkspace(ventureId: string) {
   React.useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
+  React.useEffect(() => {
+    const repository = sharedDemoRepositoryRef.current;
+    if (!repository) return;
+    const local = state.mentorConnectionRequest;
+    const shared = repository
+      .getSnapshot()
+      .connectionRequests.find(
+        (request) => request.ventureId === ventureId,
+      );
+    if (!shared) return;
+    const brief =
+      local?.brief ??
+      state.mentorConnectionBriefs[shared.mentorId];
+    if (!brief) return;
+    const next = toFounderConnectionRequest(
+      shared,
+      brief,
+    );
+    if (
+      next.status === local?.status &&
+      next.acceptance?.id === local?.acceptance?.id
+    ) {
+      return;
+    }
+    dispatch({
+      type: "set-mentor-connection-request",
+      request: next,
+    });
+  }, [
+    state.mentorConnectionBriefs,
+    state.mentorConnectionRequest,
+    ventureId,
+  ]);
+
+  React.useEffect(() => {
+    const repository = createBrowserDemoDomainRepository();
+    sharedDemoRepositoryRef.current = repository;
+    const syncRequest = () => {
+      const local = stateRef.current.mentorConnectionRequest;
+      const shared = repository
+        .getSnapshot()
+        .connectionRequests.find(
+          (request) => request.ventureId === ventureId,
+        );
+      if (!shared) return;
+      const brief =
+        local?.brief ??
+        stateRef.current.mentorConnectionBriefs[shared.mentorId];
+      if (!brief) return;
+      const next = toFounderConnectionRequest(
+        shared,
+        brief,
+      );
+      if (
+        next.status === local?.status &&
+        next.acceptance?.id === local?.acceptance?.id
+      ) {
+        return;
+      }
+      dispatch({
+        type: "set-mentor-connection-request",
+        request: next,
+      });
+    };
+    syncRequest();
+    const unsubscribe = repository.subscribe(syncRequest);
+    return () => {
+      unsubscribe();
+      repository.destroy();
+      if (sharedDemoRepositoryRef.current === repository) {
+        sharedDemoRepositoryRef.current = null;
+      }
+    };
+  }, [ventureId]);
 
   React.useEffect(() => {
     longRunRef.current = longRun;
@@ -343,6 +429,7 @@ export function useAiWorkspace(ventureId: string) {
     };
     setSelectedContextSourceIds([]);
     setHydrated(true);
+    trackProductEvent("workspace_opened", { ventureId });
   }, [ventureId]);
 
   React.useEffect(() => {
@@ -594,6 +681,10 @@ export function useAiWorkspace(ventureId: string) {
           errorMessage: undefined,
         },
       });
+      trackProductEvent("connection_brief_opened", {
+        ventureId,
+        mentorId: mentor.mentorId,
+      });
       if (
         stateRef.current.mentorConnectionBriefs[
         mentor.mentorId
@@ -655,6 +746,24 @@ export function useAiWorkspace(ventureId: string) {
       };
 
       if (appendFounderMessage) {
+        const intent = detectAiWorkspaceIntent(messageText);
+        sharedDemoRepositoryRef.current?.recordCanonicalQuestion(
+          ventureId,
+          getCanonicalQuestionId(messageText),
+        );
+        trackProductEvent("founder_question_asked", {
+          ventureId,
+          intent,
+        });
+        if (
+          intent === "explain-readiness" ||
+          intent === "explain-readiness-dimension"
+        ) {
+          trackProductEvent("readiness_question_asked", {
+            ventureId,
+            intent,
+          });
+        }
         dispatch({
           type: "user-message",
           message: founderMessage,
@@ -765,6 +874,11 @@ export function useAiWorkspace(ventureId: string) {
           messageId: assistantId,
           response,
         });
+        if (response.intent === "recommend-mentor") {
+          trackProductEvent("mentor_recommendations_viewed", {
+            ventureId,
+          });
+        }
         activeRequestRef.current = {
           ...scope,
           requestId: "idle",
@@ -1624,13 +1738,36 @@ export function useAiWorkspace(ventureId: string) {
         },
       });
       try {
-        const request =
-          await mentorConnectionRepository.sendRequest({
-            brief,
-          });
+        const sharedRepository =
+          sharedDemoRepositoryRef.current ??
+          createBrowserDemoDomainRepository();
+        sharedDemoRepositoryRef.current = sharedRepository;
+        const sharedRequest =
+          sharedRepository
+            .getSnapshot()
+            .connectionRequests.find(
+              (request) =>
+                request.ventureId === brief.ventureId &&
+                request.mentorId === brief.mentorId,
+            ) ??
+          sharedRepository.createConnectionRequest(
+            createSharedConnectionBriefSnapshot(
+              sharedRepository,
+              brief,
+            ),
+          );
+        const request = toFounderConnectionRequest(
+          sharedRequest,
+          brief,
+        );
         dispatch({
           type: "set-mentor-connection-request",
           request,
+        });
+        trackProductEvent("connection_request_sent", {
+          ventureId,
+          mentorId: request.mentorId,
+          requestId: request.id,
         });
         dispatch({
           type: "mentor-connection-operation",
@@ -1853,6 +1990,10 @@ export function useAiWorkspace(ventureId: string) {
     setAiModel: (modelId: AiWorkspaceState["selectedModel"]) =>
       dispatch({ type: "set-ai-model", modelId }),
     openMentorFit: (mentorId: string) => {
+      trackProductEvent("mentor_fit_opened", {
+        ventureId,
+        mentorId,
+      });
       dispatch({ type: "select-mentor", mentorId });
       dispatchLayout({
         type: "open-mentor-fit",

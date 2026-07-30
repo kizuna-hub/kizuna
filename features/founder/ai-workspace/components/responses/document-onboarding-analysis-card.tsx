@@ -76,7 +76,7 @@ export function DocumentOnboardingAnalysisCard({
           type="button"
           size="sm"
           onClick={onOpenAnalysis}
-          className="sm:flex-1"
+          className="light-primary-foreground sm:flex-1"
         >
           Xem phân tích
           <ArrowRight className="size-4" />

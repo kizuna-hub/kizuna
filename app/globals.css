@@ -532,6 +532,10 @@
 
 @layer utilities {
 
+  html[data-appearance='light'] .light-primary-foreground {
+    color: var(--color-inverse-ink);
+  }
+
   /* ── Scrollbar hide — for horizontal marquee carousels ─────────── */
   .no-scrollbar::-webkit-scrollbar {
     display: none;

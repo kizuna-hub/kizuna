@@ -156,7 +156,7 @@ export function ProjectsScreen() {
           <Button
             asChild
             size="sm"
-            className="h-8 self-start rounded-lg px-3.5 text-xs font-semibold shadow-none sm:self-auto"
+            className="light-primary-foreground h-8 self-start rounded-lg px-3.5 text-xs font-semibold shadow-none sm:self-auto"
           >
             <Link href="/founder/projects/new">
               <Plus className="size-3.5" />
@@ -430,7 +430,10 @@ export function ProjectsScreen() {
                 Xóa bộ lọc
               </Button>
             ) : (
-              <Button asChild className="mt-5">
+              <Button
+                asChild
+                className="light-primary-foreground mt-5"
+              >
                 <Link href="/founder/projects/new">
                   Tạo dự án
                 </Link>

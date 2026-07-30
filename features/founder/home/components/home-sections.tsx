@@ -121,7 +121,7 @@ export function HomePageHeader({
         <Button
           asChild
           size="sm"
-          className="h-8 rounded-lg px-3.5 text-xs font-semibold shadow-none"
+          className="light-primary-foreground h-8 rounded-lg px-3.5 text-xs font-semibold shadow-none"
         >
           <Link href="/founder/projects/new">
             <Plus className="size-3.5" />

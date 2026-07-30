@@ -17,8 +17,6 @@ import {
   Trash2,
   UserPlus,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +24,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDemoAuth } from "@/features/auth/state/demo-auth-provider";
 import { ThemeMenu } from "@/features/theme/components/theme-menu";
+import { useRouter } from "@/i18n/routing";
 
 export interface WorkspaceUserFooterProps {
   user?: { name: string; avatarUrl?: string };
@@ -41,6 +41,7 @@ export function WorkspaceUserFooter({
   onTrashClick,
 }: WorkspaceUserFooterProps) {
   const router = useRouter();
+  const { logout } = useDemoAuth();
 
   const renderDropdownMenuContent = () => (
     <DropdownMenuContent
@@ -118,7 +119,10 @@ export function WorkspaceUserFooter({
           <span>Help & support</span>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => router.push("/vi/login")}
+          onClick={async () => {
+            await logout();
+            router.replace("/auth/login");
+          }}
           className="flex cursor-pointer items-center rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground"
         >
           <LogOut className="mr-2.5 size-4 shrink-0" />

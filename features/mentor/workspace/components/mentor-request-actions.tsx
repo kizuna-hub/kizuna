@@ -20,6 +20,7 @@ import {
   RadioGroupItem,
 } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { canonicalMentorPersona } from "../demo/mentor-workspace-demo-data";
@@ -50,12 +51,23 @@ export function MentorAcceptanceDialog({
     mutationPending,
   } = useMentorWorkspace();
   const [message, setMessage] = React.useState("");
+  const [contactMethod, setContactMethod] =
+    React.useState<MentorContactMethod>("zalo");
+  const [contactValue, setContactValue] =
+    React.useState("0901234567");
+  const [meetingPreference, setMeetingPreference] =
+    React.useState<MentorMeetingPreference>("coordinate_later");
   const [submitError, setSubmitError] =
     React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!open) return;
-    setMessage("");
+    setMessage(
+      "Anh đã xem brief của CampusFlow. Em liên hệ với anh qua Zalo để mình thống nhất lịch và trao đổi kỹ hơn nhé.",
+    );
+    setContactMethod("zalo");
+    setContactValue("0901234567");
+    setMeetingPreference("coordinate_later");
     setSubmitError(null);
   }, [open]);
 
@@ -77,10 +89,10 @@ export function MentorAcceptanceDialog({
         requestId: request.id,
         mentorId: canonicalMentorPersona.id,
         message,
-        contactMethod: "mentor_will_contact",
-        contactValue: "",
-        meetingPreference: "coordinate_later",
-        saveAsDefault: false,
+        contactMethod,
+        contactValue,
+        meetingPreference,
+        saveAsDefault: true,
       });
       toast.success("Đã chấp nhận yêu cầu kết nối.");
       onOpenChange(false);
@@ -157,6 +169,85 @@ export function MentorAcceptanceDialog({
                 placeholder="Nhập lời nhắn cho founder..."
               />
             </div>
+
+            <fieldset className="space-y-3">
+              <legend className="text-sm font-medium">
+                Founder có thể liên hệ với tôi qua
+              </legend>
+              <RadioGroup
+                value={contactMethod}
+                onValueChange={(value) =>
+                  setContactMethod(value as MentorContactMethod)
+                }
+                className="grid gap-2 sm:grid-cols-3"
+              >
+                {[
+                  ["zalo", "Zalo"],
+                  ["phone", "Số điện thoại"],
+                  ["email", "Email"],
+                ].map(([value, label]) => (
+                  <Label
+                    key={value}
+                    htmlFor={`accept-contact-${value}`}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg border border-workspace-border bg-workspace-background px-3 py-2 text-sm"
+                  >
+                    <RadioGroupItem
+                      id={`accept-contact-${value}`}
+                      value={value}
+                    />
+                    {label}
+                  </Label>
+                ))}
+              </RadioGroup>
+              <Label
+                htmlFor="mentor-contact-value"
+                className="sr-only"
+              >
+                Thông tin liên hệ
+              </Label>
+              <Input
+                id="mentor-contact-value"
+                value={contactValue}
+                onChange={(event) =>
+                  setContactValue(event.target.value)
+                }
+                placeholder="Nhập thông tin liên hệ"
+                className="border-workspace-border bg-workspace-background"
+              />
+            </fieldset>
+
+            <fieldset className="space-y-3">
+              <legend className="text-sm font-medium">
+                Hình thức ưu tiên
+              </legend>
+              <RadioGroup
+                value={meetingPreference}
+                onValueChange={(value) =>
+                  setMeetingPreference(
+                    value as MentorMeetingPreference,
+                  )
+                }
+                className="grid gap-2 sm:grid-cols-3"
+              >
+                {[
+                  ["google_meet", "Google Meet"],
+                  ["in_person", "Gặp trực tiếp"],
+                  ["coordinate_later", "Thống nhất sau"],
+                ].map(([value, label]) => (
+                  <Label
+                    key={value}
+                    htmlFor={`accept-meeting-${value}`}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg border border-workspace-border bg-workspace-background px-3 py-2 text-sm"
+                  >
+                    <RadioGroupItem
+                      id={`accept-meeting-${value}`}
+                      value={value}
+                    />
+                    {label}
+                  </Label>
+                ))}
+              </RadioGroup>
+            </fieldset>
 
             {submitError ? (
               <p

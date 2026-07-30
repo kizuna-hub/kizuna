@@ -160,6 +160,26 @@ export function detectAiWorkspaceIntent(
   }
   if (
     includesAny(normalized, [
+      "problem and user",
+      "van de va nguoi dung",
+      "customer discovery",
+      "prototype va learning",
+      "prototype and learning",
+      "market signal and commitment",
+      "tin hieu thi truong va commitment",
+      "experiment discipline",
+      "ky luat thu nghiem",
+      "team capacity",
+      "nang luc doi ngu",
+      "presentation and materials",
+      "trinh bay va tai lieu",
+      "pitch deck tang readiness",
+    ])
+  ) {
+    return "explain-readiness-dimension";
+  }
+  if (
+    includesAny(normalized, [
       "pitch deck",
       "pitchdeck",
       "tai lieu",
@@ -208,6 +228,56 @@ export function detectAiWorkspaceIntent(
     return "growth-stalled";
   }
   return "find-bottleneck";
+}
+
+export function getCanonicalQuestionId(message: string) {
+  const intent = detectAiWorkspaceIntent(message);
+  if (intent !== "explain-readiness-dimension") return intent;
+  const normalized = normalizeIntentText(message);
+  if (
+    includesAny(normalized, [
+      "van de va nguoi dung",
+      "problem and user",
+    ])
+  ) {
+    return "readiness:problem_and_user_understanding";
+  }
+  if (includesAny(normalized, ["customer discovery"])) {
+    return "readiness:customer_discovery_and_evidence";
+  }
+  if (
+    includesAny(normalized, [
+      "prototype va learning",
+      "prototype and learning",
+    ])
+  ) {
+    return "readiness:prototype_and_learning";
+  }
+  if (
+    includesAny(normalized, [
+      "market signal",
+      "tin hieu thi truong",
+    ])
+  ) {
+    return "readiness:market_signal_and_commitment";
+  }
+  if (
+    includesAny(normalized, [
+      "experiment discipline",
+      "ky luat thu nghiem",
+    ])
+  ) {
+    return "readiness:experiment_discipline";
+  }
+  if (
+    includesAny(normalized, [
+      "team capacity",
+      "nang luc doi ngu",
+    ])
+  ) {
+    return "readiness:team_capacity";
+  }
+  return "readiness:presentation_and_materials";
 }
 
 function responseChunks(message: string) {
@@ -411,6 +481,48 @@ function buildResponse(
           ? 720
           : 520,
   };
+
+  if (intent === "explain-readiness-dimension") {
+    const normalized = normalizeIntentText(input.message);
+    const answer = includesAny(normalized, [
+      "van de va nguoi dung",
+      "problem and user",
+    ])
+      ? "Hiểu vấn đề và người dùng đang ở 78/100. Pitch Deck trang 4 và 6 cho thấy workflow onboarding bị phân tán và 12 cuộc phỏng vấn xác nhận nỗi đau. Điểm chưa cao hơn vì insight của trưởng câu lạc bộ và thành viên mới vẫn đang bị gộp chung."
+      : includesAny(normalized, ["customer discovery"])
+        ? "Customer discovery đang ở 62/100. Team đã có 12 cuộc phỏng vấn, nhưng phần lớn vẫn là self-report. Bằng chứng còn thiếu là quan sát người dùng thực hiện workflow thật và ghi lại hành vi thay vì chỉ hỏi ý kiến."
+        : includesAny(normalized, [
+              "prototype va learning",
+              "prototype and learning",
+            ])
+          ? "Prototype & learning đang ở 58/100 và có thể tăng lên khoảng 65 khi team chạy test theo mục tiêu. Không cần thêm feature; cần ghi rõ điểm dừng, lý do người dùng quay lại và quyết định nào của team đã thay đổi sau mỗi vòng test."
+          : includesAny(normalized, [
+                "market signal",
+                "tin hieu thi truong",
+              ])
+            ? "Tín hiệu thị trường & commitment đang ở 45/100 dù chưa có doanh thu. 2 pilot interests và 3 repeat testers là tín hiệu sớm hợp lệ ở Prototype stage. Điểm còn thiếu là lịch, phạm vi, owner và một câu lạc bộ cam kết dùng CampusFlow trong workflow thật."
+            : includesAny(normalized, [
+                  "experiment discipline",
+                  "ky luat thu nghiem",
+                ])
+              ? "Kỷ luật thử nghiệm đang ở 72/100. Team đã chạy hai vòng test và có thay đổi dựa trên feedback. Để tăng độ tin cậy, hãy chốt threshold trước test và lưu decision log cho biết kết quả nào dẫn đến quyết định nào."
+              : includesAny(normalized, [
+                    "team capacity",
+                    "nang luc doi ngu",
+                  ])
+                ? "Năng lực đội ngũ đang ở 65/100. Ba vai trò product, tech và community đã đủ cho pilot nhỏ. Khoảng trống là chưa có owner rõ cho vận hành pilot và chưa có người chịu trách nhiệm thu thập evidence."
+                : "Trình bày & tài liệu có thể tăng readiness tổng thể khoảng 1–2 điểm, không nhiều hơn. Viết lại Pitch Deck giúp claim dễ truy xuất và kiểm tra, nhưng không thay thế evidence. Điểm lớn chỉ tăng khi có usage thật, commitment hoặc kết quả test được xác minh.";
+    return {
+      ...common,
+      assistantMessage: answer,
+      proposedPatches: {},
+      suggestedPrompts: [
+        "Tôi nên làm gì tiếp theo?",
+        "Đánh giá tín hiệu thị trường và commitment",
+        "Tìm mentor phù hợp",
+      ],
+    };
+  }
 
   if (intent === "analyze-materials") {
     const normalized = normalizeIntentText(input.message);

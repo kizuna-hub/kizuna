@@ -1,3 +1,4 @@
+import { DemoRoleGuard } from "@/features/auth/components/demo-role-guard";
 import { MentorWorkspaceShell } from "@/features/mentor/workspace/components/mentor-workspace-shell";
 
 export default function MentorLayout({
@@ -5,5 +6,9 @@ export default function MentorLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <MentorWorkspaceShell>{children}</MentorWorkspaceShell>;
+  return (
+    <DemoRoleGuard role="mentor">
+      <MentorWorkspaceShell>{children}</MentorWorkspaceShell>
+    </DemoRoleGuard>
+  );
 }

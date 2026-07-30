@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeInitializationScript } from '@/features/theme/scripts/theme-initialization-script'
+import { DemoAuthProvider } from '@/features/auth/state/demo-auth-provider'
 
 const geistSans = Geist({
   subsets: ['latin', 'latin-ext'],
@@ -65,9 +66,11 @@ export default async function RootLayout({
       </head>
       <body className="min-h-screen bg-background font-body text-foreground antialiased">
         <ThemeProvider>
-          <NextIntlClientProvider messages={messages}>
-            {children}
-          </NextIntlClientProvider>
+          <DemoAuthProvider>
+            <NextIntlClientProvider messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </DemoAuthProvider>
         </ThemeProvider>
         <Analytics />
       </body>
