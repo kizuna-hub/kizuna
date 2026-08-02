@@ -1,5 +1,18 @@
-import { SaasPerksScreen } from "@/features/founder/founder-workspace/saas-perks/saas-perks-screen";
+import { redirect } from "next/navigation";
 
-export default function SaasPerksPage() {
-  return <SaasPerksScreen />;
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
+export default async function LegacySaasPerksPage({
+  params,
+}: {
+  params: Promise<{ locale: string; projectId: string }>;
+}) {
+  const { locale, projectId } = await params;
+  redirect(
+    resolveLegacyFounderWorkspaceRoute({
+      locale,
+      projectId,
+      section: "saas-perks",
+    }),
+  );
 }

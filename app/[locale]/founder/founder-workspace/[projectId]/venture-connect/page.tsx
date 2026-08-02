@@ -1,11 +1,18 @@
-import { VentureConnectScreen } from "@/features/founder/founder-workspace/venture-connect/venture-connect-screen";
+import { redirect } from "next/navigation";
 
-export default async function VentureConnectPage({
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
+export default async function LegacyVentureConnectPage({
   params,
 }: {
-  params: Promise<{ projectId: string }>;
+  params: Promise<{ locale: string; projectId: string }>;
 }) {
-  const { projectId } = await params;
-
-  return <VentureConnectScreen projectId={projectId} />;
+  const { locale, projectId } = await params;
+  redirect(
+    resolveLegacyFounderWorkspaceRoute({
+      locale,
+      projectId,
+      section: "venture-connect",
+    }),
+  );
 }

@@ -77,21 +77,21 @@ export function MentorConnectionsPageContent() {
           label="Yêu cầu đã gửi"
           value={String(dashboard.metrics.sent)}
           trend="13%"
-          icon={Send}
+          icon="send"
           tone="blue"
         />
         <KpiCard
           label="Mentor đã mở"
           value={String(dashboard.metrics.opened)}
           trend="11%"
-          icon={Eye}
+          icon="eye"
           tone="purple"
         />
         <KpiCard
           label="Được chấp nhận"
           value={String(dashboard.metrics.accepted)}
           trend="20%"
-          icon={CheckCircle2}
+          icon="check-circle"
           tone="green"
         />
         <KpiCard
@@ -99,14 +99,14 @@ export function MentorConnectionsPageContent() {
           value={String(dashboard.metrics.medianResponseHours)}
           suffix="giờ"
           trend="2.1 giờ"
-          icon={Clock3}
+          icon="clock"
           tone="cyan"
         />
         <KpiCard
           label="Pending quá 72 giờ"
           value={String(dashboard.metrics.pendingOver72Hours)}
           trend="1"
-          icon={AlertTriangle}
+          icon="alert"
           tone="orange"
         />
       </section>
@@ -291,4 +291,3 @@ export function MentorConnectionsPageContent() {
     </div>
   );
 }
-

@@ -1,5 +1,5 @@
-import { DealFlowScreen } from "@/features/investor/deal-flow/deal-flow-screen";
+import { notFound } from "next/navigation";
 
-export default function DealFlowPage() {
-  return <DealFlowScreen />;
+export default function RetiredInvestorDealFlowPage() {
+  notFound();
 }

@@ -1,18 +1,9 @@
-﻿import React from 'react';
-import WorkspaceLayout from '@/features/founder/founder-workspace/dashboard/workspace-layout';
+import type { ReactNode } from "react";
 
-export default async function Layout({
+export default function LegacyFounderWorkspaceLayout({
   children,
-  params,
 }: {
-  children: React.ReactNode;
-  params: Promise<{ projectId: string }>;
+  children: ReactNode;
 }) {
-  // Next.js 15: params is a Promise and must be awaited before access.
-  const { projectId } = await params;
-  return (
-    <WorkspaceLayout projectId={projectId}>
-      {children}
-    </WorkspaceLayout>
-  );
+  return children;
 }

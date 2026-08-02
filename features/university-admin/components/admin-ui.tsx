@@ -2,18 +2,31 @@
 
 import Image from "next/image";
 import {
+  Activity,
+  BarChart3,
   Building2,
   CalendarDays,
+  CalendarCheck2,
   CheckCircle2,
   ChevronDown,
+  CircleAlert,
+  Clock3,
   Download,
+  Eye,
+  FileBarChart2,
   GraduationCap,
+  Handshake,
   HeartPulse,
   Leaf,
   MapPinned,
   Rocket,
+  Send,
   ShieldCheck,
+  SquareCheck,
   Sprout,
+  UserRoundCheck,
+  UserRoundCog,
+  UsersRound,
   Wind,
   type LucideIcon,
 } from "lucide-react";
@@ -223,19 +236,54 @@ export function TinySparkline({
   );
 }
 
+export type KpiIconName =
+  | "activity"
+  | "alert"
+  | "calendar-check"
+  | "chart"
+  | "check-circle"
+  | "clock"
+  | "eye"
+  | "file-chart"
+  | "handshake"
+  | "rocket"
+  | "send"
+  | "square-check"
+  | "user-check"
+  | "user-cog"
+  | "users";
+
+const kpiIcons: Record<KpiIconName, LucideIcon> = {
+  activity: Activity,
+  alert: CircleAlert,
+  "calendar-check": CalendarCheck2,
+  chart: BarChart3,
+  "check-circle": CheckCircle2,
+  clock: Clock3,
+  eye: Eye,
+  "file-chart": FileBarChart2,
+  handshake: Handshake,
+  rocket: Rocket,
+  send: Send,
+  "square-check": SquareCheck,
+  "user-check": UserRoundCheck,
+  "user-cog": UserRoundCog,
+  users: UsersRound,
+};
+
 export function KpiCard({
   label,
   value,
   suffix,
   trend,
-  icon: Icon,
+  icon,
   tone,
 }: {
   label: string;
   value: string;
   suffix?: string;
   trend: string;
-  icon: LucideIcon;
+  icon: KpiIconName;
   tone: "blue" | "green" | "orange" | "purple" | "cyan";
 }) {
   const toneMap = {
@@ -261,6 +309,7 @@ export function KpiCard({
     },
   } as const;
   const palette = toneMap[tone];
+  const Icon = kpiIcons[icon];
 
   return (
     <AdminPanel className="min-h-32 p-4">

@@ -1,5 +1,18 @@
-import { MetricsScreen } from "@/features/founder/founder-workspace/metrics/metrics-screen";
+import { redirect } from "next/navigation";
 
-export default function MetricsPage() {
-  return <MetricsScreen />;
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
+export default async function LegacyMetricsPage({
+  params,
+}: {
+  params: Promise<{ locale: string; projectId: string }>;
+}) {
+  const { locale, projectId } = await params;
+  redirect(
+    resolveLegacyFounderWorkspaceRoute({
+      locale,
+      projectId,
+      section: "metrics",
+    }),
+  );
 }

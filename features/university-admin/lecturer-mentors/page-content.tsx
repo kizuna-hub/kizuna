@@ -63,14 +63,14 @@ export function LecturerMentorsPageContent() {
           label="Mentor đang hoạt động"
           value={String(dashboard.metrics.activeMentors)}
           trend="14%"
-          icon={UsersRound}
+          icon="users"
           tone="blue"
         />
         <KpiCard
           label="Yêu cầu đang mở"
           value={String(dashboard.metrics.openRequests)}
           trend="9%"
-          icon={UserRoundCog}
+          icon="user-cog"
           tone="orange"
         />
         <KpiCard
@@ -78,14 +78,14 @@ export function LecturerMentorsPageContent() {
           value={String(dashboard.metrics.averageResponseHours)}
           suffix="giờ"
           trend="2.3 giờ"
-          icon={Clock3}
+          icon="clock"
           tone="purple"
         />
         <KpiCard
           label="Tỷ lệ chấp nhận"
           value={`${dashboard.metrics.acceptanceRate}%`}
           trend="12%"
-          icon={UserRoundCheck}
+          icon="user-check"
           tone="cyan"
         />
         <AdminPanel className="min-w-0 p-4 sm:col-span-2 xl:col-span-1">
@@ -267,4 +267,3 @@ export function LecturerMentorsPageContent() {
     </div>
   );
 }
-
