@@ -1,10 +1,10 @@
-import { FounderEntryScreen } from "@/features/founder/projects/founder-entry-screen";
-import { DemoWorkspaceProvider } from "@/features/founder/venture-foundation/demo-workspace-provider";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <DemoWorkspaceProvider>
-      <FounderEntryScreen />
-    </DemoWorkspaceProvider>
-  );
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/auth/login`);
 }
