@@ -1,17 +1,14 @@
-import React from "react";
-import { MentorDashboardSidebar } from "@/components/mentor/dashboard-sidebar";
+import { DemoRoleGuard } from "@/features/auth/components/demo-role-guard";
+import { MentorWorkspaceShell } from "@/features/mentor/workspace/components/mentor-workspace-shell";
 
 export default function MentorLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return (
-        <div className="flex bg-[#fafafa] min-h-screen">
-            <MentorDashboardSidebar />
-            <div className="flex-1 ml-[260px]">
-                {children}
-            </div>
-        </div>
-    );
+  return (
+    <DemoRoleGuard role="mentor">
+      <MentorWorkspaceShell>{children}</MentorWorkspaceShell>
+    </DemoRoleGuard>
+  );
 }

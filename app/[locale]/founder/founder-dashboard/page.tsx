@@ -1,5 +1,5 @@
-import { FounderDashboard } from "@/components/founder/founder-dashboard/platform/overview";
+import { FounderEntryScreen } from "@/features/founder/projects/founder-entry-screen";
 
 export default function FounderDashboardPage() {
-    return <FounderDashboard />;
+    return <FounderEntryScreen />;
 }

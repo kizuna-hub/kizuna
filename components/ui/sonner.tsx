@@ -1,14 +1,14 @@
 'use client'
 
-import { useTheme } from 'next-themes'
 import { Toaster as Sonner, ToasterProps } from 'sonner'
+import { useKizunaTheme } from '@/components/theme-provider'
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = 'system' } = useTheme()
+  const { resolvedAppearance } = useKizunaTheme()
 
   return (
     <Sonner
-      theme={theme as ToasterProps['theme']}
+      theme={resolvedAppearance}
       className="toaster group"
       style={
         {

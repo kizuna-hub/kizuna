@@ -1,5 +1,5 @@
-import MentorRequests from '@/components/mentor/requests';
+import { MentorRequestsScreen } from "@/features/mentor/workspace/screens/mentor-requests-screen";
 
-export default function Page() {
-    return <MentorRequests />;
+export default function MentorRequestsPage() {
+  return <MentorRequestsScreen />;
 }

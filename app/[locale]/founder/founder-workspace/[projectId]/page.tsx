@@ -1,29 +1,16 @@
-import IncubationRoadmap from '@/components/founder/founder-workspace/dashboard/incubation-roadmap';
-import AIFormFillerCard from '@/components/founder/founder-workspace/dashboard/cards/ai-form-filler';
-import AIInsightsCard from '@/components/founder/founder-workspace/dashboard/cards/ai-insights';
-import SuggestedMentorsCard from '@/components/founder/founder-workspace/dashboard/cards/suggested-mentor';
-import IPLedgerCard from '@/components/founder/founder-workspace/dashboard/cards/ip-ledger';
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
-    return (
-        <div className="px-8 py-8 max-w-7xl mx-auto">
-            {/* Hero Section */}
-            {/* <IncubationRoadmap /> */}
+export default async function FounderWorkspaceOverviewPage({
+  params,
+}: {
+  params: Promise<{ locale: string; projectId: string }>;
+}) {
+  const { locale, projectId } = await params;
+  const legacyProjectMap: Record<string, string> = {
+    p1: "venture-kizuna-hub",
+    p2: "venture-snapmoney",
+  };
+  const ventureId = legacyProjectMap[projectId] ?? projectId;
 
-            {/* Dashboard Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Left Column - Full Height */}
-                <div className="lg:col-span-2 space-y-6">
-                    <AIFormFillerCard />
-                    <AIInsightsCard />
-                </div>
-
-                {/* Right Column */}
-                <div className="space-y-6">
-                    <SuggestedMentorsCard />
-                    <IPLedgerCard />
-                </div>
-            </div>
-        </div>
-    );
+  redirect(`/${locale}/founder/projects/${ventureId}`);
 }

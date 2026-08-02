@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck:university-admin": "tsc -p tsconfig.university-admin.json --pretty false",
+    "test:decision-loop": "node scripts/test-decision-loop.mjs",
+    "test:unit": "node --loader ./scripts/typescript-test-loader.mjs --test features/auth/tests/demo-auth.test.ts features/founder/ai-workspace/tests/readiness-followups.test.ts features/university-admin/tests/university-admin-selectors.test.ts features/university-admin/mentor-connections/tests/mentor-connection.test.ts features/university-admin/lecturer-mentors/tests/lecturer-mentor.test.ts",
+    "test:integration": "node --loader ./scripts/typescript-test-loader.mjs --test features/demo-domain/tests/demo-domain-repository.test.ts features/demo-domain/tests/founder-mentor-vertical-slice.integration.test.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -45,7 +49,7 @@
     "cmdk": "1.1.1",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.6.0",
-    "framer-motion": "^12.38.0",
+    "framer-motion": "^12.40.0",
     "input-otp": "1.4.2",
     "lucide-react": "^0.564.0",
     "next": "^16.2.4",
@@ -59,7 +63,7 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.15.0",
     "sonner": "^1.7.1",
-    "tailwind-merge": "^3.3.1",
+    "tailwind-merge": "^3.6.0",
     "vaul": "^1.1.2",
     "zod": "^3.24.1"
   },

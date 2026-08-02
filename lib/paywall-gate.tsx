@@ -78,16 +78,16 @@ function PaywallCard({
                 <Lock className="w-5 h-5 text-[#a1e2b6]" />
             </div>
 
-            <h3 className="font-outfit font-black text-[#102c1e] text-lg leading-tight mb-2">
+            <h3 className="font-heading font-black text-[#102c1e] text-lg leading-tight mb-2">
                 {prompt.title}
             </h3>
-            <p className="font-inter text-sm text-slate-500 leading-relaxed mb-5">
+            <p className="font-sans text-sm text-slate-500 leading-relaxed mb-5">
                 {prompt.description}
             </p>
 
             <button
                 onClick={onUpgrade}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#102c1e] font-geist text-sm font-black text-white hover:bg-[#0a1c13] transition-all shadow-md group"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#102c1e] font-sans text-sm font-black text-white hover:bg-[#0a1c13] transition-all shadow-md group"
             >
                 <Sparkles className="w-4 h-4 text-[#a1e2b6]" />
                 Nâng cấp lên {prompt.targetTier.replace('_', ' ').toUpperCase()}
@@ -100,7 +100,7 @@ function PaywallCard({
 // ── Inline Paywall Badge (for showing locked indicators on UI elements) ──
 export function PaywallBadge({ tier }: { tier: string }) {
     return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#102c1e]/5 border border-[#102c1e]/10 font-geist text-[9px] font-black text-[#102c1e]/50 uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#102c1e]/5 border border-[#102c1e]/10 font-sans text-[9px] font-black text-[#102c1e]/50 uppercase tracking-wider">
             <Lock className="w-2.5 h-2.5" />
             {tier}
         </span>

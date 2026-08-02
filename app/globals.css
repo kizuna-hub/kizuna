@@ -1,330 +1,598 @@
 @config '../tailwind.config.ts';
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
+/* ═══════════════════════════════════════════════════════════════════
+   KIZUNA QUIET CONVICTION DESIGN SYSTEM
+   Source: docs/design/ and the read-only landing foundation
 
-@theme inline {
-  --font-sans: var(--font-body);
-  --font-serif: var(--font-heading);
-  --font-mono: var(--font-code);
+   Canvas: #0B0A09 | Surface-1: #151311 | Surface-2: #1E1B18
+   Ink: #F7F5F2 | Ink-muted: #A39D96 | Primary: #CC785C
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-brand: var(--brand);
-  --color-brand-foreground: var(--brand-foreground);
-  --color-brand-accent: var(--brand-accent);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-surface-subtle: var(--surface-subtle);
-  --color-surface-inverse: var(--surface-inverse);
-  --color-surface-glass: var(--surface-glass);
-  --color-surface-glass-strong: var(--surface-glass-strong);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+   Dark foundation. One chromatic signal: Kizuna Clay.
+   ═══════════════════════════════════════════════════════════════════ */
 
-  --color-kizuna-primary: var(--kizuna-primary);
-  --color-kizuna-canvas: var(--kizuna-canvas);
-  --color-kizuna-surface: var(--kizuna-surface);
-  --color-kizuna-text-main: var(--kizuna-text-main);
-  --color-kizuna-text-muted: var(--kizuna-text-muted);
-  --color-kizuna-border: var(--kizuna-border);
+@theme {
+  /* ── Font Variables ─────────────────────────────────────────────── */
+  --font-display: var(--font-geist-sans, 'Geist Sans'), 'Geist', sans-serif;
+  --font-body: var(--font-geist-sans, 'Geist Sans'), 'Geist', sans-serif;
+  --font-mono: var(--font-geist-mono, 'Geist Mono'), 'Consolas', monospace;
 
-  --radius-xs: var(--radius-token-xs);
-  --radius-sm: var(--radius-token-sm);
-  --radius-md: var(--radius-token-md);
-  --radius-lg: var(--radius-token-lg);
-  --radius-xl: var(--radius-token-xl);
-  --radius-2xl: var(--radius-token-2xl);
-  --radius-3xl: var(--radius-token-3xl);
-  --radius-4xl: var(--radius-token-4xl);
+  /* ══════════════════════════════════════════════════════════════════
+     KIZUNA COLOR PALETTE — QUIET CONVICTION
+     ══════════════════════════════════════════════════════════════════ */
 
-  --shadow-2xs: var(--shadow-token-2xs);
-  --shadow-xs: var(--shadow-token-xs);
-  --shadow-sm: var(--shadow-token-sm);
-  --shadow-md: var(--shadow-token-md);
-  --shadow-lg: var(--shadow-token-lg);
-  --shadow-xl: var(--shadow-token-xl);
-  --shadow-2xl: var(--shadow-token-2xl);
-  --shadow-card: var(--shadow-token-card);
-  --shadow-dropdown: var(--shadow-token-dropdown);
-  --shadow-glass: var(--shadow-token-glass);
-  --shadow-glow: var(--shadow-token-glow);
-  --shadow-glow-strong: var(--shadow-token-glow-strong);
-  --shadow-ambient: var(--shadow-token-ambient);
+  /* Root brand tokens (Light Mode) */
+  --color-canvas: #F7F6F3;
+  /* neutral light — dominant bg */
+  --color-surface-1: #FCFBF8;
+  /* cards, secondary buttons, panels */
+  --color-surface-2: #F0EFEB;
+  --color-surface-3: #E8E6E1;
+  /* selected tab, featured card */
 
-  --text-heading-2xl: 5.5rem;
-  --text-heading-2xl--line-height: 0.95;
-  --text-heading-2xl--font-weight: 500;
-  --text-heading-xl: 4rem;
-  --text-heading-xl--line-height: 1;
-  --text-heading-xl--font-weight: 500;
-  --text-heading-lg: 3rem;
-  --text-heading-lg--line-height: 1.05;
-  --text-heading-lg--font-weight: 500;
-  --text-heading-md: 2.25rem;
-  --text-heading-md--line-height: 1.1;
-  --text-heading-md--font-weight: 600;
-  --text-heading-sm: 1.5rem;
-  --text-heading-sm--line-height: 1.2;
-  --text-heading-sm--font-weight: 600;
-  --text-body-lg: 1.125rem;
-  --text-body-lg--line-height: 1.75rem;
-  --text-body-md: 1rem;
-  --text-body-md--line-height: 1.625rem;
-  --text-body-sm: 0.875rem;
-  --text-body-sm--line-height: 1.375rem;
-  --text-caption: 0.75rem;
-  --text-caption--line-height: 1rem;
-  --text-eyebrow: 0.6875rem;
-  --text-eyebrow--line-height: 1rem;
-  --text-eyebrow--letter-spacing: 0.2em;
-  --text-eyebrow--font-weight: 700;
+  /* Ink (text on light) */
+  --color-ink: #252422;
+  /* primary text */
+  --color-ink-muted: #716D67;
+  /* secondary/meta text */
 
-  --spacing-page: 1.5rem;
-  --spacing-page-lg: 2.5rem;
-  --spacing-section: 6rem;
-  --spacing-section-lg: 8rem;
+  /* Legacy compatibility alias; new code uses primary/ring/workspace tokens. */
+  --color-accent-blue: var(--color-primary);
 
-  --z-index-hide: var(--z-hide);
-  --z-index-base: var(--z-base);
-  --z-index-raised: var(--z-raised);
-  --z-index-header: var(--z-header);
-  --z-index-dropdown: var(--z-dropdown);
-  --z-index-overlay: var(--z-overlay);
-  --z-index-modal: var(--z-modal);
-  --z-index-popover: var(--z-popover);
-  --z-index-toast: var(--z-toast);
-  --z-index-tooltip: var(--z-tooltip);
+  /* Borders */
+  --color-hairline: #DDDAD4;
+  /* standard 1px dark border */
+  --color-hairline-soft: #E8E5DF;
+  /* subtle section divider */
+
+  /* Inverse surfaces */
+  --color-inverse-canvas: #252422;
+  /* warm dark inverse surface */
+  --color-inverse-ink: #FCFBF8;
+  /* light text on inverse surface */
+  --color-on-primary: #FFFFFF;
+  /* Filled Clay actions always use white text. */
+
+  /* Semantic status (only use where semantically correct, never decorative) */
+  --color-semantic-success: #78B69A;
+  --color-semantic-warning: #D6A35F;
+  --color-semantic-info: #72ADD0;
+  --color-semantic-verified: #78B69A;
+  --color-semantic-pending: #D6A35F;
+  --color-confidence-high: #78B69A;
+  --color-confidence-medium: #D6A35F;
+  --color-confidence-low: #E66B61;
+
+  /* Gradient spotlight card base anchors
+     These are solid single colors; full gradients live in @layer utilities below. */
+  --color-gradient-violet: #6a4cf5;
+  --color-gradient-magenta: #d44df0;
+  --color-gradient-orange: #ff7a3d;
+  --color-gradient-coral: #ff5577;
+
+  /* Theme tokens and Shadcn/Tailwind semantic aliases */
+  --color-background: var(--color-canvas);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-surface-1);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-surface-1);
+  --color-popover-foreground: var(--color-ink);
+  --color-primary: #CC785C;
+  --color-primary-hover: #D98A70;
+  --color-primary-active: #B9674F;
+  --color-primary-soft: #2A1A15;
+  --color-primary-muted: #2A1A15;
+  --color-primary-muted-hover: #36221B;
+  --color-primary-muted-foreground: #F0B39E;
+  --color-primary-border: #704233;
+  --color-primary-text: #E8A18A;
+  --color-primary-action: #B65B44;
+  --color-primary-action-hover: #A9533D;
+  --color-primary-action-active: #944833;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: var(--color-surface-1);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted: var(--color-surface-2);
+  --color-muted-foreground: var(--color-ink-muted);
+  --color-accent: var(--color-primary);
+  --color-accent-foreground: var(--color-primary-foreground);
+  --color-destructive: #E66B61;
+  --color-destructive-foreground: var(--color-ink);
+  --color-border: var(--color-hairline);
+  --color-input: var(--color-surface-1);
+  --color-ring: var(--color-primary);
+  --color-overlay: rgba(11, 10, 9, 0.72);
+
+  /* Kizuna brand aliases */
+  --color-kizuna-primary: var(--color-primary);
+  --color-kizuna-canvas: var(--color-canvas);
+  --color-kizuna-surface: var(--color-surface-1);
+  --color-kizuna-text-main: var(--color-ink);
+  --color-kizuna-text-muted: var(--color-ink-muted);
+  --color-kizuna-border: var(--color-hairline);
+
+  /* Sidebar compatibility maps to the shared workspace shell. */
+  --color-sidebar: var(--workspace-sidebar-background);
+  --color-sidebar-foreground: var(--color-ink);
+  --color-sidebar-primary: var(--color-primary);
+  --color-sidebar-primary-foreground: var(--color-primary-foreground);
+  --color-sidebar-accent: var(--color-primary-soft);
+  --color-sidebar-accent-foreground: var(--color-ink);
+  --color-sidebar-border: var(--workspace-border);
+  --color-sidebar-ring: var(--workspace-focus-ring);
+
+  /* Workspace semantic tokens */
+  --color-workspace-background: var(--workspace-background);
+  --color-workspace-sidebar: var(--workspace-sidebar-background);
+  --color-workspace-topbar: var(--workspace-topbar-background);
+  --color-workspace-panel: var(--workspace-panel-background);
+  --color-workspace-elevated: var(--workspace-elevated-background);
+  --color-workspace-border: var(--workspace-border);
+  --color-workspace-row-hover: var(--workspace-row-hover);
+  --color-workspace-selected: var(--workspace-selected);
+  --color-workspace-focus-ring: var(--workspace-focus-ring);
+  --color-workspace-muted-text: var(--workspace-muted-text);
+  --color-workspace-success: var(--workspace-success);
+  --color-workspace-success-soft: var(--workspace-success-soft);
+  --color-workspace-warning: var(--workspace-warning);
+  --color-workspace-warning-soft: var(--workspace-warning-soft);
+  --color-workspace-danger: var(--workspace-danger);
+  --color-workspace-danger-soft: var(--workspace-danger-soft);
+
+  /* ══════════════════════════════════════════════════════════════════
+     TYPOGRAPHY — KIZUNA QUIET CONVICTION
+     Geist Sans application text and Geist Mono metadata/code.
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* Display scale — editorial weight with restrained workspace use */
+  --font-size-display-2xl: 6.875rem;
+  /* 110px */
+  --font-size-display-2xl--line-height: 0.85;
+  --font-size-display-2xl--letter-spacing: -5.5px;
+  --font-size-display-2xl--font-weight: 560;
+
+  --font-size-display-xl: 5.3125rem;
+  /* 85px */
+  --font-size-display-xl--line-height: 0.92;
+  --font-size-display-xl--letter-spacing: -4.25px;
+  --font-size-display-xl--font-weight: 560;
+
+  --font-size-display-lg: 3.875rem;
+  /* 62px */
+  --font-size-display-lg--line-height: 0.97;
+  --font-size-display-lg--letter-spacing: -3.1px;
+  --font-size-display-lg--font-weight: 560;
+
+  --font-size-display-md: 2rem;
+  /* 32px */
+  --font-size-display-md--line-height: 1.05;
+  --font-size-display-md--letter-spacing: -1.0px;
+  --font-size-display-md--font-weight: 560;
+
+  /* UI scale — Geist Sans Variable, weight 400–700 */
+  --font-size-headline: 1.375rem;
+  /* 22px */
+  --font-size-headline--line-height: 1.20;
+  --font-size-headline--letter-spacing: -0.8px;
+  --font-size-headline--font-weight: 700;
+
+  --font-size-subhead: 1.5rem;
+  /* 24px */
+  --font-size-subhead--line-height: 1.30;
+  --font-size-subhead--letter-spacing: -0.01px;
+  --font-size-subhead--font-weight: 400;
+
+  --font-size-body-framer: 0.9375rem;
+  /* 15px */
+  --font-size-body-framer--line-height: 1.30;
+  --font-size-body-framer--letter-spacing: -0.15px;
+  --font-size-body-framer--font-weight: 400;
+
+  --font-size-body-framer-sm: 0.875rem;
+  /* 14px */
+  --font-size-body-framer-sm--line-height: 1.40;
+  --font-size-body-framer-sm--letter-spacing: -0.14px;
+  --font-size-body-framer-sm--font-weight: 500;
+
+  --font-size-caption: 0.8125rem;
+  /* 13px */
+  --font-size-caption--line-height: 1.20;
+  --font-size-caption--letter-spacing: -0.13px;
+  --font-size-caption--font-weight: 500;
+
+  --font-size-micro: 0.75rem;
+  /* 12px */
+  --font-size-micro--line-height: 1.20;
+  --font-size-micro--letter-spacing: -0.12px;
+  --font-size-micro--font-weight: 400;
+
+  --font-size-btn: 0.875rem;
+  /* 14px */
+  --font-size-btn--line-height: 1.0;
+  --font-size-btn--letter-spacing: -0.14px;
+  --font-size-btn--font-weight: 500;
+
+  --font-size-eyebrow: 0.6875rem;
+  /* 11px */
+  --font-size-eyebrow--line-height: 1.0;
+  --font-size-eyebrow--letter-spacing: 0.12em;
+  --font-size-eyebrow--font-weight: 600;
+
+  /* ══════════════════════════════════════════════════════════════════
+     BORDER RADIUS — KIZUNA GRANULAR SCALE
+     ══════════════════════════════════════════════════════════════════ */
+  --radius-xs: 4px;
+  /* utility chips, tiny tags */
+  --radius-sm: 6px;
+  /* subtle rounding */
+  --radius-md: 10px;
+  /* inputs, inline modals */
+  --radius-lg: 15px;
+  /* template cards */
+  --radius-xl: 20px;
+  /* pricing cards, mockup tiles */
+  --radius-xxl: 30px;
+  /* gradient spotlight cards */
+  --radius-pill: 100px;
+  /* ALL primary CTA buttons */
+  --radius-full: 9999px;
+  /* avatars, status dots */
+
+  /* ══════════════════════════════════════════════════════════════════
+     SPACING — COMPATIBLE BASE-5 SCALE
+     ══════════════════════════════════════════════════════════════════ */
+  --spacing-framer-hair: 1px;
+  --spacing-framer-xxs: 4px;
+  --spacing-framer-xs: 8px;
+  --spacing-framer-sm: 12px;
+  --spacing-framer-md: 15px;
+  /* pill button horizontal padding */
+  --spacing-framer-lg: 20px;
+  --spacing-framer-xl: 30px;
+  /* spotlight card padding */
+  --spacing-framer-xxl: 40px;
+  --spacing-framer-section: 96px;
+
+  /* ══════════════════════════════════════════════════════════════════
+     Z-INDEX SCALE
+     ══════════════════════════════════════════════════════════════════ */
+  --z-hide: -1;
+  --z-base: 0;
+  --z-raised: 10;
+  --z-header: 100;
+  --z-dropdown: 200;
+  --z-overlay: 500;
+  --z-modal: 1000;
+  --z-popover: 1100;
+  --z-toast: 1200;
+  --z-tooltip: 1300;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   BASE LAYER
+   ═══════════════════════════════════════════════════════════════════ */
 @layer base {
-  :root {
-    --kz-forest-950: 150 51% 7%;
-    --kz-forest-900: 150 48% 9%;
-    --kz-forest-850: 150 47% 12%;
-    --kz-forest-800: 150 42% 15%;
-    --kz-forest-700: 149 37% 21%;
-    --kz-forest-600: 148 33% 28%;
-    --kz-emerald-600: 142 76% 36%;
-    --kz-emerald-500: 142 71% 45%;
-    --kz-emerald-400: 142 69% 58%;
-    --kz-emerald-300: 141 77% 73%;
-    --kz-orange-600: 24 95% 53%;
-    --kz-orange-500: 25 95% 59%;
-    --kz-orange-400: 27 96% 67%;
-    --kz-canvas-50: 60 18% 97%;
-    --kz-canvas-100: 70 17% 95%;
-    --kz-canvas-200: 72 13% 90%;
-    --kz-white: 0 0% 100%;
-    --kz-zinc-950: 240 10% 4%;
-    --kz-zinc-900: 240 6% 10%;
-    --kz-zinc-800: 240 4% 16%;
-    --kz-zinc-700: 240 5% 26%;
-    --kz-zinc-600: 240 4% 46%;
-    --kz-zinc-500: 240 4% 56%;
-    --kz-zinc-400: 240 5% 65%;
-    --kz-zinc-300: 240 5% 84%;
-    --kz-zinc-200: 240 6% 90%;
-    --kz-zinc-100: 240 5% 96%;
-
-    --background: hsl(var(--kz-canvas-50));
-    --foreground: hsl(var(--kz-zinc-900));
-    --card: hsl(var(--kz-white));
-    --card-foreground: hsl(var(--kz-zinc-900));
-    --popover: hsl(var(--kz-white));
-    --popover-foreground: hsl(var(--kz-zinc-900));
-    --primary: hsl(var(--kz-forest-900));
-    --primary-foreground: hsl(var(--kz-canvas-50));
-    --secondary: hsl(var(--kz-canvas-100));
-    --secondary-foreground: hsl(var(--kz-forest-900));
-    --muted: hsl(var(--kz-canvas-100));
-    --muted-foreground: hsl(var(--kz-zinc-600));
-    --accent: hsl(var(--kz-emerald-500));
-    --accent-foreground: hsl(var(--kz-forest-950));
-    --destructive: hsl(0 72% 51%);
-    --destructive-foreground: hsl(var(--kz-white));
-    --border: hsl(var(--kz-zinc-200));
-    --input: hsl(var(--kz-zinc-200));
-    --ring: hsl(var(--kz-emerald-500));
-    --brand: hsl(var(--kz-forest-900));
-    --brand-foreground: hsl(var(--kz-canvas-50));
-    --brand-accent: hsl(var(--kz-orange-500));
-    --surface: hsl(var(--kz-canvas-50));
-    --surface-elevated: hsl(var(--kz-white));
-    --surface-subtle: hsl(var(--kz-canvas-100));
-    --surface-inverse: hsl(var(--kz-forest-900));
-    --surface-glass: hsl(var(--kz-white) / 0.72);
-    --surface-glass-strong: hsl(var(--kz-white) / 0.88);
-    --chart-1: hsl(var(--kz-emerald-500));
-    --chart-2: hsl(var(--kz-orange-500));
-    --chart-3: hsl(220 57% 56%);
-    --chart-4: hsl(285 26% 57%);
-    --chart-5: hsl(348 68% 70%);
-    --sidebar: hsl(var(--kz-white));
-    --sidebar-foreground: hsl(var(--kz-zinc-900));
-    --sidebar-primary: hsl(var(--kz-forest-900));
-    --sidebar-primary-foreground: hsl(var(--kz-canvas-50));
-    --sidebar-accent: hsl(var(--kz-canvas-100));
-    --sidebar-accent-foreground: hsl(var(--kz-forest-900));
-    --sidebar-border: hsl(var(--kz-zinc-200));
-    --sidebar-ring: hsl(var(--kz-emerald-500));
-    --kizuna-primary: hsl(var(--kz-forest-800));
-    --kizuna-canvas: hsl(var(--kz-white));
-    --kizuna-surface: hsl(var(--kz-canvas-50));
-    --kizuna-text-main: hsl(var(--kz-zinc-900));
-    --kizuna-text-muted: hsl(var(--kz-zinc-600));
-    --kizuna-border: hsl(var(--kz-zinc-200));
-
-    --radius: 0.875rem;
-    --radius-token-xs: 0.25rem;
-    --radius-token-sm: 0.5rem;
-    --radius-token-md: 0.75rem;
-    --radius-token-lg: 1rem;
-    --radius-token-xl: 1.5rem;
-    --radius-token-2xl: 1.75rem;
-    --radius-token-3xl: 2rem;
-    --radius-token-4xl: 2.5rem;
-
-    --shadow-token-2xs: 0 1px 1px hsl(var(--kz-forest-950) / 0.04);
-    --shadow-token-xs: 0 1px 2px hsl(var(--kz-forest-950) / 0.06);
-    --shadow-token-sm: 0 1px 3px hsl(var(--kz-forest-950) / 0.08),
-      0 1px 2px -1px hsl(var(--kz-forest-950) / 0.08);
-    --shadow-token-md: 0 8px 24px -12px hsl(var(--kz-forest-950) / 0.18);
-    --shadow-token-lg: 0 18px 48px -24px hsl(var(--kz-forest-950) / 0.24);
-    --shadow-token-xl: 0 24px 70px -28px hsl(var(--kz-forest-950) / 0.32);
-    --shadow-token-2xl: 0 32px 96px -32px hsl(var(--kz-forest-950) / 0.42);
-    --shadow-token-card: 0 18px 56px -30px hsl(var(--kz-forest-950) / 0.24),
-      0 0 0 1px hsl(var(--kz-zinc-900) / 0.05);
-    --shadow-token-dropdown: 0 18px 48px -22px hsl(var(--kz-forest-950) / 0.28),
-      0 0 0 1px hsl(var(--kz-zinc-900) / 0.06);
-    --shadow-token-glass: 0 18px 48px -24px hsl(var(--kz-forest-950) / 0.22),
-      inset 0 1px 0 hsl(var(--kz-white) / 0.72);
-    --shadow-token-glow: 0 0 0 1px hsl(var(--kz-emerald-500) / 0.18),
-      0 0 32px hsl(var(--kz-emerald-500) / 0.28);
-    --shadow-token-glow-strong: 0 0 0 1px hsl(var(--kz-emerald-400) / 0.32),
-      0 0 48px hsl(var(--kz-emerald-400) / 0.42);
-    --shadow-token-ambient: 0 40px 120px -48px hsl(var(--kz-forest-950) / 0.48);
-
-    --font-heading: var(--font-serif), 'Playfair Display', Georgia, serif;
-    --font-body: var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif;
-    --font-code: var(--font-mono), 'Geist Mono', 'SFMono-Regular', Consolas, monospace;
-
-    --z-hide: -1;
-    --z-base: 0;
-    --z-raised: 10;
-    --z-header: 100;
-    --z-dropdown: 200;
-    --z-overlay: 500;
-    --z-modal: 1000;
-    --z-popover: 1100;
-    --z-toast: 1200;
-    --z-tooltip: 1300;
-  }
-
   .dark {
-    --background: hsl(var(--kz-forest-950));
-    --foreground: hsl(var(--kz-canvas-50));
-    --card: hsl(var(--kz-forest-900));
-    --card-foreground: hsl(var(--kz-canvas-50));
-    --popover: hsl(var(--kz-forest-900));
-    --popover-foreground: hsl(var(--kz-canvas-50));
-    --primary: hsl(var(--kz-emerald-400));
-    --primary-foreground: hsl(var(--kz-forest-950));
-    --secondary: hsl(var(--kz-forest-850));
-    --secondary-foreground: hsl(var(--kz-canvas-50));
-    --muted: hsl(var(--kz-forest-850));
-    --muted-foreground: hsl(150 10% 67%);
-    --accent: hsl(var(--kz-orange-500));
-    --accent-foreground: hsl(var(--kz-forest-950));
-    --border: hsl(150 20% 22%);
-    --input: hsl(150 20% 22%);
-    --ring: hsl(var(--kz-emerald-400));
-    --brand: hsl(var(--kz-emerald-400));
-    --brand-foreground: hsl(var(--kz-forest-950));
-    --brand-accent: hsl(var(--kz-orange-500));
-    --surface: hsl(var(--kz-forest-950));
-    --surface-elevated: hsl(var(--kz-forest-900));
-    --surface-subtle: hsl(var(--kz-forest-850));
-    --surface-inverse: hsl(var(--kz-canvas-50));
-    --surface-glass: hsl(var(--kz-forest-900) / 0.72);
-    --surface-glass-strong: hsl(var(--kz-forest-900) / 0.88);
-    --sidebar: hsl(var(--kz-forest-900));
-    --sidebar-foreground: hsl(var(--kz-canvas-50));
-    --sidebar-primary: hsl(var(--kz-emerald-400));
-    --sidebar-primary-foreground: hsl(var(--kz-forest-950));
-    --sidebar-accent: hsl(var(--kz-forest-850));
-    --sidebar-accent-foreground: hsl(var(--kz-canvas-50));
-    --sidebar-border: hsl(150 20% 22%);
-    --sidebar-ring: hsl(var(--kz-emerald-400));
-    --kizuna-primary: hsl(var(--kz-emerald-400));
-    --kizuna-canvas: hsl(var(--kz-forest-950));
-    --kizuna-surface: hsl(var(--kz-forest-900));
-    --kizuna-text-main: hsl(var(--kz-canvas-50));
-    --kizuna-text-muted: hsl(150 10% 67%);
-    --kizuna-border: hsl(150 20% 22%);
-    --shadow-token-md: 0 10px 32px -18px hsl(0 0% 0% / 0.5);
-    --shadow-token-lg: 0 20px 64px -28px hsl(0 0% 0% / 0.58);
-    --shadow-token-xl: 0 28px 88px -34px hsl(0 0% 0% / 0.68);
-    --shadow-token-2xl: 0 32px 110px -36px hsl(0 0% 0% / 0.78);
-    --shadow-token-card: 0 20px 70px -32px hsl(0 0% 0% / 0.68),
-      0 0 0 1px hsl(var(--kz-white) / 0.08);
-    --shadow-token-glass: 0 20px 60px -30px hsl(0 0% 0% / 0.66),
-      inset 0 1px 0 hsl(var(--kz-white) / 0.1);
+    --color-canvas: #0B0A09;
+    --color-surface-1: #151311;
+    --color-surface-2: #1E1B18;
+    --color-surface-3: #262320;
+    --color-ink: #F7F5F2;
+    --color-ink-muted: #A39D96;
+    --color-hairline: #2B2825;
+    --color-hairline-soft: #1D1B19;
+    --color-inverse-canvas: #F7F5F2;
+    --color-inverse-ink: #0E0A09;
+    
+    --shadow-framer-base: rgba(0, 0, 0, 0.40);
+    --shadow-framer-lifted: rgba(0, 0, 0, 0.60);
   }
 
+  :root {
+    --selection: rgba(204, 120, 92, 0.28);
+    --shadow-framer-base: rgba(0, 0, 0, 0.08);
+    --shadow-framer-lifted: rgba(0, 0, 0, 0.16);
+
+    /* Workspace semantic tokens */
+    --workspace-background: var(--color-canvas);
+    --workspace-sidebar-background: var(--color-surface-1);
+    --workspace-topbar-background: var(--color-canvas);
+    --workspace-panel-background: var(--color-surface-1);
+    --workspace-elevated-background: var(--color-surface-2);
+    --workspace-border: var(--color-hairline);
+    --workspace-row-hover: var(--color-surface-2);
+    --workspace-selected: var(--color-primary-soft);
+    --workspace-focus-ring: var(--color-primary);
+    --workspace-muted-text: var(--color-ink-muted);
+    --workspace-success: var(--color-semantic-success);
+    --workspace-success-soft: color-mix(in srgb, var(--color-semantic-success) 12%, transparent);
+    --workspace-warning: var(--color-semantic-warning);
+    --workspace-warning-soft: color-mix(in srgb, var(--color-semantic-warning) 12%, transparent);
+    --workspace-danger: var(--color-destructive);
+    --workspace-danger-soft: color-mix(in srgb, var(--color-destructive) 12%, transparent);
+
+    /* Legacy gradient definitions retained for existing compatibility. */
+    --gradient-violet: linear-gradient(135deg, #4A00E0 0%, #6a4cf5 100%);
+    --gradient-magenta: linear-gradient(135deg, #FF007F 0%, #d44df0 100%);
+    --gradient-orange: linear-gradient(135deg, #FF4B2B 0%, #ff7a3d 100%);
+    --gradient-coral: linear-gradient(135deg, #FF7E5F 0%, #ff5577 100%);
+  }
+
+  html[data-appearance='dark'] {
+    color-scheme: dark;
+    --color-canvas: #0B0A09;
+    --color-surface-1: #151311;
+    --color-surface-2: #1E1B18;
+    --color-surface-3: #262320;
+    --color-ink: #F7F5F2;
+    --color-ink-muted: #A39D96;
+    --color-hairline: #2B2825;
+    --color-hairline-soft: #1D1B19;
+    --color-inverse-canvas: #F7F5F2;
+    --color-inverse-ink: #0E0A09;
+    --color-destructive: #E66B61;
+    --color-destructive-foreground: #0E0A09;
+    --color-semantic-success: #78B69A;
+    --color-semantic-warning: #D6A35F;
+    --color-semantic-info: #72ADD0;
+    --color-semantic-verified: #78B69A;
+    --color-semantic-pending: #D6A35F;
+    --color-confidence-high: #78B69A;
+    --color-confidence-medium: #D6A35F;
+    --color-confidence-low: #E66B61;
+    --color-overlay: rgba(11, 10, 9, 0.72);
+  }
+
+  html[data-appearance='light'] {
+    color-scheme: light;
+    --color-canvas: #F7F6F3;
+    --color-surface-1: #FCFBF8;
+    --color-surface-2: #F0EFEB;
+    --color-surface-3: #E8E6E1;
+    --color-ink: #252422;
+    --color-ink-muted: #716D67;
+    --color-hairline: #DDDAD4;
+    --color-hairline-soft: #E8E5DF;
+    --color-inverse-canvas: #252422;
+    --color-inverse-ink: #FCFBF8;
+    --color-destructive: #B9473F;
+    --color-destructive-foreground: #FFFFFF;
+    --color-semantic-success: #36775A;
+    --color-semantic-warning: #9A641D;
+    --color-semantic-info: #326B90;
+    --color-semantic-verified: #36775A;
+    --color-semantic-pending: #9A641D;
+    --color-confidence-high: #36775A;
+    --color-confidence-medium: #9A641D;
+    --color-confidence-low: #B9473F;
+    --color-overlay: rgba(33, 31, 28, 0.42);
+  }
+
+  /* Universal border reset to the canonical hairline token. */
   * {
-    @apply border-border outline-ring/50;
+    @apply border-hairline;
   }
 
   html {
     min-height: 100%;
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     min-height: 100%;
     font-family: var(--font-body);
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1,
+      'kern' 1;
     scrollbar-gutter: stable;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Text selection follows the selected accent without changing status colors. */
   ::selection {
-    background: hsl(var(--kz-emerald-400) / 0.28);
-    color: hsl(var(--kz-forest-950));
+    background-color: var(--selection);
+    color: var(--color-foreground);
+  }
+}
+
+.theme-transitioning,
+.theme-transitioning * {
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    fill 160ms ease,
+    stroke 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITY LAYER
+   ═══════════════════════════════════════════════════════════════════ */
+@layer components {
+  .university-admin-theme {
+    --admin-background: #F5F7FB;
+    --admin-surface: #FFFFFF;
+    --admin-surface-muted: #F4F7FC;
+    --admin-border: #DCE4EF;
+    --admin-text: #102344;
+    --admin-muted: #65738C;
+    --admin-sidebar: #052653;
+    --admin-sidebar-muted: #B9CBE5;
+    --admin-sidebar-hover: #0A417F;
+    --admin-sidebar-active: #0D5DB8;
+    --admin-primary: #1268DD;
+    --admin-primary-hover: #0D55BA;
+    --admin-blue-soft: #E8F1FF;
+    --admin-green: #18A66A;
+    --admin-green-soft: #E5F7EF;
+    --admin-orange: #F07A19;
+    --admin-orange-soft: #FFF0E3;
+    --admin-purple: #8A4DE8;
+    --admin-purple-soft: #F1EAFE;
+    --admin-red: #D84A4A;
+    --admin-red-soft: #FDEAEA;
+    --admin-cyan: #18A2B8;
+    --admin-cyan-soft: #E2F7FA;
+    --admin-shadow: 0 8px 24px rgba(31, 56, 92, 0.06);
+    color: var(--admin-text);
+    background: var(--admin-background);
+  }
+
+  html[data-appearance='dark'] .university-admin-theme {
+    --admin-background: #08111F;
+    --admin-surface: #0E1A2B;
+    --admin-surface-muted: #142238;
+    --admin-border: #263750;
+    --admin-text: #EDF4FF;
+    --admin-muted: #9AABC4;
+    --admin-sidebar: #031A3A;
+    --admin-sidebar-muted: #B4C7E2;
+    --admin-sidebar-hover: #0A356A;
+    --admin-sidebar-active: #0D4F9E;
+    --admin-primary: #4B91F1;
+    --admin-primary-hover: #68A3F4;
+    --admin-blue-soft: #132C50;
+    --admin-green: #51C58C;
+    --admin-green-soft: #123A2C;
+    --admin-orange: #F3A24F;
+    --admin-orange-soft: #412A14;
+    --admin-purple: #AA7AF0;
+    --admin-purple-soft: #2E2047;
+    --admin-red: #EF7777;
+    --admin-red-soft: #441F26;
+    --admin-cyan: #55C5D4;
+    --admin-cyan-soft: #123640;
+    --admin-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+  }
+
+  /*
+   * Founder Workspace density compositions
+   *
+   * These classes intentionally scope the Phase 1.5 operational type
+   * scale to application surfaces. Marketing and public display tokens
+   * keep their existing values.
+   */
+  .workspace-density {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .workspace-page-title {
+    font-family: var(--font-heading);
+    font-size: 1.4375rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.18;
+  }
+
+  .workspace-decision-title {
+    font-family: var(--font-heading);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.24;
+  }
+
+  .workspace-section-title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.28;
+  }
+
+  .workspace-card-title {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.32;
+  }
+
+  .workspace-body {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .workspace-supporting {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .workspace-meta {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .workspace-eyebrow {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .workspace-project-identity {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .workspace-control-text {
+    font-size: 0.875rem;
+    line-height: 1.2;
+  }
+
+  .workspace-input-text {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  @media (min-width: 64rem) {
+    .workspace-page-title {
+      font-size: 1.5rem;
+    }
+
+    .workspace-decision-title {
+      font-size: 1.25rem;
+    }
+
+    .workspace-body {
+      font-size: 0.8125rem;
+    }
+
+    .workspace-supporting {
+      font-size: 0.75rem;
+    }
+
+    .workspace-meta {
+      font-size: 0.6875rem;
+    }
+
+    .workspace-control-text,
+    .workspace-input-text {
+      font-size: 0.8125rem;
+    }
   }
 }
 
 @layer utilities {
+
+  html[data-appearance='light'] .light-primary-foreground {
+    color: var(--color-inverse-ink);
+  }
+
+  /* ── Scrollbar hide — for horizontal marquee carousels ─────────── */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -333,4 +601,94 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* ── Kizuna elevation — light-edge floating card ───────────────── */
+  /* Formula: 0.5px white top edge inset + 10px/30px black drop shadow */
+  .shadow-framer-edge {
+    box-shadow:
+      0 0.5px 0 0 rgba(247, 245, 242, 0.08) inset,
+      0 10px 30px 0 var(--shadow-framer-base);
+  }
+
+  /* Hover lift variant for floating actions. */
+  .shadow-framer-edge-lifted {
+    box-shadow:
+      0 0.5px 0 0 rgba(247, 245, 242, 0.14) inset,
+      0 16px 48px 0 var(--shadow-framer-lifted);
+  }
+
+  /* ── Kizuna focus ring ─────────────────────────────────────────── */
+  .shadow-framer-focus {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ring) 28%, transparent);
+  }
+
+  /* ── Legacy gradient spotlight compatibility ───────────────────── */
+  /* Existing pages may render these; do not use them in new workspace UI. */
+  .spotlight-violet {
+    background: var(--gradient-violet);
+  }
+
+  .spotlight-magenta {
+    background: var(--gradient-magenta);
+  }
+
+  .spotlight-orange {
+    background: var(--gradient-orange);
+  }
+
+  .spotlight-coral {
+    background: var(--gradient-coral);
+  }
+
+  /* ── Typography Utilities ───────────────────────────────────────── */
+  /* Tabular nums for metrics / pricing numbers */
+  .font-tabular {
+    font-feature-settings: 'tnum' 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Display text tracking helpers ──────────────────────────────── */
+  /* Apply these alongside text-display-* to get exact poster tracking */
+  .tracking-display-2xl {
+    letter-spacing: -5.5px;
+  }
+
+  .tracking-display-xl {
+    letter-spacing: -4.25px;
+  }
+
+  .tracking-display-lg {
+    letter-spacing: -3.1px;
+  }
+
+  .tracking-display-md {
+    letter-spacing: -1.0px;
+  }
+}
+
+/* Accessibility and reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Prevent layout shift on dropdowns/modals ────────────────────── */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Override Radix/react-remove-scroll inline styles unconditionally */
+html body {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
 }

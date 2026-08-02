@@ -1,3 +1,5 @@
+> **Historical reference:** Forest-green palette rules in this file are superseded by `docs/design/README.md` and `docs/design/foundations.md`. Preserve useful UI structure guidance only when it does not conflict with the canonical Quiet Conviction tokens.
+
 # KIZUNA HUB - UI/UX DESIGN SYSTEM & GUIDELINES
 
 This document is the ultimate source of truth for all UI/UX design. All AI agents MUST strictly adhere to these rules when generating frontend code.
