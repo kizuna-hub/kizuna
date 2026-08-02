@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   BriefcaseBusiness,
+  Building2,
   Eye,
   EyeOff,
   GraduationCap,
@@ -38,6 +39,12 @@ function safeNextPath(next: string | null, role: DemoUserRole) {
   if (role === "mentor" && next.startsWith("/mentor")) {
     return next;
   }
+  if (
+    role === "university-admin" &&
+    next.startsWith("/university-admin")
+  ) {
+    return next;
+  }
   return getRoleLandingPath(role);
 }
 
@@ -55,7 +62,17 @@ function DemoAccountButton({
   );
   if (!user) return null;
   const Icon =
-    role === "founder" ? BriefcaseBusiness : GraduationCap;
+    role === "founder"
+      ? BriefcaseBusiness
+      : role === "mentor"
+        ? GraduationCap
+        : Building2;
+  const label =
+    role === "founder"
+      ? "Founder"
+      : role === "mentor"
+        ? "Mentor"
+        : "University Admin";
   return (
     <button
       type="button"
@@ -63,6 +80,7 @@ function DemoAccountButton({
       aria-pressed={selected}
       className={cn(
         "flex min-h-20 min-w-0 w-full items-start gap-3 rounded-xl border p-3 text-left transition-colors",
+        role === "university-admin" && "col-span-2 min-h-16",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
         selected
           ? "border-primary bg-primary/10 text-foreground"
@@ -74,11 +92,17 @@ function DemoAccountButton({
       </span>
       <span className="min-w-0">
         <span className="block text-sm font-semibold text-foreground">
-          {role === "founder" ? "Founder" : "Mentor"}
+          {label}
         </span>
-        <span className="mt-1 block truncate text-xs">
-          {user.email}
-        </span>
+        {role === "university-admin" ? (
+          <span className="mt-1 block truncate text-xs">
+            Quản trị chương trình · {user.email}
+          </span>
+        ) : (
+          <span className="mt-1 block truncate text-xs">
+            {user.email}
+          </span>
+        )}
       </span>
     </button>
   );
@@ -195,6 +219,11 @@ export function DemoAuthEntryPage({
               role="mentor"
               selected={role === "mentor"}
               onSelect={() => selectRole("mentor")}
+            />
+            <DemoAccountButton
+              role="university-admin"
+              selected={role === "university-admin"}
+              onSelect={() => selectRole("university-admin")}
             />
           </div>
 

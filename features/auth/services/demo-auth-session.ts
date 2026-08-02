@@ -17,7 +17,8 @@ function isDemoAuthSession(value: unknown): value is DemoAuthSession {
     typeof session.user?.email === "string" &&
     typeof session.user?.name === "string" &&
     (session.user?.role === "founder" ||
-      session.user?.role === "mentor")
+      session.user?.role === "mentor" ||
+      session.user?.role === "university-admin")
   );
 }
 

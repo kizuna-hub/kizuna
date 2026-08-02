@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck:university-admin": "tsc -p tsconfig.university-admin.json --pretty false",
     "test:decision-loop": "node scripts/test-decision-loop.mjs",
-    "test:unit": "node --loader ./scripts/typescript-test-loader.mjs --test features/auth/tests/demo-auth.test.ts features/founder/ai-workspace/tests/readiness-followups.test.ts",
+    "test:unit": "node --loader ./scripts/typescript-test-loader.mjs --test features/auth/tests/demo-auth.test.ts features/founder/ai-workspace/tests/readiness-followups.test.ts features/university-admin/tests/university-admin-selectors.test.ts features/university-admin/mentor-connections/tests/mentor-connection.test.ts features/university-admin/lecturer-mentors/tests/lecturer-mentor.test.ts",
     "test:integration": "node --loader ./scripts/typescript-test-loader.mjs --test features/demo-domain/tests/demo-domain-repository.test.ts features/demo-domain/tests/founder-mentor-vertical-slice.integration.test.ts"
   },
   "dependencies": {

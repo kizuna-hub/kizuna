@@ -224,23 +224,23 @@ export function ProjectCardActions({
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
       >
-        <AlertDialogContent className="gap-3 rounded-xl border-workspace-border bg-workspace-elevated p-4 text-ink shadow-framer-edge sm:max-w-sm">
-          <AlertDialogHeader className="gap-1.5">
-            <AlertDialogTitle className="text-base">
+        <AlertDialogContent className="gap-2.5 rounded-xl border-workspace-border bg-workspace-elevated p-3.5 text-ink shadow-framer-edge sm:max-w-xs">
+          <AlertDialogHeader className="gap-1">
+            <AlertDialogTitle className="text-sm">
               Xóa “{projectName}”?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-xs leading-5 text-workspace-muted-text">
+            <AlertDialogDescription className="text-[11px] leading-4 text-workspace-muted-text">
               Dự án này và dữ liệu demo liên quan sẽ bị xóa khỏi
               workspace. Hành động này không thể hoàn tác.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="mt-1">
-            <AlertDialogCancel className="h-9 px-4 text-xs">
+          <AlertDialogFooter className="mt-0.5 gap-1.5">
+            <AlertDialogCancel className="h-8 px-3 text-[11px]">
               Hủy
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={onDelete}
-              className="h-9 px-4 text-xs"
+              className="h-8 bg-[var(--color-primary-action)] px-3 text-[11px] text-[var(--color-on-primary)] hover:bg-[var(--color-primary-action-hover)] active:bg-[var(--color-primary-action-active)]"
             >
               Xóa dự án
             </AlertDialogAction>

@@ -25,6 +25,12 @@ export const DEMO_AUTH_USERS: readonly DemoAuthUser[] = [
     name: "Trần Minh Quân",
     role: "mentor",
   },
+  {
+    id: "university-admin-nguyen-thu-ha",
+    email: "admin@demo.kizuna.vn",
+    name: "Nguyễn Thu Hà",
+    role: "university-admin",
+  },
 ] as const;
 
 export class DemoAuthError extends Error {
@@ -87,9 +93,9 @@ export function validateDemoRegistration(
 }
 
 export function getRoleLandingPath(role: DemoAuthUser["role"]) {
-  return role === "founder"
-    ? "/founder/projects"
-    : "/mentor/dashboard/requests";
+  if (role === "founder") return "/founder/projects";
+  if (role === "mentor") return "/mentor/dashboard/requests";
+  return "/university-admin";
 }
 
 export interface DemoAuthRepository {

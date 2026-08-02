@@ -1,4 +1,7 @@
-export type DemoUserRole = "founder" | "mentor";
+export type DemoUserRole =
+  | "founder"
+  | "mentor"
+  | "university-admin";
 
 export interface DemoAuthUser {
   id: string;

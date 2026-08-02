@@ -415,6 +415,62 @@
    UTILITY LAYER
    ═══════════════════════════════════════════════════════════════════ */
 @layer components {
+  .university-admin-theme {
+    --admin-background: #F5F7FB;
+    --admin-surface: #FFFFFF;
+    --admin-surface-muted: #F4F7FC;
+    --admin-border: #DCE4EF;
+    --admin-text: #102344;
+    --admin-muted: #65738C;
+    --admin-sidebar: #052653;
+    --admin-sidebar-muted: #B9CBE5;
+    --admin-sidebar-hover: #0A417F;
+    --admin-sidebar-active: #0D5DB8;
+    --admin-primary: #1268DD;
+    --admin-primary-hover: #0D55BA;
+    --admin-blue-soft: #E8F1FF;
+    --admin-green: #18A66A;
+    --admin-green-soft: #E5F7EF;
+    --admin-orange: #F07A19;
+    --admin-orange-soft: #FFF0E3;
+    --admin-purple: #8A4DE8;
+    --admin-purple-soft: #F1EAFE;
+    --admin-red: #D84A4A;
+    --admin-red-soft: #FDEAEA;
+    --admin-cyan: #18A2B8;
+    --admin-cyan-soft: #E2F7FA;
+    --admin-shadow: 0 8px 24px rgba(31, 56, 92, 0.06);
+    color: var(--admin-text);
+    background: var(--admin-background);
+  }
+
+  html[data-appearance='dark'] .university-admin-theme {
+    --admin-background: #08111F;
+    --admin-surface: #0E1A2B;
+    --admin-surface-muted: #142238;
+    --admin-border: #263750;
+    --admin-text: #EDF4FF;
+    --admin-muted: #9AABC4;
+    --admin-sidebar: #031A3A;
+    --admin-sidebar-muted: #B4C7E2;
+    --admin-sidebar-hover: #0A356A;
+    --admin-sidebar-active: #0D4F9E;
+    --admin-primary: #4B91F1;
+    --admin-primary-hover: #68A3F4;
+    --admin-blue-soft: #132C50;
+    --admin-green: #51C58C;
+    --admin-green-soft: #123A2C;
+    --admin-orange: #F3A24F;
+    --admin-orange-soft: #412A14;
+    --admin-purple: #AA7AF0;
+    --admin-purple-soft: #2E2047;
+    --admin-red: #EF7777;
+    --admin-red-soft: #441F26;
+    --admin-cyan: #55C5D4;
+    --admin-cyan-soft: #123640;
+    --admin-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+  }
+
   /*
    * Founder Workspace density compositions
    *

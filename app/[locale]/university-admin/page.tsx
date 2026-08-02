@@ -1,5 +1,5 @@
-import { UniversityAdminScreen } from "@/features/university-admin/university-admin-screen";
+import { UniversityAdminOverviewScreen } from "@/features/university-admin/screens/university-admin-overview-screen";
 
 export default function UniversityAdminPage() {
-  return <UniversityAdminScreen />;
+  return <UniversityAdminOverviewScreen />;
 }

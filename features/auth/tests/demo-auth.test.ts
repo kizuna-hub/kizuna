@@ -38,6 +38,11 @@ test("exact demo accounts authenticate and route by role", () => {
     password: DEMO_PASSWORD,
     role: "mentor",
   });
+  const universityAdmin = authenticateDemoUser({
+    email: "admin@demo.kizuna.vn",
+    password: DEMO_PASSWORD,
+    role: "university-admin",
+  });
 
   assert.equal(founder.name, "Nguyễn Tuấn Ngọc");
   assert.equal(
@@ -48,6 +53,10 @@ test("exact demo accounts authenticate and route by role", () => {
   assert.equal(
     getRoleLandingPath(mentor.role),
     "/mentor/dashboard/requests",
+  );
+  assert.equal(
+    getRoleLandingPath(universityAdmin.role),
+    "/university-admin",
   );
 });
 
