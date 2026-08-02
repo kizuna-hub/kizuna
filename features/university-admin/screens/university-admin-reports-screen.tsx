@@ -263,7 +263,7 @@ export function UniversityAdminReportsScreen() {
                     label="Venture hoạt động"
                     value="24"
                     trend="14%"
-                    icon={BarChart3}
+                    icon="chart"
                     tone="blue"
                   />
                   <KpiCard
@@ -271,21 +271,21 @@ export function UniversityAdminReportsScreen() {
                     value="18"
                     suffix="/24"
                     trend="8%"
-                    icon={CalendarCheck2}
+                    icon="calendar-check"
                     tone="green"
                   />
                   <KpiCard
                     label="Đang cần hỗ trợ"
                     value="7"
                     trend="2"
-                    icon={FileBarChart2}
+                    icon="file-chart"
                     tone="orange"
                   />
                   <KpiCard
                     label="Kết nối được chấp nhận"
                     value="12"
                     trend="20%"
-                    icon={CalendarCheck2}
+                    icon="calendar-check"
                     tone="purple"
                   />
                 </div>

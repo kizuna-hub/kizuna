@@ -1,5 +1,5 @@
-import { PortfolioScreen } from "@/features/investor/portfolio/portfolio-screen";
+import { notFound } from "next/navigation";
 
-export default function PortfolioPage() {
-  return <PortfolioScreen />;
+export default function RetiredInvestorPortfolioPage() {
+  notFound();
 }

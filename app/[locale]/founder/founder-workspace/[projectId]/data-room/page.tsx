@@ -1,11 +1,18 @@
-import { DataRoomScreen } from "@/features/founder/founder-workspace/data-room/data-room-screen";
+import { redirect } from "next/navigation";
 
-export default async function DataRoomPage({
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
+export default async function LegacyDataRoomPage({
   params,
 }: {
-  params: Promise<{ projectId: string }>;
+  params: Promise<{ locale: string; projectId: string }>;
 }) {
-  const { projectId } = await params;
-
-  return <DataRoomScreen projectId={projectId} />;
+  const { locale, projectId } = await params;
+  redirect(
+    resolveLegacyFounderWorkspaceRoute({
+      locale,
+      projectId,
+      section: "data-room",
+    }),
+  );
 }

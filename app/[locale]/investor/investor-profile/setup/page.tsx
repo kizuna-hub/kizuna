@@ -1,5 +1,5 @@
-import { InvestorProfileSetupScreen } from "@/features/investor/investor-profile/investor-profile-setup-screen";
+import { notFound } from "next/navigation";
 
-export default function InvestorProfileSetupPage() {
-  return <InvestorProfileSetupScreen />;
+export default function RetiredInvestorProfileSetupPage() {
+  notFound();
 }

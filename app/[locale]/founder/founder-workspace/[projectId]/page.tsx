@@ -1,16 +1,12 @@
 import { redirect } from "next/navigation";
 
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
 export default async function FounderWorkspaceOverviewPage({
   params,
 }: {
   params: Promise<{ locale: string; projectId: string }>;
 }) {
   const { locale, projectId } = await params;
-  const legacyProjectMap: Record<string, string> = {
-    p1: "venture-kizuna-hub",
-    p2: "venture-snapmoney",
-  };
-  const ventureId = legacyProjectMap[projectId] ?? projectId;
-
-  redirect(`/${locale}/founder/projects/${ventureId}`);
+  redirect(resolveLegacyFounderWorkspaceRoute({ locale, projectId }));
 }

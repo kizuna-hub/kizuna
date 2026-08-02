@@ -1,5 +1,18 @@
-import { CapTableScreen } from "@/features/founder/founder-workspace/cap-table/cap-table-screen";
+import { redirect } from "next/navigation";
 
-export default function CapTablePage() {
-  return <CapTableScreen />;
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
+export default async function LegacyCapTablePage({
+  params,
+}: {
+  params: Promise<{ locale: string; projectId: string }>;
+}) {
+  const { locale, projectId } = await params;
+  redirect(
+    resolveLegacyFounderWorkspaceRoute({
+      locale,
+      projectId,
+      section: "cap-table",
+    }),
+  );
 }

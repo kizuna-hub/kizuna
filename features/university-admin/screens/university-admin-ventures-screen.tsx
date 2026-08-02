@@ -122,28 +122,28 @@ export function UniversityAdminVenturesScreen() {
           label="Tổng số venture"
           value="24"
           trend="14%"
-          icon={Rocket}
+          icon="rocket"
           tone="blue"
         />
         <KpiCard
           label="Cần hỗ trợ"
           value="7"
           trend="2"
-          icon={CircleAlert}
+          icon="alert"
           tone="orange"
         />
         <KpiCard
           label="Đã kết nối mentor"
           value="12"
           trend="20%"
-          icon={Handshake}
+          icon="handshake"
           tone="green"
         />
         <KpiCard
           label="Đang hoạt động"
           value="18"
           trend="8%"
-          icon={Activity}
+          icon="activity"
           tone="purple"
         />
       </section>
@@ -207,4 +207,3 @@ export function UniversityAdminVenturesScreen() {
     </div>
   );
 }
-

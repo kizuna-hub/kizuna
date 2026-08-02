@@ -1,5 +1,5 @@
-import { InvestorDashboardScreen } from "@/features/investor/dashboard/investor-dashboard-screen";
+import { notFound } from "next/navigation";
 
-export default function InvestorDashboardPage() {
-  return <InvestorDashboardScreen />;
+export default function RetiredInvestorDashboardPage() {
+  notFound();
 }

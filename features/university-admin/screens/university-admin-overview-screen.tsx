@@ -1,11 +1,4 @@
 import {
-  Activity,
-  CheckSquare2,
-  CircleAlert,
-  Handshake,
-} from "lucide-react";
-
-import {
   ActiveVentureLineChart,
   BottlenecksChart,
   ReadinessDistributionChart,
@@ -84,7 +77,7 @@ export function UniversityAdminOverviewScreen() {
           label="Venture hoạt động"
           value="24"
           trend="14%"
-          icon={Activity}
+          icon="activity"
           tone="blue"
         />
         <KpiCard
@@ -92,21 +85,21 @@ export function UniversityAdminOverviewScreen() {
           value="18"
           suffix="/24"
           trend="8%"
-          icon={CheckSquare2}
+          icon="square-check"
           tone="green"
         />
         <KpiCard
           label="Đang cần hỗ trợ"
           value="7"
           trend="2"
-          icon={CircleAlert}
+          icon="alert"
           tone="orange"
         />
         <KpiCard
           label="Kết nối được chấp nhận"
           value="12"
           trend="20%"
-          icon={Handshake}
+          icon="handshake"
           tone="purple"
         />
       </section>

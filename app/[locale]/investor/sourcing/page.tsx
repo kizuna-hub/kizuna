@@ -1,5 +1,5 @@
-import { SourcingScreen } from "@/features/investor/sourcing/sourcing-screen";
+import { notFound } from "next/navigation";
 
-export default function SourcingPage() {
-  return <SourcingScreen />;
+export default function RetiredInvestorSourcingPage() {
+  notFound();
 }

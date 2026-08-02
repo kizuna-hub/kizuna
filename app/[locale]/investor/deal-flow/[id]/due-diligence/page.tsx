@@ -1,15 +1,5 @@
-import DueDiligenceTerminal from '@/components/investor/investor-dashboard/due-diligence-terminal';
+import { notFound } from "next/navigation";
 
-interface Props {
-    params: { id: string };
-}
-
-export default function DDPage({ params }: Props) {
-    return <DueDiligenceTerminal dealId={params.id} />;
-}
-
-export function generateMetadata({ params }: Props) {
-    return {
-        title: `Due Diligence — ${params.id} · Kizuna Hub`,
-    };
+export default function RetiredInvestorDueDiligencePage() {
+  notFound();
 }

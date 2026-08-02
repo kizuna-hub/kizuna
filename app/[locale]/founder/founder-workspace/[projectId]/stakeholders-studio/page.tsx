@@ -1,5 +1,18 @@
-import { StakeholdersStudioScreen } from "@/features/founder/founder-workspace/stakeholders-studio/stakeholders-studio-screen";
+import { redirect } from "next/navigation";
 
-export default function StakeholdersStudioPage() {
-  return <StakeholdersStudioScreen />;
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
+export default async function LegacyStakeholdersStudioPage({
+  params,
+}: {
+  params: Promise<{ locale: string; projectId: string }>;
+}) {
+  const { locale, projectId } = await params;
+  redirect(
+    resolveLegacyFounderWorkspaceRoute({
+      locale,
+      projectId,
+      section: "stakeholders-studio",
+    }),
+  );
 }

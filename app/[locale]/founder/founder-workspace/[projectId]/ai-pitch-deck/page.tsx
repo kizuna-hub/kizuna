@@ -1,11 +1,18 @@
-import { AiPitchDeckScreen } from "@/features/founder/founder-workspace/ai-pitch-deck/ai-pitch-deck-screen";
+import { redirect } from "next/navigation";
 
-export default async function AiPitchDeckPage({
+import { resolveLegacyFounderWorkspaceRoute } from "@/features/founder/venture-foundation/legacy-founder-workspace-route";
+
+export default async function LegacyAiPitchDeckPage({
   params,
 }: {
-  params: Promise<{ projectId: string }>;
+  params: Promise<{ locale: string; projectId: string }>;
 }) {
-  const { projectId } = await params;
-
-  return <AiPitchDeckScreen projectId={projectId} />;
+  const { locale, projectId } = await params;
+  redirect(
+    resolveLegacyFounderWorkspaceRoute({
+      locale,
+      projectId,
+      section: "ai-pitch-deck",
+    }),
+  );
 }
