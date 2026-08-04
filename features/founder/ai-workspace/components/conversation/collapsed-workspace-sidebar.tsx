@@ -1,11 +1,12 @@
 import {
   ArrowLeft,
-  BrainCircuit,
+  BookOpen,
+  Clock3,
   FileText,
-  MessageSquarePlus,
-  Network,
+  HeartHandshake,
   PanelLeftOpen,
-  Search,
+  Send,
+  UsersRound,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -16,56 +17,72 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Link } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
 
 import type { AiWorkspaceCopy } from "../../copy/types";
+import type { WorkspaceDestination } from "../../types/workspace-layout.types";
 
-function SidebarIconButton({
-  label,
-  icon,
-  onClick,
-}: {
+const destinationIcons: Array<{
+  destination: WorkspaceDestination;
   label: string;
-  icon: React.ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="size-9"
-          aria-label={label}
-          onClick={onClick}
-        >
-          {icon}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent side="right">{label}</TooltipContent>
-    </Tooltip>
-  );
-}
+  icon: typeof UsersRound;
+}> = [
+  {
+    destination: "mentor_discovery",
+    label: "Mentor phù hợp",
+    icon: UsersRound,
+  },
+  {
+    destination: "connection_requests",
+    label: "Yêu cầu kết nối",
+    icon: Send,
+  },
+  {
+    destination: "venture_brief",
+    label: "Venture Brief",
+    icon: FileText,
+  },
+  {
+    destination: "documents",
+    label: "Tài liệu",
+    icon: BookOpen,
+  },
+  {
+    destination: "conversation_history",
+    label: "Lịch sử trao đổi",
+    icon: Clock3,
+  },
+];
 
 export function CollapsedWorkspaceSidebar({
   user,
   copy,
+  destination,
   onNavigate,
-  onCreateConversation,
-  onOpenSearch,
-  onOpenSurface,
+  onDestinationChange,
   onToggleCollapsed,
+  hasAcceptedMentorConnection,
 }: {
   user: { name: string; avatarUrl?: string };
   copy: AiWorkspaceCopy["longRun"];
+  destination: WorkspaceDestination;
   onNavigate?: () => void;
-  onCreateConversation: () => void;
-  onOpenSearch: () => void;
-  onOpenSurface: (
-    surface: "memory" | "documents" | "pinned",
+  onDestinationChange: (
+    destination: WorkspaceDestination,
   ) => void;
   onToggleCollapsed?: () => void;
+  hasAcceptedMentorConnection: boolean;
 }) {
+  const visibleDestinationIcons = hasAcceptedMentorConnection
+    ? [
+        {
+          destination: "mentorship_continuity" as const,
+          label: "Đồng hành",
+          icon: HeartHandshake,
+        },
+        ...destinationIcons,
+      ]
+    : destinationIcons;
   return (
     <div className="flex h-full flex-col items-center bg-workspace-sidebar px-2 py-2.5">
       <Tooltip>
@@ -88,6 +105,7 @@ export function CollapsedWorkspaceSidebar({
           {copy.sidebar.expand}
         </TooltipContent>
       </Tooltip>
+
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
@@ -99,7 +117,7 @@ export function CollapsedWorkspaceSidebar({
           >
             <Link
               href="/founder/projects"
-              aria-label={copy.sidebar.backToProjects}
+              aria-label="Quay lại Projects"
               onClick={onNavigate}
             >
               <ArrowLeft className="size-4" />
@@ -107,38 +125,51 @@ export function CollapsedWorkspaceSidebar({
           </Button>
         </TooltipTrigger>
         <TooltipContent side="right">
-          {copy.sidebar.backToProjects}
+          Quay lại Projects
         </TooltipContent>
       </Tooltip>
-      <div className="mt-2 flex flex-1 flex-col items-center gap-1">
-        <SidebarIconButton
-          label={copy.sidebar.newConversation}
-          icon={<MessageSquarePlus className="size-4" />}
-          onClick={onCreateConversation}
-        />
-        <SidebarIconButton
-          label={copy.sidebar.searchVenture}
-          icon={<Search className="size-4" />}
-          onClick={onOpenSearch}
-        />
-        <SidebarIconButton
-          label={copy.conversation.memory}
-          icon={<BrainCircuit className="size-4" />}
-          onClick={() => onOpenSurface("memory")}
-        />
-        <SidebarIconButton
-          label={copy.sidebar.materials}
-          icon={<FileText className="size-4" />}
-          onClick={() => onOpenSurface("documents")}
-        />
-        <SidebarIconButton
-          label={copy.sidebar.network}
-          icon={<Network className="size-4" />}
-          onClick={() => onOpenSurface("pinned")}
-        />
-      </div>
+
+      <nav
+        aria-label="Điều hướng workspace CampusFlow"
+        className="mt-2 flex flex-1 flex-col items-center gap-1"
+      >
+        {visibleDestinationIcons.map((item) => {
+          const Icon = item.icon;
+          const active = item.destination === destination;
+          return (
+            <Tooltip key={item.destination}>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className={cn(
+                    "size-9",
+                    active && "bg-primary-soft text-primary",
+                  )}
+                  aria-label={item.label}
+                  aria-current={active ? "page" : undefined}
+                  onClick={() =>
+                    onDestinationChange(item.destination)
+                  }
+                >
+                  <Icon className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                {item.label}
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
+      </nav>
+
       <div className="w-full">
-        <WorkspaceUserFooter user={user} collapsed />
+        <WorkspaceUserFooter
+          user={user}
+          roleLabel="Founder"
+          collapsed
+        />
       </div>
     </div>
   );

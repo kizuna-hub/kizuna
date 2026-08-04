@@ -20,13 +20,22 @@ import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 
 import { ConversationWorkspaceView } from "../components/conversation/conversation-workspace-view";
+import { ConversationSessionHeader } from "../conversation-history/components/conversation-session-header";
+import { ConversationSessionLibrary } from "../conversation-history/components/conversation-session-library";
+import { getConversationPlaceholder } from "../conversation-history/services/conversation-session-selector";
+import type { FounderConversationSessionType } from "../conversation-history/types/conversation-session.types";
 import { DecisionCycleCanvas } from "../components/decision-cycle/decision-cycle-canvas";
 import { SecondaryPane } from "../components/secondary-pane/secondary-pane";
 import { WorkspaceActionBar } from "../components/workspace/workspace-action-bar";
+import {
+  ConnectionRequestsWorkspaceView,
+  MentorDiscoveryWorkspaceView,
+} from "../components/workspace/mentor-first-destination-view";
 import { aiWorkspaceVi } from "../copy/vi";
 import { useAiWorkspace } from "../hooks/use-ai-workspace";
 import { useConversationSearchController } from "../hooks/use-conversation-search-controller";
 import type { ReadinessCriterionId } from "../readiness/types/readiness.types";
+import { MentorshipContinuityOverview } from "../mentorship-continuity/components/mentorship-continuity-overview";
 
 type AiWorkspaceController = ReturnType<typeof useAiWorkspace>;
 
@@ -37,6 +46,11 @@ export function AiWorkspaceBody({
   onJumpHandled,
   overlayOpen,
   onOpenArtifact,
+  onOpenHistorySession,
+  onBackToHistory,
+  onCreateHistorySession,
+  onNavigateToMentorDiscovery,
+  showLegacyConversation = false,
 }: {
   workspace: AiWorkspaceController;
   onOpenSearch: () => void;
@@ -46,6 +60,13 @@ export function AiWorkspaceBody({
   onOpenArtifact: (
     surface: "documents" | "timeline",
   ) => void;
+  onOpenHistorySession: (sessionId: string) => void;
+  onBackToHistory: () => void;
+  onCreateHistorySession: (
+    type: FounderConversationSessionType,
+  ) => void;
+  onNavigateToMentorDiscovery: () => void;
+  showLegacyConversation?: boolean;
 }) {
   const [cycleReviewing, setCycleReviewing] =
     React.useState(false);
@@ -119,15 +140,71 @@ export function AiWorkspaceBody({
   const createNewChat = () => {
     if (newChatGuardRef.current) return;
     newChatGuardRef.current = true;
-    workspace.createConversation();
+    if (layout.destination === "conversation_history") {
+      onCreateHistorySession("mentor_matching");
+    } else {
+      workspace.createConversation();
+    }
     setComposerFocusKey((current) => current + 1);
     window.setTimeout(() => {
       newChatGuardRef.current = false;
     }, 350);
   };
 
+  const historySession = workspace.activeHistorySession;
+  const historyLibrary = (
+    <ConversationSessionLibrary
+      sessions={workspace.conversationHistorySessions}
+      selectedSessionId={layout.selectedHistorySessionId}
+      query={layout.conversationHistorySearch}
+      filter={layout.conversationHistoryFilter}
+      scrollTop={layout.conversationHistoryScrollTop}
+      onQueryChange={workspace.setConversationHistorySearch}
+      onFilterChange={workspace.setConversationHistoryFilter}
+      onScrollPositionChange={
+        workspace.saveConversationHistoryScroll
+      }
+      onOpenSession={onOpenHistorySession}
+      onTogglePin={workspace.toggleConversationPin}
+      onCreateSession={onCreateHistorySession}
+    />
+  );
   const mainContent =
-    state.view === "conversation" ? (
+    layout.destination === "mentorship_continuity" ? (
+      <MentorshipContinuityOverview
+        workspace={workspace}
+        onNavigateToMentorDiscovery={onNavigateToMentorDiscovery}
+      />
+    ) : layout.destination === "mentor_discovery" ? (
+      <MentorDiscoveryWorkspaceView workspace={workspace} />
+    ) : layout.destination === "connection_requests" ? (
+      <ConnectionRequestsWorkspaceView workspace={workspace} />
+    ) : state.view === "decision-cycle" ? (
+      <DecisionCycleCanvas
+        state={state}
+        copy={copy}
+        onBack={() => workspace.setView("conversation")}
+        onSelectStep={workspace.setCycleStep}
+        onToggleTask={workspace.toggleCycleTask}
+        onSubmitEvidence={workspace.submitCycleEvidence}
+        onCompleteReview={async () => {
+          if (cycleReviewing) return;
+          setCycleReviewing(true);
+          await new Promise((resolve) =>
+            window.setTimeout(resolve, 650),
+          );
+          workspace.completeCycleReview();
+          setCycleReviewing(false);
+        }}
+        reviewing={cycleReviewing}
+      />
+    ) : layout.destination === "conversation_history" &&
+      !showLegacyConversation &&
+      layout.conversationHistoryView === "session_library" ? (
+      historyLibrary
+    ) : layout.destination === "conversation_history" &&
+      !showLegacyConversation &&
+      historySession ? (
       <ConversationWorkspaceView
         workspace={workspace}
         generating={generating}
@@ -163,26 +240,67 @@ export function AiWorkspaceBody({
         onOpenMentor={workspace.openMentorFit}
         onOpenArtifact={onOpenArtifact}
         onOpenReadiness={openReadiness}
+        composerPlaceholder={getConversationPlaceholder(
+          historySession.historyType,
+        )}
+        header={
+          <ConversationSessionHeader
+            session={historySession}
+            panelOpen={layout.secondaryPaneMode !== "closed"}
+            onBack={onBackToHistory}
+            onTogglePin={() =>
+              workspace.toggleConversationPin(historySession.id)
+            }
+            onOpenContext={() =>
+              workspace.openConversationHistorySession(
+                historySession.id,
+              )
+            }
+          />
+        }
       />
     ) : (
-      <DecisionCycleCanvas
-        state={state}
-        copy={copy}
-        onBack={() => workspace.setView("conversation")}
-        onSelectStep={workspace.setCycleStep}
-        onToggleTask={workspace.toggleCycleTask}
-        onSubmitEvidence={workspace.submitCycleEvidence}
-        onCompleteReview={async () => {
-          if (cycleReviewing) return;
-          setCycleReviewing(true);
-          await new Promise((resolve) =>
-            window.setTimeout(resolve, 650),
-          );
-          workspace.completeCycleReview();
-          setCycleReviewing(false);
-        }}
-        reviewing={cycleReviewing}
-      />
+      layout.destination === "conversation_history" &&
+      !showLegacyConversation ? (
+        historyLibrary
+      ) : (
+        <ConversationWorkspaceView
+          workspace={workspace}
+          generating={generating}
+          composerFocusKey={composerFocusKey}
+          searchOpen={search.open}
+          searchQuery={search.query}
+          activeMatchIndex={search.activeMatchIndex}
+          matchCount={search.matches.length}
+          activeMatchMessageId={search.activeMatchMessageId}
+          pinnedSourceIds={pinnedSourceIds}
+          topicDriftDismissed={search.topicDriftDismissed}
+          requestedScroll={search.scrollRestoreRequest}
+          onSearchQueryChange={search.setQuery}
+          onPreviousMatch={() =>
+            search.setActiveMatchIndex((current) =>
+              search.matches.length === 0
+                ? 0
+                : (current - 1 + search.matches.length) %
+                  search.matches.length,
+            )
+          }
+          onNextMatch={() =>
+            search.setActiveMatchIndex((current) =>
+              search.matches.length === 0
+                ? 0
+                : (current + 1) % search.matches.length,
+            )
+          }
+          onCloseSearch={search.closeCurrentSearch}
+          onDismissTopicDrift={() =>
+            search.setTopicDriftDismissed(true)
+          }
+          onOpenMentor={workspace.openMentorFit}
+          onOpenArtifact={onOpenArtifact}
+          onOpenReadiness={openReadiness}
+        />
+      )
     );
 
   const paneOpen = layout.secondaryPaneMode !== "closed";

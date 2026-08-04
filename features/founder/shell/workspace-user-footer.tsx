@@ -18,6 +18,11 @@ import {
   UserPlus,
 } from "lucide-react";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -30,12 +35,15 @@ import { useRouter } from "@/i18n/routing";
 
 export interface WorkspaceUserFooterProps {
   user?: { name: string; avatarUrl?: string };
+  roleLabel?: string;
   workspaceName?: string;
   collapsed?: boolean;
   onTrashClick?: () => void;
 }
 
 export function WorkspaceUserFooter({
+  user,
+  roleLabel,
   workspaceName = "knkidngoc's workspace",
   collapsed = false,
   onTrashClick,
@@ -142,9 +150,15 @@ export function WorkspaceUserFooter({
               className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-workspace-row-hover focus-visible:outline-none"
               aria-label="Workspace options"
             >
-              <span className="flex size-7 items-center justify-center rounded-full border border-primary-border bg-primary-muted text-xs font-bold text-primary-text">
-                K
-              </span>
+              <Avatar className="size-7 border border-primary-border">
+                <AvatarImage
+                  src={user?.avatarUrl}
+                  alt={user?.name ?? "Người dùng"}
+                />
+                <AvatarFallback className="bg-primary-muted text-xs font-bold text-primary-text">
+                  {user?.name?.charAt(0) ?? "K"}
+                </AvatarFallback>
+              </Avatar>
             </button>
           </DropdownMenuTrigger>
           {renderDropdownMenuContent()}
@@ -152,14 +166,16 @@ export function WorkspaceUserFooter({
 
         <ThemeMenu collapsed />
 
-        <button
-          type="button"
-          onClick={onTrashClick}
-          className="flex size-8 items-center justify-center rounded-lg text-workspace-muted-text transition-colors hover:bg-workspace-row-hover hover:text-ink focus-visible:outline-none"
-          aria-label="Delete"
-        >
-          <Trash2 className="size-4" />
-        </button>
+        {onTrashClick ? (
+          <button
+            type="button"
+            onClick={onTrashClick}
+            className="flex size-8 items-center justify-center rounded-lg text-workspace-muted-text transition-colors hover:bg-workspace-row-hover hover:text-ink focus-visible:outline-none"
+            aria-label="Xóa"
+          >
+            <Trash2 className="size-4" />
+          </button>
+        ) : null}
       </div>
     );
   }
@@ -173,11 +189,24 @@ export function WorkspaceUserFooter({
             className="flex min-w-0 flex-1 items-center justify-between gap-1.5 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-workspace-row-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/40"
           >
             <div className="flex min-w-0 items-center gap-2">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-primary-border bg-primary-muted text-xs font-bold text-primary-text">
-                K
-              </span>
-              <span className="truncate text-sm font-medium text-ink">
-                knkidngoc&apos;...
+              <Avatar className="size-7 shrink-0 border border-primary-border">
+                <AvatarImage
+                  src={user?.avatarUrl}
+                  alt={user?.name ?? "Người dùng"}
+                />
+                <AvatarFallback className="bg-primary-muted text-xs font-bold text-primary-text">
+                  {user?.name?.charAt(0) ?? "K"}
+                </AvatarFallback>
+              </Avatar>
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-medium text-ink">
+                  {user?.name ?? "Nguyen Tuan Ngoc"}
+                </span>
+                {roleLabel ? (
+                  <span className="block truncate workspace-meta text-workspace-muted-text">
+                    {roleLabel}
+                  </span>
+                ) : null}
               </span>
             </div>
             <ChevronsUpDown className="size-3.5 shrink-0 text-workspace-muted-text opacity-70" />
@@ -189,14 +218,16 @@ export function WorkspaceUserFooter({
       <div className="flex shrink-0 items-center gap-0.5">
         <ThemeMenu />
 
-        <button
-          type="button"
-          aria-label="Delete"
-          onClick={onTrashClick}
-          className="flex size-8 items-center justify-center rounded-lg text-workspace-muted-text transition-colors hover:bg-workspace-row-hover hover:text-ink focus-visible:outline-none"
-        >
-          <Trash2 className="size-4" />
-        </button>
+        {onTrashClick ? (
+          <button
+            type="button"
+            aria-label="Xóa"
+            onClick={onTrashClick}
+            className="flex size-8 items-center justify-center rounded-lg text-workspace-muted-text transition-colors hover:bg-workspace-row-hover hover:text-ink focus-visible:outline-none"
+          >
+            <Trash2 className="size-4" />
+          </button>
+        ) : null}
       </div>
     </div>
   );
