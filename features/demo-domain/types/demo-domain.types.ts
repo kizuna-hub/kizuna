@@ -1,3 +1,14 @@
+import type {
+  AttachMentorshipEvidenceInput,
+  CreateMentorshipCheckpointInput,
+  MentorshipCheckpoint,
+  MentorshipEvidenceReference,
+  MentorshipJourneySummary,
+  MentorshipPreRead,
+  UpdateMentorshipCheckpointResultInput,
+  UpsertMentorshipPreReadInput,
+} from "./mentorship-continuity.types";
+
 export type DemoDomainRequestStatus =
   | "pending"
   | "viewed"
@@ -131,7 +142,7 @@ export interface DemoDomainConnectionRequest {
 }
 
 export interface DemoDomainState {
-  version: 1;
+  version: 2;
   revision: number;
   users: DemoDomainUser[];
   founderProfiles: DemoFounderProfile[];
@@ -140,6 +151,10 @@ export interface DemoDomainState {
   evidence: DemoDomainEvidence[];
   ventures: DemoDomainVenture[];
   connectionRequests: DemoDomainConnectionRequest[];
+  mentorshipJourneys: MentorshipJourneySummary[];
+  mentorshipCheckpoints: MentorshipCheckpoint[];
+  mentorshipEvidence: MentorshipEvidenceReference[];
+  mentorshipPreReads: MentorshipPreRead[];
   updatedAt: string;
 }
 
@@ -174,6 +189,34 @@ export interface DemoDomainRepository {
       "id" | "requestId" | "mentorId" | "acceptedAt"
     >,
   ): DemoDomainConnectionRequest;
+  getMentorshipJourney(
+    ventureId: string,
+  ): MentorshipJourneySummary | null;
+  listMentorshipCheckpoints(
+    ventureId: string,
+  ): MentorshipCheckpoint[];
+  getMentorshipCheckpoint(
+    checkpointId: string,
+  ): MentorshipCheckpoint | null;
+  createMentorshipCheckpoint(
+    input: CreateMentorshipCheckpointInput,
+  ): MentorshipCheckpoint;
+  updateMentorshipCheckpointResult(
+    input: UpdateMentorshipCheckpointResultInput,
+  ): MentorshipCheckpoint;
+  getMentorshipEvidence(
+    checkpointId: string,
+  ): MentorshipEvidenceReference[];
+  attachMentorshipEvidence(
+    input: AttachMentorshipEvidenceInput,
+  ): MentorshipEvidenceReference[];
+  getMentorshipPreRead(
+    checkpointId: string,
+  ): MentorshipPreRead | null;
+  createOrUpdateMentorshipPreRead(
+    input: UpsertMentorshipPreReadInput,
+  ): MentorshipPreRead;
+  sendMentorshipPreRead(preReadId: string): MentorshipPreRead;
   subscribe(listener: (state: DemoDomainState) => void): () => void;
   destroy(): void;
 }

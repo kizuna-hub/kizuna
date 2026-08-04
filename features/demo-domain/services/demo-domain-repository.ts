@@ -3,6 +3,7 @@ import {
   DEMO_DOMAIN_CHANNEL_NAME,
   DEMO_DOMAIN_STORAGE_KEY,
 } from "../seed/demo-domain-seed";
+import { seedAcceptedMentorshipJourneys } from "../seed/mentorship-continuity-seed";
 import type {
   ConnectionBriefSnapshot,
   DemoDomainConnectionRequest,
@@ -13,6 +14,7 @@ import type {
   DemoDomainVenture,
   DemoDomainDocument,
 } from "../types/demo-domain.types";
+import { createMentorshipContinuityRepositoryMethods } from "./mentorship-continuity-repository";
 
 const REQUEST_ID = "request-campusflow";
 const ACCEPTED_AT = "2026-07-30T03:20:00.000Z";
@@ -31,11 +33,20 @@ export class DemoConnectionRequestNotFoundError extends Error {
   }
 }
 
-function isState(value: unknown): value is DemoDomainState {
+function isLegacyState(
+  value: unknown,
+): value is Omit<
+  DemoDomainState,
+  | "version"
+  | "mentorshipJourneys"
+  | "mentorshipCheckpoints"
+  | "mentorshipEvidence"
+  | "mentorshipPreReads"
+> & { version: 1 | 2 } {
   if (!value || typeof value !== "object") return false;
-  const state = value as Partial<DemoDomainState>;
+  const state = value as Record<string, unknown>;
   return (
-    state.version === 1 &&
+    (state.version === 1 || state.version === 2) &&
     typeof state.revision === "number" &&
     Array.isArray(state.users) &&
     Array.isArray(state.founderProfiles) &&
@@ -53,9 +64,32 @@ export function parseDemoDomainState(
   if (!serialized) return createDemoDomainSeed();
   try {
     const parsed: unknown = JSON.parse(serialized);
-    return isState(parsed)
-      ? structuredClone(parsed)
-      : createDemoDomainSeed();
+    if (!isLegacyState(parsed)) return createDemoDomainSeed();
+    const candidate = parsed as Partial<DemoDomainState>;
+    return {
+      ...structuredClone(parsed),
+      version: 2,
+      mentorshipJourneys: Array.isArray(
+        candidate.mentorshipJourneys,
+      )
+        ? structuredClone(candidate.mentorshipJourneys)
+        : [],
+      mentorshipCheckpoints: Array.isArray(
+        candidate.mentorshipCheckpoints,
+      )
+        ? structuredClone(candidate.mentorshipCheckpoints)
+        : [],
+      mentorshipEvidence: Array.isArray(
+        candidate.mentorshipEvidence,
+      )
+        ? structuredClone(candidate.mentorshipEvidence)
+        : [],
+      mentorshipPreReads: Array.isArray(
+        candidate.mentorshipPreReads,
+      )
+        ? structuredClone(candidate.mentorshipPreReads)
+        : [],
+    };
   } catch {
     return createDemoDomainSeed();
   }
@@ -134,6 +168,15 @@ export function createBrowserDemoDomainRepository({
   let state = parseDemoDomainState(
     storage.getItem(DEMO_DOMAIN_STORAGE_KEY),
   );
+  const seededState = seedAcceptedMentorshipJourneys(state);
+  if (seededState !== state) {
+    state = {
+      ...seededState,
+      revision: state.revision + 1,
+      updatedAt: new Date().toISOString(),
+    };
+    storage.setItem(DEMO_DOMAIN_STORAGE_KEY, JSON.stringify(state));
+  }
   const listeners = new Set<(next: DemoDomainState) => void>();
   const channel =
     !broadcastEnabled ||
@@ -160,7 +203,7 @@ export function createBrowserDemoDomainRepository({
     const latest = readLatest();
     state = {
       ...structuredClone(next),
-      version: 1,
+      version: 2,
       revision: latest.revision + 1,
       updatedAt: new Date().toISOString(),
     };
@@ -197,6 +240,12 @@ export function createBrowserDemoDomainRepository({
     if (!request) throw new DemoConnectionRequestNotFoundError();
     return request;
   };
+
+  const mentorshipMethods =
+    createMentorshipContinuityRepositoryMethods({
+      readLatest,
+      commit,
+    });
 
   return {
     getSnapshot() {
@@ -329,14 +378,18 @@ export function createBrowserDemoDomainRepository({
         updatedAt: ACCEPTED_AT,
       };
       const current = readLatest();
-      commit({
+      commit(
+        seedAcceptedMentorshipJourneys({
         ...current,
         connectionRequests: current.connectionRequests.map((item) =>
           item.id === requestId ? accepted : item,
         ),
-      });
+        }),
+      );
       return structuredClone(accepted);
     },
+
+    ...mentorshipMethods,
 
     subscribe(listener) {
       listeners.add(listener);

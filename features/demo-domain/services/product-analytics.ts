@@ -12,7 +12,18 @@ export type ProductEventName =
   | "connection_request_sent"
   | "mentor_request_opened"
   | "mentor_request_accepted"
-  | "founder_acceptance_viewed";
+  | "founder_acceptance_viewed"
+  | "mentorship_destination_opened"
+  | "mentorship_checkpoint_capture_opened"
+  | "mentorship_checkpoint_saved"
+  | "mentorship_result_update_opened"
+  | "mentorship_result_saved"
+  | "mentorship_evidence_attached"
+  | "mentorship_pre_read_opened"
+  | "mentorship_pre_read_saved"
+  | "mentorship_pre_read_sent"
+  | "mentorship_checkpoint_history_opened"
+  | "mentorship_specialist_mentor_requested";
 
 export interface ProductEvent {
   name: ProductEventName;
