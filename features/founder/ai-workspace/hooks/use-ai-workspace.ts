@@ -52,7 +52,10 @@ import {
   toFounderConnectionRequest,
 } from "../mentor-connection/services/shared-demo-mentor-connection";
 import { createBrowserDemoDomainRepository } from "@/features/demo-domain/services/demo-domain-repository";
-import type { DemoDomainRepository } from "@/features/demo-domain/types/demo-domain.types";
+import type {
+  DemoDomainRepository,
+  DemoDomainState,
+} from "@/features/demo-domain/types/demo-domain.types";
 import { trackProductEvent } from "@/features/demo-domain/services/product-analytics";
 import {
   refreshMentorConnectionBrief,
@@ -84,6 +87,18 @@ import type {
   VentureSearchResult,
 } from "../types/long-run-workspace.types";
 import type { WorkspaceOnboardingState } from "../types/workspace-onboarding.types";
+import type { WorkspaceDestination } from "../types/workspace-layout.types";
+import {
+  conversationSessionTypeLabels,
+  type ConversationSessionFilter,
+  type FounderConversationSessionType,
+} from "../conversation-history/types/conversation-session.types";
+import {
+  getConversationHistoryPaneMode,
+  getConversationSuggestedPrompts,
+  selectMentorConversationSessions,
+} from "../conversation-history/services/conversation-session-selector";
+import { useMentorshipContinuity } from "../mentorship-continuity/hooks/use-mentorship-continuity";
 
 const legacyScenarioIds = new Set<AiWorkspaceScenarioId>([
   "onboarding-case-study",
@@ -119,6 +134,17 @@ function wait(durationMs: number, signal?: AbortSignal) {
 
 const THINKING_DURATION_MS = 3_000;
 const THINKING_DURATION_SECONDS = 3;
+const conversationHistoryPaneModes = new Set([
+  "mentor_fit",
+  "mentor_sources",
+  "mentor_comparison",
+  "session_preparation",
+  "mentor_questions",
+  "checkpoint_capture",
+  "checkpoint_update",
+  "checkpoint_detail",
+  "pre_read",
+]);
 
 async function waitForMinimumThinking(
   startedAt: number,
@@ -216,6 +242,10 @@ export function useAiWorkspace(ventureId: string) {
     undefined,
     createWorkspaceLayoutState,
   );
+  const [demoDomainState, setDemoDomainState] =
+    React.useState<DemoDomainState | null>(null);
+  const [demoDomainHydrated, setDemoDomainHydrated] =
+    React.useState(false);
   const [onboarding, setOnboarding] =
     React.useState<WorkspaceOnboardingState>({
       source: "conversation",
@@ -327,11 +357,16 @@ export function useAiWorkspace(ventureId: string) {
   React.useEffect(() => {
     const repository = createBrowserDemoDomainRepository();
     sharedDemoRepositoryRef.current = repository;
-    const syncRequest = () => {
+    const syncRequest = (nextState?: DemoDomainState) => {
+      const snapshot = nextState ?? repository.getSnapshot();
+      setDemoDomainState((current) =>
+        current?.revision === snapshot.revision
+          ? current
+          : snapshot,
+      );
+      setDemoDomainHydrated(true);
       const local = stateRef.current.mentorConnectionRequest;
-      const shared = repository
-        .getSnapshot()
-        .connectionRequests.find(
+      const shared = snapshot.connectionRequests.find(
           (request) => request.ventureId === ventureId,
         );
       if (!shared) return;
@@ -1170,7 +1205,14 @@ export function useAiWorkspace(ventureId: string) {
   const createConversation = React.useCallback(
     (
       title = "Cuộc trò chuyện mới",
-      options: { activate?: boolean } = {},
+      options: {
+        activate?: boolean;
+        historyType?: FounderConversationSessionType;
+        mentorIds?: string[];
+        sourceIds?: string[];
+        preview?: string;
+        initialMessage?: string;
+      } = {},
     ) => {
       const surface =
         options.activate === false ? "panel" : "main";
@@ -1194,12 +1236,28 @@ export function useAiWorkspace(ventureId: string) {
         isPinned: false,
         isArchived: false,
         summaryStatus: "none",
+        historyType: options.historyType,
+        preview: options.preview,
+        mentorIds: options.mentorIds,
+        sourceIds: options.sourceIds,
+        contextSnapshot: options.historyType
+          ? {
+              ventureName: "CampusFlow",
+              ventureStage: "Prototype",
+              currentSupportNeed:
+                "Làm rõ outcome cần mở khóa cùng mentor.",
+              selectedMentorIds: options.mentorIds ?? [],
+              sourceIds: options.sourceIds ?? [],
+              capturedAt: new Date().toISOString(),
+            }
+          : undefined,
       };
       const messages: AiWorkspaceMessage[] = [
         {
           id: `assistant-${id}`,
           role: "assistant",
           content:
+            options.initialMessage ??
             "Cuộc trò chuyện mới đã sẵn sàng. Kizuna vẫn dùng context đã xác nhận của CampusFlow mà không sao chép toàn bộ lịch sử chat.",
           createdAt: new Date().toISOString(),
           status: "complete",
@@ -1222,6 +1280,95 @@ export function useAiWorkspace(ventureId: string) {
       return id;
     },
     [invalidateActiveRequest, ventureId],
+  );
+
+  const openConversationHistorySession = React.useCallback(
+    (conversationId: string) => {
+      const current = longRunRef.current;
+      const session = current.sessions.find(
+        (item) =>
+          item.id === conversationId &&
+          !item.isArchived &&
+          Boolean(item.historyType),
+      );
+      if (!session?.historyType) return false;
+
+      invalidateActiveRequest();
+      const messages =
+        current.messagesByConversation[conversationId] ?? [];
+      dispatchLongRun({
+        type: "select-conversation",
+        conversationId,
+      });
+      dispatch({ type: "replace-messages", messages });
+      dispatch({
+        type: "set-suggested-prompts",
+        prompts: getConversationSuggestedPrompts(session.historyType),
+      });
+      const mentorId = session.mentorIds?.[0];
+      if (mentorId) {
+        dispatch({ type: "select-mentor", mentorId });
+      }
+      dispatchLayout({
+        type: "open-conversation-history-session",
+        sessionId: conversationId,
+        secondaryPaneMode: getConversationHistoryPaneMode(
+          session.historyType,
+        ),
+        mentorId,
+      });
+      setSelectedContextSourceIds([]);
+      return true;
+    },
+    [invalidateActiveRequest],
+  );
+
+  const showConversationHistoryLibrary = React.useCallback(() => {
+    invalidateActiveRequest();
+    dispatchLayout({ type: "show-conversation-history-library" });
+  }, [invalidateActiveRequest]);
+
+  const createMentorConversationSession = React.useCallback(
+    (type: FounderConversationSessionType) => {
+      const mentorIds =
+        type === "mentor_profile"
+          ? ["mentor-pham-thu-ha"]
+          : type === "mentor_comparison"
+            ? ["mentor-tran-minh-quan", "mentor-pham-thu-ha"]
+            : ["mentor-tran-minh-quan"];
+      const sourceIds =
+        type === "mentor_profile"
+          ? ["mentor-ha-kizuna-profile", "mentor-ha-self-declared"]
+          : ["campusflow-venture-brief"];
+      const id = createConversation(
+        `${conversationSessionTypeLabels[type]} · CampusFlow`,
+        {
+          historyType: type,
+          mentorIds,
+          sourceIds,
+          preview: "Cuộc trao đổi mới theo context hiện tại của CampusFlow.",
+          initialMessage:
+            "Cuộc trao đổi đã sẵn sàng. Kizuna sẽ giữ cuộc trò chuyện trong đúng context mentor và Venture Brief hiện tại của CampusFlow.",
+        },
+      );
+      if (!id) return undefined;
+      const mentorId = mentorIds[0];
+      if (mentorId) {
+        dispatch({ type: "select-mentor", mentorId });
+      }
+      dispatch({
+        type: "set-suggested-prompts",
+        prompts: getConversationSuggestedPrompts(type),
+      });
+      dispatchLayout({
+        type: "open-conversation-history-session",
+        sessionId: id,
+        secondaryPaneMode: getConversationHistoryPaneMode(type),
+        mentorId,
+      });
+      return id;
+    },
+    [createConversation],
   );
 
   const openConversationInPanel = React.useCallback(
@@ -1566,6 +1713,16 @@ export function useAiWorkspace(ventureId: string) {
       (session) =>
         session.id === longRun.activeConversationId,
     ) ?? longRun.sessions[0];
+  const conversationHistorySessions = React.useMemo(
+    () => selectMentorConversationSessions(longRun.sessions),
+    [longRun.sessions],
+  );
+  const activeHistorySession = layout.selectedHistorySessionId
+    ? conversationHistorySessions.find(
+        (session) =>
+          session.id === layout.selectedHistorySessionId,
+      )
+    : undefined;
   const panelConversation = layout.panelConversationId
     ? longRun.sessions.find(
         (session) =>
@@ -1854,8 +2011,52 @@ export function useAiWorkspace(ventureId: string) {
     });
   }, [layout.selectedMentorId]);
 
+  const setWorkspaceDestination = React.useCallback(
+    (destination: WorkspaceDestination) => {
+      dispatchLayout({ type: "set-destination", destination });
+    },
+    [],
+  );
+  const mentorship = useMentorshipContinuity({
+    ventureId,
+    domainState: demoDomainState,
+    repositoryRef: sharedDemoRepositoryRef,
+    layout,
+    dispatchLayout,
+    setDomainState: setDemoDomainState,
+  });
+  const setConversationHistorySearch = React.useCallback(
+    (query: string) =>
+      dispatchLayout({
+        type: "set-conversation-history-search",
+        query,
+      }),
+    [],
+  );
+  const setConversationHistoryFilter = React.useCallback(
+    (filter: ConversationSessionFilter) =>
+      dispatchLayout({
+        type: "set-conversation-history-filter",
+        filter,
+      }),
+    [],
+  );
+  const saveConversationHistoryScroll = React.useCallback(
+    (scrollTop: number) =>
+      dispatchLayout({
+        type: "save-conversation-history-scroll",
+        scrollTop,
+      }),
+    [],
+  );
+
   React.useEffect(() => {
-    if (layout.secondaryPaneMode !== "mentor_fit") return;
+    if (
+      !layout.secondaryPaneMode ||
+      !conversationHistoryPaneModes.has(layout.secondaryPaneMode)
+    ) {
+      return;
+    }
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) {
         return;
@@ -1872,9 +2073,13 @@ export function useAiWorkspace(ventureId: string) {
     state,
     longRun,
     layout,
+    demoDomainHydrated,
+    ...mentorship,
     onboarding,
     hydrated,
     activeSession,
+    activeHistorySession,
+    conversationHistorySessions,
     activeSummary,
     panelConversation,
     panelMessages: panelConversation
@@ -1883,6 +2088,10 @@ export function useAiWorkspace(ventureId: string) {
           panelConversation.id,
         )
       : [],
+    setWorkspaceDestination,
+    openConversationHistorySession,
+    showConversationHistoryLibrary,
+    createMentorConversationSession,
     panelDraft: panelConversation
       ? (longRun.draftsByConversation[panelConversation.id] ?? "")
       : "",
@@ -2119,6 +2328,9 @@ export function useAiWorkspace(ventureId: string) {
         type: "toggle-conversation-pin",
         conversationId,
       }),
+    setConversationHistorySearch,
+    setConversationHistoryFilter,
+    saveConversationHistoryScroll,
     archiveConversation,
     setDraft: (draft: string) =>
       dispatchLongRun({

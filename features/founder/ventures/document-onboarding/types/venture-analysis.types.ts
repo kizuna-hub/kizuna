@@ -91,6 +91,18 @@ export interface VentureReadinessBaseline {
   recommendedNextStep: string;
 }
 
+export interface MentorFirstAnalysisCompletion {
+  ventureName: string;
+  ventureStage: string;
+  ventureCategory: string;
+  ventureSummary: string;
+  currentSupportNeed: string;
+  expectedOutcome: string;
+  mentorTopics: string[];
+  analyzedDocuments: string[];
+  evidenceSummary: string;
+}
+
 export interface VentureAnalysisResult {
   runId: string;
   detectedContext: DetectedVentureContext;
@@ -98,6 +110,7 @@ export interface VentureAnalysisResult {
   documentOutcomes: StartupDocumentOutcome[];
   signals: VentureSignalPreview[];
   evidence: VentureEvidenceReference[];
+  mentorFirstCompletion: MentorFirstAnalysisCompletion;
   readiness: VentureReadinessBaseline;
 }
 

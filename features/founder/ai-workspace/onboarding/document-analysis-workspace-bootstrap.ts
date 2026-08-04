@@ -323,9 +323,13 @@ export function createDocumentAnalysisWorkspaceBootstrap(
   input: DocumentAnalysisWorkspaceBootstrapInput,
 ): DocumentAnalysisWorkspaceBootstrap {
   const message = firstMessage(input);
-  const aiState = createAiWorkspaceScenarioState(
+  const materialState = createAiWorkspaceScenarioState(
     input.ventureId,
     "materials",
+  );
+  const mentorState = createAiWorkspaceScenarioState(
+    input.ventureId,
+    "mentor",
   );
   const longRun = onboardingLongRunState(input, message);
   const attachments = input.documents.map((document) => ({
@@ -337,7 +341,7 @@ export function createDocumentAnalysisWorkspaceBootstrap(
     status: "ready" as const,
   }));
   const state = {
-    ...aiState,
+    ...mentorState,
     messages: [message],
     attachments,
     suggestedPrompts: [
@@ -347,11 +351,22 @@ export function createDocumentAnalysisWorkspaceBootstrap(
       "Tìm mentor phù hợp",
     ],
     materialAnalysis: {
-      ...aiState.materialAnalysis!,
+      ...materialState.materialAnalysis!,
       fileNames: input.documents.map(
         (document) => document.name,
       ),
     },
+  };
+  const primaryMentorId =
+    state.mentorRecommendation?.selectedMentorId;
+  const layout = {
+    ...createWorkspaceLayoutState(),
+    destination: "mentor_discovery" as const,
+    secondaryPaneMode: primaryMentorId
+      ? ("mentor_fit" as const)
+      : ("closed" as const),
+    secondaryPaneWidth: 42,
+    selectedMentorId: primaryMentorId,
   };
 
   return {
@@ -360,11 +375,11 @@ export function createDocumentAnalysisWorkspaceBootstrap(
     session: toPersistedSession(
       state,
       longRun,
-      createWorkspaceLayoutState(),
+      layout,
       {
         source: "document_analysis",
         analysisRunId: input.analysisRunId,
-        initialAnalysisPaneShown: false,
+        initialAnalysisPaneShown: true,
       },
     ),
   };
@@ -377,14 +392,39 @@ export function serializeAiWorkspaceBootstrap(
   const envelope = parseAiWorkspaceEnvelope(rawValue);
   const existing =
     envelope.sessions[bootstrap.ventureId]?.onboarding;
+  const existingSession =
+    envelope.sessions[bootstrap.ventureId];
   if (
     existing?.analysisRunId ===
       bootstrap.session.onboarding?.analysisRunId &&
-    envelope.sessions[bootstrap.ventureId]?.longRun?.sessions.some(
+    existingSession?.longRun?.sessions.some(
       (session) =>
         session.id === bootstrap.conversationId,
     )
   ) {
+    const alreadyMentorFirst =
+      existingSession.layout?.destination ===
+        "mentor_discovery" &&
+      existingSession.layout.secondaryPaneMode ===
+        "mentor_fit" &&
+      existingSession.onboarding?.initialAnalysisPaneShown ===
+        true &&
+      Boolean(existingSession.mentorRecommendation);
+    if (alreadyMentorFirst) {
+      return JSON.stringify(envelope);
+    }
+
+    envelope.sessions[bootstrap.ventureId] = {
+      ...existingSession,
+      activeScenarioId: bootstrap.session.activeScenarioId,
+      materialAnalysis:
+        existingSession.materialAnalysis ??
+        bootstrap.session.materialAnalysis,
+      mentorRecommendation:
+        bootstrap.session.mentorRecommendation,
+      layout: bootstrap.session.layout,
+      onboarding: bootstrap.session.onboarding,
+    };
     return JSON.stringify(envelope);
   }
   envelope.sessions[bootstrap.ventureId] =

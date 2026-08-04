@@ -10,6 +10,7 @@ import type {
   TimelineEvent,
   VentureMemoryItem,
 } from "../types/long-run-workspace.types";
+import { ensureCampusFlowMentorConversationHistory } from "../conversation-history/data/mentor-conversation-session-seed";
 
 const NOW = "2026-07-27T09:45:00.000Z";
 
@@ -819,7 +820,7 @@ export function createLongRunDemoState(
 ): LongRunWorkspaceState {
   const sessions = createSessions(ventureId);
   const activationMessages = createLongConversationMessages();
-  return {
+  return ensureCampusFlowMentorConversationHistory({
     ventureId,
     stateVersion: 1,
     sessions,
@@ -886,5 +887,6 @@ export function createLongRunDemoState(
     materialVersions: createMaterials(ventureId),
     summaries: [createSummary(ventureId)],
     conflicts: [createConflict(ventureId)],
-  };
+    conversationSources: [],
+  });
 }

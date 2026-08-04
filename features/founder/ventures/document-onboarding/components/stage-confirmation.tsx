@@ -25,8 +25,8 @@ export function StageConfirmation({
             Kizuna chưa xác định chắc chắn giai đoạn venture
           </h3>
           <p className="mt-1 workspace-meta text-workspace-muted-text">
-            Xác nhận giai đoạn trước khi tạo readiness
-            baseline.
+            Xác nhận giai đoạn để Kizuna hoàn thiện Venture Brief
+            và chuẩn bị mentor matching.
           </p>
         </div>
       </div>

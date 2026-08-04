@@ -297,6 +297,9 @@ export function longRunWorkspaceReducer(
           session.id === action.conversationId
             ? {
                 ...session,
+                preview:
+                  action.messages.at(-1)?.content.slice(0, 180) ??
+                  session.preview,
                 updatedAt:
                   action.messages.at(-1)?.createdAt ??
                   session.updatedAt,

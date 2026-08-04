@@ -316,7 +316,18 @@ export function completeDocumentOnboarding(
       documents: input.sourceDocuments,
       evidence: input.analysisResult.evidence,
     });
-  const workspacePath = `/founder/projects/${created.ventureId}/workspace?conversation=${aiWorkspaceBootstrap.conversationId}`;
+  const primaryMentorId =
+    aiWorkspaceBootstrap.session.mentorRecommendation
+      ?.selectedMentorId;
+  const workspaceQuery = new URLSearchParams({
+    conversation: aiWorkspaceBootstrap.conversationId,
+    destination: "mentor_discovery",
+    panel: "mentor_detail",
+  });
+  if (primaryMentorId) {
+    workspaceQuery.set("mentor", primaryMentorId);
+  }
+  const workspacePath = `/founder/projects/${created.ventureId}/workspace?${workspaceQuery.toString()}`;
   const demoDomainBootstrap: CampusFlowDomainBootstrap = {
     venture: {
       id: created.ventureId,

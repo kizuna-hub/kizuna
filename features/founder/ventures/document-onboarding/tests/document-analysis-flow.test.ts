@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createCampusFlowAnalysisResult } from "../demo/campusflow-analysis-demo-data";
+import {
+  CAMPUSFLOW_ANALYSIS_STEP_DEFINITIONS,
+  createCampusFlowAnalysisResult,
+} from "../demo/campusflow-analysis-demo-data";
 import { runMockVentureDocumentAnalysis } from "../services/mock-venture-document-analysis-service";
 import {
   createInitialVentureAnalysisState,
@@ -70,7 +73,7 @@ test("analysis reducer keeps progress monotonic and ignores stale runs", () => {
   ]);
 });
 
-test("mock service advances all six stages in deterministic order", async () => {
+test("mock service advances all six Mentor-first stages in deterministic order", async () => {
   const activated: VentureAnalysisStepId[] = [];
   const completed: VentureAnalysisStepId[] = [];
   const response = await runMockVentureDocumentAnalysis({
@@ -88,13 +91,30 @@ test("mock service advances all six stages in deterministic order", async () => 
   assert.equal(response.status, "completed");
   assert.equal(activated.length, 6);
   assert.deepEqual(completed, activated);
+  assert.deepEqual(
+    CAMPUSFLOW_ANALYSIS_STEP_DEFINITIONS.map(
+      (step) => step.label,
+    ),
+    [
+      "Đã nhận tài liệu",
+      "Đọc nội dung chính",
+      "Tạo Venture Brief",
+      "Xác định giai đoạn và bằng chứng",
+      "Xác định nhu cầu cần hỗ trợ",
+      "Chuẩn bị mentor matching",
+    ],
+  );
   if (response.status === "completed") {
     assert.equal(response.result.readiness.score, 65);
     assert.equal(response.result.evidence.length, 4);
+    assert.equal(
+      response.result.mentorFirstCompletion.ventureStage,
+      "Prototype",
+    );
   }
 });
 
-test("stage uncertainty pauses before readiness is created", async () => {
+test("stage uncertainty pauses before the support need is prepared", async () => {
   const completed: VentureAnalysisStepId[] = [];
   const response = await runMockVentureDocumentAnalysis({
     runId: "run-stage",
@@ -148,11 +168,40 @@ test("CampusFlow result supports one-file analysis", () => {
   assert.equal(result.sourceDocuments.length, 1);
   assert.equal(result.evidence.length, 3);
   assert.equal(result.readiness.score, 65);
+  assert.deepEqual(
+    result.mentorFirstCompletion.analyzedDocuments,
+    ["CampusFlow-PitchDeck-v2.pdf"],
+  );
   assert.equal(
     result.signals.some(
       (signal) =>
         signal.documentRole === "business_plan",
     ),
     false,
+  );
+});
+
+test("completion exposes Mentor-first content without deriving it from readiness scores", () => {
+  const result = createCampusFlowAnalysisResult({
+    runId: "run-completion",
+    documents,
+  });
+
+  assert.equal(
+    result.mentorFirstCompletion.ventureName,
+    "CampusFlow",
+  );
+  assert.equal(
+    result.mentorFirstCompletion.ventureStage,
+    "Prototype",
+  );
+  assert.deepEqual(result.mentorFirstCompletion.mentorTopics, [
+    "Pilot design",
+    "Product validation",
+    "Customer discovery",
+  ]);
+  assert.deepEqual(
+    result.mentorFirstCompletion.analyzedDocuments,
+    documents.map((document) => document.name),
   );
 });

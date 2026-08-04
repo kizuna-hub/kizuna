@@ -24,6 +24,8 @@ export function AnalysisCompleteCard({
   onReviewFiles: () => void;
   onReanalyze: () => void;
 }) {
+  const completion = result.mentorFirstCompletion;
+
   return (
     <section
       aria-labelledby="analysis-complete-heading"
@@ -32,24 +34,29 @@ export function AnalysisCompleteCard({
       <span className="flex size-10 items-center justify-center rounded-full border border-workspace-success/40 bg-workspace-success-soft text-workspace-success">
         <Check className="size-5" />
       </span>
+      <p className="sr-only" role="status" aria-live="polite">
+        Phân tích hoàn tất. {completion.ventureName} đã sẵn sàng tìm
+        mentor phù hợp.
+      </p>
       <h2
         id="analysis-complete-heading"
         tabIndex={-1}
         className="mt-4 workspace-page-title text-ink focus:outline-none"
       >
-        Phân tích ban đầu đã sẵn sàng
+        Đã sẵn sàng tìm mentor phù hợp
       </h2>
       <p className="mt-2 workspace-supporting text-workspace-muted-text">
-        Kizuna đã chuẩn bị đủ context để bạn bắt đầu làm
-        rõ quyết định tiếp theo trong workspace.
+        Kizuna đã đọc tài liệu của {completion.ventureName}, tạo
+        Venture Brief và xác định nhu cầu hỗ trợ ở giai đoạn hiện tại.
       </p>
 
       <ul className="mt-4 grid gap-2 sm:grid-cols-2">
         {[
           `Đọc ${result.sourceDocuments.length} tài liệu`,
+          "Đã tạo Venture Brief",
           `Liên kết ${result.evidence.length} bằng chứng chính`,
-          "Tạo readiness baseline",
-          "Chuẩn bị cuộc trò chuyện đầu tiên",
+          "Đã xác định nhu cầu hỗ trợ",
+          "Đã chuẩn bị context matching mentor",
         ].map((item) => (
           <li
             key={item}
@@ -63,27 +70,27 @@ export function AnalysisCompleteCard({
 
       <dl className="mt-4 divide-y divide-workspace-border overflow-hidden rounded-xl border border-workspace-border bg-workspace-elevated">
         <SummaryRow
-          label="Readiness"
-          value={`${result.readiness.score}/100 · ${result.readiness.stageLabel}`}
+          label="Venture Brief"
+          value={`${completion.ventureName} · ${completion.ventureStage} · ${completion.ventureCategory}. ${completion.ventureSummary}`}
         />
         <SummaryRow
-          label="Điểm mạnh"
-          value={`${result.readiness.strongestCriterion.label} · ${result.readiness.strongestCriterion.score}`}
+          label="Nhu cầu hiện tại"
+          value={completion.currentSupportNeed}
         />
         <SummaryRow
-          label="Cần mở khóa"
-          value={`${result.readiness.biggestGap.label} · ${result.readiness.biggestGap.score}`}
+          label="Outcome mong muốn"
+          value={completion.expectedOutcome}
         />
         <SummaryRow
-          label="Bước tiếp theo"
-          value={result.readiness.recommendedNextStep}
+          label="Chủ đề cần mentor hỗ trợ"
+          value={completion.mentorTopics.join(" · ")}
         />
       </dl>
 
       <p className="mt-4 rounded-lg border border-workspace-border bg-workspace-elevated px-3 py-2.5 workspace-meta text-workspace-muted-text">
-        Đây là baseline ban đầu dựa trên tài liệu hiện có.
-        Bạn có thể tiếp tục làm rõ bằng chat, bổ sung evidence
-        hoặc cập nhật tài liệu.
+        Tài liệu đã phân tích: {completion.analyzedDocuments.join(", ")}.
+        {" "}
+        {completion.evidenceSummary}.
       </p>
 
       {workspaceError ? (
@@ -110,7 +117,7 @@ export function AnalysisCompleteCard({
             ? "Đang chuẩn bị workspace…"
             : workspaceError
               ? "Thử lại"
-              : "Vào workspace"}
+              : "Xem mentor phù hợp"}
           <ArrowRight className="size-4" />
         </Button>
         <Button
@@ -120,7 +127,7 @@ export function AnalysisCompleteCard({
           disabled={enteringWorkspace}
         >
           <FileSearch className="size-4" />
-          Xem lại tài liệu
+          Xem lại Venture Brief
         </Button>
         <Button
           type="button"

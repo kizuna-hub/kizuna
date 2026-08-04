@@ -48,7 +48,7 @@ function input() {
   };
 }
 
-test("onboarding atomically creates venture context, evidence, readiness, and first conversation", () => {
+test("onboarding atomically creates venture context, evidence, mentor discovery, and first conversation", () => {
   const result = completeDocumentOnboarding(
     createDemoWorkspaceSeed(),
     input(),
@@ -92,8 +92,29 @@ test("onboarding atomically creates venture context, evidence, readiness, and fi
   assert.equal(
     result.aiWorkspaceBootstrap.session.onboarding
       ?.initialAnalysisPaneShown,
-    false,
+    true,
   );
+  assert.equal(
+    result.aiWorkspaceBootstrap.session.layout?.destination,
+    "mentor_discovery",
+  );
+  assert.equal(
+    result.aiWorkspaceBootstrap.session.layout
+      ?.secondaryPaneMode,
+    "mentor_fit",
+  );
+  assert.equal(
+    result.aiWorkspaceBootstrap.session.layout
+      ?.selectedMentorId,
+    result.aiWorkspaceBootstrap.session.mentorRecommendation
+      ?.selectedMentorId,
+  );
+  assert.match(
+    result.workspacePath,
+    /destination=mentor_discovery/,
+  );
+  assert.match(result.workspacePath, /panel=mentor_detail/);
+  assert.match(result.workspacePath, /mentor=/);
 });
 
 test("replaying the same analysis run does not duplicate venture, evidence, or conversation", () => {
@@ -127,7 +148,7 @@ test("replaying the same analysis run does not duplicate venture, evidence, or c
   );
 });
 
-test("workspace bootstrap persists the one-time analysis marker", () => {
+test("workspace bootstrap persists the Mentor-first destination without revealing readiness analysis", () => {
   const result = completeDocumentOnboarding(
     createDemoWorkspaceSeed(),
     input(),
@@ -142,16 +163,19 @@ test("workspace bootstrap persists the one-time analysis marker", () => {
     restoreWorkspaceOnboardingSession(persisted);
 
   assert.equal(onboarding.source, "document_analysis");
-  assert.equal(onboarding.initialAnalysisPaneShown, false);
+  assert.equal(onboarding.initialAnalysisPaneShown, true);
 
   const firstHydration =
     resolveInitialAnalysisPaneReveal(persisted);
-  assert.equal(firstHydration.shouldReveal, true);
+  assert.equal(firstHydration.shouldReveal, false);
   assert.equal(
     firstHydration.layout.secondaryPaneMode,
-    "analysis",
+    "mentor_fit",
   );
-  assert.equal(firstHydration.layout.analysisTab, "overview");
+  assert.equal(
+    firstHydration.layout.destination,
+    "mentor_discovery",
+  );
   assert.equal(
     firstHydration.onboarding.initialAnalysisPaneShown,
     true,
@@ -166,8 +190,64 @@ test("workspace bootstrap persists the one-time analysis marker", () => {
     resolveInitialAnalysisPaneReveal(consumed);
   assert.equal(secondHydration.shouldReveal, false);
   assert.equal(
+    secondHydration.layout.secondaryPaneMode,
+    "mentor_fit",
+  );
+  assert.equal(
     secondHydration.onboarding.initialAnalysisPaneShown,
     true,
+  );
+});
+
+test("replaying an older document-analysis session migrates its entry state without duplicating chat", () => {
+  const result = completeDocumentOnboarding(
+    createDemoWorkspaceSeed(),
+    input(),
+  );
+  const legacySession = {
+    ...result.aiWorkspaceBootstrap.session,
+    mentorRecommendation: undefined,
+    layout: {
+      ...result.aiWorkspaceBootstrap.session.layout!,
+      destination: "conversation_history" as const,
+      secondaryPaneMode: "analysis" as const,
+    },
+    onboarding: {
+      ...result.aiWorkspaceBootstrap.session.onboarding!,
+      initialAnalysisPaneShown: false,
+    },
+  };
+  const raw = JSON.stringify({
+    version: 9,
+    sessions: {
+      [result.ventureId]: legacySession,
+    },
+  });
+  const migrated = parseAiWorkspaceEnvelope(
+    serializeAiWorkspaceBootstrap(
+      raw,
+      result.aiWorkspaceBootstrap,
+    ),
+  ).sessions[result.ventureId];
+
+  assert.equal(
+    migrated.layout?.destination,
+    "mentor_discovery",
+  );
+  assert.equal(
+    migrated.layout?.secondaryPaneMode,
+    "mentor_fit",
+  );
+  assert.ok(migrated.mentorRecommendation);
+  assert.equal(
+    migrated.longRun?.sessions.length,
+    legacySession.longRun?.sessions.length,
+  );
+  assert.equal(
+    migrated.longRun?.messagesByConversation[
+      result.conversationId
+    ]?.length,
+    1,
   );
 });
 

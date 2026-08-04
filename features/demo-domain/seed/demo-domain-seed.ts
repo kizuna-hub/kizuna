@@ -6,7 +6,7 @@ export const DEMO_DOMAIN_CHANNEL_NAME =
 
 export function createDemoDomainSeed(): DemoDomainState {
   return {
-    version: 1,
+    version: 2,
     revision: 0,
     users: [
       {
@@ -49,6 +49,10 @@ export function createDemoDomainSeed(): DemoDomainState {
     evidence: [],
     ventures: [],
     connectionRequests: [],
+    mentorshipJourneys: [],
+    mentorshipCheckpoints: [],
+    mentorshipEvidence: [],
+    mentorshipPreReads: [],
     updatedAt: "2026-07-30T00:00:00.000Z",
   };
 }

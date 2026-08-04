@@ -3,89 +3,125 @@
 import {
   ArrowLeft,
   BookOpen,
-  MessageSquarePlus,
-  Network,
+  Clock3,
+  FileText,
+  HeartHandshake,
   PanelLeftClose,
-  Pin,
-  Search,
+  Send,
+  UsersRound,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { WorkspaceUserFooter } from "@/features/founder/shell/workspace-user-footer";
-import { getCurrentUser } from "@/features/founder/venture-foundation/demo-repository";
+import {
+  getCurrentUser,
+  getVentureById,
+  getVentureStageLabel,
+} from "@/features/founder/venture-foundation/demo-repository";
 import { useDemoWorkspace } from "@/features/founder/venture-foundation/demo-workspace-provider";
 import { Link } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
 
 import type { AiWorkspaceCopy } from "../../copy/types";
-import type {
-  ConversationSession,
-  PinnedItemReference,
-} from "../../types/long-run-workspace.types";
+import type { WorkspaceDestination } from "../../types/workspace-layout.types";
 import { CollapsedWorkspaceSidebar } from "./collapsed-workspace-sidebar";
-import { ConversationSidebarItem } from "./conversation-sidebar-item";
 
-type SessionGroup = {
+const baseVentureNavigation: Array<{
+  destination: WorkspaceDestination;
   label: string;
-  sessions: ConversationSession[];
-};
+  icon: typeof UsersRound;
+}> = [
+  {
+    destination: "mentor_discovery",
+    label: "Mentor phù hợp",
+    icon: UsersRound,
+  },
+  {
+    destination: "connection_requests",
+    label: "Yêu cầu kết nối",
+    icon: Send,
+  },
+];
+
+const resourceNavigation: Array<{
+  destination: WorkspaceDestination;
+  label: string;
+  icon: typeof UsersRound;
+}> = [
+  {
+    destination: "venture_brief",
+    label: "Venture Brief",
+    icon: FileText,
+  },
+  {
+    destination: "documents",
+    label: "Tài liệu",
+    icon: BookOpen,
+  },
+];
 
 export function WorkspaceSidebar({
+  ventureId,
   collapsed,
+  destination,
   onNavigate,
   onToggleCollapsed,
-  sessions,
-  activeConversationId,
-  pinnedItems,
   copy,
-  onCreateConversation,
-  onOpenSearch,
-  onOpenSurface,
-  onSelectConversation,
-  onRenameConversation,
-  onDeleteConversation,
-  onOpenConversationInPanel,
+  onDestinationChange,
+  hasAcceptedMentorConnection,
 }: {
+  ventureId: string;
   collapsed: boolean;
+  destination: WorkspaceDestination;
   onNavigate?: () => void;
   onToggleCollapsed?: () => void;
-  sessions: SessionGroup[];
-  activeConversationId: string;
-  pinnedItems: PinnedItemReference[];
   copy: AiWorkspaceCopy["longRun"];
-  onCreateConversation: () => void;
-  onOpenSearch: () => void;
-  onOpenSurface: (
-    surface: "memory" | "documents" | "pinned",
+  onDestinationChange: (
+    destination: WorkspaceDestination,
   ) => void;
-  onSelectConversation: (conversationId: string) => void;
-  onRenameConversation: (
-    conversationId: string,
-    title: string,
-  ) => void;
-  onDeleteConversation: (conversationId: string) => void;
-  onOpenConversationInPanel: (
-    conversationId: string,
-  ) => void;
+  hasAcceptedMentorConnection: boolean;
 }) {
   const { state } = useDemoWorkspace();
   const user = getCurrentUser(state);
+  const venture = getVentureById(state, ventureId);
+  const ventureName = venture?.name ?? "CampusFlow";
+  const stageLabel = venture
+    ? getVentureStageLabel(venture)
+    : "Prototype";
+  const ventureNavigation = hasAcceptedMentorConnection
+    ? [
+        {
+          destination: "mentorship_continuity" as const,
+          label: "Đồng hành",
+          icon: HeartHandshake,
+        },
+        ...baseVentureNavigation,
+      ]
+    : baseVentureNavigation;
+
+  const selectDestination = (
+    nextDestination: WorkspaceDestination,
+  ) => {
+    onDestinationChange(nextDestination);
+    onNavigate?.();
+  };
 
   if (collapsed) {
     return (
       <CollapsedWorkspaceSidebar
         user={user}
         copy={copy}
+        destination={destination}
         onNavigate={onNavigate}
-        onCreateConversation={onCreateConversation}
-        onOpenSearch={onOpenSearch}
-        onOpenSurface={onOpenSurface}
+        onDestinationChange={selectDestination}
         onToggleCollapsed={onToggleCollapsed}
+        hasAcceptedMentorConnection={hasAcceptedMentorConnection}
       />
     );
   }
 
   return (
-    <div className="flex h-full min-h-0 w-[248px] flex-col bg-workspace-sidebar">
+    <div className="flex h-full min-h-0 w-full flex-col bg-workspace-sidebar lg:w-[248px]">
       <div className="flex items-center justify-between px-3 pb-2 pt-3">
         <div className="flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-lg border border-primary-border bg-primary-soft font-heading text-sm font-semibold text-primary">
@@ -117,109 +153,102 @@ export function WorkspaceSidebar({
         >
           <Link href="/founder/projects" onClick={onNavigate}>
             <ArrowLeft className="size-4" />
-            {copy.sidebar.backToProjects}
+            Quay lại Projects
           </Link>
         </Button>
-        <Button
-          type="button"
-          className="mt-2 w-full justify-start"
-          onClick={onCreateConversation}
-        >
-          <MessageSquarePlus className="size-4" />
-          {copy.sidebar.newConversation}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="mt-2 w-full justify-start border-workspace-border bg-workspace-panel"
-          onClick={onOpenSearch}
-        >
-          <Search className="size-4" />
-          <span className="min-w-0 flex-1 truncate text-left">
-            {copy.sidebar.searchVenture}
-          </span>
-          <kbd className="workspace-meta text-workspace-muted-text">
-            Ctrl K
-          </kbd>
-        </Button>
+
+        <div className="mt-2 rounded-xl border border-workspace-border bg-workspace-panel px-3 py-2.5">
+          <p className="truncate workspace-card-title text-ink">
+            {ventureName}
+          </p>
+          <p className="mt-0.5 workspace-meta text-workspace-muted-text">
+            {stageLabel}
+          </p>
+        </div>
       </div>
 
-      <div className="no-scrollbar mt-3 min-h-0 flex-1 overflow-y-auto px-2.5 pb-3">
-        {sessions.map((group) =>
-          group.sessions.length > 0 ? (
-            <section key={group.label} className="mb-4">
-              <h2 className="mb-1 px-2 workspace-eyebrow text-workspace-muted-text">
-                {group.label}
-              </h2>
-              <div className="space-y-0.5">
-                {group.sessions.map((session) => (
-                  <ConversationSidebarItem
-                    key={`${group.label}-${session.id}`}
-                    session={session}
-                    active={
-                      session.id === activeConversationId
-                    }
-                    copy={copy}
-                    onSelect={() => {
-                      onSelectConversation(session.id);
-                      onNavigate?.();
-                    }}
-                    onRename={(title) =>
-                      onRenameConversation(session.id, title)
-                    }
-                    onDelete={() =>
-                      onDeleteConversation(session.id)
-                    }
-                    onOpenInPanel={() =>
-                      onOpenConversationInPanel(session.id)
-                    }
-                  />
-                ))}
-              </div>
-            </section>
-          ) : null,
-        )}
+      <nav
+        aria-label="Điều hướng workspace CampusFlow"
+        className="no-scrollbar mt-4 min-h-0 flex-1 overflow-y-auto px-2.5 pb-3"
+      >
+        <SidebarSection
+          label="Không gian venture"
+          items={ventureNavigation}
+          destination={destination}
+          onSelect={selectDestination}
+        />
+        <SidebarSection
+          label="Tài nguyên"
+          items={resourceNavigation}
+          destination={destination}
+          onSelect={selectDestination}
+        />
+        <SidebarSection
+          label="Hỗ trợ"
+          items={[
+            {
+              destination: "conversation_history",
+              label: "Lịch sử trao đổi",
+              icon: Clock3,
+            },
+          ]}
+          destination={destination}
+          onSelect={selectDestination}
+        />
+      </nav>
 
-        <section>
-          <h2 className="mb-1 px-2 workspace-eyebrow text-workspace-muted-text">
-            {copy.sidebar.pinned}
-          </h2>
-          <button
-            type="button"
-            onClick={() => onOpenSurface("pinned")}
-            className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left workspace-control-text text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink"
-          >
-            <Pin className="size-3.5" />
-            <span className="min-w-0 flex-1 truncate">
-              {pinnedItems[0]?.title ?? copy.saved.empty}
-            </span>
-            {pinnedItems.length > 0 ? (
-              <span>{pinnedItems.length}</span>
-            ) : null}
-          </button>
-        </section>
-      </div>
-
-      <div className="space-y-0.5 border-t border-workspace-border px-2.5 py-2">
-        <button
-          type="button"
-          onClick={() => onOpenSurface("documents")}
-          className="flex min-h-9 w-full items-center gap-2 rounded-lg px-2 workspace-control-text text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink"
-        >
-          <BookOpen className="size-4" />
-          {copy.sidebar.materials}
-        </button>
-        <button
-          type="button"
-          onClick={() => onOpenSurface("pinned")}
-          className="flex min-h-9 w-full items-center gap-2 rounded-lg px-2 workspace-control-text text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink"
-        >
-          <Network className="size-4" />
-          {copy.sidebar.network}
-        </button>
-      </div>
-
-      <WorkspaceUserFooter user={user} collapsed={false} />
+      <WorkspaceUserFooter
+        user={user}
+        roleLabel="Founder"
+        collapsed={false}
+      />
     </div>
+  );
+}
+
+function SidebarSection({
+  label,
+  items,
+  destination,
+  onSelect,
+}: {
+  label: string;
+  items: Array<{
+    destination: WorkspaceDestination;
+    label: string;
+    icon: typeof UsersRound;
+  }>;
+  destination: WorkspaceDestination;
+  onSelect: (destination: WorkspaceDestination) => void;
+}) {
+  return (
+    <section className="mb-4">
+      <h2 className="mb-1 px-2 workspace-eyebrow text-workspace-muted-text">
+        {label}
+      </h2>
+      <div className="space-y-0.5">
+        {items.map((item) => {
+          const Icon = item.icon;
+          const active = item.destination === destination;
+          return (
+            <button
+              key={item.destination}
+              type="button"
+              onClick={() => onSelect(item.destination)}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "flex min-h-10 w-full items-center gap-2 rounded-lg px-2.5 text-left workspace-control-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-workspace-focus-ring/50 motion-reduce:transition-none",
+                active
+                  ? "bg-primary-soft text-primary"
+                  : "text-workspace-muted-text hover:bg-workspace-row-hover hover:text-ink",
+              )}
+            >
+              <Icon className="size-4 shrink-0" />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }

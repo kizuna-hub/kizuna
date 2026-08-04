@@ -36,7 +36,9 @@ export function AnalysisSignalPreview({
         </span>
         <div>
           <p className="workspace-eyebrow text-primary">
-            Tài liệu đang phân tích
+            {completed
+              ? "Tài liệu đã phân tích"
+              : "Tài liệu đang phân tích"}
           </p>
           <h2 className="mt-1 workspace-section-title text-ink">
             {ventureName || "CampusFlow"}
@@ -68,7 +70,9 @@ export function AnalysisSignalPreview({
         <div className="flex items-center gap-2">
           <Sparkles className="size-4 text-primary" />
           <h3 className="workspace-card-title text-ink">
-            Tín hiệu ban đầu
+            {completed
+              ? "Context đã trích xuất"
+              : "Tín hiệu ban đầu"}
           </h3>
         </div>
 
@@ -85,7 +89,7 @@ export function AnalysisSignalPreview({
                 <dd
                   className={cn(
                     "mt-1 workspace-supporting text-ink",
-                    signal.id === "signal-gap" &&
+                    signal.id === "signal-support-need" &&
                       "font-medium",
                   )}
                 >

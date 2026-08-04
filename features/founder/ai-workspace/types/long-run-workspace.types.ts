@@ -2,6 +2,11 @@ import type {
   AiWorkspaceMessage,
   MockAttachment,
 } from "./ai-workspace.types";
+import type {
+  ConversationContextSnapshot,
+  FounderConversationSessionType,
+  MentorConversationSource,
+} from "../conversation-history/types/conversation-session.types";
 
 export type ConversationCategory =
   | "general"
@@ -30,6 +35,11 @@ export interface ConversationSession {
   isArchived: boolean;
   summaryStatus: ConversationSummaryStatus;
   unreadUpdateCount?: number;
+  historyType?: FounderConversationSessionType;
+  preview?: string;
+  mentorIds?: string[];
+  sourceIds?: string[];
+  contextSnapshot?: ConversationContextSnapshot;
 }
 
 export type VentureMemoryStatus =
@@ -309,6 +319,7 @@ export interface LongRunWorkspaceState {
   materialVersions: MaterialVersion[];
   summaries: SessionSummary[];
   conflicts: ContextConflict[];
+  conversationSources: MentorConversationSource[];
 }
 
 export type LongRunWorkspaceAction =
