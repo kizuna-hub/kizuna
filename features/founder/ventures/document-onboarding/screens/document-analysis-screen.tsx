@@ -45,6 +45,12 @@ function customizeResult(
       ...result.detectedContext,
       name,
     },
+    mentorFirstCompletion: {
+      ...result.mentorFirstCompletion,
+      ventureName: name,
+      ventureSummary:
+        `${name} là nền tảng giúp các câu lạc bộ onboarding, theo dõi và hỗ trợ thành viên mới trong một quy trình thống nhất. Team hiện đã có prototype, 12 cuộc phỏng vấn và hai câu lạc bộ quan tâm tới pilot.`,
+    },
     signals: result.signals.map((signal) =>
       signal.id === "signal-venture-name"
         ? { ...signal, value: name }
@@ -336,12 +342,12 @@ export function DocumentAnalysisScreen({
             className="mt-1.5 workspace-page-title text-ink focus:outline-none"
           >
             {state.status === "completed"
-              ? "Phân tích CampusFlow đã hoàn tất"
+              ? "Phân tích tài liệu đã hoàn tất"
               : "Đang phân tích tài liệu startup"}
           </h1>
           <p className="mt-1.5 workspace-supporting text-workspace-muted-text">
-            Kizuna đang mô phỏng cách đọc context, liên kết
-            evidence và chuẩn bị workspace.
+            Kizuna đang đọc context, liên kết evidence và chuẩn bị
+            đầu vào để matching mentor.
           </p>
         </div>
         {state.status === "processing" ? (

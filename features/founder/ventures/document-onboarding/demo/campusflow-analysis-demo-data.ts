@@ -20,47 +20,47 @@ export const CAMPUSFLOW_ANALYSIS_STEP_DEFINITIONS: Array<{
     id: "files_received",
     label: "Đã nhận tài liệu",
     description:
-      "Pitch Deck và Business Plan đã sẵn sàng để phân tích.",
+      "Pitch Deck và Business Plan đã sẵn sàng để Kizuna đọc.",
     durationMs: 500,
     completedProgress: 8,
   },
   {
     id: "documents_read",
-    label: "Đọc cấu trúc và nội dung chính",
+    label: "Đọc nội dung chính",
     description:
-      "Đang nhận diện problem, solution, user và các claim quan trọng.",
+      "Kizuna đang đọc cấu trúc, nội dung chính và các tín hiệu quan trọng trong tài liệu.",
     durationMs: 1_200,
     completedProgress: 25,
   },
   {
     id: "venture_context_detected",
-    label: "Xác định venture context",
+    label: "Tạo Venture Brief",
     description:
-      "Đang nhận diện tên venture, giai đoạn và product summary.",
+      "Kizuna đang tổng hợp sản phẩm, nhóm người dùng, giai đoạn và bối cảnh hiện tại của venture.",
     durationMs: 1_200,
     completedProgress: 43,
   },
   {
     id: "evidence_mapped",
-    label: "Liên kết bằng chứng với nguồn",
+    label: "Xác định giai đoạn và bằng chứng",
     description:
-      "Đang xác định file, trang và đoạn nội dung hỗ trợ từng kết luận.",
+      "Kizuna đang liên kết các kết luận với đúng tài liệu và trang nguồn.",
     durationMs: 1_400,
     completedProgress: 63,
   },
   {
     id: "readiness_created",
-    label: "Tạo readiness baseline",
+    label: "Xác định nhu cầu cần hỗ trợ",
     description:
-      "Đang đánh giá mức độ sẵn sàng cho bước kiểm chứng tiếp theo.",
+      "Kizuna đang xác định vấn đề founder cần hỗ trợ và outcome cần hướng tới trong giai đoạn hiện tại.",
     durationMs: 1_400,
     completedProgress: 83,
   },
   {
     id: "workspace_prepared",
-    label: "Chuẩn bị Founder Workspace",
+    label: "Chuẩn bị mentor matching",
     description:
-      "Đang tạo cuộc trò chuyện đầu tiên và phần phân tích tổng quan.",
+      "Kizuna đang đối chiếu bối cảnh venture với chuyên môn và kinh nghiệm của mentor.",
     durationMs: 1_100,
     completedProgress: 100,
   },
@@ -102,7 +102,7 @@ export const campusFlowSignalPreviews: VentureSignalPreview[] = [
   },
   {
     id: "signal-interviews",
-    label: "12 customer interviews",
+    label: "12 cuộc phỏng vấn khách hàng",
     value: "8/12 xác nhận workflow onboarding bị phân tán.",
     sourceLabel: "Pitch Deck · trang 6",
     documentRole: "pitch_deck",
@@ -110,7 +110,7 @@ export const campusFlowSignalPreviews: VentureSignalPreview[] = [
   },
   {
     id: "signal-testers",
-    label: "5 prototype testers",
+    label: "5 người thử prototype",
     value: "4 hoàn thành core flow · 3 quay lại test lần hai.",
     sourceLabel: "Pitch Deck · trang 8",
     documentRole: "pitch_deck",
@@ -118,7 +118,7 @@ export const campusFlowSignalPreviews: VentureSignalPreview[] = [
   },
   {
     id: "signal-pilots",
-    label: "2 pilot interests",
+    label: "2 câu lạc bộ quan tâm tới pilot",
     value: "Hai câu lạc bộ đồng ý trao đổi về pilot.",
     sourceLabel: "Business Plan · trang 11",
     documentRole: "business_plan",
@@ -134,18 +134,18 @@ export const campusFlowSignalPreviews: VentureSignalPreview[] = [
     appearsAfterStepId: "evidence_mapped",
   },
   {
-    id: "signal-stage-calibration",
-    label: "Doanh thu chưa phải điều kiện bắt buộc",
+    id: "signal-support-need",
+    label: "Nhu cầu hỗ trợ hiện tại",
     value:
-      "Ở giai đoạn Prototype, trọng tâm là học hỏi và tín hiệu commitment.",
+      "Biến sự quan tâm của hai câu lạc bộ thành một pilot 14 ngày có phạm vi, success metric và evidence rõ ràng.",
     appearsAfterStepId: "readiness_created",
   },
   {
-    id: "signal-gap",
-    label: "Khoảng trống có thể lớn nhất",
-    value: "Tín hiệu thị trường và commitment",
+    id: "signal-mentor-topics",
+    label: "Chủ đề cần mentor hỗ trợ",
+    value: "Pilot design · Product validation · Customer discovery",
     sourceLabel:
-      "Pilot interest chưa có phạm vi, lịch hoặc success metric được xác nhận.",
+      "Context matching được chuẩn bị từ Venture Brief và bằng chứng đã liên kết.",
     appearsAfterStepId: "readiness_created",
   },
 ];
@@ -257,6 +257,26 @@ export function createCampusFlowAnalysisResult({
       documents,
     ),
     evidence: evidenceForDocuments(documents),
+    mentorFirstCompletion: {
+      ventureName: detectedContext.name,
+      ventureStage: stageLabel,
+      ventureCategory: "Community SaaS",
+      ventureSummary:
+        "CampusFlow là nền tảng giúp các câu lạc bộ onboarding, theo dõi và hỗ trợ thành viên mới trong một quy trình thống nhất. Team hiện đã có prototype, 12 cuộc phỏng vấn và hai câu lạc bộ quan tâm tới pilot.",
+      currentSupportNeed:
+        "Biến sự quan tâm của hai câu lạc bộ thành một pilot 14 ngày có phạm vi, success metric và evidence rõ ràng.",
+      expectedOutcome:
+        "Chốt được một kế hoạch pilot đủ rõ để bắt đầu trong tuần tiếp theo.",
+      mentorTopics: [
+        "Pilot design",
+        "Product validation",
+        "Customer discovery",
+      ],
+      analyzedDocuments: documents.map(
+        (document) => document.name,
+      ),
+      evidenceSummary: `Đã liên kết ${evidenceForDocuments(documents).length} bằng chứng chính với nguồn`,
+    },
     readiness: {
       score: 65,
       stageLabel,
