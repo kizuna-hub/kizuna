@@ -9,10 +9,15 @@ export const MAX_SECONDARY_PANE_WIDTH = 55;
 
 export function createWorkspaceLayoutState(): WorkspaceLayoutState {
   return {
+    destination: "conversation_history",
     secondaryPaneMode: "closed",
     secondaryPaneWidth: DEFAULT_SECONDARY_PANE_WIDTH,
     analysisTab: "overview",
     evidenceView: "by_document",
+    conversationHistoryView: "session_library",
+    conversationHistorySearch: "",
+    conversationHistoryFilter: "all",
+    conversationHistoryScrollTop: 0,
   };
 }
 
@@ -36,13 +41,32 @@ export function restoreWorkspaceLayout(
     "panel_chat",
     "mentor_fit",
     "mentor_connection",
+    "mentor_sources",
+    "mentor_comparison",
+    "session_preparation",
+    "mentor_questions",
+    "checkpoint_capture",
+    "checkpoint_update",
+    "checkpoint_detail",
+    "pre_read",
   ].includes(candidate.secondaryPaneMode ?? "")
     ? candidate.secondaryPaneMode!
     : initial.secondaryPaneMode;
+  const destination = [
+    "mentorship_continuity",
+    "mentor_discovery",
+    "connection_requests",
+    "venture_brief",
+    "documents",
+    "conversation_history",
+  ].includes(candidate.destination ?? "")
+    ? candidate.destination!
+    : initial.destination;
   return {
     ...initial,
     ...candidate,
     secondaryPaneMode: mode,
+    destination,
     secondaryPaneWidth: clampSecondaryPaneWidth(
       candidate.secondaryPaneWidth ?? initial.secondaryPaneWidth,
     ),
@@ -56,6 +80,34 @@ export function restoreWorkspaceLayout(
     )
       ? candidate.evidenceView!
       : initial.evidenceView,
+    conversationHistoryView:
+      candidate.conversationHistoryView === "session_detail" &&
+      typeof candidate.selectedHistorySessionId === "string"
+        ? "session_detail"
+        : "session_library",
+    selectedHistorySessionId:
+      typeof candidate.selectedHistorySessionId === "string"
+        ? candidate.selectedHistorySessionId
+        : undefined,
+    conversationHistoryFilter: [
+      "all",
+      "mentor_matching",
+      "mentor_profile",
+      "mentor_comparison",
+      "session_preparation",
+      "mentor_questions",
+    ].includes(candidate.conversationHistoryFilter ?? "")
+      ? candidate.conversationHistoryFilter!
+      : initial.conversationHistoryFilter,
+    conversationHistorySearch:
+      typeof candidate.conversationHistorySearch === "string"
+        ? candidate.conversationHistorySearch
+        : initial.conversationHistorySearch,
+    conversationHistoryScrollTop: Number.isFinite(
+      candidate.conversationHistoryScrollTop,
+    )
+      ? Math.max(0, candidate.conversationHistoryScrollTop ?? 0)
+      : initial.conversationHistoryScrollTop,
   };
 }
 
@@ -66,6 +118,10 @@ export function workspaceLayoutReducer(
   switch (action.type) {
     case "hydrate":
       return restoreWorkspaceLayout(action.state);
+    case "set-destination":
+      return state.destination === action.destination
+        ? state
+        : { ...state, destination: action.destination };
     case "open-analysis":
       return {
         ...state,
@@ -101,6 +157,64 @@ export function workspaceLayoutReducer(
       };
     case "close-secondary-pane":
       return { ...state, secondaryPaneMode: "closed" };
+    case "open-mentorship-panel":
+      return {
+        ...state,
+        secondaryPaneMode: action.mode,
+        secondaryPaneWidth: 42,
+        selectedCheckpointId:
+          action.checkpointId ?? state.selectedCheckpointId,
+      };
+    case "show-conversation-history-library":
+      return state.conversationHistoryView === "session_library" &&
+        state.secondaryPaneMode === "closed"
+        ? state
+        : {
+            ...state,
+            conversationHistoryView: "session_library",
+            secondaryPaneMode: "closed",
+          };
+    case "open-conversation-history-session":
+      return state.conversationHistoryView === "session_detail" &&
+        state.selectedHistorySessionId === action.sessionId &&
+        state.secondaryPaneMode === action.secondaryPaneMode &&
+        state.selectedMentorId === action.mentorId
+        ? state
+        : {
+            ...state,
+            conversationHistoryView: "session_detail",
+            selectedHistorySessionId: action.sessionId,
+            secondaryPaneMode: action.secondaryPaneMode,
+            secondaryPaneWidth: 42,
+            selectedMentorId:
+              action.mentorId ?? state.selectedMentorId,
+          };
+    case "set-conversation-history-search":
+      return state.conversationHistorySearch === action.query
+        ? state
+        : {
+            ...state,
+            conversationHistorySearch: action.query,
+          };
+    case "set-conversation-history-filter":
+      return state.conversationHistoryFilter === action.filter
+        ? state
+        : {
+            ...state,
+            conversationHistoryFilter: action.filter,
+          };
+    case "save-conversation-history-scroll":
+      return Math.abs(
+        state.conversationHistoryScrollTop - action.scrollTop,
+      ) < 1
+        ? state
+        : {
+            ...state,
+            conversationHistoryScrollTop: Math.max(
+              0,
+              action.scrollTop,
+            ),
+          };
     case "set-secondary-pane-width": {
       const width = clampSecondaryPaneWidth(action.width);
       if (Math.abs(width - state.secondaryPaneWidth) < 0.1) {
