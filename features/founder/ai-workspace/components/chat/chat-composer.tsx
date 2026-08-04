@@ -72,6 +72,7 @@ export function ChatComposer({
   onModelChange,
   idPrefix = "founder-ai",
   focusRequestKey,
+  placeholder,
 }: {
   prompts: string[];
   attachments: MockAttachment[];
@@ -87,6 +88,7 @@ export function ChatComposer({
   onModelChange: (modelId: AiModelId) => void;
   idPrefix?: string;
   focusRequestKey?: number;
+  placeholder?: string;
 }) {
   const [internalValue, setInternalValue] = React.useState("");
   const [listening, setListening] = React.useState(false);
@@ -251,7 +253,7 @@ export function ChatComposer({
               submit();
             }
           }}
-          placeholder={copy.chat.composerPlaceholder}
+          placeholder={placeholder ?? copy.chat.composerPlaceholder}
           disabled={disabled}
           rows={1}
           className="max-h-36 min-h-10 resize-none border-0 bg-transparent px-2 py-2.5 workspace-input-text shadow-none focus-visible:ring-0"

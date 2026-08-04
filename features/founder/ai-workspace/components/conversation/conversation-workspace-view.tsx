@@ -36,6 +36,8 @@ export function ConversationWorkspaceView({
   onOpenMentor,
   onOpenArtifact,
   onOpenReadiness,
+  header,
+  composerPlaceholder,
 }: {
   workspace: AiWorkspaceController;
   generating: boolean;
@@ -58,6 +60,8 @@ export function ConversationWorkspaceView({
     surface: "documents" | "timeline",
   ) => void;
   onOpenReadiness: (criterionId?: ReadinessCriterionId) => void;
+  header?: React.ReactNode;
+  composerPlaceholder?: string;
 }) {
   const copy = aiWorkspaceVi;
   const { state, longRun } = workspace;
@@ -66,6 +70,7 @@ export function ConversationWorkspaceView({
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
+      {header}
       {searchOpen ? (
         <div className="absolute inset-x-2 top-2 z-overlay mx-auto max-w-2xl">
           <ConversationSearch
@@ -193,6 +198,7 @@ export function ConversationWorkspaceView({
             onRemoveAttachment={workspace.removeAttachment}
             selectedModel={state.selectedModel}
             onModelChange={workspace.setAiModel}
+            placeholder={composerPlaceholder}
           />
         </div>
       </div>

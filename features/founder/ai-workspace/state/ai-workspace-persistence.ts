@@ -3,6 +3,7 @@ import {
   createAiWorkspaceScenarioState,
 } from "../demo/demo-scenarios";
 import { createCampusFlowMentorRecommendation } from "../mentor-recommendation/demo/campusflow-mentor-recommendations";
+import { ensureCampusFlowMentorConversationHistory } from "../conversation-history/data/mentor-conversation-session-seed";
 import type {
   AiWorkspaceMessage,
   AiWorkspaceScenarioId,
@@ -18,7 +19,7 @@ import {
 
 export const AI_WORKSPACE_STORAGE_KEY =
   "kizuna-founder-ai-workspace-demo-v1";
-export const AI_WORKSPACE_STORAGE_VERSION = 9;
+export const AI_WORKSPACE_STORAGE_VERSION = 10;
 
 export type PersistedAiWorkspaceSession = Pick<
   AiWorkspaceState,
@@ -149,6 +150,7 @@ export function parseAiWorkspaceEnvelope(
         6,
         7,
         8,
+        9,
         AI_WORKSPACE_STORAGE_VERSION,
       ].includes(
         parsed.version as number,
@@ -354,7 +356,7 @@ export function restoreLongRunSession(
             (session) => !session.isArchived,
           )?.id ?? candidate.lastConversationId,
       };
-  return {
+  return ensureCampusFlowMentorConversationHistory({
     ...restored,
     attachmentsByConversation:
       restored.attachmentsByConversation ?? {},
@@ -366,7 +368,8 @@ export function restoreLongRunSession(
         ],
       ),
     ),
-  };
+    conversationSources: restored.conversationSources ?? [],
+  });
 }
 
 export function restoreWorkspaceLayoutSession(
